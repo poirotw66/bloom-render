@@ -16,6 +16,7 @@ import { UndoIcon, RedoIcon, EyeIcon } from './components/icons';
 import StartScreen from './components/StartScreen';
 import { useLanguage } from './contexts/LanguageContext';
 import { useSettings } from './contexts/SettingsContext';
+import { useTheme } from './contexts/ThemeContext';
 
 // Helper to convert a data URL string to a File object
 const dataURLtoFile = (dataurl: string, filename: string): File => {
@@ -39,6 +40,7 @@ type Tab = 'retouch' | 'adjust' | 'filters' | 'crop';
 const App: React.FC = () => {
   const { t } = useLanguage();
   const settings = useSettings();
+  const { theme } = useTheme();
   const [history, setHistory] = useState<File[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
   const [prompt, setPrompt] = useState<string>('');
@@ -384,15 +386,23 @@ const App: React.FC = () => {
             )}
         </div>
         
-        <div className="w-full bg-gray-800/80 border border-gray-700/80 rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm">
+        <div className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${
+          theme === 'newyear'
+            ? 'bg-red-900/30 border-red-700/50'
+            : 'bg-gray-800/80 border-gray-700/80'
+        }`}>
             {(['retouch', 'crop', 'adjust', 'filters'] as Tab[]).map(tab => (
                  <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`w-full capitalize font-semibold py-3 px-5 rounded-md transition-colors duration-200 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                    className={`w-full capitalize font-semibold py-3 px-5 rounded-md transition-colors duration-200 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
                         activeTab === tab 
-                        ? 'bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg shadow-cyan-500/40' 
-                        : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        ? theme === 'newyear'
+                          ? 'bg-gradient-to-br from-red-500 to-yellow-400 text-white shadow-lg shadow-red-500/40 focus:ring-red-500'
+                          : 'bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg shadow-cyan-500/40 focus:ring-blue-500'
+                        : theme === 'newyear'
+                          ? 'text-red-200 hover:text-red-50 hover:bg-red-500/20 focus:ring-red-500'
+                          : 'text-gray-300 hover:text-white hover:bg-white/10 focus:ring-blue-500'
                     }`}
                 >
                     {t(`main.tab_${tab}`)}
@@ -403,7 +413,7 @@ const App: React.FC = () => {
         <div className="w-full">
             {activeTab === 'retouch' && (
                 <div className="flex flex-col items-center gap-4">
-                    <p className="text-md text-gray-400">
+                    <p className={`text-md ${theme === 'newyear' ? 'text-red-300' : 'text-gray-400'}`}>
                         {editHotspot ? t('main.retouch_instr_ready') : t('main.retouch_instr_initial')}
                     </p>
                     <form onSubmit={(e) => { e.preventDefault(); handleGenerate(); }} className="w-full flex items-center gap-2">
@@ -412,12 +422,20 @@ const App: React.FC = () => {
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                             placeholder={editHotspot ? t('main.retouch_placeholder_ready') : t('main.retouch_placeholder_initial')}
-                            className="flex-grow bg-gray-800 border border-gray-700 text-gray-200 rounded-lg p-5 text-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60"
+                            className={`flex-grow border rounded-lg p-5 text-lg focus:ring-2 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60 ${
+                              theme === 'newyear'
+                                ? 'bg-red-900/30 border-red-700/50 text-red-50 placeholder-red-300 focus:ring-red-500'
+                                : 'bg-gray-800 border-gray-700 text-gray-200 focus:ring-blue-500'
+                            }`}
                             disabled={isLoading || !editHotspot}
                         />
                         <button 
                             type="submit"
-                            className="bg-gradient-to-br from-blue-600 to-blue-500 text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-px active:scale-95 active:shadow-inner disabled:from-blue-800 disabled:to-blue-700 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                            className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                              theme === 'newyear'
+                                ? 'bg-gradient-to-br from-red-600 to-red-500 shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/40 disabled:from-red-800 disabled:to-red-700 focus:ring-red-500'
+                                : 'bg-gradient-to-br from-blue-600 to-blue-500 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 disabled:from-blue-800 disabled:to-blue-700 focus:ring-blue-500'
+                            }`}
                             disabled={isLoading || !prompt.trim() || !editHotspot}
                         >
                             {t('main.btn_generate')}

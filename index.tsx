@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -17,10 +18,12 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <SettingsProvider>
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>
-    </SettingsProvider>
+    <ThemeProvider>
+      <SettingsProvider>
+        <LanguageProvider>
+          <App />
+        </LanguageProvider>
+      </SettingsProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
