@@ -9,6 +9,15 @@ import { generateImageFromText, generateIdPhoto } from '../services/geminiServic
 import Spinner from './Spinner';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import {
+  ID_PHOTO_TYPES,
+  RETOUCH_LEVELS,
+  OUTPUT_SPECS,
+  DEFAULT_ID_TYPE,
+  DEFAULT_RETOUCH_LEVEL,
+  DEFAULT_OUTPUT_SPEC,
+} from '../constants/idPhoto';
+import type { IdPhotoType, RetouchLevel, OutputSpec } from '../constants/idPhoto';
 
 interface StartScreenProps {
   onImageSelected: (file: File) => void;
@@ -49,6 +58,9 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
   const [idPhotoLoading, setIdPhotoLoading] = useState(false);
   const [idPhotoError, setIdPhotoError] = useState<string | null>(null);
   const [idPhotoPreviewUrl, setIdPhotoPreviewUrl] = useState<string | null>(null);
+  const [idPhotoType, setIdPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
+  const [idPhotoRetouchLevel, setIdPhotoRetouchLevel] = useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
+  const [idPhotoOutputSpec, setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
 
   useEffect(() => {
     if (idPhotoFile) {
@@ -117,7 +129,12 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
     setIdPhotoError(null);
     setIdPhotoLoading(true);
     try {
-      const url = await generateIdPhoto(idPhotoFile, { apiKey: settings.apiKey, model: settings.model });
+      const url = await generateIdPhoto(idPhotoFile, {
+        retouchLevel: idPhotoRetouchLevel,
+        idType: idPhotoType,
+        outputSpec: idPhotoOutputSpec,
+        settings: { apiKey: settings.apiKey, model: settings.model },
+      });
       setIdPhotoResult(url);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -125,7 +142,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
     } finally {
       setIdPhotoLoading(false);
     }
-  }, [idPhotoFile, settings.apiKey, settings.model, t]);
+  }, [idPhotoFile, idPhotoRetouchLevel, idPhotoType, idPhotoOutputSpec, settings.apiKey, settings.model, t]);
 
   const handleIdPhotoDownload = useCallback(() => {
     if (!idPhotoResult) return;
@@ -245,40 +262,95 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
                 <Spinner />
                 <p className="text-gray-300">{t('start.idphoto_generating')}</p>
               </div>
-            ) : idPhotoFile ? (
-              <div className="flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
-                <h3 className="text-lg font-bold text-white">{t('start.idphoto_title')}</h3>
-                <div className="w-40 h-40 rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center">
-                  {idPhotoPreviewUrl && <img src={idPhotoPreviewUrl} alt="Uploaded portrait" className="max-w-full max-h-full w-auto h-auto object-contain" />}
-                </div>
-                <p className="text-sm text-gray-400">{t('start.idphoto_upload_hint')}</p>
-                {idPhotoError && <p className="text-red-400 text-sm">{idPhotoError}</p>}
-                <div className="flex items-center gap-3">
-                  <label className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-300 border border-gray-600 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
-                    <input type="file" className="hidden" accept="image/*" onChange={handleIdPhotoFileChange} />
-                    {t('start.idphoto_change_photo')}
-                  </label>
-                  <button
-                    onClick={handleIdPhotoGenerate}
-                    disabled={idPhotoLoading}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 text-white font-bold bg-emerald-600 rounded-lg shadow-lg shadow-emerald-500/20 hover:bg-emerald-500 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <IdPhotoIcon className="w-5 h-5" />
-                    {t('start.idphoto_generate_btn')}
-                  </button>
-                </div>
-              </div>
             ) : (
-              <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
-                <div className="p-12 border-2 border-dashed border-gray-700 rounded-xl bg-gray-800/20 w-full max-w-2xl flex flex-col items-center justify-center gap-4 hover:border-gray-500 transition-colors duration-200">
-                  <label htmlFor="image-upload-idphoto" className="relative inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-emerald-600 rounded-full cursor-pointer group hover:bg-emerald-500 transition-colors duration-200 shadow-lg shadow-emerald-600/20 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-800">
-                    <IdPhotoIcon className="w-6 h-6 mr-3" />
-                    {t('start.upload_button')}
-                  </label>
-                  <input id="image-upload-idphoto" type="file" className="hidden" accept="image/*" onChange={handleIdPhotoFileChange} aria-label={t('start.upload_button')} />
-                  <p className="text-sm text-gray-400">{t('start.idphoto_upload_hint')}</p>
+              <>
+                <div className="flex flex-col gap-4 w-full max-w-2xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">{t('idphoto.label.type')}</label>
+                    <select
+                      value={idPhotoType}
+                      onChange={(e) => setIdPhotoType(e.target.value as IdPhotoType)}
+                      className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    >
+                      {ID_PHOTO_TYPES.map((type) => (
+                        <option key={type.id} value={type.id}>{t(type.nameKey)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">{t('idphoto.label.level')}</label>
+                    <div className="flex flex-wrap gap-2">
+                      {RETOUCH_LEVELS.map((level) => (
+                        <button
+                          key={level.id}
+                          onClick={() => setIdPhotoRetouchLevel(level.id)}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                            idPhotoRetouchLevel === level.id
+                              ? 'bg-emerald-600 text-white border border-emerald-500'
+                              : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
+                          }`}
+                        >
+                          {t(level.nameKey)}
+                          {level.price != null && <span className="ml-1.5 opacity-80">({t('idphoto.price_hint')} ${level.price})</span>}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">{t('idphoto.label.spec')}</label>
+                    <div className="flex flex-wrap gap-2">
+                      {OUTPUT_SPECS.map((spec) => (
+                        <button
+                          key={spec.id}
+                          onClick={() => setIdPhotoOutputSpec(spec.id)}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                            idPhotoOutputSpec === spec.id
+                              ? 'bg-emerald-600 text-white border border-emerald-500'
+                              : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
+                          }`}
+                        >
+                          {t(spec.nameKey)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
+                {idPhotoFile ? (
+                  <div className="flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
+                    <h3 className="text-lg font-bold text-white">{t('start.idphoto_title')}</h3>
+                    <div className="w-40 h-40 rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center">
+                      {idPhotoPreviewUrl && <img src={idPhotoPreviewUrl} alt="Uploaded portrait" className="max-w-full max-h-full w-auto h-auto object-contain" />}
+                    </div>
+                    <p className="text-sm text-gray-400">{t('start.idphoto_upload_hint')}</p>
+                    {idPhotoError && <p className="text-red-400 text-sm">{idPhotoError}</p>}
+                    <div className="flex items-center gap-3">
+                      <label className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-300 border border-gray-600 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                        <input type="file" className="hidden" accept="image/*" onChange={handleIdPhotoFileChange} />
+                        {t('start.idphoto_change_photo')}
+                      </label>
+                      <button
+                        onClick={handleIdPhotoGenerate}
+                        disabled={idPhotoLoading}
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 text-white font-bold bg-emerald-600 rounded-lg shadow-lg shadow-emerald-500/20 hover:bg-emerald-500 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <IdPhotoIcon className="w-5 h-5" />
+                        {t('start.idphoto_generate_btn')}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
+                    <div className="p-12 border-2 border-dashed border-gray-700 rounded-xl bg-gray-800/20 w-full max-w-2xl flex flex-col items-center justify-center gap-4 hover:border-gray-500 transition-colors duration-200">
+                      <label htmlFor="image-upload-idphoto" className="relative inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-emerald-600 rounded-full cursor-pointer group hover:bg-emerald-500 transition-colors duration-200 shadow-lg shadow-emerald-600/20 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-800">
+                        <IdPhotoIcon className="w-6 h-6 mr-3" />
+                        {t('start.upload_button')}
+                      </label>
+                      <input id="image-upload-idphoto" type="file" className="hidden" accept="image/*" onChange={handleIdPhotoFileChange} aria-label={t('start.upload_button')} />
+                      <p className="text-sm text-gray-400">{t('start.idphoto_upload_hint')}</p>
+                    </div>
+                  </div>
+                )}
+              </>
             )
         ) : generatedImages.length > 0 ? (
             <div className="flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">

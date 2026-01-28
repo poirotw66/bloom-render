@@ -202,35 +202,74 @@ Output: Return ONLY the final adjusted image. Do not return text.`;
     return handleApiResponse(response, 'adjustment');
 };
 
-/** ID photo / passport-style prompt: positive requirements */
-const ID_PHOTO_POSITIVE = `Korean ID photo, passport-style photo, professional studio photo retouch, use the same person, preserve identity, same face, same facial structure, no face change, no age change, no gender change, neutral expression, mouth closed, eyes open, looking straight at camera, clean pure white background, simple and clean background, head and shoulders, centered and symmetrical composition, correct ID photo framing, proper head size, face centered, even and soft studio lighting, no shadow on face, no shadow on background, natural skin texture, minimal retouch, subtle professional retouch, realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration`;
+/** Base positive: identity, expression, background, lighting (no retouch, no framing) */
+const ID_PHOTO_BASE_POSITIVE = `Korean ID photo, passport-style photo, professional studio photo retouch, use the same person, preserve identity, same face, same facial structure, no face change, no age change, no gender change, neutral expression, mouth closed, eyes open, looking straight at camera, clean pure white background, simple and clean background, even and soft studio lighting, no shadow on face, no shadow on background, realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration`;
 
-/** ID photo / passport-style prompt: negative (must avoid) */
-const ID_PHOTO_NEGATIVE = `different person, change face, change identity, face swap, wrong person, beautify, over-beautify, beauty filter, meitu, snow app, filter, plastic skin, doll face, over-smooth, airbrushed, fake skin, CGI, AI face, AI generated look, anime, cartoon, illustration, painting, 3d render, smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away, dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background, low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face`;
+/** Base negative (must avoid) */
+const ID_PHOTO_BASE_NEGATIVE = `different person, change face, change identity, face swap, wrong person, beautify, over-beautify, beauty filter, meitu, snow app, filter, plastic skin, doll face, over-smooth, airbrushed, fake skin, CGI, AI face, AI generated look, anime, cartoon, illustration, painting, 3d render, smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away, dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background, low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face`;
+
+export type { RetouchLevel, IdPhotoType, OutputSpec } from '../constants/idPhoto';
+import {
+    RETOUCH_LEVELS,
+    ID_PHOTO_TYPES,
+    OUTPUT_SPECS,
+    DEFAULT_ID_TYPE,
+    DEFAULT_RETOUCH_LEVEL,
+    DEFAULT_OUTPUT_SPEC,
+    type RetouchLevel,
+    type IdPhotoType,
+    type OutputSpec,
+} from '../constants/idPhoto';
+
+export interface GenerateIdPhotoOptions {
+    retouchLevel?: RetouchLevel;
+    idType?: IdPhotoType;
+    outputSpec?: OutputSpec;
+    settings?: ServiceSettings;
+}
 
 /**
  * Generates a professional ID / passport-style photo from a portrait.
- * Uses Gemini 2.5 Flash Image or Gemini 3 Pro Image per user settings.
+ * 春山企業 韓式證件照：支援修圖等級、證件類型、輸出規格。
  * @param originalImage The uploaded portrait (clear, front-facing).
- * @param settings Optional API key and model selection.
+ * @param options retouchLevel, idType, outputSpec, settings.
  * @returns A promise that resolves to the data URL of the generated ID photo.
  */
 export const generateIdPhoto = async (
     originalImage: File,
-    settings?: ServiceSettings
+    options?: GenerateIdPhotoOptions | ServiceSettings
 ): Promise<string> => {
-    console.log('Starting ID photo generation');
-    const ai = getClient(settings);
-    const model = getModel(settings);
+    const isNewFormat = options && typeof options === 'object' && ('retouchLevel' in options || 'idType' in options || 'outputSpec' in options);
+    const opts: GenerateIdPhotoOptions = isNewFormat ? (options as GenerateIdPhotoOptions) : { settings: options as ServiceSettings };
+    const retouchLevel = opts.retouchLevel ?? DEFAULT_RETOUCH_LEVEL;
+    const idType = opts.idType ?? DEFAULT_ID_TYPE;
+    const outputSpec = opts.outputSpec ?? DEFAULT_OUTPUT_SPEC;
+    const serviceSettings = opts.settings;
+
+    const level = RETOUCH_LEVELS.find((l) => l.id === retouchLevel) || RETOUCH_LEVELS[1];
+    const type = ID_PHOTO_TYPES.find((t) => t.id === idType) || ID_PHOTO_TYPES[0];
+    const spec = OUTPUT_SPECS.find((s) => s.id === outputSpec) || OUTPUT_SPECS[0];
+
+    const positive = [
+        ID_PHOTO_BASE_POSITIVE,
+        spec.cropHint,
+        level.positiveModifier,
+        type.promptHint,
+    ].filter(Boolean).join(' ');
+    const negative = [ID_PHOTO_BASE_NEGATIVE, level.negativeExtra].filter(Boolean).join(' ');
+
+    console.log('Starting ID photo generation', { retouchLevel, idType, outputSpec });
+    const ai = getClient(serviceSettings);
+    const model = getModel(serviceSettings);
     const originalImagePart = await fileToPart(originalImage);
 
     const prompt = `You are an expert ID and passport photo retouching AI. Transform the provided portrait into a professional, compliant ID/passport-style photo.
 
 Requirements (MUST follow):
-${ID_PHOTO_POSITIVE}
+${positive}
 
 Never do (MUST avoid):
-${ID_PHOTO_NEGATIVE}
+${negative}
 
 Output: Return ONLY the final ID/passport-style image. Do not return any text.`;
     const textPart = { text: prompt };
