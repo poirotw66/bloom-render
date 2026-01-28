@@ -325,8 +325,10 @@ Output: Return ONLY the final ID/passport-style image. Do not return any text.`;
 };
 
 export interface GenerateTravelPhotoOptions {
-  /** Scene prompt: from a preset or custom text. Replaces {SCENE} in the positive template. */
+  /** Scene prompt: from a preset or custom text. Replaces {SCENE} in the positive template. Can be empty when sceneReferenceImage is provided. */
   scenePrompt: string;
+  /** Optional reference photo of the desired scene. When provided, the model uses it to match setting, lighting, and atmosphere. */
+  sceneReferenceImage?: File;
   /** Output aspect ratio: 1:1, 16:9, or 9:16. Default 1:1. */
   aspectRatio?: '1:1' | '16:9' | '9:16';
   /** Output image size. Flash supports 1K only; Pro supports 1K, 2K, 4K. */
@@ -338,20 +340,29 @@ export interface GenerateTravelPhotoOptions {
  * Generates a travel photo: the same person in a selected scene.
  * Uses positive/negative templates from constants/travel.
  * imageSize: Flash only supports 1K; Pro supports 1K/2K/4K. Non‑Pro requests for 2K/4K are forced to 1K.
+ * When sceneReferenceImage is provided, parts are [portrait, referenceImage, text]; the prompt instructs to match the reference scene.
  */
 export const generateTravelPhoto = async (
   originalImage: File,
   options: GenerateTravelPhotoOptions
 ): Promise<string> => {
-  const { scenePrompt, aspectRatio = '1:1', imageSize: requestedSize, settings: serviceSettings } = options;
-  const positive = TRAVEL_POSITIVE_TEMPLATE.replace('{SCENE}', scenePrompt.trim());
+  const { scenePrompt, sceneReferenceImage, aspectRatio = '1:1', imageSize: requestedSize, settings: serviceSettings } = options;
+
+  const sceneForTemplate = sceneReferenceImage
+    ? 'in a scene matching the second (reference) image' + (scenePrompt.trim() ? `. ${scenePrompt.trim()}` : '')
+    : scenePrompt.trim();
+  const positive = TRAVEL_POSITIVE_TEMPLATE.replace('{SCENE}', sceneForTemplate);
   const aspectHint = aspectRatio === '16:9'
     ? 'Output in 16:9 landscape aspect ratio.'
     : aspectRatio === '9:16'
       ? 'Output in 9:16 portrait aspect ratio.'
       : 'Output in 1:1 square aspect ratio.';
 
-  const prompt = `You are an expert travel photo AI. Transform the provided portrait so the person appears in the following scene.
+  const introRef = sceneReferenceImage
+    ? 'Note: You are given TWO images. The first is the portrait to transform. The second is a reference photo of the desired scene/location. Use it to match the setting, lighting, colors, and atmosphere.\n\n'
+    : '';
+
+  const prompt = `${introRef}You are an expert travel photo AI. Transform the provided portrait so the person appears in the following scene.
 
 Requirements (MUST follow):
 ${positive}
@@ -366,19 +377,27 @@ Output: Return ONLY the final travel photo. Do not return any text.`;
 
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
-  /** Flash: 1K only; Pro: 1K, 2K, or 4K. */
-  const effectiveImageSize: '1K' | '2K' | '4K' =
-    model === 'gemini-3-pro-image-preview' ? (requestedSize || '1K') : '1K';
+  /** Flash: 1K only, imageSize not supported in imageConfig; Pro: 1K, 2K, or 4K. */
+  const isPro = model === 'gemini-3-pro-image-preview';
+  const effectiveImageSize: '1K' | '2K' | '4K' = isPro ? (requestedSize || '1K') : '1K';
 
-  console.log('Starting travel photo generation', { scenePrompt: scenePrompt.slice(0, 60), aspectRatio, imageSize: effectiveImageSize });
+  const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = { aspectRatio: aspectRatio || '1:1' };
+  if (isPro) imageConfig.imageSize = effectiveImageSize;
+
+  console.log('Starting travel photo generation', { scenePrompt: scenePrompt.slice(0, 60), hasSceneRef: !!sceneReferenceImage, aspectRatio, imageSize: effectiveImageSize });
   const originalImagePart = await fileToPart(originalImage);
+  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [originalImagePart];
+  if (sceneReferenceImage) {
+    parts.push(await fileToPart(sceneReferenceImage));
+  }
+  parts.push(textPart);
 
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
-    contents: { parts: [originalImagePart, textPart] },
+    contents: { parts },
     config: {
       responseModalities: ['TEXT', 'IMAGE'],
-      imageConfig: { imageSize: effectiveImageSize },
+      imageConfig,
     },
   });
   console.log('Received response from model for travel photo.', response);

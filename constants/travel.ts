@@ -38,6 +38,15 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
 
 export const TRAVEL_SCENES: TravelScene[] = [...TRAVEL_SCENES_INTERNATIONAL, ...TRAVEL_SCENES_TAIWAN];
 
+/** Scene id for "random location" option. At generate time, one of TRAVEL_SCENES is chosen randomly. */
+export const TRAVEL_SCENE_ID_RANDOM = 'random';
+
+/** Picks a random scene from TRAVEL_SCENES. Used when TRAVEL_SCENE_ID_RANDOM is selected. */
+export function pickRandomTravelScene(): TravelScene {
+  const i = Math.floor(Math.random() * TRAVEL_SCENES.length);
+  return TRAVEL_SCENES[i];
+}
+
 /** Positive prompt template; {SCENE} is replaced by the selected scene prompt. */
 export const TRAVEL_POSITIVE_TEMPLATE = `a travel photo of the same person, preserve identity, same face, same person,
 realistic photo, photorealistic, high quality,

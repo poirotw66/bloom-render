@@ -7,7 +7,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { generateTravelPhoto } from '../../services/geminiService';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { TRAVEL_SCENES, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE } from '../../constants/travel';
+import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE } from '../../constants/travel';
 import type { TravelAspectRatio, TravelImageSize } from '../../constants/travel';
 
 export type TravelSceneIdOrCustom = string;
@@ -25,6 +25,8 @@ export function useTravel() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedSceneId, setSelectedSceneId] = useState<TravelSceneIdOrCustom>(TRAVEL_SCENES[0]?.id ?? 'shibuya');
   const [customSceneText, setCustomSceneText] = useState('');
+  const [customSceneReferenceFile, setCustomSceneReferenceFile] = useState<File | null>(null);
+  const [customSceneReferenceUrl, setCustomSceneReferenceUrl] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState<TravelAspectRatio>(DEFAULT_TRAVEL_ASPECT);
   const [imageSize, setImageSize] = useState<TravelImageSize>(DEFAULT_TRAVEL_IMAGE_SIZE);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -38,6 +40,16 @@ export function useTravel() {
       setPreviewUrl(null);
     }
   }, [file]);
+
+  useEffect(() => {
+    if (customSceneReferenceFile) {
+      const u = URL.createObjectURL(customSceneReferenceFile);
+      setCustomSceneReferenceUrl(u);
+      return () => URL.revokeObjectURL(u);
+    } else {
+      setCustomSceneReferenceUrl(null);
+    }
+  }, [customSceneReferenceFile]);
 
   /** When switching to Flash, 2K/4K are not supported; reset to 1K. */
   useEffect(() => {
@@ -69,10 +81,22 @@ export function useTravel() {
       setError(t('travel.error_no_image'));
       return;
     }
-    const scenePrompt = resolveScenePrompt();
-    if (!scenePrompt) {
-      setError(t('travel.error_no_scene'));
+    if (selectedSceneId === 'custom' && !customSceneText.trim() && !customSceneReferenceFile) {
+      setError(t('travel.error_custom_scene_empty'));
       return;
+    }
+    let scenePrompt: string;
+    let sceneReferenceImage: File | undefined;
+    if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
+      scenePrompt = pickRandomTravelScene().prompt;
+      sceneReferenceImage = undefined;
+    } else {
+      scenePrompt = resolveScenePrompt();
+      if (!scenePrompt && !customSceneReferenceFile) {
+        setError(t('travel.error_no_scene'));
+        return;
+      }
+      sceneReferenceImage = selectedSceneId === 'custom' && customSceneReferenceFile ? customSceneReferenceFile : undefined;
     }
     setError(null);
     setLoading(true);
@@ -81,6 +105,7 @@ export function useTravel() {
         scenePrompt,
         aspectRatio,
         imageSize,
+        sceneReferenceImage,
         settings: { apiKey: settings.apiKey, model: settings.model },
       });
       setResult(url);
@@ -90,7 +115,7 @@ export function useTravel() {
     } finally {
       setLoading(false);
     }
-  }, [file, resolveScenePrompt, aspectRatio, imageSize, settings.apiKey, settings.model, t]);
+  }, [file, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, settings.apiKey, settings.model, t]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -132,6 +157,9 @@ export function useTravel() {
     setSelectedSceneId,
     customSceneText,
     setCustomSceneText,
+    customSceneReferenceFile,
+    customSceneReferenceUrl,
+    setCustomSceneReferenceFile,
     aspectRatio,
     setAspectRatio,
     imageSize,

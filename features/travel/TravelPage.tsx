@@ -59,6 +59,9 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
               setSelectedSceneId={tr.setSelectedSceneId}
               customSceneText={tr.customSceneText}
               setCustomSceneText={tr.setCustomSceneText}
+              customSceneReferenceFile={tr.customSceneReferenceFile}
+              customSceneReferenceUrl={tr.customSceneReferenceUrl}
+              setCustomSceneReferenceFile={tr.setCustomSceneReferenceFile}
               aspectRatio={tr.aspectRatio}
               setAspectRatio={tr.setAspectRatio}
               imageSize={tr.imageSize}

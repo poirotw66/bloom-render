@@ -6,7 +6,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES } from '../../constants/travel';
+import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES } from '../../constants/travel';
 import type { TravelAspectRatio, TravelImageSize } from '../../constants/travel';
 
 const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
@@ -16,6 +16,9 @@ interface TravelFormProps {
   setSelectedSceneId: (v: string) => void;
   customSceneText: string;
   setCustomSceneText: (v: string) => void;
+  customSceneReferenceFile: File | null;
+  customSceneReferenceUrl: string | null;
+  setCustomSceneReferenceFile: (v: File | null) => void;
   aspectRatio: TravelAspectRatio;
   setAspectRatio: (v: TravelAspectRatio) => void;
   imageSize: TravelImageSize;
@@ -32,6 +35,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
   setSelectedSceneId,
   customSceneText,
   setCustomSceneText,
+  customSceneReferenceFile,
+  customSceneReferenceUrl,
+  setCustomSceneReferenceFile,
   aspectRatio,
   setAspectRatio,
   imageSize,
@@ -113,6 +119,17 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
 
           <div>
+            <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">{t('travel.group.random')}</h4>
+            <button
+              onClick={() => setSelectedSceneId(TRAVEL_SCENE_ID_RANDOM)}
+              disabled={disabled}
+              className={`mb-2 ${SCENE_BTN} ${selectedSceneId === TRAVEL_SCENE_ID_RANDOM ? SCENE_ACTIVE : SCENE_INACTIVE}`}
+            >
+              {t('travel.random_btn')}
+            </button>
+          </div>
+
+          <div>
             <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('travel.custom')}</h4>
             <button
               onClick={() => setSelectedSceneId('custom')}
@@ -122,14 +139,47 @@ const TravelForm: React.FC<TravelFormProps> = ({
               {t('travel.custom_btn')}
             </button>
             {selectedSceneId === 'custom' && (
-              <input
-                type="text"
-                value={customSceneText}
-                onChange={(e) => setCustomSceneText(e.target.value)}
-                placeholder={t('travel.custom_placeholder')}
-                disabled={disabled}
-                className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-              />
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={customSceneText}
+                  onChange={(e) => setCustomSceneText(e.target.value)}
+                  placeholder={t('travel.custom_placeholder')}
+                  disabled={disabled}
+                  className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                />
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">{t('travel.custom_reference_label')}</label>
+                  {customSceneReferenceFile ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
+                        {customSceneReferenceUrl && (
+                          <img src={customSceneReferenceUrl} alt="Scene reference" className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setCustomSceneReferenceFile(null)}
+                        disabled={disabled}
+                        className="text-sm text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                      >
+                        {t('travel.custom_reference_remove')}
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-300 border border-gray-600 rounded-lg cursor-pointer hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        disabled={disabled}
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) setCustomSceneReferenceFile(f); e.target.value = ''; }}
+                      />
+                      {t('travel.custom_reference_btn')}
+                    </label>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>
