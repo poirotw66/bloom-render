@@ -202,6 +202,48 @@ Output: Return ONLY the final adjusted image. Do not return text.`;
     return handleApiResponse(response, 'adjustment');
 };
 
+/** ID photo / passport-style prompt: positive requirements */
+const ID_PHOTO_POSITIVE = `Korean ID photo, passport-style photo, professional studio photo retouch, use the same person, preserve identity, same face, same facial structure, no face change, no age change, no gender change, neutral expression, mouth closed, eyes open, looking straight at camera, clean pure white background, simple and clean background, head and shoulders, centered and symmetrical composition, correct ID photo framing, proper head size, face centered, even and soft studio lighting, no shadow on face, no shadow on background, natural skin texture, minimal retouch, subtle professional retouch, realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration`;
+
+/** ID photo / passport-style prompt: negative (must avoid) */
+const ID_PHOTO_NEGATIVE = `different person, change face, change identity, face swap, wrong person, beautify, over-beautify, beauty filter, meitu, snow app, filter, plastic skin, doll face, over-smooth, airbrushed, fake skin, CGI, AI face, AI generated look, anime, cartoon, illustration, painting, 3d render, smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away, dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background, low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face`;
+
+/**
+ * Generates a professional ID / passport-style photo from a portrait.
+ * Uses Gemini 2.5 Flash Image or Gemini 3 Pro Image per user settings.
+ * @param originalImage The uploaded portrait (clear, front-facing).
+ * @param settings Optional API key and model selection.
+ * @returns A promise that resolves to the data URL of the generated ID photo.
+ */
+export const generateIdPhoto = async (
+    originalImage: File,
+    settings?: ServiceSettings
+): Promise<string> => {
+    console.log('Starting ID photo generation');
+    const ai = getClient(settings);
+    const model = getModel(settings);
+    const originalImagePart = await fileToPart(originalImage);
+
+    const prompt = `You are an expert ID and passport photo retouching AI. Transform the provided portrait into a professional, compliant ID/passport-style photo.
+
+Requirements (MUST follow):
+${ID_PHOTO_POSITIVE}
+
+Never do (MUST avoid):
+${ID_PHOTO_NEGATIVE}
+
+Output: Return ONLY the final ID/passport-style image. Do not return any text.`;
+    const textPart = { text: prompt };
+
+    console.log(`Sending image to model (${model}) for ID photo...`);
+    const response: GenerateContentResponse = await ai.models.generateContent({
+        model,
+        contents: { parts: [originalImagePart, textPart] },
+    });
+    console.log('Received response from model for ID photo.', response);
+    return handleApiResponse(response, 'id-photo');
+};
+
 /**
  * Generates one or more images from scratch based on a text prompt.
  * @param prompt The user's text description of the image.
