@@ -231,12 +231,14 @@ export interface GenerateIdPhotoOptions {
     clothingOption?: ClothingOption;
     /** 當 clothingOption === 'custom' 時使用；其餘忽略 */
     clothingCustomText?: string;
+    /** 當 clothingOption === 'custom' 時可選；上傳服裝參考圖，以該圖服飾產生證件照 */
+    clothingReferenceImage?: File;
     settings?: ServiceSettings;
 }
 
 /**
  * Generates a professional ID / passport-style photo from a portrait.
- * 春山企業 韓式證件照：支援修圖等級、證件類型、輸出規格。
+ * 韓式證件照：支援修圖等級、證件類型、輸出規格。
  * @param originalImage The uploaded portrait (clear, front-facing).
  * @param options retouchLevel, idType, outputSpec, settings.
  * @returns A promise that resolves to the data URL of the generated ID photo.
@@ -252,15 +254,25 @@ export const generateIdPhoto = async (
     const outputSpec = opts.outputSpec ?? DEFAULT_OUTPUT_SPEC;
     const clothingOption = opts.clothingOption ?? DEFAULT_CLOTHING_OPTION;
     const clothingCustomText = opts.clothingCustomText?.trim() ?? '';
+    const clothingReferenceImage = opts.clothingReferenceImage ?? null;
     const serviceSettings = opts.settings;
 
     const level = RETOUCH_LEVELS.find((l) => l.id === retouchLevel) || RETOUCH_LEVELS[1];
     const type = ID_PHOTO_TYPES.find((t) => t.id === idType) || ID_PHOTO_TYPES[0];
     const spec = OUTPUT_SPECS.find((s) => s.id === outputSpec) || OUTPUT_SPECS[0];
     const clothingEntry = CLOTHING_OPTIONS.find((c) => c.id === clothingOption) || CLOTHING_OPTIONS[0];
-    const clothingHint = clothingOption === 'custom'
-        ? (clothingCustomText ? `Dress the person in the following attire: ${clothingCustomText}.` : 'Use appropriate professional attire suitable for an ID photo.')
-        : (clothingEntry.promptHint ?? '');
+    let clothingHint: string;
+    if (clothingOption !== 'custom') {
+        clothingHint = clothingEntry.promptHint ?? '';
+    } else if (clothingReferenceImage && clothingCustomText) {
+        clothingHint = `Dress the person in the first image in the same or similar outfit as shown in the second (reference) image. Additional instructions: ${clothingCustomText}.`;
+    } else if (clothingReferenceImage) {
+        clothingHint = 'Dress the person in the first image in the same or similar outfit as shown in the second (reference) image.';
+    } else if (clothingCustomText) {
+        clothingHint = `Dress the person in the following attire: ${clothingCustomText}.`;
+    } else {
+        clothingHint = 'Use appropriate professional attire suitable for an ID photo.';
+    }
 
     const positive = [
         ID_PHOTO_BASE_POSITIVE,
@@ -271,12 +283,11 @@ export const generateIdPhoto = async (
     ].filter(Boolean).join(' ');
     const negative = [ID_PHOTO_BASE_NEGATIVE, level.negativeExtra].filter(Boolean).join(' ');
 
-    console.log('Starting ID photo generation', { retouchLevel, idType, outputSpec, clothingOption });
-    const ai = getClient(serviceSettings);
-    const model = getModel(serviceSettings);
-    const originalImagePart = await fileToPart(originalImage);
+    const introTwoImages = clothingReferenceImage
+        ? 'Note: You are given TWO images. The first image is the portrait to transform. The second image is a reference for the desired clothing/outfit.\n\n'
+        : '';
 
-    const prompt = `You are an expert ID and passport photo retouching AI. Transform the provided portrait into a professional, compliant ID/passport-style photo.
+    const prompt = `${introTwoImages}You are an expert ID and passport photo retouching AI. Transform the provided portrait into a professional, compliant ID/passport-style photo.
 
 Requirements (MUST follow):
 ${positive}
@@ -287,10 +298,20 @@ ${negative}
 Output: Return ONLY the final ID/passport-style image. Do not return any text.`;
     const textPart = { text: prompt };
 
-    console.log(`Sending image to model (${model}) for ID photo...`);
+    console.log('Starting ID photo generation', { retouchLevel, idType, outputSpec, clothingOption, hasClothingRefImage: !!clothingReferenceImage });
+    const ai = getClient(serviceSettings);
+    const model = getModel(serviceSettings);
+    const originalImagePart = await fileToPart(originalImage);
+    const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [originalImagePart];
+    if (clothingReferenceImage) {
+        parts.push(await fileToPart(clothingReferenceImage));
+    }
+    parts.push(textPart);
+
+    console.log(`Sending image(s) to model (${model}) for ID photo...`);
     const response: GenerateContentResponse = await ai.models.generateContent({
         model,
-        contents: { parts: [originalImagePart, textPart] },
+        contents: { parts },
     });
     console.log('Received response from model for ID photo.', response);
     return handleApiResponse(response, 'id-photo');

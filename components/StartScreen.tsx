@@ -65,6 +65,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
   const [idPhotoOutputSpec, setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
   const [idPhotoClothingOption, setIdPhotoClothingOption] = useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
   const [idPhotoClothingCustomText, setIdPhotoClothingCustomText] = useState('');
+  const [idPhotoClothingReferenceFile, setIdPhotoClothingReferenceFile] = useState<File | null>(null);
+  const [idPhotoClothingReferenceUrl, setIdPhotoClothingReferenceUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (idPhotoFile) {
@@ -75,6 +77,16 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
       setIdPhotoPreviewUrl(null);
     }
   }, [idPhotoFile]);
+
+  useEffect(() => {
+    if (idPhotoClothingReferenceFile) {
+      const u = URL.createObjectURL(idPhotoClothingReferenceFile);
+      setIdPhotoClothingReferenceUrl(u);
+      return () => URL.revokeObjectURL(u);
+    } else {
+      setIdPhotoClothingReferenceUrl(null);
+    }
+  }, [idPhotoClothingReferenceFile]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -130,7 +142,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
       setIdPhotoError(t('start.error_no_image_idphoto'));
       return;
     }
-    if (idPhotoClothingOption === 'custom' && !idPhotoClothingCustomText.trim()) {
+    if (idPhotoClothingOption === 'custom' && !idPhotoClothingCustomText.trim() && !idPhotoClothingReferenceFile) {
       setIdPhotoError(t('idphoto.error_custom_clothing_empty'));
       return;
     }
@@ -142,7 +154,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
         idType: idPhotoType,
         outputSpec: idPhotoOutputSpec,
         clothingOption: idPhotoClothingOption,
-        clothingCustomText: idPhotoClothingOption === 'custom' ? idPhotoClothingCustomText.trim() : undefined,
+        clothingCustomText: idPhotoClothingOption === 'custom' ? idPhotoClothingCustomText.trim() || undefined : undefined,
+        clothingReferenceImage: idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile ? idPhotoClothingReferenceFile : undefined,
         settings: { apiKey: settings.apiKey, model: settings.model },
       });
       setIdPhotoResult(url);
@@ -152,7 +165,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
     } finally {
       setIdPhotoLoading(false);
     }
-  }, [idPhotoFile, idPhotoRetouchLevel, idPhotoType, idPhotoOutputSpec, idPhotoClothingOption, idPhotoClothingCustomText, settings.apiKey, settings.model, t]);
+  }, [idPhotoFile, idPhotoRetouchLevel, idPhotoType, idPhotoOutputSpec, idPhotoClothingOption, idPhotoClothingCustomText, idPhotoClothingReferenceFile, settings.apiKey, settings.model, t]);
 
   const handleIdPhotoDownload = useCallback(() => {
     if (!idPhotoResult) return;
@@ -246,6 +259,16 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
                 <div className="w-full aspect-[3/4] max-h-[400px] rounded-lg overflow-hidden border border-gray-600 bg-white flex items-center justify-center">
                   <img src={idPhotoResult} alt="ID photo" className="max-w-full max-h-full w-auto h-auto object-contain" />
                 </div>
+                <div className="w-full text-left">
+                  <h4 className="text-sm font-medium text-gray-400 mb-2">{t('idphoto.result.params_title')}</h4>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-300">
+                    <span><span className="text-gray-500">{t('idphoto.label.type')}:</span> {t(ID_PHOTO_TYPES.find(x => x.id === idPhotoType)?.nameKey ?? '')}</span>
+                    <span><span className="text-gray-500">{t('idphoto.label.level')}:</span> {t(RETOUCH_LEVELS.find(x => x.id === idPhotoRetouchLevel)?.nameKey ?? '')}</span>
+                    <span><span className="text-gray-500">{t('idphoto.label.spec')}:</span> {t(OUTPUT_SPECS.find(x => x.id === idPhotoOutputSpec)?.nameKey ?? '')}</span>
+                    <span><span className="text-gray-500">{t('idphoto.label.clothing')}:</span> {t(CLOTHING_OPTIONS.find(x => x.id === idPhotoClothingOption)?.nameKey ?? '')}</span>
+                    <span><span className="text-gray-500">{t('settings.model')}:</span> {settings.model === 'gemini-3-pro-image-preview' ? t('settings.model.pro') : t('settings.model.flash')}</span>
+                  </div>
+                </div>
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={handleIdPhotoDownload}
@@ -336,15 +359,47 @@ const StartScreen: React.FC<StartScreenProps> = ({ onImageSelected }) => {
                       ))}
                     </select>
                     {idPhotoClothingOption === 'custom' && (
-                      <input
-                        type="text"
-                        value={idPhotoClothingCustomText}
-                        onChange={(e) => setIdPhotoClothingCustomText(e.target.value)}
-                        placeholder={t('idphoto.clothing.custom_placeholder')}
-                        className="mt-2 w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                      />
+                      <div className="mt-2 space-y-2">
+                        <input
+                          type="text"
+                          value={idPhotoClothingCustomText}
+                          onChange={(e) => setIdPhotoClothingCustomText(e.target.value)}
+                          placeholder={t('idphoto.clothing.custom_placeholder')}
+                          className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                        />
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">{t('idphoto.clothing.custom_image_label')}</label>
+                          {idPhotoClothingReferenceFile ? (
+                            <div className="flex items-center gap-2">
+                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
+                                {idPhotoClothingReferenceUrl && (
+                                  <img src={idPhotoClothingReferenceUrl} alt="Clothing reference" className="w-full h-full object-cover" />
+                                )}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setIdPhotoClothingReferenceFile(null)}
+                                className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+                              >
+                                {t('idphoto.clothing.custom_image_remove')}
+                              </button>
+                            </div>
+                          ) : (
+                            <label className="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-300 border border-gray-600 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={(e) => { const f = e.target.files?.[0]; if (f) setIdPhotoClothingReferenceFile(f); e.target.value = ''; }}
+                              />
+                              {t('idphoto.clothing.custom_image_btn')}
+                            </label>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
+                  <p className="text-xs text-gray-500 mt-2">{t('idphoto.model_recommendation')}</p>
                 </div>
                 {idPhotoFile ? (
                   <div className="flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
