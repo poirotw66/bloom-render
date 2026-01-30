@@ -30,6 +30,8 @@ export function useTravel() {
   const [aspectRatio, setAspectRatio] = useState<TravelAspectRatio>(DEFAULT_TRAVEL_ASPECT);
   const [imageSize, setImageSize] = useState<TravelImageSize>(DEFAULT_TRAVEL_IMAGE_SIZE);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [resultSceneNameKey, setResultSceneNameKey] = useState<string | null>(null);
+  const [resultSceneCustomLabel, setResultSceneCustomLabel] = useState<string | null>(null);
 
   useEffect(() => {
     if (file) {
@@ -87,16 +89,30 @@ export function useTravel() {
     }
     let scenePrompt: string;
     let sceneReferenceImage: File | undefined;
+    let resolvedSceneNameKey: string | null = null;
+    let resolvedSceneCustomLabel: string | null = null;
     if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
-      scenePrompt = pickRandomTravelScene().prompt;
+      const picked = pickRandomTravelScene();
+      scenePrompt = picked.prompt;
       sceneReferenceImage = undefined;
-    } else {
+      resolvedSceneNameKey = picked.nameKey;
+    } else if (selectedSceneId === 'custom') {
       scenePrompt = resolveScenePrompt();
       if (!scenePrompt && !customSceneReferenceFile) {
         setError(t('travel.error_no_scene'));
         return;
       }
-      sceneReferenceImage = selectedSceneId === 'custom' && customSceneReferenceFile ? customSceneReferenceFile : undefined;
+      sceneReferenceImage = customSceneReferenceFile ?? undefined;
+      resolvedSceneCustomLabel = customSceneText.trim() || null;
+    } else {
+      const scene = TRAVEL_SCENES.find((s) => s.id === selectedSceneId);
+      scenePrompt = scene?.prompt ?? resolveScenePrompt();
+      if (!scenePrompt && !customSceneReferenceFile) {
+        setError(t('travel.error_no_scene'));
+        return;
+      }
+      sceneReferenceImage = undefined;
+      if (scene) resolvedSceneNameKey = scene.nameKey;
     }
     setError(null);
     setLoading(true);
@@ -109,6 +125,8 @@ export function useTravel() {
         settings: { apiKey: settings.apiKey, model: settings.model },
       });
       setResult(url);
+      setResultSceneNameKey(resolvedSceneNameKey);
+      setResultSceneCustomLabel(resolvedSceneCustomLabel);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'An unknown error occurred.';
       setError(`${t('travel.error_failed')} ${msg}`);
@@ -125,7 +143,11 @@ export function useTravel() {
     a.click();
   }, [result]);
 
-  const clearResult = useCallback(() => setResult(null), []);
+  const clearResult = useCallback(() => {
+    setResult(null);
+    setResultSceneNameKey(null);
+    setResultSceneCustomLabel(null);
+  }, []);
 
   const setFileFromDrop = useCallback((f: File) => {
     setFile(f);
@@ -150,6 +172,8 @@ export function useTravel() {
   return {
     file,
     result,
+    resultSceneNameKey,
+    resultSceneCustomLabel,
     loading,
     error,
     previewUrl,

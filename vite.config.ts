@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
     return {
       base: process.env.GITHUB_PAGES === 'true' ? '/enhance-pixshop/' : '/',
       server: {
-        port: 3000,
+        port: 3002,
         host: '0.0.0.0',
       },
       plugins: [react()],

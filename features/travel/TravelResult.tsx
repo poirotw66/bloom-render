@@ -8,17 +8,32 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 interface TravelResultProps {
   result: string;
+  resultSceneNameKey: string | null;
+  resultSceneCustomLabel: string | null;
   onDownload: () => void;
   onAgain: () => void;
   onEditInEditor: () => void;
 }
 
-const TravelResult: React.FC<TravelResultProps> = ({ result, onDownload, onAgain, onEditInEditor }) => {
+const TravelResult: React.FC<TravelResultProps> = ({
+  result,
+  resultSceneNameKey,
+  resultSceneCustomLabel,
+  onDownload,
+  onAgain,
+  onEditInEditor,
+}) => {
   const { t } = useLanguage();
+  const sceneLabel = resultSceneNameKey
+    ? t(resultSceneNameKey)
+    : (resultSceneCustomLabel || t('travel.custom_btn'));
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
       <h3 className="text-xl font-bold text-white">{t('travel.title')}</h3>
+      <p className="text-sm text-amber-400/90">
+        {t('travel.result_scene_label')} {sceneLabel}
+      </p>
       <div className="w-full aspect-[4/3] max-h-[400px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center">
         <img src={result} alt="Travel photo" className="max-w-full max-h-full w-auto h-auto object-contain" />
       </div>

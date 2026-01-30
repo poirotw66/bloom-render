@@ -43,6 +43,8 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
         {tr.result ? (
           <TravelResult
             result={tr.result}
+            resultSceneNameKey={tr.resultSceneNameKey}
+            resultSceneCustomLabel={tr.resultSceneCustomLabel}
             onDownload={tr.handleDownload}
             onAgain={tr.clearResult}
             onEditInEditor={handleEditInEditor}
