@@ -4,7 +4,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import * as React from 'react';
 import { generateTravelPhoto } from '../../services/geminiService';
+import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE } from '../../constants/travel';
@@ -13,6 +15,14 @@ import type { TravelAspectRatio, TravelImageSize } from '../../constants/travel'
 export type TravelSceneIdOrCustom = string;
 
 const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
+
+// Helper to load an image from a URL (e.g., from public folder) as a File object
+async function urlToFile(url: string, filename: string, mimeType: string): Promise<File> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+  const blob = await res.blob();
+  return new File([blob], filename, { type: mimeType });
+}
 
 export function useTravel() {
   const { t } = useLanguage();
@@ -93,8 +103,18 @@ export function useTravel() {
     let resolvedSceneCustomLabel: string | null = null;
     if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
       const picked = pickRandomTravelScene();
-      scenePrompt = picked.prompt;
-      sceneReferenceImage = undefined;
+      // Enhance the prompt with dynamic variations
+      scenePrompt = generateDynamicTravelPrompt(picked.prompt);
+
+      if (picked.referenceImagePath) {
+        try {
+          sceneReferenceImage = await urlToFile(picked.referenceImagePath, `${picked.id}_ref.jpg`, 'image/jpeg');
+        } catch (e) {
+          sceneReferenceImage = undefined;
+        }
+      } else {
+        sceneReferenceImage = undefined;
+      }
       resolvedSceneNameKey = picked.nameKey;
     } else if (selectedSceneId === 'custom') {
       scenePrompt = resolveScenePrompt();
@@ -102,16 +122,35 @@ export function useTravel() {
         setError(t('travel.error_no_scene'));
         return;
       }
+      // For custom prompts, we use exactly what the user typed without modification
       sceneReferenceImage = customSceneReferenceFile ?? undefined;
       resolvedSceneCustomLabel = customSceneText.trim() || null;
     } else {
       const scene = TRAVEL_SCENES.find((s) => s.id === selectedSceneId);
-      scenePrompt = scene?.prompt ?? resolveScenePrompt();
-      if (!scenePrompt && !customSceneReferenceFile) {
+      const basePrompt = scene?.prompt ?? resolveScenePrompt();
+
+      if (!basePrompt && !customSceneReferenceFile) {
         setError(t('travel.error_no_scene'));
         return;
       }
-      sceneReferenceImage = undefined;
+
+      // Enhance the prompt with dynamic variations
+      scenePrompt = generateDynamicTravelPrompt(basePrompt);
+
+      // Use user's custom reference if provided, otherwise check for scene's built-in reference
+      if (customSceneReferenceFile) {
+        sceneReferenceImage = customSceneReferenceFile;
+      } else if (scene?.referenceImagePath) {
+        try {
+          sceneReferenceImage = await urlToFile(scene.referenceImagePath, `${scene.id}_ref.jpg`, 'image/jpeg');
+        } catch (e) {
+          console.log(`Note: No reference image found at ${scene.referenceImagePath}, falling back to text prompt.`);
+          sceneReferenceImage = undefined;
+        }
+      } else {
+        sceneReferenceImage = undefined;
+      }
+
       if (scene) resolvedSceneNameKey = scene.nameKey;
     }
     setError(null);
