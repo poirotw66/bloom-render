@@ -334,12 +334,18 @@ export const TRAVEL_VIBE_OPTIONS: TravelVibeOption[] = [
 ];
 
 /** Outfit options for AI prompt injection */
-export type TravelOutfit = 'default' | 'casual' | 'formal' | 'traditional' | 'winter' | 'summer' | 'hiking' | 'cyberpunk';
+export type TravelOutfit = 'default' | 'casual' | 'formal' | 'traditional' | 'winter' | 'summer' | 'hiking' | 'cyberpunk' | 'luxury' | 'vintage' | 'street_chic' | 'preppy' | 'boho' | 'parisian' | 'academic' | 'y2k';
 
 export const TRAVEL_OUTFIT_OPTIONS: { id: TravelOutfit; nameKey: string; prompt: string; icon: string }[] = [
   { id: 'default', nameKey: 'travel.outfit.default', prompt: '', icon: '🧥' },
-  { id: 'casual', nameKey: 'travel.outfit.casual', prompt: 'wearing casual clothes, t-shirt and jeans, comfortable street wear', icon: '👕' },
-  { id: 'formal', nameKey: 'travel.outfit.formal', prompt: 'wearing formal attire, elegant suit for men, sophisticated dress for women, black tie style', icon: '👔' },
+  { id: 'luxury', nameKey: 'travel.outfit.luxury', prompt: 'quiet luxury style, exquisite high-end fashion, high-quality fabrics, sophisticated minimalist look, expensive accessories', icon: '💎' },
+  { id: 'parisian', nameKey: 'travel.outfit.parisian', prompt: 'effortless Parisian chic, beret, trench coat, striped tops, stylish and elegant French aesthetic', icon: '🍷' },
+  { id: 'academic', nameKey: 'travel.outfit.academic', prompt: 'dark academia aesthetic, turtleneck, wool blazers, scholarly look, intellectual and mysterious fashion', icon: '📜' },
+  { id: 'y2k', nameKey: 'travel.outfit.y2k', prompt: 'Y2K pop fashion, 2000s aesthetic, bright metallic colors, trendy cyber-pop look, youthful and bold', icon: '💖' },
+  { id: 'vintage', nameKey: 'travel.outfit.vintage', prompt: 'exquisite vintage classic outfit, timeless elegance, retro high-fashion style', icon: '🕰️' },
+  { id: 'street_chic', nameKey: 'travel.outfit.street_chic', prompt: 'streetwear chic, trendy urban high-fashion, stylish layering, modern influencer look', icon: '👟' },
+  { id: 'preppy', nameKey: 'travel.outfit.preppy', prompt: 'preppy style, clean-cut academic look, knitted sweaters, blazers, sophisticated and neat', icon: '🎓' },
+  { id: 'boho', nameKey: 'travel.outfit.boho', prompt: 'exquisite boho-chic, artistic traveler style, flowy patterns, stylish textures', icon: '🎨' },
   { id: 'traditional', nameKey: 'travel.outfit.traditional', prompt: 'wearing traditional ethnic clothing matching the local culture, high quality traditional garments', icon: '👘' },
   { id: 'winter', nameKey: 'travel.outfit.winter', prompt: 'wearing winter clothes, warm down jacket, scarf, gloves, beanie', icon: '🧥' },
   { id: 'summer', nameKey: 'travel.outfit.summer', prompt: 'wearing summer clothes, light summer dress, shorts and t-shirt, sunglasses', icon: '🕶️' },
@@ -348,7 +354,7 @@ export const TRAVEL_OUTFIT_OPTIONS: { id: TravelOutfit; nameKey: string; prompt:
 ];
 
 /** Pose options for AI prompt injection */
-export type TravelPose = 'natural' | 'hugging' | 'jumping' | 'hand_in_hand' | 'pointing' | 'looking_at_each_other' | 'peace_sign' | 'walking_away';
+export type TravelPose = 'natural' | 'hugging' | 'jumping' | 'hand_in_hand' | 'pointing' | 'looking_at_each_other' | 'peace_sign' | 'walking_away' | 'sitting_relaxed' | 'candid_laugh' | 'leaning' | 'coffee_time' | 'adjusting_shades' | 'cafe_sitting' | 'photographer' | 'heart';
 
 export const TRAVEL_POSE_OPTIONS: { id: TravelPose; nameKey: string; prompt: string; icon: string; minPeople?: number }[] = [
   { id: 'natural', nameKey: 'travel.pose.natural', prompt: 'standing naturally, relaxed pose', icon: '🚶' },
@@ -359,6 +365,14 @@ export const TRAVEL_POSE_OPTIONS: { id: TravelPose; nameKey: string; prompt: str
   { id: 'looking_at_each_other', nameKey: 'travel.pose.looking_at_each_other', prompt: 'looking at each other and smiling, eye contact', icon: '👀', minPeople: 2 },
   { id: 'peace_sign', nameKey: 'travel.pose.peace_sign', prompt: 'making a peace sign (V-sign) with hand, smiling at camera', icon: '✌️' },
   { id: 'walking_away', nameKey: 'travel.pose.walking_away', prompt: 'walking away from the camera, back view, looking towards the horizon', icon: '🚶‍♀️' },
+  { id: 'sitting_relaxed', nameKey: 'travel.pose.sitting_relaxed', prompt: 'sitting relaxed on a ledge or bench, casual and comfortable posture', icon: '🪑' },
+  { id: 'candid_laugh', nameKey: 'travel.pose.candid_laugh', prompt: 'captured in a candid laugh, spontaneous and happy expression, non-posed look', icon: '😆' },
+  { id: 'leaning', nameKey: 'travel.pose.leaning', prompt: 'leaning stylishly against a wall or railing, cool and composed posture', icon: '🧱' },
+  { id: 'coffee_time', nameKey: 'travel.pose.coffee_time', prompt: 'holding a coffee cup, looking casually at the camera, lifestyle photography vibe', icon: '☕' },
+  { id: 'adjusting_shades', nameKey: 'travel.pose.adjusting_shades', prompt: 'stylishly adjusting sunglasses or looking over them, cool influencer pose', icon: '🕶️' },
+  { id: 'cafe_sitting', nameKey: 'travel.pose.cafe_sitting', prompt: 'sitting at a cafe table, relaxing, gourmet travel vibe, lifestyle look', icon: '🍴' },
+  { id: 'photographer', nameKey: 'travel.pose.photographer', prompt: 'holding a camera as if taking a photo, traveler vibe, artistic lifestyle', icon: '📷' },
+  { id: 'heart', nameKey: 'travel.pose.heart', prompt: 'making a heart sign with hands or fingers, cute and friendly pose', icon: '🫶' },
 ];
 
 /** Recommended vibes for specific location types */
