@@ -271,3 +271,16 @@ export const TRAVEL_IMAGE_SIZES: { id: TravelImageSize; nameKey: string; proOnly
 ];
 
 export const DEFAULT_TRAVEL_IMAGE_SIZE: TravelImageSize = '1K';
+
+/** Travel photo style presets */
+export type TravelStyle = 'natural' | 'golden_hour' | 'film' | 'vibrant' | 'cinematic';
+
+export const TRAVEL_STYLES: { id: TravelStyle; nameKey: string; prompt: string }[] = [
+  { id: 'natural', nameKey: 'travel.style.natural', prompt: 'soft natural lighting, photorealistic, clear details' },
+  { id: 'golden_hour', nameKey: 'travel.style.golden_hour', prompt: 'golden hour sunlight, warm tones, cinematic lighting, glowing skin' },
+  { id: 'film', nameKey: 'travel.style.film', prompt: 'shot on 35mm film, kodak portra 400, grainy texture, vintage feel, soft colors' },
+  { id: 'vibrant', nameKey: 'travel.style.vibrant', prompt: 'modern travel photography, instagram style, vibrant colors, high saturation, sharp focus' },
+  { id: 'cinematic', nameKey: 'travel.style.cinematic', prompt: 'moody cinematic lighting, dramatic atmosphere, deep shadows, professional color grading' },
+];
+
+export const DEFAULT_TRAVEL_STYLE: TravelStyle = 'natural';

@@ -6,8 +6,8 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize } from '../../constants/travel';
+import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES } from '../../constants/travel';
+import type { TravelAspectRatio, TravelImageSize, TravelStyle } from '../../constants/travel';
 
 const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
 
@@ -23,6 +23,8 @@ interface TravelFormProps {
   setAspectRatio: (v: TravelAspectRatio) => void;
   imageSize: TravelImageSize;
   setImageSize: (v: TravelImageSize) => void;
+  style: TravelStyle;
+  setStyle: (v: TravelStyle) => void;
   useReferenceImage: boolean;
   setUseReferenceImage: (v: boolean) => void;
   disabled?: boolean;
@@ -72,6 +74,8 @@ const TravelForm: React.FC<TravelFormProps> = ({
   setAspectRatio,
   imageSize,
   setImageSize,
+  style,
+  setStyle,
   useReferenceImage,
   setUseReferenceImage,
   disabled = false,
@@ -111,6 +115,22 @@ const TravelForm: React.FC<TravelFormProps> = ({
                 className={`${SCENE_BTN} ${aspectRatio === a.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
               >
                 {t(a.nameKey)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.style')}</label>
+          <div className="flex flex-wrap gap-2">
+            {TRAVEL_STYLES.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setStyle(s.id)}
+                disabled={disabled}
+                className={`${SCENE_BTN} ${style === s.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
+              >
+                {t(s.nameKey)}
               </button>
             ))}
           </div>

@@ -9,8 +9,8 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize } from '../../constants/travel';
+import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE } from '../../constants/travel';
+import type { TravelAspectRatio, TravelImageSize, TravelStyle } from '../../constants/travel';
 
 export type TravelSceneIdOrCustom = string;
 
@@ -48,6 +48,7 @@ export function useTravel() {
   const [customSceneReferenceUrl, setCustomSceneReferenceUrl] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState<TravelAspectRatio>(DEFAULT_TRAVEL_ASPECT);
   const [imageSize, setImageSize] = useState<TravelImageSize>(DEFAULT_TRAVEL_IMAGE_SIZE);
+  const [style, setStyle] = useState<TravelStyle>(DEFAULT_TRAVEL_STYLE);
   // New state for controlling reference image usage
   const [useReferenceImage, setUseReferenceImage] = useState<boolean>(true);
 
@@ -116,8 +117,7 @@ export function useTravel() {
 
     if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
       const picked = pickRandomTravelScene();
-      // Enhance the prompt with dynamic variations
-      scenePrompt = generateDynamicTravelPrompt(picked.prompt);
+      scenePrompt = picked.prompt;
 
       if (useReferenceImage && picked.referenceImagePath) {
         try {
@@ -164,8 +164,7 @@ export function useTravel() {
         return;
       }
 
-      // Enhance the prompt with dynamic variations
-      scenePrompt = generateDynamicTravelPrompt(basePrompt);
+      scenePrompt = basePrompt;
 
       // Logic:
       // 1. If user uploaded a custom reference file (in custom inputs), ALWAYS use it.
@@ -187,9 +186,14 @@ export function useTravel() {
     }
     setError(null);
     setLoading(true);
+
     try {
+      // Enhance the prompt with dynamic variations and selected style
+      const stylePrompt = TRAVEL_STYLES.find(s => s.id === style)?.prompt || '';
+      const finalPrompt = generateDynamicTravelPrompt(scenePrompt, stylePrompt);
+
       const url = await generateTravelPhoto(file, {
-        scenePrompt,
+        scenePrompt: finalPrompt,
         aspectRatio,
         imageSize,
         sceneReferenceImage,
@@ -204,7 +208,7 @@ export function useTravel() {
     } finally {
       setLoading(false);
     }
-  }, [file, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, settings.apiKey, settings.model, t, useReferenceImage]);
+  }, [file, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, settings.apiKey, settings.model, t, useReferenceImage]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -259,6 +263,8 @@ export function useTravel() {
     setAspectRatio,
     imageSize,
     setImageSize,
+    style,
+    setStyle,
     useReferenceImage,
     setUseReferenceImage,
     isDraggingOver,

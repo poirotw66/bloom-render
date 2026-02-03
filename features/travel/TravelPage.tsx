@@ -19,11 +19,31 @@ interface TravelPageProps {
   onImageSelected: (file: File) => void;
 }
 
+const LOADING_STATUSES = [
+  'travel.status.analyzing',
+  'travel.status.blending',
+  'travel.status.lighting',
+  'travel.status.refining'
+];
+
 const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const tr = useTravel();
   const [viewMode, setViewMode] = React.useState<'list' | 'map'>('map');
+  const [statusIndex, setStatusIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (tr.loading) {
+      interval = setInterval(() => {
+        setStatusIndex((prev) => (prev + 1) % LOADING_STATUSES.length);
+      }, 3000);
+    } else {
+      setStatusIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [tr.loading]);
 
   const handleEditInEditor = () => {
     if (!tr.result) return;
@@ -54,9 +74,15 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
             onEditInEditor={handleEditInEditor}
           />
         ) : tr.loading ? (
-          <div className="flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-8 rounded-xl border border-gray-700/50 backdrop-blur-sm mx-auto">
-            <Spinner />
-            <p className="text-gray-300">{t('travel.generating')}</p>
+          <div className="flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-12 rounded-2xl border border-gray-700/50 backdrop-blur-md mx-auto shadow-2xl">
+            <div className="relative">
+              <Spinner />
+              <div className="absolute inset-0 bg-blue-500/20 blur-2xl rounded-full -z-10 animate-pulse" />
+            </div>
+            <div className="space-y-2 text-center">
+              <p className="text-xl font-bold text-gray-100">{t('travel.generating')}</p>
+              <p className="text-blue-400 font-medium animate-pulse">{t(LOADING_STATUSES[statusIndex])}</p>
+            </div>
           </div>
         ) : (
           <div className={`w-full ${viewMode === 'map' ? 'flex flex-col gap-6' : 'grid grid-cols-1 lg:grid-cols-2 gap-6 items-start'}`}>
@@ -105,6 +131,8 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                     setAspectRatio={tr.setAspectRatio}
                     imageSize={tr.imageSize}
                     setImageSize={tr.setImageSize}
+                    style={tr.style}
+                    setStyle={tr.setStyle}
                     useReferenceImage={tr.useReferenceImage}
                     setUseReferenceImage={tr.setUseReferenceImage}
                     disabled={tr.loading}
@@ -124,6 +152,8 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   setAspectRatio={tr.setAspectRatio}
                   imageSize={tr.imageSize}
                   setImageSize={tr.setImageSize}
+                  style={tr.style}
+                  setStyle={tr.setStyle}
                   useReferenceImage={tr.useReferenceImage}
                   setUseReferenceImage={tr.setUseReferenceImage}
                   disabled={tr.loading}

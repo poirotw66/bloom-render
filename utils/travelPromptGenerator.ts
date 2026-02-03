@@ -43,20 +43,21 @@ const VISUAL_STYLES = [
 /**
  * Generates a dynamic, high-quality prompt for a travel scene
  * @param baseScenePrompt The core description of the location (e.g., "in front of Taipei 101")
+ * @param stylePrompt Optional explicit style description (e.g., "golden hour")
  * @returns A fully constructed prompt with randomized modifiers
  */
-export function generateDynamicTravelPrompt(baseScenePrompt: string): string {
-    const lighting = getRandomElement(LIGHTING_CONDITIONS);
+export function generateDynamicTravelPrompt(baseScenePrompt: string, stylePrompt?: string): string {
+    const lighting = stylePrompt ? '' : getRandomElement(LIGHTING_CONDITIONS);
     const angle = getRandomElement(CAMERA_ANGLES);
     const action = getRandomElement(POSES_AND_ACTIONS);
-    const style = getRandomElement(VISUAL_STYLES);
+    const style = stylePrompt || getRandomElement(VISUAL_STYLES);
 
     // Construct the "Positive" prompt
     // Structure: Subject + Action + Scene + Lighting + Camera + Style
     return `a travel photo of the same person, preserve identity, same face,
     ${action},
     ${baseScenePrompt},
-    ${lighting},
+    ${lighting ? lighting + ',' : ''}
     ${angle},
     ${style},
     high quality, masterpiece, detailed face`;
