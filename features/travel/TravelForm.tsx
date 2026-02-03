@@ -41,9 +41,9 @@ interface TravelFormProps {
   showSceneSelector?: boolean;
 }
 
-const SCENE_BTN = 'px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed';
-const SCENE_ACTIVE = 'bg-amber-600 text-white border border-amber-500';
-const SCENE_INACTIVE = 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500';
+const SCENE_BTN = 'px-3 py-2 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
+const SCENE_ACTIVE = 'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/30 scale-[1.02]';
+const SCENE_INACTIVE = 'bg-gray-800/50 text-gray-400 border-gray-700 hover:bg-gray-700/50 hover:border-gray-600 hover:text-gray-200';
 
 const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; icon?: string }> = ({ title, children, icon }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -106,11 +106,12 @@ const TravelForm: React.FC<TravelFormProps> = ({
   const imageSizeOptions = IS_PRO(model) ? TRAVEL_IMAGE_SIZES : TRAVEL_IMAGE_SIZES.filter((s) => !s.proOnly);
 
   return (
-    <div className={`flex flex-col gap-4 w-full animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}>
-      <div className="flex flex-wrap gap-8 items-start">
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.image_size')}</label>
-          {!showSceneSelector && <p className="text-xs text-gray-500 mb-2">{t('travel.size_hint')}</p>}
+    <div className={`flex flex-col gap-6 w-full animate-fade-in bg-gray-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}>
+
+      {/* Basic Settings Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-white/5 rounded-2xl border border-white/5">
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-1">{t('travel.label.image_size')}</label>
           <div className="flex flex-wrap gap-2">
             {imageSizeOptions.map((a) => (
               <button
@@ -124,8 +125,8 @@ const TravelForm: React.FC<TravelFormProps> = ({
             ))}
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.aspect_ratio')}</label>
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-1">{t('travel.label.aspect_ratio')}</label>
           <div className="flex flex-wrap gap-2">
             {TRAVEL_ASPECT_RATIOS.map((a) => (
               <button
@@ -139,16 +140,114 @@ const TravelForm: React.FC<TravelFormProps> = ({
             ))}
           </div>
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.style')}</label>
+      {/* Subject & Character Group */}
+      {showSceneSelector && (
+        <div className="space-y-4 p-5 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            <h3 className="text-xs font-bold text-indigo-300">{t('travel.label.group_subject')}</h3>
+          </div>
+
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.outfit')}</label>
+            <div className="flex flex-wrap gap-2">
+              {TRAVEL_OUTFIT_OPTIONS.map((o) => (
+                <button
+                  key={o.id}
+                  onClick={() => setOutfit(o.id)}
+                  disabled={disabled}
+                  className={`${SCENE_BTN} ${outfit === o.id ? 'bg-green-600 text-white border-green-500 shadow-lg shadow-green-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                >
+                  <span>{o.icon}</span>
+                  {t(o.nameKey)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.pose')}</label>
+            <div className="flex flex-wrap gap-2">
+              {TRAVEL_POSE_OPTIONS.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setPose(p.id)}
+                  disabled={disabled}
+                  className={`${SCENE_BTN} ${pose === p.id ? 'bg-rose-600 text-white border-rose-500 shadow-lg shadow-rose-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                >
+                  <span>{p.icon}</span>
+                  {t(p.nameKey)}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Environment Group */}
+      {showSceneSelector && (
+        <div className="space-y-4 p-5 bg-blue-500/5 rounded-2xl border border-blue-500/10">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+            <h3 className="text-xs font-bold text-blue-300">{t('travel.label.group_environment')}</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.weather')}</label>
+              <div className="flex flex-wrap gap-2">
+                {TRAVEL_WEATHER_OPTIONS.map((w) => (
+                  <button
+                    key={w.id}
+                    onClick={() => setWeather(w.id)}
+                    disabled={disabled}
+                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  >
+                    <span>{w.icon}</span>
+                    {t(w.nameKey)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.time')}</label>
+              <div className="flex flex-wrap gap-2">
+                {TRAVEL_TIME_OPTIONS.map((tod) => (
+                  <button
+                    key={tod.id}
+                    onClick={() => setTimeOfDay(tod.id)}
+                    disabled={disabled}
+                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  >
+                    <span>{tod.icon}</span>
+                    {t(tod.nameKey)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Aesthetics Group */}
+      <div className="space-y-4 p-5 bg-purple-500/5 rounded-2xl border border-purple-500/10">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+          <h3 className="text-xs font-bold text-purple-300">{t('travel.label.group_aesthetics')}</h3>
+        </div>
+
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.style')}</label>
           <div className="flex flex-wrap gap-2">
             {TRAVEL_STYLES.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setStyle(s.id)}
                 disabled={disabled}
-                className={`${SCENE_BTN} ${style === s.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
+                className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
               >
                 {t(s.nameKey)}
               </button>
@@ -157,99 +256,29 @@ const TravelForm: React.FC<TravelFormProps> = ({
         </div>
 
         {showSceneSelector && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.weather')}</label>
-              <div className="flex flex-wrap gap-2">
-                {TRAVEL_WEATHER_OPTIONS.map((w) => (
-                  <button
-                    key={w.id}
-                    onClick={() => setWeather(w.id)}
-                    disabled={disabled}
-                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-blue-600 text-white border border-blue-500' : SCENE_INACTIVE}`}
-                  >
-                    <span className="mr-2">{w.icon}</span>
-                    {t(w.nameKey)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.time')}</label>
-              <div className="flex flex-wrap gap-2">
-                {TRAVEL_TIME_OPTIONS.map((tod) => (
-                  <button
-                    key={tod.id}
-                    onClick={() => setTimeOfDay(tod.id)}
-                    disabled={disabled}
-                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-amber-600 text-white border border-amber-500' : SCENE_INACTIVE}`}
-                  >
-                    <span className="mr-2">{tod.icon}</span>
-                    {t(tod.nameKey)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.vibe')}</label>
-              <div className="flex flex-wrap gap-2">
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.vibe')}</label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setVibe('none')}
+                disabled={disabled}
+                className={`${SCENE_BTN} ${vibe === 'none' ? 'bg-gray-600 text-white border-gray-500' : SCENE_INACTIVE}`}
+              >
+                ✨ {t('common.none')}
+              </button>
+              {TRAVEL_VIBE_OPTIONS.map((v) => (
                 <button
-                  onClick={() => setVibe('none')}
+                  key={v.id}
+                  onClick={() => setVibe(v.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${vibe === 'none' ? 'bg-indigo-600 text-white border border-indigo-500' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${vibe === v.id ? 'bg-purple-600 text-white border-purple-500 shadow-lg shadow-purple-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
                 >
-                  ✨ {t('common.none') || 'Default'}
+                  <span>{v.icon}</span>
+                  {t(v.nameKey)}
                 </button>
-                {TRAVEL_VIBE_OPTIONS.map((v) => (
-                  <button
-                    key={v.id}
-                    onClick={() => setVibe(v.id)}
-                    disabled={disabled}
-                    className={`${SCENE_BTN} ${vibe === v.id ? 'bg-purple-600 text-white border border-purple-500' : SCENE_INACTIVE}`}
-                  >
-                    <span className="mr-2">{v.icon}</span>
-                    {t(v.nameKey)}
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.outfit')}</label>
-              <div className="flex flex-wrap gap-2">
-                {TRAVEL_OUTFIT_OPTIONS.map((o) => (
-                  <button
-                    key={o.id}
-                    onClick={() => setOutfit(o.id)}
-                    disabled={disabled}
-                    className={`${SCENE_BTN} ${outfit === o.id ? 'bg-green-600 text-white border-green-500' : SCENE_INACTIVE}`}
-                  >
-                    <span className="mr-2">{o.icon}</span>
-                    {t(o.nameKey)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.pose')}</label>
-              <div className="flex flex-wrap gap-2">
-                {TRAVEL_POSE_OPTIONS.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setPose(p.id)}
-                    disabled={disabled}
-                    className={`${SCENE_BTN} ${pose === p.id ? 'bg-rose-600 text-white border-rose-500' : SCENE_INACTIVE}`}
-                  >
-                    <span className="mr-2">{p.icon}</span>
-                    {t(p.nameKey)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </>
+          </div>
         )}
       </div>
 

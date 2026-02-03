@@ -124,6 +124,9 @@ const translations: Record<Language, Record<string, string>> = {
     "travel.label.vibe_desc": "Recommended based on location",
     "travel.label.outfit": "Outfit",
     "travel.label.pose": "Pose",
+    "travel.label.group_subject": "Subject Settings",
+    "travel.label.group_environment": "Environment Settings",
+    "travel.label.group_aesthetics": "Artistic Style",
 
     "travel.outfit.default": "Default",
     "travel.outfit.casual": "Casual",
@@ -601,6 +604,9 @@ const translations: Record<Language, Record<string, string>> = {
     "travel.label.vibe_desc": "根據地點為您推薦",
     "travel.label.outfit": "造型穿著",
     "travel.label.pose": "拍照動作",
+    "travel.label.group_subject": "主角與互動設定",
+    "travel.label.group_environment": "環境氣候設定",
+    "travel.label.group_aesthetics": "藝術風格與氛圍",
 
     "travel.outfit.default": "場景預設",
     "travel.outfit.casual": "休閒服裝",
