@@ -20,8 +20,8 @@ export type IdPhotoType =
   | 'cabin_crew'
   | 'graduation';
 
-/** Output framing: head & shoulders vs half body */
-export type OutputSpec = 'head_shoulders' | 'half_body';
+/** Output framing: head & shoulders vs half body vs full body */
+export type OutputSpec = 'head_shoulders' | 'half_body' | 'full_body';
 
 /** Clothing option: original / scene default / business / casual / graduation gown / suit / custom */
 export type ClothingOption =

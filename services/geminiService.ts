@@ -215,7 +215,7 @@ const ID_PHOTO_BASE_POSITIVE = `Korean ID photo, passport-style photo, professio
 /** Base negative (must avoid) */
 const ID_PHOTO_BASE_NEGATIVE = `different person, change face, change identity, face swap, wrong person, beautify, over-beautify, beauty filter, meitu, snow app, filter, plastic skin, doll face, over-smooth, airbrushed, fake skin, CGI, AI face, AI generated look, anime, cartoon, illustration, painting, 3d render, smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away, dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background, low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face`;
 
-export type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption } from '../constants/idPhoto';
+export type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption, PortraitType } from '../types';
 import {
     RETOUCH_LEVELS,
     ID_PHOTO_TYPES,
@@ -225,11 +225,84 @@ import {
     DEFAULT_RETOUCH_LEVEL,
     DEFAULT_OUTPUT_SPEC,
     DEFAULT_CLOTHING_OPTION,
-    type RetouchLevel,
-    type IdPhotoType,
-    type OutputSpec,
-    type ClothingOption,
 } from '../constants/idPhoto';
+import {
+    PORTRAIT_TYPES,
+    PORTRAIT_OUTPUT_SPECS,
+    DEFAULT_PORTRAIT_TYPE,
+    DEFAULT_PORTRAIT_SPEC,
+} from '../constants/portrait';
+import type {
+    RetouchLevel,
+    IdPhotoType,
+    OutputSpec,
+    ClothingOption,
+    PortraitType
+} from '../types';
+
+export interface GeneratePortraitOptions {
+    portraitType?: PortraitType;
+    outputSpec?: OutputSpec;
+    settings?: ServiceSettings;
+}
+
+/**
+ * Generates a professional portrait style from an original photo.
+ * 專業形象照：支援領袖之境、MAG高智感、學員、職業、空服、模特卡等風格。
+ */
+export const generateProfessionalPortrait = async (
+    originalImage: File,
+    options: GeneratePortraitOptions
+): Promise<string> => {
+    const portraitType = options.portraitType ?? DEFAULT_PORTRAIT_TYPE;
+    const outputSpec = options.outputSpec ?? DEFAULT_PORTRAIT_SPEC;
+    const serviceSettings = options.settings;
+
+    const style = PORTRAIT_TYPES.find((t) => t.id === portraitType) || PORTRAIT_TYPES[0];
+    const spec = PORTRAIT_OUTPUT_SPECS.find((s) => s.id === outputSpec) || PORTRAIT_OUTPUT_SPECS[0];
+
+    const positive = [
+        "Professional photography portrait",
+        "High-end studio retouching",
+        "Preserve identity and facial features of the person in the source image",
+        style.promptHint,
+        spec.cropHint,
+        "Clean professional background suitable for the style",
+        "Perfect studio lighting",
+        "Realistic, photorealistic, premium quality",
+    ].filter(Boolean).join('. ');
+
+    const prompt = `You are a world-class professional portrait photographer and retouching AI. 
+Transform the provided portrait into a high-end, professional style image.
+
+Style Requirements:
+${positive}
+
+Guidelines:
+- Maintain strict identity consistency: the person must be the same as in the original image.
+- Do NOT change facial structure or age.
+- Only enhance lighting, skin texture, and apply the requested professional photography style.
+
+Output: Return ONLY the final professional portrait image. Do not return any text.`;
+
+    const textPart = { text: prompt };
+    const originalImagePart = await fileToPart(originalImage);
+
+    console.log('Starting portrait generation', { portraitType, outputSpec });
+    const ai = getClient(serviceSettings);
+    const model = getModel(serviceSettings);
+
+    const response: GenerateContentResponse = await ai.models.generateContent({
+        model,
+        contents: { parts: [originalImagePart, textPart] },
+        config: {
+            responseModalities: ['TEXT', 'IMAGE'],
+        },
+    });
+
+    console.log('Received response from model for professional portrait.', response);
+    return handleApiResponse(response, 'portrait');
+};
 
 export interface GenerateIdPhotoOptions {
     retouchLevel?: RetouchLevel;

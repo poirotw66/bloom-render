@@ -48,14 +48,14 @@ export const PORTRAIT_OUTPUT_SPECS: {
     cropHint: string;
 }[] = [
         {
+            id: 'full_body',
+            nameKey: 'portrait.spec.full_body',
+            cropHint: 'professional full-body portrait, standing or sitting, capturing the whole figure and outfit.'
+        },
+        {
             id: 'half_body',
             nameKey: 'portrait.spec.half_body',
             cropHint: 'professional half-body portrait, from waist up, focused on professional posture and expression.'
-        },
-        {
-            id: 'head_shoulders',
-            nameKey: 'portrait.spec.head_shoulders',
-            cropHint: 'professional head and shoulders shot, clean and focused on facial expression.'
         },
     ];
 
