@@ -46,7 +46,11 @@ interface PromptOptions {
     time?: string;
     vibe?: string;
     outfit?: string;
+    outfitColor?: string;
     pose?: string;
+    relationship?: string;
+    framing?: string;
+    clearBackground?: boolean;
     isGroup?: boolean;
 }
 
@@ -65,36 +69,50 @@ export function generateDynamicTravelPrompt(baseScenePrompt: string, options: Pr
     }
 
     const lighting = opt.style || opt.time || opt.weather ? '' : getRandomElement(LIGHTING_CONDITIONS);
-    const angle = getRandomElement(CAMERA_ANGLES);
-    const action = getRandomElement(POSES_AND_ACTIONS);
+    const angle = opt.framing ? opt.framing : getRandomElement(CAMERA_ANGLES);
+    const action = opt.pose ? opt.pose : getRandomElement(POSES_AND_ACTIONS);
     const style = opt.style || getRandomElement(VISUAL_STYLES);
     const weather = opt.weather ? opt.weather + ',' : '';
     const time = opt.time ? opt.time + ',' : '';
     const vibe = opt.vibe ? opt.vibe + ',' : '';
-    const outfit = opt.outfit ? opt.outfit + ',' : '';
-    const pose = opt.pose ? opt.pose + ',' : '';
 
-    const subject = opt.isGroup
-        ? 'a travel photo of a group of people, preserve identities of all people from the reference photos, they are friends or family traveling together'
-        : 'a travel photo of the same person, preserve identity, same face';
+    // Outfit color logic
+    let outfit = opt.outfit || 'fashionable outfit';
+    if (opt.outfitColor) {
+        outfit = `${outfit} in ${opt.outfitColor}`;
+    }
+
+    // Relationship logic for groups
+    let subject = opt.isGroup
+        ? 'an ultra-high-fidelity travel photo of a group of people, strictly maintaining absolute character consistency and exact facial features of ALL individuals from the reference photos'
+        : 'an elite-quality travel portrait, maintaining absolute character consistency and exact facial geometry from the reference source, photorealistic rendering of the same person';
+
+    if (opt.isGroup && opt.relationship) {
+        subject = `${subject}, they are clearly identified as ${opt.relationship}`;
+    } else if (opt.isGroup) {
+        subject = `${subject}, they are friends or family traveling together, each with their own distinct and preserved identity`;
+    }
 
     const groupAction = opt.isGroup
-        ? (opt.pose ? opt.pose : 'standing together, laughing and interacting naturally')
-        : (opt.pose ? opt.pose : action);
+        ? (opt.pose ? opt.pose : 'standing together, laughing and interacting naturally with genuine expressions')
+        : action;
+
+    const backgroundMod = opt.clearBackground ? 'clean background, exclusive private view, no other tourists or background people,' : '';
 
     // Construct the "Positive" prompt
     // Structure: Subject + Action + Scene + Outfit + Weather + Time + Vibe + Lighting + Camera + Style
-    return `${subject},
+    return `Exquisite ${subject},
     ${groupAction},
     ${baseScenePrompt},
-    ${outfit}
+    wearing ${outfit},
+    ${backgroundMod}
     ${weather}
     ${time}
     ${vibe}
     ${lighting ? lighting + ',' : ''}
     ${angle},
     ${style},
-    high quality, masterpiece, detailed faces`;
+    high-end fashion aesthetic, masterpiece photography, meticulous facial details, sharp focus on pupils, realistic skin texture with subsurface scattering, 8k resolution, professionally color graded`;
 }
 
 function getRandomElement<T>(array: T[]): T {

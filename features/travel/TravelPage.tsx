@@ -125,8 +125,14 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                     setVibe={tr.setVibe}
                     outfit={tr.outfit}
                     setOutfit={tr.setOutfit}
+                    outfitColor={tr.outfitColor}
+                    setOutfitColor={tr.setOutfitColor}
                     pose={tr.pose}
                     setPose={tr.setPose}
+                    framing={tr.framing}
+                    setFraming={tr.setFraming}
+                    clearBackground={tr.clearBackground}
+                    setClearBackground={tr.setClearBackground}
                   />
                   {/* Show settings below map */}
                   <TravelForm
@@ -151,8 +157,17 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                     setVibe={tr.setVibe}
                     outfit={tr.outfit}
                     setOutfit={tr.setOutfit}
+                    outfitColor={tr.outfitColor}
+                    setOutfitColor={tr.setOutfitColor}
                     pose={tr.pose}
                     setPose={tr.setPose}
+                    relationship={tr.relationship}
+                    setRelationship={tr.setRelationship}
+                    framing={tr.framing}
+                    setFraming={tr.setFraming}
+                    clearBackground={tr.clearBackground}
+                    setClearBackground={tr.setClearBackground}
+                    handleSurpriseMe={tr.handleSurpriseMe}
                     useReferenceImage={tr.useReferenceImage}
                     setUseReferenceImage={tr.setUseReferenceImage}
                     disabled={tr.loading}
@@ -182,8 +197,17 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   setVibe={tr.setVibe}
                   outfit={tr.outfit}
                   setOutfit={tr.setOutfit}
+                  outfitColor={tr.outfitColor}
+                  setOutfitColor={tr.setOutfitColor}
                   pose={tr.pose}
                   setPose={tr.setPose}
+                  relationship={tr.relationship}
+                  setRelationship={tr.setRelationship}
+                  framing={tr.framing}
+                  setFraming={tr.setFraming}
+                  clearBackground={tr.clearBackground}
+                  setClearBackground={tr.setClearBackground}
+                  handleSurpriseMe={tr.handleSurpriseMe}
                   useReferenceImage={tr.useReferenceImage}
                   setUseReferenceImage={tr.setUseReferenceImage}
                   disabled={tr.loading}

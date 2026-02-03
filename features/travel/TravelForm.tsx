@@ -6,8 +6,8 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose } from '../../constants/travel';
+import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
+import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
 
 const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
 
@@ -35,6 +35,15 @@ interface TravelFormProps {
   setOutfit: (v: TravelOutfit) => void;
   pose: TravelPose;
   setPose: (v: TravelPose) => void;
+  relationship: TravelRelationship;
+  setRelationship: (v: TravelRelationship) => void;
+  framing: TravelFraming;
+  setFraming: (v: TravelFraming) => void;
+  outfitColor: string;
+  setOutfitColor: (v: string) => void;
+  clearBackground: boolean;
+  setClearBackground: (v: boolean) => void;
+  handleSurpriseMe: () => void;
   useReferenceImage: boolean;
   setUseReferenceImage: (v: boolean) => void;
   disabled?: boolean;
@@ -94,8 +103,17 @@ const TravelForm: React.FC<TravelFormProps> = ({
   setVibe,
   outfit,
   setOutfit,
+  outfitColor,
+  setOutfitColor,
   pose,
   setPose,
+  relationship,
+  setRelationship,
+  framing,
+  setFraming,
+  clearBackground,
+  setClearBackground,
+  handleSurpriseMe,
   useReferenceImage,
   setUseReferenceImage,
   disabled = false,
@@ -107,6 +125,18 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
   return (
     <div className={`flex flex-col gap-6 w-full animate-fade-in bg-gray-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}>
+
+      <button
+        onClick={handleSurpriseMe}
+        disabled={disabled}
+        className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl font-bold shadow-lg shadow-purple-500/25 transition-all active:scale-95 flex items-center justify-center gap-2 group"
+      >
+        <span className="text-lg group-hover:rotate-12 transition-transform">🎁</span>
+        <div>
+          <div className="text-sm">{t('travel.surprise_me')}</div>
+          <div className="text-[10px] font-normal opacity-80">{t('travel.surprise_me.hint')}</div>
+        </div>
+      </button>
 
       {/* Basic Settings Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-white/5 rounded-2xl border border-white/5">
@@ -162,6 +192,49 @@ const TravelForm: React.FC<TravelFormProps> = ({
                 >
                   <span>{o.icon}</span>
                   {t(o.nameKey)}
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-2 space-y-2">
+              <label className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{t('travel.label.outfit_color')}</label>
+              <div className="flex flex-wrap gap-2">
+                {OUTFIT_COLOR_PRESETS.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => setOutfitColor(c.id)}
+                    disabled={disabled}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${outfitColor === c.id ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-110' : 'opacity-60 hover:opacity-100'}`}
+                    title={t(c.nameKey)}
+                  >
+                    <span className="text-sm">{c.icon}</span>
+                  </button>
+                ))}
+                <input
+                  type="text"
+                  value={OUTFIT_COLOR_PRESETS.some(c => c.id === outfitColor) ? '' : outfitColor}
+                  onChange={(e) => setOutfitColor(e.target.value)}
+                  placeholder={t('travel.label.outfit_color_custom')}
+                  disabled={disabled}
+                  className="flex-1 min-w-[100px] h-8 bg-gray-800/50 border border-gray-700 rounded-full px-3 text-[10px] text-gray-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Relationship settings only shown when multiple people are considered */}
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.relationship')}</label>
+            <div className="flex flex-wrap gap-2">
+              {TRAVEL_RELATIONSHIP_OPTIONS.map((r) => (
+                <button
+                  key={r.id}
+                  onClick={() => setRelationship(r.id)}
+                  disabled={disabled}
+                  className={`${SCENE_BTN} ${relationship === r.id ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                >
+                  <span>{r.icon}</span>
+                  {t(r.nameKey)}
                 </button>
               ))}
             </div>
@@ -229,6 +302,22 @@ const TravelForm: React.FC<TravelFormProps> = ({
               </div>
             </div>
           </div>
+
+          <div className="pt-2 border-t border-blue-500/10">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('travel.label.clear_background')}</label>
+                <p className="text-[10px] text-gray-600 italic">{t('travel.clear_background.hint')}</p>
+              </div>
+              <button
+                onClick={() => setClearBackground(!clearBackground)}
+                disabled={disabled}
+                className={`w-12 h-6 rounded-full transition-all relative ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
+              >
+                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${clearBackground ? 'left-7' : 'left-1'}`} />
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -239,19 +328,38 @@ const TravelForm: React.FC<TravelFormProps> = ({
           <h3 className="text-xs font-bold text-purple-300">{t('travel.label.group_aesthetics')}</h3>
         </div>
 
-        <div className="space-y-3">
-          <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.style')}</label>
-          <div className="flex flex-wrap gap-2">
-            {TRAVEL_STYLES.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setStyle(s.id)}
-                disabled={disabled}
-                className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
-              >
-                {t(s.nameKey)}
-              </button>
-            ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.style')}</label>
+            <div className="flex flex-wrap gap-2">
+              {TRAVEL_STYLES.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setStyle(s.id)}
+                  disabled={disabled}
+                  className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                >
+                  {t(s.nameKey)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.framing')}</label>
+            <div className="flex flex-wrap gap-2">
+              {TRAVEL_FRAMING_OPTIONS.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setFraming(f.id)}
+                  disabled={disabled}
+                  className={`${SCENE_BTN} ${framing === f.id ? 'bg-teal-600 text-white border-teal-500 shadow-lg shadow-teal-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                >
+                  <span>{f.icon}</span>
+                  {t(f.nameKey)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

@@ -353,6 +353,42 @@ export const TRAVEL_OUTFIT_OPTIONS: { id: TravelOutfit; nameKey: string; prompt:
   { id: 'cyberpunk', nameKey: 'travel.outfit.cyberpunk', prompt: 'wearing techwear, cyberpunk fashion, neon accents, futuristic accessories', icon: '🧪' },
 ];
 
+/** Relationship types for multi-person mode */
+export type TravelRelationship = 'default' | 'couple' | 'family' | 'friends' | 'siblings' | 'parent_child';
+
+export const TRAVEL_RELATIONSHIP_OPTIONS: { id: TravelRelationship; nameKey: string; prompt: string; icon: string }[] = [
+  { id: 'default', nameKey: 'travel.relationship.default', prompt: '', icon: '👥' },
+  { id: 'couple', nameKey: 'travel.relationship.couple', prompt: 'romantic couple, intimate and affectionate interaction', icon: '💑' },
+  { id: 'family', nameKey: 'travel.relationship.family', prompt: 'family members, warm family atmosphere', icon: '👨‍👩‍👧‍👦' },
+  { id: 'friends', nameKey: 'travel.relationship.friends', prompt: 'close friends, casual and fun interaction', icon: '👯' },
+  { id: 'siblings', nameKey: 'travel.relationship.siblings', prompt: 'siblings, playful and comfortable interaction', icon: '👫' },
+  { id: 'parent_child', nameKey: 'travel.relationship.parent_child', prompt: 'parent and child, caring and protective interaction', icon: '👨‍👧' },
+];
+
+/** Camera framing options */
+export type TravelFraming = 'default' | 'closeup' | 'portrait' | 'full_body' | 'wide_angle' | 'aerial';
+
+export const TRAVEL_FRAMING_OPTIONS: { id: TravelFraming; nameKey: string; prompt: string; icon: string }[] = [
+  { id: 'default', nameKey: 'travel.framing.default', prompt: '', icon: '📷' },
+  { id: 'closeup', nameKey: 'travel.framing.closeup', prompt: 'close-up shot, face and upper body focus, intimate framing', icon: '🔍' },
+  { id: 'portrait', nameKey: 'travel.framing.portrait', prompt: 'portrait shot, head to waist, classic travel photo framing', icon: '🖼️' },
+  { id: 'full_body', nameKey: 'travel.framing.full_body', prompt: 'full body shot, entire person visible from head to toe', icon: '🧍' },
+  { id: 'wide_angle', nameKey: 'travel.framing.wide_angle', prompt: 'wide angle shot, person and expansive background, cinematic composition', icon: '🌄' },
+  { id: 'aerial', nameKey: 'travel.framing.aerial', prompt: 'aerial view, bird eye perspective, dramatic top-down angle', icon: '🚁' },
+];
+
+/** Outfit color presets */
+export const OUTFIT_COLOR_PRESETS = [
+  { id: 'red', nameKey: 'travel.color.red', prompt: 'deep red color', icon: '🔴' },
+  { id: 'blue', nameKey: 'travel.color.blue', prompt: 'navy blue color', icon: '🔵' },
+  { id: 'white', nameKey: 'travel.color.white', prompt: 'pure white color', icon: '⚪' },
+  { id: 'black', nameKey: 'travel.color.black', prompt: 'elegant black color', icon: '⚫' },
+  { id: 'beige', nameKey: 'travel.color.beige', prompt: 'soft beige color', icon: '🟤' },
+  { id: 'pink', nameKey: 'travel.color.pink', prompt: 'soft pink color', icon: '🩷' },
+  { id: 'green', nameKey: 'travel.color.green', prompt: 'forest green color', icon: '🟢' },
+  { id: 'yellow', nameKey: 'travel.color.yellow', prompt: 'bright yellow color', icon: '🟡' },
+];
+
 /** Pose options for AI prompt injection */
 export type TravelPose = 'natural' | 'hugging' | 'jumping' | 'hand_in_hand' | 'pointing' | 'looking_at_each_other' | 'peace_sign' | 'walking_away' | 'sitting_relaxed' | 'candid_laugh' | 'leaning' | 'coffee_time' | 'adjusting_shades' | 'cafe_sitting' | 'photographer' | 'heart';
 

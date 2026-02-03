@@ -9,8 +9,8 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose } from '../../constants/travel';
+import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
+import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
 
 export type TravelSceneIdOrCustom = string;
 
@@ -58,7 +58,11 @@ export function useTravel() {
   const [timeOfDay, setTimeOfDay] = useState<TravelTimeOfDay>('random');
   const [vibe, setVibe] = useState<TravelVibe | 'none'>('none');
   const [outfit, setOutfit] = useState<TravelOutfit>('default');
+  const [outfitColor, setOutfitColor] = useState<string>('');
   const [pose, setPose] = useState<TravelPose>('natural');
+  const [relationship, setRelationship] = useState<TravelRelationship>('default');
+  const [framing, setFraming] = useState<TravelFraming>('default');
+  const [clearBackground, setClearBackground] = useState<boolean>(false);
 
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [resultSceneNameKey, setResultSceneNameKey] = useState<string | null>(null);
@@ -233,7 +237,11 @@ export function useTravel() {
         time: timePrompt,
         vibe: vibePrompt,
         outfit: outfitPrompt,
+        outfitColor: outfitColor,
         pose: posePrompt,
+        relationship: TRAVEL_RELATIONSHIP_OPTIONS.find(r => r.id === relationship)?.prompt || '',
+        framing: TRAVEL_FRAMING_OPTIONS.find(f => f.id === framing)?.prompt || '',
+        clearBackground: clearBackground,
         isGroup: isGroupMode || files.length > 1
       });
 
@@ -253,7 +261,38 @@ export function useTravel() {
     } finally {
       setLoading(false);
     }
-  }, [files, isGroupMode, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, weather, timeOfDay, vibe, settings.apiKey, settings.model, t, useReferenceImage]);
+  }, [files, isGroupMode, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, weather, timeOfDay, vibe, outfit, outfitColor, pose, relationship, framing, clearBackground, settings.apiKey, settings.model, t, useReferenceImage]);
+
+  const handleSurpriseMe = useCallback(() => {
+    // Pick random scene
+    const randomScene = TRAVEL_SCENES[Math.floor(Math.random() * TRAVEL_SCENES.length)];
+    setSelectedSceneId(randomScene.id);
+
+    // Pick random style
+    const randomStyle = TRAVEL_STYLES[Math.floor(Math.random() * TRAVEL_STYLES.length)];
+    setStyle(randomStyle.id);
+
+    // Pick random weather & time
+    const availableWeather = TRAVEL_WEATHER_OPTIONS.filter(w => w.id !== 'random');
+    setWeather(availableWeather[Math.floor(Math.random() * availableWeather.length)].id);
+
+    const availableTime = TRAVEL_TIME_OPTIONS.filter(t => t.id !== 'random');
+    setTimeOfDay(availableTime[Math.floor(Math.random() * availableTime.length)].id);
+
+    // Random outfit & pose
+    setOutfit(TRAVEL_OUTFIT_OPTIONS[Math.floor(Math.random() * TRAVEL_OUTFIT_OPTIONS.length)].id);
+    setPose(TRAVEL_POSE_OPTIONS[Math.floor(Math.random() * TRAVEL_POSE_OPTIONS.length)].id);
+
+    // Random color
+    if (Math.random() > 0.5) {
+      setOutfitColor(OUTFIT_COLOR_PRESETS[Math.floor(Math.random() * OUTFIT_COLOR_PRESETS.length)].id);
+    } else {
+      setOutfitColor('');
+    }
+
+    // Clear result to show surprise
+    setResult(null);
+  }, []);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -329,11 +368,20 @@ export function useTravel() {
     setOutfit,
     pose,
     setPose,
+    relationship,
+    setRelationship,
+    framing,
+    setFraming,
+    outfitColor,
+    setOutfitColor,
+    clearBackground,
+    setClearBackground,
     useReferenceImage,
     setUseReferenceImage,
     isDraggingOver,
     handleFileChange,
     handleGenerate,
+    handleSurpriseMe,
     handleDownload,
     clearResult,
     setFilesFromDrop,

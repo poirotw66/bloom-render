@@ -8,7 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { TravelSceneCategory } from '../../constants/travel';
 import WorldMap from './WorldMap';
 import TaiwanMap from './TaiwanMap';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, LOCATION_RECOMMENDED_VIBES, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose } from '../../constants/travel';
+import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, LOCATION_RECOMMENDED_VIBES, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelFraming } from '../../constants/travel';
 
 interface TravelMapContainerProps {
     selectedSceneId: string;
@@ -23,6 +23,12 @@ interface TravelMapContainerProps {
     setOutfit: (v: TravelOutfit) => void;
     pose: TravelPose;
     setPose: (v: TravelPose) => void;
+    framing: TravelFraming;
+    setFraming: (v: TravelFraming) => void;
+    outfitColor: string;
+    setOutfitColor: (v: string) => void;
+    clearBackground: boolean;
+    setClearBackground: (v: boolean) => void;
 }
 
 type MapType = 'world' | 'taiwan';
@@ -34,7 +40,10 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
     timeOfDay, setTimeOfDay,
     vibe, setVibe,
     outfit, setOutfit,
-    pose, setPose
+    outfitColor, setOutfitColor,
+    pose, setPose,
+    framing, setFraming,
+    clearBackground, setClearBackground
 }) => {
     const { t } = useLanguage();
     const [mapType, setMapType] = useState<MapType>('world');
@@ -192,16 +201,29 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 </div>
                             </div>
 
-                            {/* Outfit & Pose */}
+                            {/* Character & Framing */}
                             <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30 backdrop-blur-sm">
                                 <div className="flex flex-col gap-4">
-                                    {/* Outfit */}
+                                    {/* Outfit & Color */}
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                            <span>{t('travel.label.outfit')}</span>
-                                        </label>
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                                <span>{t('travel.label.outfit')}</span>
+                                            </label>
+                                            <div className="flex gap-1.5">
+                                                {OUTFIT_COLOR_PRESETS.slice(0, 5).map(c => (
+                                                    <button
+                                                        key={c.id}
+                                                        onClick={() => setOutfitColor(c.id)}
+                                                        className={`w-4 h-4 rounded-full border border-white/20 transition-all ${outfitColor === c.id ? 'scale-125 ring-1 ring-white' : 'opacity-40 hover:opacity-100'}`}
+                                                        style={{ backgroundColor: c.id === 'white' ? '#fff' : c.id === 'black' ? '#000' : c.id === 'red' ? '#ef4444' : c.id === 'blue' ? '#3b82f6' : '#d6d3d1' }}
+                                                        title={t(c.nameKey)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {TRAVEL_OUTFIT_OPTIONS.map((opt) => (
+                                            {TRAVEL_OUTFIT_OPTIONS.slice(0, 8).map((opt) => (
                                                 <button
                                                     key={opt.id}
                                                     onClick={() => setOutfit(opt.id)}
@@ -217,25 +239,31 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                         </div>
                                     </div>
 
-                                    {/* Pose */}
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                            <span>{t('travel.label.pose')}</span>
-                                        </label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {TRAVEL_POSE_OPTIONS.map((opt) => (
-                                                <button
-                                                    key={opt.id}
-                                                    onClick={() => setPose(opt.id)}
-                                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 border ${pose === opt.id
-                                                        ? 'bg-rose-600/20 border-rose-500/50 text-rose-200 shadow-[0_0_10px_rgba(225,29,72,0.2)]'
-                                                        : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
-                                                        }`}
-                                                >
-                                                    <span>{opt.icon}</span>
-                                                    <span>{t(opt.nameKey)}</span>
-                                                </button>
-                                            ))}
+                                    {/* Pose & Framing */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('travel.label.pose')}</label>
+                                            <select
+                                                value={pose}
+                                                onChange={(e) => setPose(e.target.value as TravelPose)}
+                                                className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                                            >
+                                                {TRAVEL_POSE_OPTIONS.map(p => (
+                                                    <option key={p.id} value={p.id}>{p.icon} {t(p.nameKey)}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('travel.label.framing')}</label>
+                                            <select
+                                                value={framing}
+                                                onChange={(e) => setFraming(e.target.value as TravelFraming)}
+                                                className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                                            >
+                                                {TRAVEL_FRAMING_OPTIONS.map(f => (
+                                                    <option key={f.id} value={f.id}>{f.icon} {t(f.nameKey)}</option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -248,7 +276,18 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                                             {t('travel.label.vibe')}
                                         </label>
-                                        <span className="text-[10px] text-gray-500 italic">{t('travel.label.vibe_desc')}</span>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] text-gray-400 uppercase tracking-widest">{t('travel.label.clear_background')}</span>
+                                                <button
+                                                    onClick={() => setClearBackground(!clearBackground)}
+                                                    className={`w-8 h-4 rounded-full relative transition-all ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
+                                                >
+                                                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${clearBackground ? 'left-4.5' : 'left-0.5'}`} />
+                                                </button>
+                                            </div>
+                                            <span className="text-[10px] text-gray-500 italic">{t('travel.label.vibe_desc')}</span>
+                                        </div>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {(() => {
