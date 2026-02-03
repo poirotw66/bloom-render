@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { generateIdPhoto } from '../../services/geminiService';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -18,6 +19,7 @@ import type { IdPhotoType, RetouchLevel, OutputSpec, ClothingOption } from '../.
 export function useIdPhoto() {
   const { t } = useLanguage();
   const settings = useSettings();
+  const [searchParams] = useSearchParams();
 
   const [idPhotoFile, setIdPhotoFile] = useState<File | null>(null);
   const [idPhotoResult, setIdPhotoResult] = useState<string | null>(null);
@@ -32,6 +34,13 @@ export function useIdPhoto() {
   const [idPhotoClothingReferenceFile, setIdPhotoClothingReferenceFile] = useState<File | null>(null);
   const [idPhotoClothingReferenceUrl, setIdPhotoClothingReferenceUrl] = useState<string | null>(null);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  useEffect(() => {
+    const levelParam = searchParams.get('level');
+    if (levelParam && ['self', 'standard', 'premium'].includes(levelParam)) {
+      setIdPhotoRetouchLevel(levelParam as RetouchLevel);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (idPhotoFile) {

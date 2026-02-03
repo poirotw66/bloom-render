@@ -32,3 +32,11 @@ export type ClothingOption =
   | 'graduation_gown'
   | 'suit'
   | 'custom';
+/** Portrait / Corporate photo style type */
+export type PortraitType =
+  | 'premium_leader'
+  | 'corporate_mag'
+  | 'graduation'
+  | 'business'
+  | 'cabin_crew'
+  | 'model_card';
