@@ -6,8 +6,8 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize, TravelStyle } from '../../constants/travel';
+import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS } from '../../constants/travel';
+import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe } from '../../constants/travel';
 
 const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
 
@@ -25,6 +25,12 @@ interface TravelFormProps {
   setImageSize: (v: TravelImageSize) => void;
   style: TravelStyle;
   setStyle: (v: TravelStyle) => void;
+  weather: TravelWeather;
+  setWeather: (v: TravelWeather) => void;
+  timeOfDay: TravelTimeOfDay;
+  setTimeOfDay: (v: TravelTimeOfDay) => void;
+  vibe: TravelVibe | 'none';
+  setVibe: (v: TravelVibe | 'none') => void;
   useReferenceImage: boolean;
   setUseReferenceImage: (v: boolean) => void;
   disabled?: boolean;
@@ -76,6 +82,12 @@ const TravelForm: React.FC<TravelFormProps> = ({
   setImageSize,
   style,
   setStyle,
+  weather,
+  setWeather,
+  timeOfDay,
+  setTimeOfDay,
+  vibe,
+  setVibe,
   useReferenceImage,
   setUseReferenceImage,
   disabled = false,
@@ -135,6 +147,68 @@ const TravelForm: React.FC<TravelFormProps> = ({
             ))}
           </div>
         </div>
+
+        {showSceneSelector && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.weather')}</label>
+              <div className="flex flex-wrap gap-2">
+                {TRAVEL_WEATHER_OPTIONS.map((w) => (
+                  <button
+                    key={w.id}
+                    onClick={() => setWeather(w.id)}
+                    disabled={disabled}
+                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-blue-600 text-white border border-blue-500' : SCENE_INACTIVE}`}
+                  >
+                    <span className="mr-2">{w.icon}</span>
+                    {t(w.nameKey)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.time')}</label>
+              <div className="flex flex-wrap gap-2">
+                {TRAVEL_TIME_OPTIONS.map((tod) => (
+                  <button
+                    key={tod.id}
+                    onClick={() => setTimeOfDay(tod.id)}
+                    disabled={disabled}
+                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-amber-600 text-white border border-amber-500' : SCENE_INACTIVE}`}
+                  >
+                    <span className="mr-2">{tod.icon}</span>
+                    {t(tod.nameKey)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.vibe')}</label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setVibe('none')}
+                  disabled={disabled}
+                  className={`${SCENE_BTN} ${vibe === 'none' ? 'bg-indigo-600 text-white border border-indigo-500' : SCENE_INACTIVE}`}
+                >
+                  ✨ {t('common.none') || 'Default'}
+                </button>
+                {TRAVEL_VIBE_OPTIONS.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setVibe(v.id)}
+                    disabled={disabled}
+                    className={`${SCENE_BTN} ${vibe === v.id ? 'bg-purple-600 text-white border border-purple-500' : SCENE_INACTIVE}`}
+                  >
+                    <span className="mr-2">{v.icon}</span>
+                    {t(v.nameKey)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="bg-gray-900/30 p-3 rounded-lg border border-gray-700/50">

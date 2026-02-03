@@ -117,6 +117,12 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   <TravelMapContainer
                     selectedSceneId={tr.selectedSceneId}
                     onSceneSelect={tr.setSelectedSceneId}
+                    weather={tr.weather}
+                    setWeather={tr.setWeather}
+                    timeOfDay={tr.timeOfDay}
+                    setTimeOfDay={tr.setTimeOfDay}
+                    vibe={tr.vibe}
+                    setVibe={tr.setVibe}
                   />
                   {/* Show settings below map */}
                   <TravelForm
@@ -133,6 +139,12 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                     setImageSize={tr.setImageSize}
                     style={tr.style}
                     setStyle={tr.setStyle}
+                    weather={tr.weather}
+                    setWeather={tr.setWeather}
+                    timeOfDay={tr.timeOfDay}
+                    setTimeOfDay={tr.setTimeOfDay}
+                    vibe={tr.vibe}
+                    setVibe={tr.setVibe}
                     useReferenceImage={tr.useReferenceImage}
                     setUseReferenceImage={tr.setUseReferenceImage}
                     disabled={tr.loading}
@@ -154,6 +166,12 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   setImageSize={tr.setImageSize}
                   style={tr.style}
                   setStyle={tr.setStyle}
+                  weather={tr.weather}
+                  setWeather={tr.setWeather}
+                  timeOfDay={tr.timeOfDay}
+                  setTimeOfDay={tr.setTimeOfDay}
+                  vibe={tr.vibe}
+                  setVibe={tr.setVibe}
                   useReferenceImage={tr.useReferenceImage}
                   setUseReferenceImage={tr.setUseReferenceImage}
                   disabled={tr.loading}

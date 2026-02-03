@@ -122,6 +122,28 @@ const MISSING_IMAGES = [
   { file: 'food_vietnam_coffee.jpg', query: 'Vietnamese iced coffee' },
   { file: 'food_japan_matcha.jpg', query: 'Japanese matcha tea' },
   { file: 'food_world_chocolate.jpg', query: 'Chocolate dessert' },
+
+  // Taiwan Gourmet (try English first, then Chinese if no result)
+  { file: 'food_boba.jpg', query: 'Bubble tea', queryZh: '珍珠奶茶' },
+  { file: 'food_beef_noodle.jpg', query: 'Taiwan beef noodle soup', queryZh: '牛肉麵' },
+  { file: 'food_fried_chicken.jpg', query: 'Taiwan fried chicken cutlet', queryZh: '雞排' },
+  { file: 'food_xiaolongbao.jpg', query: 'Xiaolongbao soup dumpling', queryZh: '小籠包' },
+  { file: 'food_stinky_tofu.jpg', query: 'Stinky tofu', queryZh: '臭豆腐' },
+  { file: 'food_braised_pork.jpg', query: 'Braised pork rice Taiwan', queryZh: '滷肉飯' },
+  { file: 'food_iron_egg.jpg', query: 'Tamsui iron egg', queryZh: '鐵蛋' },
+  { file: 'food_scallion_pancake.jpg', query: 'Scallion pancake', queryZh: '蔥油餅' },
+  { file: 'food_pineapple_cake.jpg', query: 'Taiwan pineapple cake', queryZh: '鳳梨酥' },
+  { file: 'food_agei.jpg', query: 'Tamsui agei', queryZh: '阿給' },
+  { file: 'food_pig_blood.jpg', query: 'Pig blood cake Taiwan', queryZh: '豬血糕' },
+  { file: 'food_bawan.jpg', query: 'Taiwan bawan meatball', queryZh: '肉圓' },
+  { file: 'food_oyster_omelet.jpg', query: 'Oyster omelet Taiwan', queryZh: '蚵仔煎' },
+  { file: 'food_shaved_ice.jpg', query: 'Mango shaved ice', queryZh: '芒果冰' },
+  { file: 'food_beef_soup.jpg', query: 'Tainan beef soup', queryZh: '牛肉湯' },
+  { file: 'food_turkey_rice.jpg', query: 'Chiayi turkey rice', queryZh: '火雞肉飯' },
+  { file: 'food_eel_noodle.jpg', query: 'Tainan eel noodle', queryZh: '鱔魚意麵' },
+  { file: 'food_zongzi.jpg', query: 'Zongzi sticky rice', queryZh: '肉粽' },
+  { file: 'food_danzai_noodle.jpg', query: 'Tainan danzai noodle', queryZh: '擔仔麵' },
+  { file: 'food_coffin_bread.jpg', query: 'Coffin bread Tainan', queryZh: '棺材板' },
 ];
 
 const UA = 'Mozilla/5.0 (compatible; enhance-pixshop/1.0; +https://github.com)';
@@ -185,7 +207,7 @@ async function main() {
   let ok = 0;
   let skip = 0;
   let fail = 0;
-  for (const { file, query } of MISSING_IMAGES) {
+  for (const { file, query, queryZh } of MISSING_IMAGES) {
     const filepath = path.join(SCENES_DIR, file);
     if (fs.existsSync(filepath)) {
       console.log(`[skip] ${file} (already exists)`);
@@ -193,9 +215,14 @@ async function main() {
       continue;
     }
     try {
-      const url = await fetchCommonsImageUrlWithRetry(query);
+      let url = await fetchCommonsImageUrlWithRetry(query);
+      if (!url && queryZh) {
+        await sleep(DELAY_MS);
+        url = await fetchCommonsImageUrlWithRetry(queryZh);
+        if (url) console.log(`   (used Chinese query: ${queryZh})`);
+      }
       if (!url) {
-        console.log(`[fail] ${file} – no result for "${query}"`);
+        console.log(`[fail] ${file} – no result for "${query}"${queryZh ? ` or "${queryZh}"` : ''}`);
         fail++;
         await sleep(DELAY_MS);
         continue;

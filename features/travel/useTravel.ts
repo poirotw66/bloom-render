@@ -9,8 +9,8 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize, TravelStyle } from '../../constants/travel';
+import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS } from '../../constants/travel';
+import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe } from '../../constants/travel';
 
 export type TravelSceneIdOrCustom = string;
 
@@ -51,6 +51,11 @@ export function useTravel() {
   const [style, setStyle] = useState<TravelStyle>(DEFAULT_TRAVEL_STYLE);
   // New state for controlling reference image usage
   const [useReferenceImage, setUseReferenceImage] = useState<boolean>(true);
+
+  // New prompt injection state
+  const [weather, setWeather] = useState<TravelWeather>('sunny');
+  const [timeOfDay, setTimeOfDay] = useState<TravelTimeOfDay>('noon');
+  const [vibe, setVibe] = useState<TravelVibe | 'none'>('none');
 
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [resultSceneNameKey, setResultSceneNameKey] = useState<string | null>(null);
@@ -188,9 +193,18 @@ export function useTravel() {
     setLoading(true);
 
     try {
-      // Enhance the prompt with dynamic variations and selected style
+      // Enhance the prompt with dynamic variations and selected style/weather/time/vibe
       const stylePrompt = TRAVEL_STYLES.find(s => s.id === style)?.prompt || '';
-      const finalPrompt = generateDynamicTravelPrompt(scenePrompt, stylePrompt);
+      const weatherPrompt = TRAVEL_WEATHER_OPTIONS.find(w => w.id === weather)?.prompt || '';
+      const timePrompt = TRAVEL_TIME_OPTIONS.find(t => t.id === timeOfDay)?.prompt || '';
+      const vibePrompt = vibe !== 'none' ? TRAVEL_VIBE_OPTIONS.find(v => v.id === vibe)?.prompt || '' : '';
+
+      const finalPrompt = generateDynamicTravelPrompt(scenePrompt, {
+        style: stylePrompt,
+        weather: weatherPrompt,
+        time: timePrompt,
+        vibe: vibePrompt
+      });
 
       const url = await generateTravelPhoto(file, {
         scenePrompt: finalPrompt,
@@ -208,7 +222,7 @@ export function useTravel() {
     } finally {
       setLoading(false);
     }
-  }, [file, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, settings.apiKey, settings.model, t, useReferenceImage]);
+  }, [file, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, weather, timeOfDay, vibe, settings.apiKey, settings.model, t, useReferenceImage]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -265,6 +279,12 @@ export function useTravel() {
     setImageSize,
     style,
     setStyle,
+    weather,
+    setWeather,
+    timeOfDay,
+    setTimeOfDay,
+    vibe,
+    setVibe,
     useReferenceImage,
     setUseReferenceImage,
     isDraggingOver,

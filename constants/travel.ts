@@ -20,6 +20,7 @@ export interface TravelScene {
   prompt: string;
   group: TravelSceneGroup;
   category?: TravelSceneCategory; // Default is 'scenery'
+  vibes?: TravelVibe[]; // Specific vibes for this scene
   region?: TravelSceneRegion;
   continent?: TravelContinent;
   x?: number; // percentage from left
@@ -286,3 +287,78 @@ export const TRAVEL_STYLES: { id: TravelStyle; nameKey: string; prompt: string }
 ];
 
 export const DEFAULT_TRAVEL_STYLE: TravelStyle = 'natural';
+
+/** Weather conditions for AI prompt injection */
+export type TravelWeather = 'sunny' | 'rainy' | 'snowy' | 'cloudy' | 'misty';
+
+export const TRAVEL_WEATHER_OPTIONS: { id: TravelWeather; nameKey: string; prompt: string; icon: string }[] = [
+  { id: 'sunny', nameKey: 'travel.weather.sunny', prompt: 'sunny day, clear blue sky, bright sunlight', icon: '☀️' },
+  { id: 'rainy', nameKey: 'travel.weather.rainy', prompt: 'rainy day, wet streets, rain droplets, raindrops on skin', icon: '🌧️' },
+  { id: 'snowy', nameKey: 'travel.weather.snowy', prompt: 'snowing, snow-covered ground, winter atmosphere, snowflakes', icon: '❄️' },
+  { id: 'cloudy', nameKey: 'travel.weather.cloudy', prompt: 'overcast sky, soft diffused lighting, cloudy day', icon: '☁️' },
+  { id: 'misty', nameKey: 'travel.weather.misty', prompt: 'misty morning, fog in background, mysterious atmosphere, soft haze', icon: '🌫️' },
+];
+
+/** Time of day for AI prompt injection */
+export type TravelTimeOfDay = 'dawn' | 'noon' | 'sunset' | 'night';
+
+export const TRAVEL_TIME_OPTIONS: { id: TravelTimeOfDay; nameKey: string; prompt: string; icon: string }[] = [
+  { id: 'dawn', nameKey: 'travel.time.dawn', prompt: 'early morning, soft dawn light, pastel sky', icon: '🌅' },
+  { id: 'noon', nameKey: 'travel.time.noon', prompt: 'midday, high sun, bright and vibrant colors', icon: '☀️' },
+  { id: 'sunset', nameKey: 'travel.time.sunset', prompt: 'golden hour, orange and pink sky, long shadows', icon: '🌇' },
+  { id: 'night', nameKey: 'travel.time.night', prompt: 'at night, city lights, starry sky, dark atmosphere', icon: '🌙' },
+];
+
+/** Vibe / Emotion filters for AI prompt injection */
+export type TravelVibe = 'zen' | 'retro' | 'cyberpunk' | 'street' | 'elegant' | 'adventure' | 'cozy' | 'futuristic' | 'romantic';
+
+export interface TravelVibeOption {
+  id: TravelVibe;
+  nameKey: string;
+  prompt: string;
+  icon: string;
+}
+
+export const TRAVEL_VIBE_OPTIONS: TravelVibeOption[] = [
+  { id: 'zen', nameKey: 'travel.vibe.zen', prompt: 'peaceful, zen atmosphere, minimalist, calm', icon: '🧘' },
+  { id: 'retro', nameKey: 'travel.vibe.retro', prompt: 'vintage aesthetic, 90s feel, nostalgic colors', icon: '📼' },
+  { id: 'cyberpunk', nameKey: 'travel.vibe.cyberpunk', prompt: 'cyberpunk style, neon lights, high tech low life, rain-slicked streets', icon: '🌃' },
+  { id: 'street', nameKey: 'travel.vibe.street', prompt: 'street style photography, candid moment, urban vibe', icon: '👟' },
+  { id: 'elegant', nameKey: 'travel.vibe.elegant', prompt: 'elegant and sophisticated, high-end fashion magazine style', icon: '💎' },
+  { id: 'adventure', nameKey: 'travel.vibe.adventure', prompt: 'adventurous spirit, hiking gear, exploring nature', icon: '🥾' },
+  { id: 'cozy', nameKey: 'travel.vibe.cozy', prompt: 'warm and cozy, soft blankets, comfortable setting', icon: '☕' },
+  { id: 'futuristic', nameKey: 'travel.vibe.futuristic', prompt: 'futuristic technology, sleek design, sci-fi atmosphere', icon: '🚀' },
+  { id: 'romantic', nameKey: 'travel.vibe.romantic', prompt: 'romantic atmosphere, soft focus, warm heart-felt lighting', icon: '💖' },
+];
+
+/** Recommended vibes for specific location types */
+export const LOCATION_RECOMMENDED_VIBES: Record<string, TravelVibe[]> = {
+  // Cities
+  'shibuya': ['cyberpunk', 'street', 'futuristic'],
+  'nyc': ['street', 'cyberpunk', 'elegant'],
+  'london': ['retro', 'street', 'elegant'],
+  'taipei101': ['cyberpunk', 'futuristic', 'street'],
+  'ximending': ['cyberpunk', 'street', 'retro'],
+  'eiffel': ['romantic', 'elegant', 'retro'],
+  'santorini': ['romantic', 'elegant', 'zen'],
+  'rome': ['retro', 'elegant', 'street'],
+  'venice': ['romantic', 'retro', 'elegant'],
+
+  // Historical / Zen
+  'kyoto': ['zen', 'retro', 'romantic'],
+  'jiufen': ['retro', 'zen', 'romantic'],
+  'cks_memorial': ['zen', 'elegant', 'retro'],
+  'taj_mahal': ['elegant', 'zen', 'romantic'],
+  'pyramids': ['adventure', 'retro', 'elegant'],
+
+  // Nature / Adventure
+  'iceland': ['adventure', 'zen', 'futuristic'],
+  'swiss_alps': ['adventure', 'cozy', 'zen'],
+  'mt_fuji': ['zen', 'adventure', 'romantic'],
+  'grand_canyon': ['adventure', 'zen'],
+  'taroko': ['adventure', 'zen'],
+  'hehuanshan': ['adventure', 'zen', 'cozy'],
+
+  // Food
+  'food': ['cozy', 'street', 'elegant'],
+};
