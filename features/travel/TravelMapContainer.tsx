@@ -8,6 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { TravelSceneCategory } from '../../constants/travel';
 import WorldMap from './WorldMap';
 import TaiwanMap from './TaiwanMap';
+import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN } from '../../constants/travel';
 
 interface TravelMapContainerProps {
     selectedSceneId: string;
@@ -100,19 +101,56 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({ selectedSceneId
                 )}
             </div>
 
-            {/* Selected location indicator */}
-            {selectedSceneId && selectedSceneId !== 'custom' && selectedSceneId !== 'random' && (
-                <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500/5 border border-amber-500/20 rounded-xl">
-                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
-                    <span className="text-sm font-medium text-amber-100/90">
-                        {t('travel.result_scene_label')} <span className="font-bold text-amber-400">
-                            {t(`travel.scene.${selectedSceneId}`) === `travel.scene.${selectedSceneId}`
-                                ? t(`travel.food.${selectedSceneId.replace('food_', '')}`)
-                                : t(`travel.scene.${selectedSceneId}`)}
-                        </span>
-                    </span>
-                </div>
-            )}
+            {/* Selected location indicator with gourmet details */}
+            {selectedSceneId && selectedSceneId !== 'custom' && selectedSceneId !== 'random' && (() => {
+                const scene = [...TRAVEL_SCENES_INTERNATIONAL, ...TRAVEL_SCENES_TAIWAN].find(s => s.id === selectedSceneId);
+                if (!scene) return null;
+
+                const isFood = scene.category === 'food';
+                const name = t(scene.nameKey) === scene.nameKey && selectedSceneId.startsWith('food_')
+                    ? t(`travel.food.${selectedSceneId.replace('food_', '')}`)
+                    : t(scene.nameKey);
+
+                return (
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                            <div className={`w-2 h-2 rounded-full ${isFood ? 'bg-orange-500' : 'bg-amber-500'} animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.5)]`} />
+                            <span className="text-sm font-medium text-amber-100/90">
+                                {t('travel.result_scene_label')} <span className={`font-bold ${isFood ? 'text-orange-400' : 'text-amber-400'}`}>
+                                    {name}
+                                </span>
+                            </span>
+                        </div>
+
+                        {/* Gourmet Description Card */}
+                        {isFood && scene.descriptionKey && (
+                            <div className="animate-slide-up flex flex-col sm:flex-row gap-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl backdrop-blur-md">
+                                {scene.referenceImagePath && (
+                                    <div className="w-full sm:w-32 aspect-square rounded-lg overflow-hidden border border-orange-500/20 shadow-lg flex-shrink-0 bg-gray-900">
+                                        <img
+                                            src={scene.referenceImagePath}
+                                            alt={name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).parentElement!.style.display = 'none';
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xl">🍜</span>
+                                        <h4 className="font-bold text-orange-400">{name}</h4>
+                                    </div>
+                                    <p className="text-sm text-gray-300 leading-relaxed italic">
+                                        「{t(scene.descriptionKey)}」
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            })()}
         </div>
     );
 };

@@ -73,41 +73,64 @@ const MISSING_IMAGES = [
   { file: 'mr_brown_ave.jpg', query: 'Taiwan Chishang rice field road' },
 ];
 
-async function fetchCommonsImageUrl(searchQuery) {
-  const params = new URLSearchParams({
-    action: 'query',
-    generator: 'search',
-    gsrnamespace: '6',
-    gsrsearch: searchQuery,
-    gsrlimit: '5',
-    prop: 'imageinfo',
-    iiprop: 'url',
-    format: 'json',
-    origin: '*',
-  });
-  const res = await fetch(`${COMMONS_API}?${params}`);
-  const data = await res.json();
-  const pages = data?.query?.pages;
-  if (!pages || typeof pages !== 'object') return null;
-  const firstPage = Object.values(pages)[0];
-  const url = firstPage?.imageinfo?.[0]?.url;
-  return url || null;
+const UA = 'Mozilla/5.0 (compatible; enhance-pixshop/1.0; +https://github.com)';
+
+/** Delay between requests to avoid 429 (Commons rate limit). */
+const DELAY_MS = 5000;
+const RETRY_AFTER_429_MS = 35000;
+const MAX_RETRIES = 3;
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function fetchWithRetry(url, opts = {}) {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(url, opts);
+    if (res.status !== 429) return res;
+    const retryAfter = Number(res.headers.get('Retry-After')) * 1000 || RETRY_AFTER_429_MS;
+    console.log(`   [429] waiting ${Math.round(retryAfter / 1000)}s before retry (${attempt}/${MAX_RETRIES})`);
+    await sleep(retryAfter);
+  }
+  return fetch(url, opts);
 }
 
 async function downloadToFile(url, filepath) {
-  const res = await fetch(url, { redirect: 'follow' });
+  const res = await fetchWithRetry(url, { redirect: 'follow', headers: { 'User-Agent': UA } });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const buf = await res.arrayBuffer();
   fs.mkdirSync(path.dirname(filepath), { recursive: true });
   fs.writeFileSync(filepath, Buffer.from(buf));
 }
 
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
+async function fetchCommonsImageUrlWithRetry(query) {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const params = new URLSearchParams({
+      action: 'query',
+      generator: 'search',
+      gsrnamespace: '6',
+      gsrsearch: query,
+      gsrlimit: '5',
+      prop: 'imageinfo',
+      iiprop: 'url',
+      format: 'json',
+      origin: '*',
+    });
+    const res = await fetchWithRetry(`${COMMONS_API}?${params}`, { headers: { 'User-Agent': UA } });
+    const data = await res.json();
+    const pages = data?.query?.pages;
+    if (!pages || typeof pages !== 'object') return null;
+    const firstPage = Object.values(pages)[0];
+    const url = firstPage?.imageinfo?.[0]?.url;
+    if (url) return url;
+    return null;
+  }
+  return null;
 }
 
 async function main() {
-  console.log('Downloading missing scene images from Wikimedia Commons...\n');
+  console.log('Downloading missing scene images from Wikimedia Commons...');
+  console.log(`Delay ${DELAY_MS / 1000}s between requests to avoid 429.\n`);
   let ok = 0;
   let skip = 0;
   let fail = 0;
@@ -119,11 +142,11 @@ async function main() {
       continue;
     }
     try {
-      const url = await fetchCommonsImageUrl(query);
+      const url = await fetchCommonsImageUrlWithRetry(query);
       if (!url) {
         console.log(`[fail] ${file} – no result for "${query}"`);
         fail++;
-        await sleep(300);
+        await sleep(DELAY_MS);
         continue;
       }
       await downloadToFile(url, filepath);
@@ -133,7 +156,7 @@ async function main() {
       console.log(`[fail] ${file} – ${e.message}`);
       fail++;
     }
-    await sleep(400);
+    await sleep(DELAY_MS);
   }
   console.log(`\nDone. ok=${ok} skip=${skip} fail=${fail}`);
 }

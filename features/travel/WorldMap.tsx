@@ -130,14 +130,31 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedSceneId, onSceneSelect }) =
                                         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
                                         opacity: isHovered || isSelected ? 1 : 0,
                                         visibility: isHovered || isSelected ? 'visible' : 'hidden',
-                                        transition: 'opacity 0.2s ease, visibility 0.2s ease'
+                                        transition: 'opacity 0.2s ease, visibility 0.2s ease',
+                                        zIndex: 100,
+                                        minWidth: '150px'
                                     }}
                                 >
-                                    <div className="flex items-center gap-2 text-white text-sm font-semibold">
-                                        <span
-                                            className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"
-                                        />
-                                        {t(scene.nameKey)}
+                                    <div className="flex flex-col gap-2">
+                                        {/* Preview Image */}
+                                        {scene.referenceImagePath && (
+                                            <div className="w-full aspect-video rounded-md overflow-hidden bg-gray-800 border border-white/10">
+                                                <img
+                                                    src={scene.referenceImagePath}
+                                                    alt={t(scene.nameKey)}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).style.display = 'none';
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-2 text-white text-sm font-semibold">
+                                            <span
+                                                className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"
+                                            />
+                                            {t(scene.nameKey)}
+                                        </div>
                                     </div>
                                     {/* Arrow */}
                                     <div

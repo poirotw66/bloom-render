@@ -3,25 +3,30 @@
 此表格列出了所有旅行場景的參考圖片狀態。
 請將對應的真實照片放入 `public/images/scenes/` 目錄中，以啟用高真實度的 AI 生成。
 
+## 如何補足缺圖
+
+1. **自動下載（國際景點）**：在專案根目錄執行 `node scripts/download-scene-images.js`。腳本會從 Wikimedia Commons 下載缺圖；若遇到速率限制（HTTP 429），可隔數小時後再執行一次（已存在的檔案會略過）。
+2. **手動搜尋**：可於 [Pexels](https://www.pexels.com/)、[Unsplash](https://unsplash.com/) 或 [Wikimedia Commons](https://commons.wikimedia.org/) 搜尋對應關鍵字，下載後以表格中的檔名存到 `public/images/scenes/`。
+
 ## 國際景點 (International Scenery)
 | 區域/群組 | 景點 ID | 名稱 Key | 中文名稱 | 圖片檔案 (public/images/scenes/) | 狀態 |
 |---|---|---|---|---|---|
-| **Europe** | `eiffel` | `travel.scene.eiffel` | 巴黎鐵塔 | `eiffel.jpg` | ❌ 缺圖 |
-| **Europe** | `iceland` | `travel.scene.iceland` | 冰島 | `iceland.jpg` | ❌ 缺圖 |
-| **Europe** | `santorini` | `travel.scene.santorini` | 聖托里尼 | `santorini.jpg` | ❌ 缺圖 |
-| **Europe** | `london` | `travel.scene.london` | 倫敦大笨鐘 | `london.jpg` | ❌ 缺圖 |
-| **Europe** | `rome` | `travel.scene.rome` | 羅馬競技場 | `rome.jpg` | ❌ 缺圖 |
-| **Europe** | `barcelona` | `travel.scene.barcelona` | 巴塞隆納聖家堂 | `barcelona.jpg` | ❌ 缺圖 |
-| **Europe** | `swiss_alps` | `travel.scene.swiss_alps` | 瑞士阿爾卑斯山 | `swiss_alps.jpg` | ❌ 缺圖 |
-| **Europe** | `neuschwanstein` | `travel.scene.neuschwanstein` | 德國新天鵝堡 | `neuschwanstein.jpg` | ❌ 缺圖 |
-| **Europe** | `pisa` | `travel.scene.pisa` | 比薩斜塔 | `pisa.jpg` | ❌ 缺圖 |
-| **Europe** | `athens` | `travel.scene.athens` | 雅典衛城 | `athens.jpg` | ❌ 缺圖 |
-| **Europe** | `moscow` | `travel.scene.moscow` | 莫斯科紅場 | `moscow.jpg` | ❌ 缺圖 |
-| **Europe** | `venice` | `travel.scene.venice` | 威尼斯水都 | `venice.jpg` | ❌ 缺圖 |
+| **Europe** | `eiffel` | `travel.scene.eiffel` | 巴黎鐵塔 | `eiffel.jpg` | ✅ 已就緒 |
+| **Europe** | `iceland` | `travel.scene.iceland` | 冰島 | `iceland.jpg` | ✅ 已就緒 |
+| **Europe** | `santorini` | `travel.scene.santorini` | 聖托里尼 | `santorini.jpg` | ✅ 已就緒 |
+| **Europe** | `london` | `travel.scene.london` | 倫敦大笨鐘 | `london.jpg` | ✅ 已就緒 |
+| **Europe** | `rome` | `travel.scene.rome` | 羅馬競技場 | `rome.jpg` | ✅ 已就緒 |
+| **Europe** | `barcelona` | `travel.scene.barcelona` | 巴塞隆納聖家堂 | `barcelona.jpg` | ✅ 已就緒 |
+| **Europe** | `swiss_alps` | `travel.scene.swiss_alps` | 瑞士阿爾卑斯山 | `swiss_alps.jpg` | ✅ 已就緒 |
+| **Europe** | `neuschwanstein` | `travel.scene.neuschwanstein` | 德國新天鵝堡 | `neuschwanstein.jpg` | ✅ 已就緒 |
+| **Europe** | `pisa` | `travel.scene.pisa` | 比薩斜塔 | `pisa.jpg` | ✅ 已就緒 |
+| **Europe** | `athens` | `travel.scene.athens` | 雅典衛城 | `athens.jpg` | ✅ 已就緒 |
+| **Europe** | `moscow` | `travel.scene.moscow` | 莫斯科紅場 | `moscow.jpg` | ✅ 已就緒 |
+| **Europe** | `venice` | `travel.scene.venice` | 威尼斯水都 | `venice.jpg` | ✅ 已就緒 |
 | **Europe** | `prague` | `travel.scene.prague` | 布拉格舊城 | `prague.jpg` | ❌ 缺圖 |
 | **Europe** | `amsterdam` | `travel.scene.amsterdam` | 阿姆斯特丹運河 | `amsterdam.jpg` | ❌ 缺圖 |
 | **Asia** | `shibuya` | `travel.scene.shibuya` | 東京澀谷 | `shibuya.jpg` | ✅ 已就緒 |
-| **Asia** | `taj_mahal` | `travel.scene.taj_mahal` | 泰姬瑪哈陵 | `taj_mahal.jpg` | ❌ 缺圖 |
+| **Asia** | `taj_mahal` | `travel.scene.taj_mahal` | 泰姬瑪哈陵 | `taj_mahal.jpg` | ✅ 已就緒 |
 | **Asia** | `great_wall` | `travel.scene.great_wall` | 萬里長城 | `great_wall.jpg` | ❌ 缺圖 |
 | **Asia** | `mt_fuji` | `travel.scene.mt_fuji` | 富士山 | `mt_fuji.jpg` | ❌ 缺圖 |
 | **Asia** | `dubai` | `travel.scene.dubai` | 杜拜哈里發塔 | `dubai.jpg` | ❌ 缺圖 |
@@ -34,18 +39,18 @@
 | **Asia** | `kyoto` | `travel.scene.kyoto` | 京都伏見稻荷 | `kyoto.jpg` | ❌ 缺圖 |
 | **Asia** | `halong_bay` | `travel.scene.halong_bay` | 下龍灣 | `halong_bay.jpg` | ❌ 缺圖 |
 | **Asia** | `bangkok` | `travel.scene.bangkok` | 曼谷鄭王廟 | `bangkok.jpg` | ❌ 缺圖 |
-| **Asia** | `borobudur` | `travel.scene.borobudur` | 婆羅浮屠 | `borobudur.jpg" | ❌ 缺圖 |
-| **Asia** | `everest` | `travel.scene.everest` | 聖母峰基地營 | `everest.jpg` | ❌ 缺圖 |
+| **Asia** | `borobudur` | `travel.scene.borobudur` | 婆羅浮屠 | `borobudur.jpg` | ✅ 已就緒 |
+| **Asia** | `everest` | `travel.scene.everest` | 聖母峰基地營 | `everest.jpg` | ✅ 已就緒 |
 | **N. America** | `nyc` | `travel.scene.nyc` | 紐約時報廣場 | `nyc.jpg` | ❌ 缺圖 |
 | **N. America** | `grand_canyon` | `travel.scene.grand_canyon` | 大峽谷 | `grand_canyon.jpg` | ❌ 缺圖 |
 | **N. America** | `san_francisco` | `travel.scene.san_francisco` | 金門大橋 | `san_francisco.jpg` | ❌ 缺圖 |
 | **N. America** | `banff` | `travel.scene.banff` | 加拿大班夫 | `banff.jpg` | ❌ 缺圖 |
 | **N. America** | `mexico` | `travel.scene.mexico` | 墨西哥金字塔 | `mexico.jpg` | ❌ 缺圖 |
 | **N. America** | `havana` | `travel.scene.havana` | 古巴哈瓦那 | `havana.jpg` | ❌ 缺圖 |
-| **S. America** | `machu_picchu` | `travel.scene.machu_picchu" | 馬丘比丘 | `machu_picchu.jpg` | ❌ 缺圖 |
+| **S. America** | `machu_picchu` | `travel.scene.machu_picchu` | 馬丘比丘 | `machu_picchu.jpg` | ✅ 已就緒 |
 | **S. America** | `rio` | `travel.scene.rio` | 里約熱內盧 | `rio.jpg` | ❌ 缺圖 |
 | **S. America** | `galapagos` | `travel.scene.galapagos` | 加拉巴哥群島 | `galapagos.jpg` | ❌ 缺圖 |
-| **S. America** | `easter_island` | `travel.scene.easter_island` | 復活節島 | `easter_island.jpg` | ❌ 缺圖 |
+| **S. America** | `easter_island` | `travel.scene.easter_island` | 復活節島 | `easter_island.jpg` | ✅ 已就緒 |
 | **S. America** | `iguazu` | `travel.scene.iguazu` | 以瓜蘇瀑布 | `iguazu.jpg` | ❌ 缺圖 |
 | **Oceania** | `sydney` | `travel.scene.sydney` | 雪梨歌劇院 | `sydney.jpg` | ❌ 缺圖 |
 | **Oceania** | `nz_mountains` | `travel.scene.nz` | 紐西蘭壯麗景觀 | `nz.jpg` | ❌ 缺圖 |
