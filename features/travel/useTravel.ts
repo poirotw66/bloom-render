@@ -226,6 +226,8 @@ export function useTravel() {
     }
     setError(null);
     setLoading(true);
+    setResult(null);
+    setResults([]);
 
     try {
       // Enhance the prompt with dynamic variations and selected style/weather/time/vibe
@@ -286,14 +288,19 @@ export function useTravel() {
         .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
         .map((result) => result.value);
 
+      console.log(`Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`);
+
       if (generatedResults.length === 0) {
         throw new Error('All generations failed');
       }
 
-      if (generatedResults.length === 1) {
-        setResult(generatedResults[0]);
-      } else {
+      // Always use results array if quantity > 1, even if only one succeeded
+      if (quantity > 1) {
         setResults(generatedResults);
+        setResult(null); // Clear single result
+      } else {
+        setResult(generatedResults[0]);
+        setResults([]); // Clear results array
       }
       setResultSceneNameKey(resolvedSceneNameKey);
       setResultSceneCustomLabel(resolvedSceneCustomLabel);
@@ -317,7 +324,7 @@ export function useTravel() {
     } finally {
       setLoading(false);
     }
-  }, [files, isGroupMode, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, weather, timeOfDay, vibe, outfit, outfitColor, pose, relationship, framing, clearBackground, settings.apiKey, settings.model, t, useReferenceImage]);
+  }, [files, isGroupMode, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, weather, timeOfDay, vibe, outfit, outfitColor, pose, relationship, framing, clearBackground, settings.apiKey, settings.model, t, useReferenceImage, quantity]);
 
   const handleSurpriseMe = useCallback(() => {
     // Pick random scene

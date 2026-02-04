@@ -81,35 +81,23 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                 {t('travel.again')}
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
               {tr.results.map((result, idx) => (
-                <div key={idx} className="relative group">
-                  <div className="aspect-[4/3] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center">
-                    <img
-                      src={result}
-                      alt={`Travel Photo ${idx + 1}`}
-                      className="max-w-full max-h-full w-auto h-auto object-contain"
-                    />
-                  </div>
-                  <button
-                    onClick={() => handleEditInEditor(result, idx)}
-                    className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                  >
-                    <span className="text-white font-bold">{t('history.edit')}</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = result;
-                      link.download = `travel-photo-${idx + 1}.png`;
-                      link.click();
-                    }}
-                    className="absolute top-2 right-2 bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                    title={t('travel.download')}
-                  >
-                    ⬇️
-                  </button>
-                </div>
+                <TravelResult
+                  key={idx}
+                  result={result}
+                  resultSceneNameKey={tr.resultSceneNameKey}
+                  resultSceneCustomLabel={tr.resultSceneCustomLabel}
+                  resultMetadata={tr.resultMetadata}
+                  onDownload={() => {
+                    const link = document.createElement('a');
+                    link.href = result;
+                    link.download = `travel-photo-${idx + 1}.png`;
+                    link.click();
+                  }}
+                  onAgain={tr.clearResult}
+                  onEditInEditor={() => handleEditInEditor(result, idx)}
+                />
               ))}
             </div>
           </div>
