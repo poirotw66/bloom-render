@@ -14,6 +14,7 @@ import TravelForm from './TravelForm';
 import TravelUploadSection from './TravelUploadSection';
 import TravelResult from './TravelResult';
 import TravelMapContainer from './TravelMapContainer';
+import QuantitySelector from '../../components/QuantitySelector';
 
 interface TravelPageProps {
   onImageSelected: (file: File) => void;
@@ -45,9 +46,9 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
     return () => clearInterval(interval);
   }, [tr.loading]);
 
-  const handleEditInEditor = () => {
-    if (!tr.result) return;
-    onImageSelected(dataURLtoFile(tr.result, `travel-photo-${Date.now()}.png`));
+  const handleEditInEditor = (result: string, index?: number) => {
+    if (!result) return;
+    onImageSelected(dataURLtoFile(result, `travel-photo-${index !== undefined ? index + 1 : Date.now()}.png`));
   };
 
   return (
@@ -64,7 +65,55 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
 
         <StartTabNav currentTab="travel" navigate={navigate} />
 
-        {tr.result ? (
+        {tr.results && tr.results.length > 0 ? (
+          <div className="w-full flex flex-col gap-6">
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={tr.handleBatchDownload}
+                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+              >
+                💾 {t('history.batch_download')} ({tr.results.length})
+              </button>
+              <button
+                onClick={tr.clearResult}
+                className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors"
+              >
+                {t('travel.again')}
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+              {tr.results.map((result, idx) => (
+                <div key={idx} className="relative group">
+                  <div className="aspect-[4/3] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center">
+                    <img
+                      src={result}
+                      alt={`Travel Photo ${idx + 1}`}
+                      className="max-w-full max-h-full w-auto h-auto object-contain"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleEditInEditor(result, idx)}
+                    className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    <span className="text-white font-bold">{t('history.edit')}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = result;
+                      link.download = `travel-photo-${idx + 1}.png`;
+                      link.click();
+                    }}
+                    className="absolute top-2 right-2 bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    title={t('travel.download')}
+                  >
+                    ⬇️
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : tr.result ? (
           <TravelResult
             result={tr.result}
             resultSceneNameKey={tr.resultSceneNameKey}
@@ -231,6 +280,13 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
 
             {/* Upload section - full width in map view, sidebar in list view */}
             <div className={viewMode === 'map' ? 'w-full' : 'lg:sticky lg:top-4'}>
+              <div className="mb-4">
+                <QuantitySelector
+                  quantity={tr.quantity}
+                  onChange={tr.setQuantity}
+                  disabled={tr.loading}
+                />
+              </div>
               <TravelUploadSection
                 files={tr.files}
                 previewUrls={tr.previewUrls}

@@ -24,6 +24,7 @@ export function usePortrait() {
 
     const [portraitFile, setPortraitFile] = useState<File | null>(null);
     const [portraitResult, setPortraitResult] = useState<string | null>(null);
+    const [portraitResults, setPortraitResults] = useState<string[]>([]);
     const [portraitLoading, setPortraitLoading] = useState(false);
     const [portraitError, setPortraitError] = useState<string | null>(null);
     const [portraitPreviewUrl, setPortraitPreviewUrl] = useState<string | null>(null);
@@ -31,6 +32,7 @@ export function usePortrait() {
     const [portraitOutputSpec, setPortraitOutputSpec] = useState<OutputSpec>(DEFAULT_PORTRAIT_SPEC);
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const [progress, setProgress] = useState<number>(0);
+    const [quantity, setQuantity] = useState<number>(1);
 
     useEffect(() => {
         const typeParam = searchParams.get('type');
@@ -58,6 +60,7 @@ export function usePortrait() {
         if (f) {
             setPortraitFile(f);
             setPortraitResult(null);
+            setPortraitResults([]);
             setPortraitError(null);
         }
         e.target.value = '';
@@ -71,6 +74,8 @@ export function usePortrait() {
         setPortraitError(null);
         setPortraitLoading(true);
         setProgress(0);
+        setPortraitResult(null);
+        setPortraitResults([]);
 
         try {
             // Simulate progress
@@ -81,21 +86,44 @@ export function usePortrait() {
                 });
             }, 500);
 
-            const url = await generateProfessionalPortrait(portraitFile, {
-                portraitType,
-                outputSpec: portraitOutputSpec,
-                settings: { apiKey: settings.apiKey, model: settings.model },
-            });
+            // Generate all images in parallel
+            const generationPromises = Array.from({ length: quantity }, (_, i) =>
+                generateProfessionalPortrait(portraitFile, {
+                    portraitType,
+                    outputSpec: portraitOutputSpec,
+                    settings: { apiKey: settings.apiKey, model: settings.model },
+                })
+                    .then((url) => {
+                        // Add to history
+                        addToHistory('portrait', url, {
+                            portraitType,
+                            outputSpec: portraitOutputSpec,
+                        });
+                        return url;
+                    })
+                    .catch((err) => {
+                        console.error(`Portrait generation error for item ${i + 1}:`, err);
+                        throw err;
+                    })
+            );
+
+            const settledResults = await Promise.allSettled(generationPromises);
+            const results = settledResults
+                .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+                .map((result) => result.value);
 
             clearInterval(progressInterval);
             setProgress(100);
-            setPortraitResult(url);
 
-            // Add to history
-            addToHistory('portrait', url, {
-                portraitType,
-                outputSpec: portraitOutputSpec,
-            });
+            if (results.length === 0) {
+                throw new Error('All generations failed');
+            }
+
+            if (results.length === 1) {
+                setPortraitResult(results[0]);
+            } else {
+                setPortraitResults(results);
+            }
         } catch (err) {
             const normalizedError = normalizeApiError(err, 'portrait');
             const errorKey = normalizedError.message || 'error.unknown';
@@ -105,7 +133,7 @@ export function usePortrait() {
             setPortraitLoading(false);
             setProgress(0);
         }
-    }, [portraitFile, portraitType, portraitOutputSpec, settings.apiKey, settings.model, t, addToHistory]);
+    }, [portraitFile, portraitType, portraitOutputSpec, settings.apiKey, settings.model, t, addToHistory, quantity]);
 
     const handlePortraitDownload = useCallback(() => {
         if (!portraitResult) return;
@@ -117,7 +145,37 @@ export function usePortrait() {
 
     const clearPortraitResult = useCallback(() => {
         setPortraitResult(null);
+        setPortraitResults([]);
     }, []);
+
+    const handlePortraitBatchDownload = useCallback(async () => {
+        if (portraitResults.length === 0) return;
+
+        try {
+            const JSZip = await import('jszip');
+            const zip = new JSZip.default();
+            portraitResults.forEach((result, index) => {
+                const base64 = result.split(',')[1];
+                zip.file(`portrait-${index + 1}.png`, base64, { base64: true });
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = `portraits-${Date.now()}.zip`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch {
+            portraitResults.forEach((result, index) => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = result;
+                    link.download = `portrait-${index + 1}.png`;
+                    link.click();
+                }, index * 100);
+            });
+        }
+    }, [portraitResults]);
 
     const setFileFromDrop = useCallback((file: File) => {
         setPortraitFile(file);
@@ -144,6 +202,7 @@ export function usePortrait() {
     return {
         portraitFile,
         portraitResult,
+        portraitResults,
         portraitLoading,
         portraitError,
         portraitPreviewUrl,
@@ -152,9 +211,12 @@ export function usePortrait() {
         portraitOutputSpec,
         setPortraitOutputSpec,
         progress,
+        quantity,
+        setQuantity,
         handlePortraitFileChange,
         handlePortraitGenerate,
         handlePortraitDownload,
+        handlePortraitBatchDownload,
         clearPortraitResult,
         isDraggingOver,
         handleDragOver,

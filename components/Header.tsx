@@ -8,6 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { CogIcon } from './icons';
 import SettingsModal from './SettingsModal';
+import HistoryPanel from './HistoryPanel';
 
 const SparkleIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
@@ -22,10 +23,15 @@ const FirecrackerIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onImageSelected?: (file: File) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   return (
     <>
@@ -43,6 +49,34 @@ const Header: React.FC = () => {
             </Link>
 
             <div className="flex items-center gap-3">
+                <Link
+                    to="/history"
+                    className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                        theme === 'newyear'
+                            ? 'text-red-200 hover:text-red-50 hover:bg-red-500/20 focus:ring-red-500'
+                            : 'text-gray-300 hover:text-white hover:bg-white/10 focus:ring-blue-500'
+                    }`}
+                    aria-label="History"
+                    title={t('history.title')}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </Link>
+                <button
+                    onClick={() => setIsHistoryOpen(true)}
+                    className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                        theme === 'newyear'
+                            ? 'text-red-200 hover:text-red-50 hover:bg-red-500/20 focus:ring-red-500'
+                            : 'text-gray-300 hover:text-white hover:bg-white/10 focus:ring-blue-500'
+                    }`}
+                    aria-label="History Panel"
+                    title={t('history.title')}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </button>
                 <button
                     onClick={() => setTheme(theme === 'default' ? 'newyear' : 'default')}
                     className={`relative p-2 rounded-lg transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
@@ -85,6 +119,11 @@ const Header: React.FC = () => {
         </div>
         </header>
         <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        <HistoryPanel
+          isOpen={isHistoryOpen}
+          onClose={() => setIsHistoryOpen(false)}
+          onImageSelected={onImageSelected}
+        />
     </>
   );
 };

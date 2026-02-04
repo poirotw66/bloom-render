@@ -36,9 +36,11 @@ export function useCoupleGroup() {
   
   // Result and loading
   const [result, setResult] = useState<string | null>(null);
+  const [results, setResults] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [quantity, setQuantity] = useState<number>(1);
 
   // Read URL parameters on mount
   useEffect(() => {
@@ -98,6 +100,8 @@ export function useCoupleGroup() {
     }
     
     setError(null);
+    setResult(null);
+    setResults([]);
     e.target.value = '';
   }, [mode, t]);
 
@@ -172,10 +176,9 @@ export function useCoupleGroup() {
     setLoading(true);
     setError(null);
     setResult(null);
+    setResults([]);
 
     try {
-      let resultData: string;
-
       // Find the style configuration
       const styleConfig =
         mode === 'couple'
@@ -220,30 +223,82 @@ Output: Return ONLY the final ${mode === 'couple' ? 'couple' : 'group'} portrait
       const ai = getClient(settings);
       const model = getModel(settings);
 
-      const response = await ai.models.generateContent({
-        model,
-        contents: { parts },
-        config: {
-          responseModalities: ['TEXT', 'IMAGE'],
-        },
-      });
+      // Generate all images in parallel
+      const generationPromises = Array.from({ length: quantity }, (_, i) =>
+        ai.models.generateContent({
+          model,
+          contents: { parts },
+          config: {
+            responseModalities: ['TEXT', 'IMAGE'],
+          },
+        })
+          .then((response) => {
+            return handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
+          })
+          .catch((err) => {
+            console.error(`Couple/group generation error for item ${i + 1}:`, err);
+            throw err;
+          })
+      );
 
-      resultData = handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
-      setResult(resultData);
+      const settledResults = await Promise.allSettled(generationPromises);
+      const generatedResults = settledResults
+        .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+        .map((result) => result.value);
+
+      if (generatedResults.length === 0) {
+        throw new Error('All generations failed');
+      }
+
+      if (generatedResults.length === 1) {
+        setResult(generatedResults[0]);
+      } else {
+        setResults(generatedResults);
+      }
     } catch (err) {
       console.error('Generation error:', err);
       setError(err instanceof Error ? err.message : t('couple_group.error_generation_failed'));
     } finally {
       setLoading(false);
     }
-  }, [mode, files, style, settings, t]);
+  }, [mode, files, style, settings, t, quantity]);
 
   // Clear result
   const clearResult = useCallback(() => {
     setResult(null);
+    setResults([]);
     setFiles([]);
     setError(null);
   }, []);
+
+  const handleBatchDownload = useCallback(async () => {
+    if (results.length === 0) return;
+
+    try {
+      const JSZip = await import('jszip');
+      const zip = new JSZip.default();
+      results.forEach((result, index) => {
+        const base64 = result.split(',')[1];
+        zip.file(`couple-group-${mode}-${index + 1}.png`, base64, { base64: true });
+      });
+
+      const content = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = `couple-group-${Date.now()}.zip`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch {
+      results.forEach((result, index) => {
+        setTimeout(() => {
+          const link = document.createElement('a');
+          link.href = result;
+          link.download = `couple-group-${mode}-${index + 1}.png`;
+          link.click();
+        }, index * 100);
+      });
+    }
+  }, [results, mode]);
 
   return {
     mode,
@@ -253,12 +308,16 @@ Output: Return ONLY the final ${mode === 'couple' ? 'couple' : 'group'} portrait
     files,
     previewUrls,
     result,
+    results,
     loading,
     error,
     isDraggingOver,
+    quantity,
+    setQuantity,
     handleFileChange,
     removeFile,
     handleGenerate,
+    handleBatchDownload,
     handleDragOver,
     handleDragLeave,
     handleDrop,

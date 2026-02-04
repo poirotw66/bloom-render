@@ -40,8 +40,10 @@ export function useTravel() {
   const [files, setFiles] = useState<File[]>([]);
   const [isGroupMode, setIsGroupMode] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [results, setResults] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [selectedSceneId, setSelectedSceneId] = useState<TravelSceneIdOrCustom>(TRAVEL_SCENES[0]?.id ?? 'shibuya');
   const [customSceneText, setCustomSceneText] = useState('');
@@ -129,6 +131,7 @@ export function useTravel() {
         setFiles([selectedFiles[0]]);
       }
       setResult(null);
+      setResults([]);
       setError(null);
     }
     e.target.value = '';
@@ -264,14 +267,34 @@ export function useTravel() {
         isGroup: isGroupMode || files.length > 1
       });
 
-      const url = await generateTravelPhoto(isGroupMode ? files : files[0], {
-        scenePrompt: finalPrompt,
-        aspectRatio,
-        imageSize,
-        sceneReferenceImage,
-        settings: { apiKey: settings.apiKey, model: settings.model },
-      });
-      setResult(url);
+      // Generate all images in parallel
+      const generationPromises = Array.from({ length: quantity }, (_, i) =>
+        generateTravelPhoto(isGroupMode ? files : files[0], {
+          scenePrompt: finalPrompt,
+          aspectRatio,
+          imageSize,
+          sceneReferenceImage,
+          settings: { apiKey: settings.apiKey, model: settings.model },
+        }).catch((err) => {
+          console.error(`Travel generation error for item ${i + 1}:`, err);
+          throw err;
+        })
+      );
+
+      const settledResults = await Promise.allSettled(generationPromises);
+      const generatedResults = settledResults
+        .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+        .map((result) => result.value);
+
+      if (generatedResults.length === 0) {
+        throw new Error('All generations failed');
+      }
+
+      if (generatedResults.length === 1) {
+        setResult(generatedResults[0]);
+      } else {
+        setResults(generatedResults);
+      }
       setResultSceneNameKey(resolvedSceneNameKey);
       setResultSceneCustomLabel(resolvedSceneCustomLabel);
       setResultMetadata({
@@ -325,6 +348,7 @@ export function useTravel() {
 
     // Clear result to show surprise
     setResult(null);
+    setResults([]);
   }, []);
 
   const handleDownload = useCallback(() => {
@@ -335,8 +359,38 @@ export function useTravel() {
     a.click();
   }, [result]);
 
+  const handleBatchDownload = useCallback(async () => {
+    if (results.length === 0) return;
+
+    try {
+      const JSZip = await import('jszip');
+      const zip = new JSZip.default();
+      results.forEach((result, index) => {
+        const base64 = result.split(',')[1];
+        zip.file(`travel-photo-${index + 1}.png`, base64, { base64: true });
+      });
+
+      const content = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = `travel-photos-${Date.now()}.zip`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch {
+      results.forEach((result, index) => {
+        setTimeout(() => {
+          const link = document.createElement('a');
+          link.href = result;
+          link.download = `travel-photo-${index + 1}.png`;
+          link.click();
+        }, index * 100);
+      });
+    }
+  }, [results]);
+
   const clearResult = useCallback(() => {
     setResult(null);
+    setResults([]);
     setResultSceneNameKey(null);
     setResultSceneCustomLabel(null);
     setResultMetadata(null);
@@ -349,6 +403,7 @@ export function useTravel() {
       setFiles([incoming[0]]);
     }
     setResult(null);
+    setResults([]);
     setError(null);
   }, [isGroupMode]);
 
@@ -374,12 +429,15 @@ export function useTravel() {
     setIsGroupMode,
     removeFile,
     result,
+    results,
     resultSceneNameKey,
     resultSceneCustomLabel,
     resultMetadata,
     loading,
     error,
     previewUrls,
+    quantity,
+    setQuantity,
     selectedSceneId,
     setSelectedSceneId,
     customSceneText,
@@ -422,6 +480,7 @@ export function useTravel() {
     handleGenerate,
     handleSurpriseMe,
     handleDownload,
+    handleBatchDownload,
     clearResult,
     setFilesFromDrop,
     handleDragOver,

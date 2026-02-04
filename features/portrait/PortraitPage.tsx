@@ -13,6 +13,7 @@ import { usePortrait } from './usePortrait';
 import PortraitForm from './PortraitForm';
 import PortraitUploadSection from './PortraitUploadSection';
 import PortraitResult from './PortraitResult';
+import QuantitySelector from '../../components/QuantitySelector';
 
 interface PortraitPageProps {
     onImageSelected: (file: File) => void;
@@ -23,9 +24,9 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
     const navigate = useNavigate();
     const portrait = usePortrait();
 
-    const handleEditInEditor = () => {
-        if (!portrait.portraitResult) return;
-        onImageSelected(dataURLtoFile(portrait.portraitResult, `portrait-${Date.now()}.png`));
+    const handleEditInEditor = (result: string, index?: number) => {
+        if (!result) return;
+        onImageSelected(dataURLtoFile(result, `portrait-${index !== undefined ? index + 1 : Date.now()}.png`));
     };
 
     return (
@@ -40,15 +41,54 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
 
                 <StartTabNav currentTab="portrait" navigate={navigate} />
 
-                {portrait.portraitResult ? (
-                    <PortraitResult
-                        portraitResult={portrait.portraitResult}
-                        portraitType={portrait.portraitType}
-                        portraitOutputSpec={portrait.portraitOutputSpec}
-                        onDownload={portrait.handlePortraitDownload}
-                        onAgain={portrait.clearPortraitResult}
-                        onEditInEditor={handleEditInEditor}
-                    />
+                {portrait.portraitResults && portrait.portraitResults.length > 0 ? (
+                    <div className="w-full flex flex-col gap-6">
+                        <div className="flex items-center justify-center gap-4">
+                            <button
+                                onClick={portrait.handlePortraitBatchDownload}
+                                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+                            >
+                                💾 {t('history.batch_download')} ({portrait.portraitResults.length})
+                            </button>
+                            <button
+                                onClick={portrait.clearPortraitResult}
+                                className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors"
+                            >
+                                {t('portrait.generate_again')}
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                            {portrait.portraitResults.map((result, idx) => (
+                                <div key={idx} className="relative group">
+                                    <div className="aspect-[3/4] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center">
+                                        <img
+                                            src={result}
+                                            alt={`Portrait ${idx + 1}`}
+                                            className="max-w-full max-h-full w-auto h-auto object-contain"
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={() => handleEditInEditor(result, idx)}
+                                        className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                    >
+                                        <span className="text-white font-bold">{t('history.edit')}</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const link = document.createElement('a');
+                                            link.href = result;
+                                            link.download = `portrait-${idx + 1}.png`;
+                                            link.click();
+                                        }}
+                                        className="absolute top-2 right-2 bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                        title={t('start.idphoto_download')}
+                                    >
+                                        ⬇️
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 ) : portrait.portraitLoading ? (
                     <ProgressIndicator
                         progress={portrait.progress}
@@ -63,6 +103,13 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
                             setPortraitOutputSpec={portrait.setPortraitOutputSpec}
                             disabled={portrait.portraitLoading}
                         />
+                        <div className="w-full max-w-md mx-auto">
+                            <QuantitySelector
+                                quantity={portrait.quantity}
+                                onChange={portrait.setQuantity}
+                                disabled={portrait.portraitLoading}
+                            />
+                        </div>
                         <PortraitUploadSection
                             portraitFile={portrait.portraitFile}
                             portraitPreviewUrl={portrait.portraitPreviewUrl}

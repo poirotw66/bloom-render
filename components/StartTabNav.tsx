@@ -6,7 +6,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export type StartTab = 'upload' | 'generate' | 'idphoto' | 'portrait' | 'travel' | 'themed' | 'photography-service' | 'couple-group';
+export type StartTab = 'upload' | 'generate' | 'idphoto' | 'portrait' | 'travel' | 'themed' | 'photography-service' | 'couple-group' | 'history';
 
 interface StartTabNavProps {
   currentTab: StartTab;
@@ -89,6 +89,15 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab, navigate }) => {
           }`}
       >
         {t('start.tab_couple_group')}
+      </button>
+      <button
+        onClick={() => navigate('/history')}
+        className={`px-5 py-3 rounded-lg text-base md:text-lg font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${currentTab === 'history'
+          ? 'bg-gray-600 text-white shadow-lg shadow-gray-500/20'
+          : 'text-gray-400 hover:text-white hover:bg-white/10'
+          }`}
+      >
+        {t('history.title')}
       </button>
     </div>
   );

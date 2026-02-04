@@ -26,6 +26,7 @@ export function useIdPhoto() {
 
   const [idPhotoFile, setIdPhotoFile] = useState<File | null>(null);
   const [idPhotoResult, setIdPhotoResult] = useState<string | null>(null);
+  const [idPhotoResults, setIdPhotoResults] = useState<string[]>([]);
   const [idPhotoLoading, setIdPhotoLoading] = useState(false);
   const [idPhotoError, setIdPhotoError] = useState<string | null>(null);
   const [idPhotoPreviewUrl, setIdPhotoPreviewUrl] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export function useIdPhoto() {
   const [idPhotoClothingReferenceUrl, setIdPhotoClothingReferenceUrl] = useState<string | null>(null);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
     const levelParam = searchParams.get('level');
@@ -71,6 +73,7 @@ export function useIdPhoto() {
     if (f) {
       setIdPhotoFile(f);
       setIdPhotoResult(null);
+      setIdPhotoResults([]);
       setIdPhotoError(null);
     }
     e.target.value = '';
@@ -88,6 +91,8 @@ export function useIdPhoto() {
     setIdPhotoError(null);
     setIdPhotoLoading(true);
     setProgress(0);
+    setIdPhotoResult(null);
+    setIdPhotoResults([]);
 
     try {
       // Simulate progress
@@ -98,27 +103,50 @@ export function useIdPhoto() {
         });
       }, 500);
 
-      const url = await generateIdPhoto(idPhotoFile, {
-        retouchLevel: idPhotoRetouchLevel,
-        idType: idPhotoType,
-        outputSpec: idPhotoOutputSpec,
-        clothingOption: idPhotoClothingOption,
-        clothingCustomText: idPhotoClothingOption === 'custom' ? idPhotoClothingCustomText.trim() || undefined : undefined,
-        clothingReferenceImage: idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile ? idPhotoClothingReferenceFile : undefined,
-        settings: { apiKey: settings.apiKey, model: settings.model },
-      });
+      // Generate all images in parallel
+      const generationPromises = Array.from({ length: quantity }, (_, i) =>
+        generateIdPhoto(idPhotoFile, {
+          retouchLevel: idPhotoRetouchLevel,
+          idType: idPhotoType,
+          outputSpec: idPhotoOutputSpec,
+          clothingOption: idPhotoClothingOption,
+          clothingCustomText: idPhotoClothingOption === 'custom' ? idPhotoClothingCustomText.trim() || undefined : undefined,
+          clothingReferenceImage: idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile ? idPhotoClothingReferenceFile : undefined,
+          settings: { apiKey: settings.apiKey, model: settings.model },
+        })
+          .then((url) => {
+            // Add to history
+            addToHistory('idphoto', url, {
+              retouchLevel: idPhotoRetouchLevel,
+              idType: idPhotoType,
+              outputSpec: idPhotoOutputSpec,
+              clothingOption: idPhotoClothingOption,
+            });
+            return url;
+          })
+          .catch((err) => {
+            console.error(`ID photo generation error for item ${i + 1}:`, err);
+            throw err;
+          })
+      );
+
+      const settledResults = await Promise.allSettled(generationPromises);
+      const results = settledResults
+        .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+        .map((result) => result.value);
 
       clearInterval(progressInterval);
       setProgress(100);
-      setIdPhotoResult(url);
 
-      // Add to history
-      addToHistory('idphoto', url, {
-        retouchLevel: idPhotoRetouchLevel,
-        idType: idPhotoType,
-        outputSpec: idPhotoOutputSpec,
-        clothingOption: idPhotoClothingOption,
-      });
+      if (results.length === 0) {
+        throw new Error('All generations failed');
+      }
+
+      if (results.length === 1) {
+        setIdPhotoResult(results[0]);
+      } else {
+        setIdPhotoResults(results);
+      }
     } catch (err) {
       const normalizedError = normalizeApiError(err, 'idphoto');
       const errorKey = normalizedError.message || 'error.unknown';
@@ -128,7 +156,7 @@ export function useIdPhoto() {
       setIdPhotoLoading(false);
       setProgress(0);
     }
-  }, [idPhotoFile, idPhotoRetouchLevel, idPhotoType, idPhotoOutputSpec, idPhotoClothingOption, idPhotoClothingCustomText, idPhotoClothingReferenceFile, settings.apiKey, settings.model, t, addToHistory]);
+  }, [idPhotoFile, idPhotoRetouchLevel, idPhotoType, idPhotoOutputSpec, idPhotoClothingOption, idPhotoClothingCustomText, idPhotoClothingReferenceFile, settings.apiKey, settings.model, t, addToHistory, quantity]);
 
   const handleIdPhotoDownload = useCallback(() => {
     if (!idPhotoResult) return;
@@ -140,7 +168,37 @@ export function useIdPhoto() {
 
   const clearIdPhotoResult = useCallback(() => {
     setIdPhotoResult(null);
+    setIdPhotoResults([]);
   }, []);
+
+  const handleIdPhotoBatchDownload = useCallback(async () => {
+    if (idPhotoResults.length === 0) return;
+
+    try {
+      const JSZip = await import('jszip');
+      const zip = new JSZip.default();
+      idPhotoResults.forEach((result, index) => {
+        const base64 = result.split(',')[1];
+        zip.file(`id-photo-${index + 1}.png`, base64, { base64: true });
+      });
+
+      const content = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = `id-photos-${Date.now()}.zip`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch {
+      idPhotoResults.forEach((result, index) => {
+        setTimeout(() => {
+          const link = document.createElement('a');
+          link.href = result;
+          link.download = `id-photo-${index + 1}.png`;
+          link.click();
+        }, index * 100);
+      });
+    }
+  }, [idPhotoResults]);
 
   const setFileFromDrop = useCallback((file: File) => {
     setIdPhotoFile(file);
@@ -167,6 +225,7 @@ export function useIdPhoto() {
   return {
     idPhotoFile,
     idPhotoResult,
+    idPhotoResults,
     idPhotoLoading,
     idPhotoError,
     idPhotoPreviewUrl,
@@ -184,9 +243,12 @@ export function useIdPhoto() {
     setIdPhotoClothingReferenceFile,
     idPhotoClothingReferenceUrl,
     progress,
+    quantity,
+    setQuantity,
     handleIdPhotoFileChange,
     handleIdPhotoGenerate,
     handleIdPhotoDownload,
+    handleIdPhotoBatchDownload,
     clearIdPhotoResult,
     isDraggingOver,
     handleDragOver,

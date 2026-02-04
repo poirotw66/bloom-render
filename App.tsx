@@ -21,6 +21,7 @@ import TravelPage from './features/travel/TravelPage';
 import ThemedPage from './features/themed/ThemedPage';
 import PhotographyServicePage from './features/photography-service/PhotographyServicePage';
 import CoupleGroupPage from './features/couple-group/CoupleGroupPage';
+import HistoryPage from './pages/HistoryPage';
 import { dataURLtoFile } from './utils/fileUtils';
 import { useLanguage } from './contexts/LanguageContext';
 import { useSettings } from './contexts/SettingsContext';
@@ -497,7 +498,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen text-gray-100 flex flex-col">
-      <Header />
+      <Header onImageSelected={handleImageUpload} />
       <main className={`flex-grow w-full max-w-[1600px] mx-auto p-4 md:p-8 flex justify-center ${currentImage ? 'items-start' : 'items-center'}`}>
         <Routes>
           <Route path="/" element={<StartScreen tab="upload" onImageSelected={handleImageUpload} navigate={navigate} />} />
@@ -508,6 +509,7 @@ const App: React.FC = () => {
           <Route path="/themed" element={<ThemedPage onImageSelected={handleImageUpload} />} />
           <Route path="/couple-group" element={<CoupleGroupPage onImageSelected={handleImageUpload} />} />
           <Route path="/photography-service" element={<PhotographyServicePage />} />
+          <Route path="/history" element={<HistoryPage onImageSelected={handleImageUpload} />} />
           <Route path="/edit" element={!currentImage ? <Navigate to="/" replace /> : renderEditor()} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

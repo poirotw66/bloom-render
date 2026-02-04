@@ -21,12 +21,14 @@ export function useThemed() {
 
     const [themedFile, setThemedFile] = useState<File | null>(null);
     const [themedResult, setThemedResult] = useState<string | null>(null);
+    const [themedResults, setThemedResults] = useState<string[]>([]);
     const [themedLoading, setThemedLoading] = useState(false);
     const [themedError, setThemedError] = useState<string | null>(null);
     const [themedPreviewUrl, setThemedPreviewUrl] = useState<string | null>(null);
     const [themeType, setThemeType] = useState<ThemedType>(DEFAULT_THEMED_TYPE);
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const [progress, setProgress] = useState<number>(0);
+    const [quantity, setQuantity] = useState<number>(1);
 
     useEffect(() => {
         const typeParam = searchParams.get('type');
@@ -50,6 +52,7 @@ export function useThemed() {
         if (f) {
             setThemedFile(f);
             setThemedResult(null);
+            setThemedResults([]);
             setThemedError(null);
         }
         e.target.value = '';
@@ -63,6 +66,8 @@ export function useThemed() {
         setThemedError(null);
         setThemedLoading(true);
         setProgress(0);
+        setThemedResult(null);
+        setThemedResults([]);
 
         try {
             // Simulate progress
@@ -73,17 +78,40 @@ export function useThemed() {
                 });
             }, 500);
 
-            const url = await generateThemedPhoto(themedFile, {
-                themeType,
-                settings: { apiKey: settings.apiKey, model: settings.model },
-            });
+            // Generate all images in parallel
+            const generationPromises = Array.from({ length: quantity }, (_, i) =>
+                generateThemedPhoto(themedFile, {
+                    themeType,
+                    settings: { apiKey: settings.apiKey, model: settings.model },
+                })
+                    .then((url) => {
+                        // Add to history
+                        addToHistory('themed', url, { themeType });
+                        return url;
+                    })
+                    .catch((err) => {
+                        console.error(`Themed generation error for item ${i + 1}:`, err);
+                        throw err;
+                    })
+            );
+
+            const settledResults = await Promise.allSettled(generationPromises);
+            const results = settledResults
+                .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+                .map((result) => result.value);
 
             clearInterval(progressInterval);
             setProgress(100);
-            setThemedResult(url);
 
-            // Add to history
-            addToHistory('themed', url, { themeType });
+            if (results.length === 0) {
+                throw new Error('All generations failed');
+            }
+
+            if (results.length === 1) {
+                setThemedResult(results[0]);
+            } else {
+                setThemedResults(results);
+            }
         } catch (err) {
             const normalizedError = normalizeApiError(err, 'themed');
             const errorKey = normalizedError.message || 'error.unknown';
@@ -93,7 +121,7 @@ export function useThemed() {
             setThemedLoading(false);
             setProgress(0);
         }
-    }, [themedFile, themeType, settings.apiKey, settings.model, t, addToHistory]);
+    }, [themedFile, themeType, settings.apiKey, settings.model, t, addToHistory, quantity]);
 
     const handleThemedDownload = useCallback(() => {
         if (!themedResult) return;
@@ -105,7 +133,37 @@ export function useThemed() {
 
     const clearThemedResult = useCallback(() => {
         setThemedResult(null);
+        setThemedResults([]);
     }, []);
+
+    const handleThemedBatchDownload = useCallback(async () => {
+        if (themedResults.length === 0) return;
+
+        try {
+            const JSZip = await import('jszip');
+            const zip = new JSZip.default();
+            themedResults.forEach((result, index) => {
+                const base64 = result.split(',')[1];
+                zip.file(`themed-${index + 1}.png`, base64, { base64: true });
+            });
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = `themed-${Date.now()}.zip`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch {
+            themedResults.forEach((result, index) => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = result;
+                    link.download = `themed-${index + 1}.png`;
+                    link.click();
+                }, index * 100);
+            });
+        }
+    }, [themedResults]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -130,15 +188,19 @@ export function useThemed() {
     return {
         themedFile,
         themedResult,
+        themedResults,
         themedLoading,
         themedError,
         themedPreviewUrl,
         themeType,
         setThemeType,
         progress,
+        quantity,
+        setQuantity,
         handleThemedFileChange,
         handleThemedGenerate,
         handleThemedDownload,
+        handleThemedBatchDownload,
         clearThemedResult,
         isDraggingOver,
         handleDragOver,

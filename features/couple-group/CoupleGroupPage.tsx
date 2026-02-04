@@ -16,6 +16,7 @@ import CoupleGroupStyleSelector from './CoupleGroupStyleSelector';
 import CoupleGroupUploadSection from './CoupleGroupUploadSection';
 import CoupleGroupResult from './CoupleGroupResult';
 import { useCoupleGroup } from './useCoupleGroup';
+import QuantitySelector from '../../components/QuantitySelector';
 
 interface CoupleGroupPageProps {
   onImageSelected: (file: File) => void;
@@ -40,7 +41,59 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
 
         <CoupleGroupModeTabs mode={coupleGroup.mode} onChange={coupleGroup.setMode} />
 
-        {coupleGroup.result ? (
+        {coupleGroup.results && coupleGroup.results.length > 0 ? (
+          <div className="w-full flex flex-col gap-6">
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={coupleGroup.handleBatchDownload}
+                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+              >
+                💾 {t('history.batch_download')} ({coupleGroup.results.length})
+              </button>
+              <button
+                onClick={coupleGroup.clearResult}
+                className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors"
+              >
+                {t('couple_group.again')}
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+              {coupleGroup.results.map((result, idx) => (
+                <div key={idx} className="relative group">
+                  <div className="aspect-[3/4] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center">
+                    <img
+                      src={result}
+                      alt={`${coupleGroup.mode === 'couple' ? 'Couple' : 'Group'} Photo ${idx + 1}`}
+                      className="max-w-full max-h-full w-auto h-auto object-contain"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      onImageSelected(
+                        dataURLtoFile(result, `couple-group-${idx + 1}.png`)
+                      );
+                    }}
+                    className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    <span className="text-white font-bold">{t('history.edit')}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = result;
+                      link.download = `couple-group-${coupleGroup.mode}-${idx + 1}.png`;
+                      link.click();
+                    }}
+                    className="absolute top-2 right-2 bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    title={t('couple_group.download')}
+                  >
+                    ⬇️
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : coupleGroup.result ? (
           <CoupleGroupResult
             result={coupleGroup.result}
             mode={coupleGroup.mode}
@@ -73,6 +126,13 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
               onChange={coupleGroup.setStyle}
               disabled={coupleGroup.loading}
             />
+            <div className="w-full max-w-md mx-auto">
+              <QuantitySelector
+                quantity={coupleGroup.quantity}
+                onChange={coupleGroup.setQuantity}
+                disabled={coupleGroup.loading}
+              />
+            </div>
             <CoupleGroupUploadSection
               mode={coupleGroup.mode}
               files={coupleGroup.files}
