@@ -4,35 +4,29 @@
  *
  * Travel photo: positive/negative templates and scene presets.
  * {SCENE} in the positive template is replaced by the scene prompt.
+ * Domain types live in root types.ts; re-exported here for convenience.
  */
 
-export type TravelSceneGroup = 'international' | 'taiwan';
+import type { TravelScene } from '../types';
 
-export type TravelSceneCategory = 'scenery' | 'food';
-
-export type TravelSceneRegion = 'north' | 'central' | 'south' | 'east' | 'islands';
-
-export type TravelContinent = 'europe' | 'asia' | 'namerica' | 'samerica' | 'oceania' | 'africa';
-
-export interface TravelScene {
-  id: string;
-  nameKey: string;
-  prompt: string;
-  group: TravelSceneGroup;
-  category?: TravelSceneCategory; // Default is 'scenery'
-  vibes?: TravelVibe[]; // Specific vibes for this scene
-  region?: TravelSceneRegion;
-  continent?: TravelContinent;
-  x?: number; // percentage from left
-  y?: number; // percentage from top
-  /** 
-   * Optional path to a real photo of the scene (in public/images/scenes/).
-   * If provided/uncommented, this photo will be used as a reference to improve realism.
-   */
-  referenceImagePath?: string;
-  /** Optional key for a detailed description (for gourmet items) */
-  descriptionKey?: string;
-}
+export type {
+  TravelSceneGroup,
+  TravelSceneCategory,
+  TravelSceneRegion,
+  TravelContinent,
+  TravelVibe,
+  TravelScene,
+  TravelAspectRatio,
+  TravelImageSize,
+  TravelStyle,
+  TravelWeather,
+  TravelTimeOfDay,
+  TravelVibeOption,
+  TravelOutfit,
+  TravelRelationship,
+  TravelFraming,
+  TravelPose,
+} from '../types';
 
 /** International travel scenes */
 export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
@@ -254,31 +248,25 @@ anime, cartoon, illustration, painting,
 low quality, blurry, deformed, distorted, extra fingers, bad anatomy`;
 
 /** Output aspect ratio options. */
-export type TravelAspectRatio = '1:1' | '16:9' | '9:16';
-
-export const TRAVEL_ASPECT_RATIOS: { id: TravelAspectRatio; nameKey: string }[] = [
+export const TRAVEL_ASPECT_RATIOS: { id: import('../types').TravelAspectRatio; nameKey: string }[] = [
   { id: '1:1', nameKey: 'travel.aspect_1_1' },
   { id: '16:9', nameKey: 'travel.aspect_16_9' },
   { id: '9:16', nameKey: 'travel.aspect_9_16' },
 ];
 
-export const DEFAULT_TRAVEL_ASPECT: TravelAspectRatio = '1:1';
+export const DEFAULT_TRAVEL_ASPECT = '1:1' as const satisfies import('../types').TravelAspectRatio;
 
 /** Output image size. Flash: 1K only; Pro: 1K, 2K, 4K. */
-export type TravelImageSize = '1K' | '2K' | '4K';
-
-export const TRAVEL_IMAGE_SIZES: { id: TravelImageSize; nameKey: string; proOnly: boolean }[] = [
+export const TRAVEL_IMAGE_SIZES: { id: import('../types').TravelImageSize; nameKey: string; proOnly: boolean }[] = [
   { id: '1K', nameKey: 'travel.size_1k', proOnly: false },
   { id: '2K', nameKey: 'travel.size_2k', proOnly: true },
   { id: '4K', nameKey: 'travel.size_4k', proOnly: true },
 ];
 
-export const DEFAULT_TRAVEL_IMAGE_SIZE: TravelImageSize = '1K';
+export const DEFAULT_TRAVEL_IMAGE_SIZE = '1K' as const satisfies import('../types').TravelImageSize;
 
 /** Travel photo style presets */
-export type TravelStyle = 'natural' | 'golden_hour' | 'film' | 'vibrant' | 'cinematic';
-
-export const TRAVEL_STYLES: { id: TravelStyle; nameKey: string; prompt: string }[] = [
+export const TRAVEL_STYLES: { id: import('../types').TravelStyle; nameKey: string; prompt: string }[] = [
   { id: 'natural', nameKey: 'travel.style.natural', prompt: 'soft natural lighting, photorealistic, clear details' },
   { id: 'golden_hour', nameKey: 'travel.style.golden_hour', prompt: 'golden hour sunlight, warm tones, cinematic lighting, glowing skin' },
   { id: 'film', nameKey: 'travel.style.film', prompt: 'shot on 35mm film, kodak portra 400, grainy texture, vintage feel, soft colors' },
@@ -286,12 +274,10 @@ export const TRAVEL_STYLES: { id: TravelStyle; nameKey: string; prompt: string }
   { id: 'cinematic', nameKey: 'travel.style.cinematic', prompt: 'moody cinematic lighting, dramatic atmosphere, deep shadows, professional color grading' },
 ];
 
-export const DEFAULT_TRAVEL_STYLE: TravelStyle = 'natural';
+export const DEFAULT_TRAVEL_STYLE = 'natural' as const satisfies import('../types').TravelStyle;
 
 /** Weather conditions for AI prompt injection */
-export type TravelWeather = 'random' | 'sunny' | 'rainy' | 'snowy' | 'cloudy' | 'misty';
-
-export const TRAVEL_WEATHER_OPTIONS: { id: TravelWeather; nameKey: string; prompt: string; icon: string }[] = [
+export const TRAVEL_WEATHER_OPTIONS: { id: import('../types').TravelWeather; nameKey: string; prompt: string; icon: string }[] = [
   { id: 'random', nameKey: 'travel.weather.random', prompt: '', icon: '🎲' },
   { id: 'sunny', nameKey: 'travel.weather.sunny', prompt: 'sunny day, clear blue sky, bright sunlight', icon: '☀️' },
   { id: 'rainy', nameKey: 'travel.weather.rainy', prompt: 'rainy day, wet streets, rain droplets, raindrops on skin', icon: '🌧️' },
@@ -301,9 +287,7 @@ export const TRAVEL_WEATHER_OPTIONS: { id: TravelWeather; nameKey: string; promp
 ];
 
 /** Time of day for AI prompt injection */
-export type TravelTimeOfDay = 'random' | 'dawn' | 'noon' | 'sunset' | 'night';
-
-export const TRAVEL_TIME_OPTIONS: { id: TravelTimeOfDay; nameKey: string; prompt: string; icon: string }[] = [
+export const TRAVEL_TIME_OPTIONS: { id: import('../types').TravelTimeOfDay; nameKey: string; prompt: string; icon: string }[] = [
   { id: 'random', nameKey: 'travel.time.random', prompt: '', icon: '🎲' },
   { id: 'dawn', nameKey: 'travel.time.dawn', prompt: 'early morning, soft dawn light, pastel sky', icon: '🌅' },
   { id: 'noon', nameKey: 'travel.time.noon', prompt: 'midday, high sun, bright and vibrant colors', icon: '☀️' },
@@ -312,16 +296,7 @@ export const TRAVEL_TIME_OPTIONS: { id: TravelTimeOfDay; nameKey: string; prompt
 ];
 
 /** Vibe / Emotion filters for AI prompt injection */
-export type TravelVibe = 'zen' | 'retro' | 'cyberpunk' | 'street' | 'elegant' | 'adventure' | 'cozy' | 'futuristic' | 'romantic';
-
-export interface TravelVibeOption {
-  id: TravelVibe;
-  nameKey: string;
-  prompt: string;
-  icon: string;
-}
-
-export const TRAVEL_VIBE_OPTIONS: TravelVibeOption[] = [
+export const TRAVEL_VIBE_OPTIONS: import('../types').TravelVibeOption[] = [
   { id: 'zen', nameKey: 'travel.vibe.zen', prompt: 'peaceful, zen atmosphere, minimalist, calm', icon: '🧘' },
   { id: 'retro', nameKey: 'travel.vibe.retro', prompt: 'vintage aesthetic, 90s feel, nostalgic colors', icon: '📼' },
   { id: 'cyberpunk', nameKey: 'travel.vibe.cyberpunk', prompt: 'cyberpunk style, neon lights, high tech low life, rain-slicked streets', icon: '🌃' },
@@ -334,9 +309,7 @@ export const TRAVEL_VIBE_OPTIONS: TravelVibeOption[] = [
 ];
 
 /** Outfit options for AI prompt injection */
-export type TravelOutfit = 'default' | 'casual' | 'formal' | 'traditional' | 'winter' | 'summer' | 'hiking' | 'cyberpunk' | 'luxury' | 'vintage' | 'street_chic' | 'preppy' | 'boho' | 'parisian' | 'academic' | 'y2k' | 'custom';
-
-export const TRAVEL_OUTFIT_OPTIONS: { id: TravelOutfit; nameKey: string; prompt: string; icon: string }[] = [
+export const TRAVEL_OUTFIT_OPTIONS: { id: import('../types').TravelOutfit; nameKey: string; prompt: string; icon: string }[] = [
   { id: 'default', nameKey: 'travel.outfit.default', prompt: '', icon: '🧥' },
   { id: 'luxury', nameKey: 'travel.outfit.luxury', prompt: 'quiet luxury style, exquisite high-end fashion, high-quality fabrics, sophisticated minimalist look, expensive accessories', icon: '💎' },
   { id: 'parisian', nameKey: 'travel.outfit.parisian', prompt: 'effortless Parisian chic, beret, trench coat, striped tops, stylish and elegant French aesthetic', icon: '🍷' },
@@ -355,9 +328,7 @@ export const TRAVEL_OUTFIT_OPTIONS: { id: TravelOutfit; nameKey: string; prompt:
 ];
 
 /** Relationship types for multi-person mode */
-export type TravelRelationship = 'default' | 'couple' | 'family' | 'friends' | 'siblings' | 'parent_child';
-
-export const TRAVEL_RELATIONSHIP_OPTIONS: { id: TravelRelationship; nameKey: string; prompt: string; icon: string }[] = [
+export const TRAVEL_RELATIONSHIP_OPTIONS: { id: import('../types').TravelRelationship; nameKey: string; prompt: string; icon: string }[] = [
   { id: 'default', nameKey: 'travel.relationship.default', prompt: '', icon: '👥' },
   { id: 'couple', nameKey: 'travel.relationship.couple', prompt: 'romantic couple, intimate and affectionate interaction', icon: '💑' },
   { id: 'family', nameKey: 'travel.relationship.family', prompt: 'family members, warm family atmosphere', icon: '👨‍👩‍👧‍👦' },
@@ -367,9 +338,7 @@ export const TRAVEL_RELATIONSHIP_OPTIONS: { id: TravelRelationship; nameKey: str
 ];
 
 /** Camera framing options */
-export type TravelFraming = 'default' | 'closeup' | 'portrait' | 'full_body' | 'wide_angle' | 'aerial';
-
-export const TRAVEL_FRAMING_OPTIONS: { id: TravelFraming; nameKey: string; prompt: string; icon: string }[] = [
+export const TRAVEL_FRAMING_OPTIONS: { id: import('../types').TravelFraming; nameKey: string; prompt: string; icon: string }[] = [
   { id: 'default', nameKey: 'travel.framing.default', prompt: '', icon: '📷' },
   { id: 'closeup', nameKey: 'travel.framing.closeup', prompt: 'close-up shot, face and upper body focus, intimate framing', icon: '🔍' },
   { id: 'portrait', nameKey: 'travel.framing.portrait', prompt: 'portrait shot, head to waist, classic travel photo framing', icon: '🖼️' },
@@ -391,9 +360,7 @@ export const OUTFIT_COLOR_PRESETS = [
 ];
 
 /** Pose options for AI prompt injection */
-export type TravelPose = 'natural' | 'hugging' | 'jumping' | 'hand_in_hand' | 'pointing' | 'looking_at_each_other' | 'peace_sign' | 'walking_away' | 'sitting_relaxed' | 'candid_laugh' | 'leaning' | 'coffee_time' | 'adjusting_shades' | 'cafe_sitting' | 'photographer' | 'heart' | 'custom';
-
-export const TRAVEL_POSE_OPTIONS: { id: TravelPose; nameKey: string; prompt: string; icon: string; minPeople?: number }[] = [
+export const TRAVEL_POSE_OPTIONS: { id: import('../types').TravelPose; nameKey: string; prompt: string; icon: string; minPeople?: number }[] = [
   { id: 'natural', nameKey: 'travel.pose.natural', prompt: 'standing naturally, relaxed pose', icon: '🚶' },
   { id: 'hugging', nameKey: 'travel.pose.hugging', prompt: 'hugging each other warmly, showing affection', icon: '🫂', minPeople: 2 },
   { id: 'jumping', nameKey: 'travel.pose.jumping', prompt: 'jumping in the air with joy, mid-air pose, arms raised', icon: '🤸' },
@@ -414,7 +381,7 @@ export const TRAVEL_POSE_OPTIONS: { id: TravelPose; nameKey: string; prompt: str
 ];
 
 /** Recommended vibes for specific location types */
-export const LOCATION_RECOMMENDED_VIBES: Record<string, TravelVibe[]> = {
+export const LOCATION_RECOMMENDED_VIBES: Record<string, import('../types').TravelVibe[]> = {
   // Cities
   'shibuya': ['cyberpunk', 'street', 'futuristic'],
   'nyc': ['street', 'cyberpunk', 'elegant'],
