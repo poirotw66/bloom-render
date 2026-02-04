@@ -7,7 +7,7 @@
 
 import { GenerateContentResponse } from '@google/genai';
 import { TRAVEL_POSITIVE_TEMPLATE, TRAVEL_NEGATIVE } from '../../constants/travel';
-import { fileToPart, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
 
 export interface GenerateTravelPhotoOptions {
   scenePrompt: string;
@@ -92,14 +92,14 @@ Output: Return ONLY the final travel photo. Do not return any text.`;
 
   if (isGroup) {
     for (const file of originalImage) {
-      parts.push(await fileToPart(file));
+      parts.push(await fileToPartAuto(file));
     }
   } else {
-    parts.push(await fileToPart(originalImage));
+    parts.push(await fileToPartAuto(originalImage));
   }
 
   if (sceneReferenceImage) {
-    parts.push(await fileToPart(sceneReferenceImage));
+    parts.push(await fileToPartAuto(sceneReferenceImage));
   }
   parts.push(textPart);
 

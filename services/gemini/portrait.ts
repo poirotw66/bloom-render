@@ -13,7 +13,7 @@ import {
   DEFAULT_PORTRAIT_TYPE,
   DEFAULT_PORTRAIT_SPEC,
 } from '../../constants/portrait';
-import { fileToPart, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
 
 export interface GeneratePortraitOptions {
   portraitType?: PortraitType;
@@ -118,10 +118,10 @@ Output: Return ONLY the final professional portrait image. Do not return any tex
 
   if (isGroup) {
     for (const file of originalImage) {
-      parts.push(await fileToPart(file));
+      parts.push(await fileToPartAuto(file));
     }
   } else {
-    parts.push(await fileToPart(originalImage));
+    parts.push(await fileToPartAuto(originalImage));
   }
   parts.push(textPart);
 

@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { fileToPart, getClient, getModel, handleApiResponse } from '../../services/gemini/shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse } from '../../services/gemini/shared';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import type { CoupleStyle, GroupStyle } from '../../types';
 import {
@@ -245,7 +245,7 @@ Output: Return ONLY the final ${mode === 'couple' ? 'couple' : 'group'} portrait
       // Prepare file parts (same for all variations)
       const fileParts: Array<{ inlineData?: { mimeType: string; data: string } }> = [];
       for (const file of files) {
-        fileParts.push(await fileToPart(file));
+        fileParts.push(await fileToPartAuto(file));
       }
 
       console.log('Starting couple/group photo generation', { mode, style, fileCount });

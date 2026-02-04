@@ -8,7 +8,7 @@
 import { GenerateContentResponse } from '@google/genai';
 import type { ThemedType } from '../../types';
 import { THEMED_TYPES, DEFAULT_THEMED_TYPE } from '../../constants/themed';
-import { fileToPart, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
 
 export interface GenerateThemedPhotoOptions {
   themeType?: ThemedType;
@@ -79,10 +79,10 @@ Output: Return ONLY the final themed image. Do not return any text.`;
 
   if (isGroup) {
     for (const file of originalImage) {
-      parts.push(await fileToPart(file));
+      parts.push(await fileToPartAuto(file));
     }
   } else {
-    parts.push(await fileToPart(originalImage));
+    parts.push(await fileToPartAuto(originalImage));
   }
   parts.push(textPart);
 

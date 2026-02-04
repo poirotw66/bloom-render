@@ -6,7 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPart, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
 
 /**
  * Generates an image with a global adjustment applied using generative AI.
@@ -20,7 +20,7 @@ export const generateAdjustedImage = async (
   const ai = getClient(settings);
   const model = getModel(settings);
 
-  const originalImagePart = await fileToPart(originalImage);
+  const originalImagePart = await fileToPartAuto(originalImage);
   const prompt = `You are an expert photo editor AI. Your task is to perform a natural, global adjustment to the entire image based on the user's request.
 User Request: "${adjustmentPrompt}"
 

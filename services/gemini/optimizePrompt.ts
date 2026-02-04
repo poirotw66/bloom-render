@@ -5,7 +5,7 @@
  * Prompt optimization for image generation.
  */
 
-import { fileToPart, getClient, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, type ServiceSettings } from './shared';
 
 /**
  * Uses Gemini (text mode) to optimize a user's short prompt into a detailed image generation prompt.
@@ -35,7 +35,7 @@ Requirements:
   > = [];
 
   if (referenceImage) {
-    parts.push(await fileToPart(referenceImage));
+    parts.push(await fileToPartAuto(referenceImage));
   }
   parts.push({ text: instructions });
 

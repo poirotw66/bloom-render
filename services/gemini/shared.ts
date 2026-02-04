@@ -118,11 +118,15 @@ export const normalizeApiError = (error: unknown, context: string = 'generation'
 
 /** Convert a File to a Gemini API inlineData part. */
 export const fileToPart = async (
-  file: File
+  file: File,
+  compressIfNeeded?: (file: File) => Promise<File>
 ): Promise<{ inlineData: { mimeType: string; data: string } }> => {
+  // Apply compression if provided
+  const finalFile = compressIfNeeded ? await compressIfNeeded(file) : file;
+  
   const dataUrl = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
@@ -135,6 +139,44 @@ export const fileToPart = async (
   const mimeType = mimeMatch[1];
   const data = arr[1];
   return { inlineData: { mimeType, data } };
+};
+
+/**
+ * Get compression function based on settings stored in localStorage.
+ * Returns a function that compresses images if enabled, or identity function if disabled.
+ */
+export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
+  // Check settings from localStorage (non-React way to access settings)
+  const compressionEnabled = localStorage.getItem('pixshop_compression_enabled') !== 'false'; // Default to true
+  const thresholdStr = localStorage.getItem('pixshop_compression_threshold') || '5';
+  const thresholdMB = parseFloat(thresholdStr) || 5;
+
+  if (!compressionEnabled) {
+    // Return identity function (no compression)
+    return async (file: File) => file;
+  }
+
+  // Dynamically import compression function to avoid circular dependencies
+  return async (file: File) => {
+    try {
+      const { compressImageIfNeeded } = await import('../../utils/fileUtils');
+      return await compressImageIfNeeded(file, { maxWidth: 2048, maxHeight: 2048, quality: 0.85 }, thresholdMB);
+    } catch (error) {
+      console.warn('Failed to compress image, using original:', error);
+      return file;
+    }
+  };
+};
+
+/**
+ * Convert a File to a Gemini API inlineData part with automatic compression.
+ * This is a convenience wrapper that automatically applies compression based on settings.
+ */
+export const fileToPartAuto = async (
+  file: File
+): Promise<{ inlineData: { mimeType: string; data: string } }> => {
+  const compressFn = getCompressionFunction();
+  return fileToPart(file, compressFn);
 };
 
 /** Extract image data URL from GenerateContentResponse; throws if blocked or no image. */

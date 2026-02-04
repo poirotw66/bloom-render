@@ -806,6 +806,13 @@ const translations: Record<Language, Record<string, string>> = {
     "settings.api_key_desc": "Leave empty to use the default system key. Your key is stored locally.",
     "settings.save": "Save",
     "settings.cancel": "Cancel",
+    "settings.compression": "Image Compression",
+    "settings.compression.enable": "Enable Image Compression",
+    "settings.compression.enable_desc": "Automatically compress large images before uploading to reduce file size and improve upload speed. Compression runs in background and won't block the UI.",
+    "settings.compression.threshold": "Compression Threshold (MB)",
+    "settings.compression.threshold_desc": "Only compress images larger than this size. Smaller images will be uploaded as-is.",
+    "settings.compression.quality": "Compression Quality",
+    "settings.compression.quality_desc": "Higher quality = larger file size. Recommended: 85% (almost no visible difference).",
   },
   'zh-TW': {
     "app.title": "Pixshop",
@@ -1599,6 +1606,13 @@ const translations: Record<Language, Record<string, string>> = {
     "settings.api_key_desc": "留空則使用系統預設金鑰。您的金鑰僅儲存在本地。",
     "settings.save": "儲存",
     "settings.cancel": "取消",
+    "settings.compression": "圖片壓縮",
+    "settings.compression.enable": "啟用圖片壓縮",
+    "settings.compression.enable_desc": "自動壓縮大圖片後再上傳，減少檔案大小並提升上傳速度。壓縮在背景執行，不會阻塞介面。",
+    "settings.compression.threshold": "壓縮閾值 (MB)",
+    "settings.compression.threshold_desc": "僅壓縮超過此大小的圖片。較小的圖片將原樣上傳。",
+    "settings.compression.quality": "壓縮品質",
+    "settings.compression.quality_desc": "品質越高 = 檔案越大。建議：85%（幾乎看不出差異）。",
   }
 };
 

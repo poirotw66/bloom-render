@@ -22,7 +22,7 @@ import {
   DEFAULT_OUTPUT_SPEC,
   DEFAULT_CLOTHING_OPTION,
 } from '../../constants/idPhoto';
-import { fileToPart, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
 
 /** Base positive: identity, expression, background, lighting (no retouch, no framing) */
 const ID_PHOTO_BASE_POSITIVE = `Korean ID photo, passport-style photo, professional studio photo retouch, use the same person, preserve identity, same face, same facial structure, no face change, no age change, no gender change, neutral expression, mouth closed, eyes open, looking straight at camera, clean pure white background, simple and clean background, even and soft studio lighting, no shadow on face, no shadow on background, realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration`;
@@ -132,12 +132,12 @@ Output: Return ONLY the final ID/passport-style image. Do not return any text.`;
   });
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
-  const originalImagePart = await fileToPart(originalImage);
+  const originalImagePart = await fileToPartAuto(originalImage);
   const parts: Array<
     { inlineData?: { mimeType: string; data: string } } | { text: string }
   > = [originalImagePart];
   if (clothingReferenceImage) {
-    parts.push(await fileToPart(clothingReferenceImage));
+    parts.push(await fileToPartAuto(clothingReferenceImage));
   }
   parts.push(textPart);
 

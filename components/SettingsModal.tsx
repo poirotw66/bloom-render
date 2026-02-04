@@ -13,7 +13,16 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
-    const { apiKey, setApiKey, model, setModel } = useSettings();
+    const { 
+        apiKey, 
+        setApiKey, 
+        model, 
+        setModel,
+        enableImageCompression,
+        setEnableImageCompression,
+        compressionThresholdMB,
+        setCompressionThresholdMB,
+    } = useSettings();
     const { t } = useLanguage();
 
     if (!isOpen) return null;
@@ -61,6 +70,60 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         <p className="text-xs text-gray-500 mt-2">
                             {t('settings.api_key_desc')}
                         </p>
+                    </div>
+
+                    <div className="border-t border-gray-700 pt-6">
+                        <h3 className="text-lg font-semibold text-white mb-4">
+                            {t('settings.compression')}
+                        </h3>
+                        
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-3">
+                                <input
+                                    type="checkbox"
+                                    id="enable-compression"
+                                    checked={enableImageCompression}
+                                    onChange={(e) => setEnableImageCompression(e.target.checked)}
+                                    className="mt-1 w-4 h-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500"
+                                />
+                                <div className="flex-1">
+                                    <label 
+                                        htmlFor="enable-compression"
+                                        className="block text-sm font-medium text-gray-300 mb-1"
+                                    >
+                                        {t('settings.compression.enable')}
+                                    </label>
+                                    <p className="text-xs text-gray-500">
+                                        {t('settings.compression.enable_desc')}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {enableImageCompression && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        {t('settings.compression.threshold')}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="50"
+                                        step="0.5"
+                                        value={compressionThresholdMB}
+                                        onChange={(e) => {
+                                            const value = parseFloat(e.target.value);
+                                            if (!isNaN(value) && value > 0) {
+                                                setCompressionThresholdMB(value);
+                                            }
+                                        }}
+                                        className="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        {t('settings.compression.threshold_desc')}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
