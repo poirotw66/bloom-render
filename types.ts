@@ -113,3 +113,22 @@ export type TravelRelationship = 'default' | 'couple' | 'family' | 'friends' | '
 export type TravelFraming = 'default' | 'closeup' | 'portrait' | 'full_body' | 'wide_angle' | 'aerial';
 
 export type TravelPose = 'natural' | 'hugging' | 'jumping' | 'hand_in_hand' | 'pointing' | 'looking_at_each_other' | 'peace_sign' | 'walking_away' | 'sitting_relaxed' | 'candid_laugh' | 'leaning' | 'coffee_time' | 'adjusting_shades' | 'cafe_sitting' | 'photographer' | 'heart' | 'custom';
+
+// --- Couple/Group photo types ---
+
+export type CoupleStyle =
+  | 'couple_romance'
+  | 'couple_bestie'
+  | 'couple_retro_high'
+  | 'couple_us_college'
+  | 'couple_office'
+  | 'couple_home'
+  | 'couple_dragon'
+  | 'couple_robe'
+  | 'couple_polaroid';
+
+export type GroupStyle =
+  | 'group_family'
+  | 'group_family_spring'
+  | 'group_new_style'
+  | 'group_grad';
