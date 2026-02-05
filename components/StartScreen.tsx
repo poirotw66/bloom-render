@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { UploadIcon, MagicWandIcon, PaletteIcon, SunIcon, BullseyeIcon } from './icons';
 import { generateImageFromText } from '../services/geminiService';
 import { dataURLtoFile } from '../utils/fileUtils';
-import Spinner from './Spinner';
+import BloomFlowerLoader from './BloomFlowerLoader';
 import StartTabNav from './StartTabNav';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -94,6 +94,9 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl md:text-7xl">
           {t('start.title_part1')} <span className="text-blue-400">{t('start.title_part2')}</span>.
         </h1>
+        <p className="text-base md:text-lg text-blue-400/90 font-medium italic mt-1">
+          {t('app.slogan')}
+        </p>
         <p className="max-w-2xl text-lg text-gray-400 md:text-xl">
           {t('start.subtitle')}
         </p>
@@ -204,7 +207,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                     disabled={isGenerating || !generationPrompt.trim()}
                     className="w-full mt-2 bg-gradient-to-br from-blue-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 ease-in-out shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-px active:scale-95 active:shadow-inner disabled:from-gray-700 disabled:to-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
-                    {isGenerating ? <><Spinner /> {t('start.generating')}</> : <><MagicWandIcon className="w-5 h-5" /> {t('start.generate_button')}</>}
+                    {isGenerating ? <><BloomFlowerLoader size={24} className="shrink-0" /> {t('start.generating')}</> : <><MagicWandIcon className="w-5 h-5" /> {t('start.generate_button')}</>}
                 </button>
             </div>
         )}

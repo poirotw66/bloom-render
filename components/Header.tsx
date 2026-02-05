@@ -40,10 +40,15 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
         }`}>
         <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity">
-                <SparkleIcon className={`w-6 h-6 ${theme === 'newyear' ? 'text-red-400' : 'text-blue-400'}`} />
-                <h1 className={`text-xl font-bold tracking-tight ${theme === 'newyear' ? 'text-red-50' : 'text-gray-100'}`}>
-                {t('app.title')}
-                </h1>
+                <SparkleIcon className={`w-6 h-6 shrink-0 ${theme === 'newyear' ? 'text-red-400' : 'text-blue-400'}`} />
+                <div className="flex flex-col">
+                  <h1 className={`text-xl font-bold tracking-tight ${theme === 'newyear' ? 'text-red-50' : 'text-gray-100'}`}>
+                    {t('app.title')}
+                  </h1>
+                  <span className={`text-xs font-normal ${theme === 'newyear' ? 'text-red-200/80' : 'text-gray-400'}`}>
+                    {t('app.slogan')}
+                  </span>
+                </div>
             </Link>
 
             <div className="flex items-center gap-3">

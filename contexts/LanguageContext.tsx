@@ -9,7 +9,8 @@ type Language = 'en' | 'zh-TW';
 
 const translations: Record<Language, Record<string, string>> = {
   en: {
-    "app.title": "Pixshop",
+    "app.title": "BloomRender",
+    "app.slogan": "Let your ideas bloom.",
     "common.none": "None",
     "common.output_quantity": "Output Quantity",
 
@@ -815,7 +816,8 @@ const translations: Record<Language, Record<string, string>> = {
     "settings.compression.quality_desc": "Higher quality = larger file size. Recommended: 85% (almost no visible difference).",
   },
   'zh-TW': {
-    "app.title": "Pixshop",
+    "app.title": "BloomRender",
+    "app.slogan": "讓創意綻放。",
     "common.none": "無",
     "common.output_quantity": "產出數量",
 

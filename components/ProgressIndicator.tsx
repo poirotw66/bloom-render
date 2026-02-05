@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import Spinner from './Spinner';
+import BloomFlowerLoader from './BloomFlowerLoader';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface ProgressIndicatorProps {
@@ -27,7 +27,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   return (
     <div className={`flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-8 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}>
       <div className="relative">
-        <Spinner />
+        <BloomFlowerLoader size={80} />
         {progress !== undefined && (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-sm font-bold text-gray-300">{Math.round(progress)}%</span>

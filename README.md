@@ -1,6 +1,8 @@
-# Pixshop
+# BloomRender
 
-AI 驅動的照片編輯與生成器，以 Google Gemini API 提供修圖、濾鏡、證件照與旅遊照等功能。
+**BloomRender: Let your ideas bloom.**
+
+AI 驅動的專業照片編輯與生成工作室，以 Google Gemini API 提供修圖、濾鏡、證件照、形象照、旅遊照與主題寫真等功能。
 
 ---
 
