@@ -64,6 +64,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const settings = useSettings();
   const { theme } = useTheme();
   const s = themeStyles[theme];
+    const surface = theme === 'newyear'
+        ? 'bg-red-900/30 border-red-700/50 shadow-red-900/20'
+        : theme === 'bloom'
+            ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
+            : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [generationPrompt, setGenerationPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState<"1:1" | "3:4" | "4:3" | "16:9" | "9:16">("1:1");
@@ -112,8 +117,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   };
 
   return (
-    <div 
-      className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 ${isDraggingOver && tab === 'upload' ? s.drag : 'border-transparent'}`}
+        <div 
+            className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface} ${isDraggingOver && tab === 'upload' ? s.drag : ''}`}
       onDragOver={(e) => { 
           if (tab === 'upload') {
             e.preventDefault(); 

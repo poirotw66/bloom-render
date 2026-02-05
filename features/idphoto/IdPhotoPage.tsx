@@ -26,13 +26,19 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
   const navigate = useNavigate();
   const id = useIdPhoto();
 
+  const surface = theme === 'newyear'
+    ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
+    : theme === 'bloom'
+      ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
+      : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
+
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
     onImageSelected(dataURLtoFile(result, `id-photo-${index !== undefined ? index + 1 : Date.now()}.png`));
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 border-transparent">
+    <div className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}>
       <div className="flex flex-col items-center gap-6 animate-fade-in">
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl md:text-7xl">
           {t('start.title_part1')} <span className={`${
