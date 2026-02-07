@@ -6,6 +6,7 @@
  */
 
 import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
+import { compressImageIfNeeded } from '../../utils/fileUtils';
 
 export interface ServiceSettings {
   apiKey?: string;
@@ -156,10 +157,8 @@ export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
     return async (file: File) => file;
   }
 
-  // Dynamically import compression function to avoid circular dependencies
   return async (file: File) => {
     try {
-      const { compressImageIfNeeded } = await import('../../utils/fileUtils');
       return await compressImageIfNeeded(file, { maxWidth: 2048, maxHeight: 2048, quality: 0.85 }, thresholdMB);
     } catch (error) {
       console.warn('Failed to compress image, using original:', error);

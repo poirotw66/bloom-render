@@ -26,10 +26,6 @@
     opacity: 0;
     transform: translateY(10px);
   }
-    color: rgb(226 232 240);
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-
   to {
     opacity: 1;
     transform: translateY(0);
