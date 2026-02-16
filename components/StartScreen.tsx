@@ -15,6 +15,12 @@ import type { ThemeType } from '../contexts/ThemeContext';
 
 type StartTab = 'upload' | 'generate';
 
+interface StartScreenProps {
+  tab: StartTab;
+  onImageSelected: (file: File) => void;
+  navigate: (path: string) => void;
+}
+
 /** Theme-based class snippets for StartScreen (bloom / night / newyear) */
 const themeStyles = {
   bloom: {

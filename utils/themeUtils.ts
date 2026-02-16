@@ -1,9 +1,52 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ *
+ * Theme-based Tailwind class helpers. Use these instead of inline theme ternaries.
+ */
 
-import { ThemeType } from '../contexts/ThemeContext';
+import type { ThemeType } from '../contexts/ThemeContext';
+
+/** Editor page: tab bar, retouch form, input, primary submit button */
+export interface EditorThemeClasses {
+  tabContainer: string;
+  tabActive: string;
+  tabInactive: string;
+  retouchInstruction: string;
+  input: string;
+  submitButton: string;
+}
+
+export function getEditorThemeClasses(theme: ThemeType): EditorThemeClasses {
+  if (theme === 'newyear') {
+    return {
+      tabContainer: 'bg-red-900/30 border-red-700/50',
+      tabActive: 'bg-gradient-to-br from-red-500 to-yellow-400 text-white shadow-lg shadow-red-500/40 focus:ring-red-500',
+      tabInactive: 'text-red-200 hover:text-red-50 hover:bg-red-500/20 focus:ring-red-500',
+      retouchInstruction: 'text-red-300',
+      input: 'bg-red-900/30 border-red-700/50 text-red-50 placeholder-red-300 focus:ring-red-500',
+      submitButton: 'bg-gradient-to-br from-red-600 to-red-500 shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/40 disabled:from-red-800 disabled:to-red-700 focus:ring-red-500',
+    };
+  }
+  if (theme === 'bloom') {
+    return {
+      tabContainer: 'bg-gray-800/80 border-fuchsia-500/20',
+      tabActive: 'bg-gradient-to-br from-fuchsia-500 to-pink-400 text-white shadow-lg shadow-fuchsia-500/40 focus:ring-fuchsia-500',
+      tabInactive: 'text-gray-300 hover:text-white hover:bg-fuchsia-500/20 focus:ring-fuchsia-500',
+      retouchInstruction: 'text-gray-300',
+      input: 'bg-gray-800 border-gray-700 text-gray-200 focus:ring-fuchsia-500',
+      submitButton: 'bg-gradient-to-br from-fuchsia-600 to-pink-500 shadow-lg shadow-fuchsia-500/20 hover:shadow-xl hover:shadow-fuchsia-500/40 disabled:from-fuchsia-800 disabled:to-pink-800 focus:ring-fuchsia-500',
+    };
+  }
+  return {
+    tabContainer: 'bg-gray-800/80 border-gray-700/80',
+    tabActive: 'bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg shadow-cyan-500/40 focus:ring-blue-500',
+    tabInactive: 'text-gray-300 hover:text-white hover:bg-white/10 focus:ring-blue-500',
+    retouchInstruction: 'text-gray-400',
+    input: 'bg-gray-800 border-gray-700 text-gray-200 focus:ring-blue-500',
+    submitButton: 'bg-gradient-to-br from-blue-600 to-blue-500 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 disabled:from-blue-800 disabled:to-blue-700 focus:ring-blue-500',
+  };
+}
 
 export const getThemeClasses = (theme: ThemeType) => {
   if (theme === 'newyear') {

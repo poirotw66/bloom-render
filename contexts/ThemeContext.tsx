@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from 'react';
 
 export type ThemeType = 'bloom' | 'night' | 'newyear';
 
@@ -159,9 +159,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [theme]);
 
   const colors = themeColorMap[theme];
+  const value = useMemo(() => ({ theme, setTheme, colors }), [theme, colors]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, colors }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

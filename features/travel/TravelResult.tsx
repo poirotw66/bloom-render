@@ -45,7 +45,7 @@ interface TravelResultProps {
   } | null;
   onDownload: () => void;
   onAgain: () => void;
-  onEditInEditor: () => void;
+  onEditInEditor: (result: string, index?: number) => void;
 }
 
 const TravelResult: React.FC<TravelResultProps> = ({
@@ -178,7 +178,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
           {t('travel.again')}
         </button>
         <button
-          onClick={onEditInEditor}
+          onClick={() => onEditInEditor(result)}
           className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-5 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
         >
           {t('travel.edit_in_editor')}

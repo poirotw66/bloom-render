@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from 'react';
 
 export type ModelType = 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
 
@@ -72,17 +72,22 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(STORAGE_KEY_COMPRESSION_THRESHOLD, String(threshold));
   };
 
-  return (
-    <SettingsContext.Provider value={{ 
-      apiKey, 
-      setApiKey, 
-      model, 
+  const value = useMemo(
+    () => ({
+      apiKey,
+      setApiKey,
+      model,
       setModel,
       enableImageCompression,
       setEnableImageCompression,
       compressionThresholdMB,
       setCompressionThresholdMB,
-    }}>
+    }),
+    [apiKey, model, enableImageCompression, compressionThresholdMB]
+  );
+
+  return (
+    <SettingsContext.Provider value={value}>
       {children}
     </SettingsContext.Provider>
   );

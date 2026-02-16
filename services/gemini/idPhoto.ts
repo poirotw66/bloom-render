@@ -86,7 +86,7 @@ export const generateIdPhoto = async (
     idType: type,
     outputSpec: spec,
     clothingHint,
-    clothingReferenceImage,
+    clothingReferenceImage: clothingReferenceImage ?? undefined,
     variationIndex: opts.variationIndex,
   });
   const textPart = { text: prompt };

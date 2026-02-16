@@ -1805,16 +1805,25 @@ const translations: Record<Language, Record<string, string>> = {
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, vars?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+function interpolate(template: string, vars: Record<string, string | number>): string {
+  let out = template;
+  for (const [k, v] of Object.entries(vars)) {
+    out = out.replace(new RegExp(`\\{\\{\\s*${k}\\s*\\}\\}`, 'g'), String(v));
+  }
+  return out;
+}
+
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  const t = (key: string) => {
-    return translations[language][key] || key;
+  const t = (key: string, vars?: Record<string, string | number>) => {
+    const raw = translations[language][key] || key;
+    return vars ? interpolate(raw, vars) : raw;
   };
 
   return (

@@ -15,10 +15,21 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({ item, onClick }) => {
     const { t } = useLanguage();
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick(item);
+        }
+    };
+
     return (
         <div
-            className="group bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 flex flex-col gap-4 hover:bg-gray-700/40 hover:border-blue-500/50 transition-all duration-300 shadow-xl hover:shadow-blue-500/10 cursor-pointer"
+            role="button"
+            tabIndex={0}
+            className="group bg-gray-800/40 border border-gray-700/50 rounded-2xl p-6 flex flex-col gap-4 hover:bg-gray-700/40 hover:border-blue-500/50 transition-all duration-300 shadow-xl hover:shadow-blue-500/10 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
             onClick={() => onClick(item)}
+            onKeyDown={handleKeyDown}
+            aria-label={t(item.actionLabelKey)}
         >
             <div className="flex justify-between items-start gap-4">
                 <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">

@@ -4,7 +4,7 @@
 */
 
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import { generateEditedImage, generateFilteredImage, generateAdjustedImage } from './services/geminiService';
@@ -15,14 +15,16 @@ import AdjustmentPanel from './components/AdjustmentPanel';
 import CropPanel from './components/CropPanel';
 import { UndoIcon, RedoIcon, EyeIcon } from './components/icons';
 import StartScreen from './components/StartScreen';
-import IdPhotoPage from './features/idphoto/IdPhotoPage';
-import PortraitPage from './features/portrait/PortraitPage';
-import TravelPage from './features/travel/TravelPage';
-import ThemedPage from './features/themed/ThemedPage';
-import PhotographyServicePage from './features/photography-service/PhotographyServicePage';
-import CoupleGroupPage from './features/couple-group/CoupleGroupPage';
-import TryOnPage from './features/tryon/TryOnPage';
 import { dataURLtoFile } from './utils/fileUtils';
+import { getEditorThemeClasses } from './utils/themeUtils';
+
+const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
+const PortraitPage = lazy(() => import('./features/portrait/PortraitPage'));
+const TravelPage = lazy(() => import('./features/travel/TravelPage'));
+const ThemedPage = lazy(() => import('./features/themed/ThemedPage'));
+const PhotographyServicePage = lazy(() => import('./features/photography-service/PhotographyServicePage'));
+const CoupleGroupPage = lazy(() => import('./features/couple-group/CoupleGroupPage'));
+const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
 import { useLanguage } from './contexts/LanguageContext';
 import { useSettings } from './contexts/SettingsContext';
 import { useTheme } from './contexts/ThemeContext';
@@ -34,6 +36,7 @@ const App: React.FC = () => {
   const settings = useSettings();
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const editorTheme = getEditorThemeClasses(theme);
   const [history, setHistory] = useState<File[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
   const [prompt, setPrompt] = useState<string>('');
@@ -272,7 +275,7 @@ const App: React.FC = () => {
     }
   }, [currentImage]);
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+  const handleImageClick = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
     if (activeTab !== 'retouch') return;
 
     const img = e.currentTarget;
@@ -291,7 +294,7 @@ const App: React.FC = () => {
     const originalY = Math.round(offsetY * scaleY);
 
     setEditHotspot({ x: originalX, y: originalY });
-  };
+  }, [activeTab]);
 
   const renderEditor = () => {
     if (error) {
@@ -323,8 +326,8 @@ const App: React.FC = () => {
         {/* The current image is an overlay that fades in/out for comparison */}
         <img
           ref={imgRef}
-          key={currentImageUrl}
-          src={currentImageUrl}
+          key={currentImageUrl ?? 'none'}
+          src={currentImageUrl ?? undefined}
           alt="Current edited image"
           onClick={handleImageClick}
           className={`absolute top-0 left-0 w-full h-auto object-contain max-h-[60vh] rounded-xl transition-opacity duration-200 ease-in-out ${isComparing ? 'opacity-0' : 'opacity-100'} ${activeTab === 'retouch' ? 'cursor-crosshair' : 'cursor-default'}`}
@@ -336,8 +339,8 @@ const App: React.FC = () => {
     const cropImageElement = (
       <img
         ref={imgRef}
-        key={`crop-${currentImageUrl}`}
-        src={currentImageUrl}
+        key={`crop-${currentImageUrl ?? 'none'}`}
+        src={currentImageUrl ?? undefined}
         alt="Image to crop"
         className="w-full h-auto object-contain max-h-[60vh] rounded-xl"
       />
@@ -376,29 +379,12 @@ const App: React.FC = () => {
           )}
         </div>
 
-        <div className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${
-          theme === 'newyear'
-            ? 'bg-red-900/30 border-red-700/50'
-            : theme === 'bloom'
-              ? 'bg-gray-800/80 border-fuchsia-500/20'
-              : 'bg-gray-800/80 border-gray-700/80'
-          }`}>
+        <div className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${editorTheme.tabContainer}`}>
           {(['retouch', 'crop', 'adjust', 'filters'] as Tab[]).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`w-full capitalize font-semibold py-3 px-5 rounded-md transition-colors duration-200 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${activeTab === tab
-                  ? theme === 'newyear'
-                    ? 'bg-gradient-to-br from-red-500 to-yellow-400 text-white shadow-lg shadow-red-500/40 focus:ring-red-500'
-                    : theme === 'bloom'
-                      ? 'bg-gradient-to-br from-fuchsia-500 to-pink-400 text-white shadow-lg shadow-fuchsia-500/40 focus:ring-fuchsia-500'
-                      : 'bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg shadow-cyan-500/40 focus:ring-blue-500'
-                  : theme === 'newyear'
-                    ? 'text-red-200 hover:text-red-50 hover:bg-red-500/20 focus:ring-red-500'
-                    : theme === 'bloom'
-                      ? 'text-gray-300 hover:text-white hover:bg-fuchsia-500/20 focus:ring-fuchsia-500'
-                      : 'text-gray-300 hover:text-white hover:bg-white/10 focus:ring-blue-500'
-                }`}
+              className={`w-full capitalize font-semibold py-3 px-5 rounded-md transition-colors duration-200 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${activeTab === tab ? editorTheme.tabActive : editorTheme.tabInactive}`}
             >
               {t(`main.tab_${tab}`)}
             </button>
@@ -408,7 +394,7 @@ const App: React.FC = () => {
         <div className="w-full">
           {activeTab === 'retouch' && (
             <div className="flex flex-col items-center gap-4">
-              <p className={`text-md ${theme === 'newyear' ? 'text-red-300' : theme === 'bloom' ? 'text-gray-300' : 'text-gray-400'}`}>
+              <p className={`text-md ${editorTheme.retouchInstruction}`}>
                 {editHotspot ? t('main.retouch_instr_ready') : t('main.retouch_instr_initial')}
               </p>
               <form onSubmit={(e) => { e.preventDefault(); handleGenerate(); }} className="w-full flex items-center gap-2">
@@ -417,24 +403,12 @@ const App: React.FC = () => {
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder={editHotspot ? t('main.retouch_placeholder_ready') : t('main.retouch_placeholder_initial')}
-                  className={`flex-grow border rounded-lg p-5 text-lg focus:ring-2 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60 ${
-                      theme === 'newyear'
-                        ? 'bg-red-900/30 border-red-700/50 text-red-50 placeholder-red-300 focus:ring-red-500'
-                        : theme === 'bloom'
-                          ? 'bg-gray-800 border-gray-700 text-gray-200 focus:ring-fuchsia-500'
-                          : 'bg-gray-800 border-gray-700 text-gray-200 focus:ring-blue-500'
-                    }`}
+                  className={`flex-grow border rounded-lg p-5 text-lg focus:ring-2 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60 ${editorTheme.input}`}
                   disabled={isLoading || !editHotspot}
                 />
                 <button
                   type="submit"
-                  className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
-                      theme === 'newyear'
-                        ? 'bg-gradient-to-br from-red-600 to-red-500 shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/40 disabled:from-red-800 disabled:to-red-700 focus:ring-red-500'
-                        : theme === 'bloom'
-                          ? 'bg-gradient-to-br from-fuchsia-600 to-pink-500 shadow-lg shadow-fuchsia-500/20 hover:shadow-xl hover:shadow-fuchsia-500/40 disabled:from-fuchsia-800 disabled:to-pink-800 focus:ring-fuchsia-500'
-                          : 'bg-gradient-to-br from-blue-600 to-blue-500 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 disabled:from-blue-800 disabled:to-blue-700 focus:ring-blue-500'
-                    }`}
+                  className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${editorTheme.submitButton}`}
                   disabled={isLoading || !prompt.trim() || !editHotspot}
                 >
                   {t('main.btn_generate')}
@@ -513,19 +487,21 @@ const App: React.FC = () => {
     <div className="min-h-screen text-gray-100 flex flex-col">
       <Header onImageSelected={handleImageUpload} />
       <main className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex justify-center min-w-0 ${currentImage ? 'items-start' : 'items-center'}`}>
-        <Routes>
-          <Route path="/" element={<StartScreen tab="upload" onImageSelected={handleImageUpload} navigate={navigate} />} />
-          <Route path="/generate" element={<StartScreen tab="generate" onImageSelected={handleImageUpload} navigate={navigate} />} />
-          <Route path="/idphoto" element={<IdPhotoPage onImageSelected={handleImageUpload} />} />
-          <Route path="/portrait" element={<PortraitPage onImageSelected={handleImageUpload} />} />
-          <Route path="/travel" element={<TravelPage onImageSelected={handleImageUpload} />} />
-          <Route path="/themed" element={<ThemedPage onImageSelected={handleImageUpload} />} />
-          <Route path="/couple-group" element={<CoupleGroupPage onImageSelected={handleImageUpload} />} />
-          <Route path="/try-on" element={<TryOnPage onImageSelected={handleImageUpload} />} />
-          <Route path="/photography-service" element={<PhotographyServicePage />} />
-          <Route path="/edit" element={!currentImage ? <Navigate to="/" replace /> : renderEditor()} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[40vh]"><Spinner /></div>}>
+          <Routes>
+            <Route path="/" element={<StartScreen tab="upload" onImageSelected={handleImageUpload} navigate={navigate} />} />
+            <Route path="/generate" element={<StartScreen tab="generate" onImageSelected={handleImageUpload} navigate={navigate} />} />
+            <Route path="/idphoto" element={<IdPhotoPage onImageSelected={handleImageUpload} />} />
+            <Route path="/portrait" element={<PortraitPage onImageSelected={handleImageUpload} />} />
+            <Route path="/travel" element={<TravelPage onImageSelected={handleImageUpload} />} />
+            <Route path="/themed" element={<ThemedPage onImageSelected={handleImageUpload} />} />
+            <Route path="/couple-group" element={<CoupleGroupPage onImageSelected={handleImageUpload} />} />
+            <Route path="/try-on" element={<TryOnPage onImageSelected={handleImageUpload} />} />
+            <Route path="/photography-service" element={<PhotographyServicePage />} />
+            <Route path="/edit" element={!currentImage ? <Navigate to="/" replace /> : renderEditor()} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );

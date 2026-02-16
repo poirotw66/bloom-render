@@ -4,7 +4,7 @@
 */
 
 import React, { useState } from 'react';
-import { useSettings } from '../contexts/SettingsContext';
+import { useSettings, type ModelType } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -230,7 +230,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                             <div className="px-4 pb-4 space-y-4">
                                 <select
                                     value={model}
-                                    onChange={(e) => setModel(e.target.value as any)}
+                                    onChange={(e) => setModel(e.target.value as ModelType)}
                                     className={`w-full border rounded-lg p-3 focus:ring-2 focus:outline-none ${
                                         theme === 'newyear'
                                             ? 'bg-red-900/50 border-red-700/50 text-red-50 focus:ring-red-500'
