@@ -512,7 +512,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen text-gray-100 flex flex-col">
       <Header onImageSelected={handleImageUpload} />
-      <main className={`flex-grow w-full max-w-[1600px] mx-auto p-4 md:p-8 flex justify-center ${currentImage ? 'items-start' : 'items-center'}`}>
+      <main className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex justify-center min-w-0 ${currentImage ? 'items-start' : 'items-center'}`}>
         <Routes>
           <Route path="/" element={<StartScreen tab="upload" onImageSelected={handleImageUpload} navigate={navigate} />} />
           <Route path="/generate" element={<StartScreen tab="generate" onImageSelected={handleImageUpload} navigate={navigate} />} />

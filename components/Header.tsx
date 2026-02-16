@@ -72,15 +72,17 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
 
   return (
     <>
-        <header className={`w-full max-w-[1600px] mx-auto my-4 px-4 md:px-8 py-4 border rounded-2xl backdrop-blur-md sticky top-4 z-40 shadow-xl transition-colors duration-300 ${
+        <header className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 border rounded-2xl backdrop-blur-md shadow-lg transition-colors duration-300 ${
           theme === 'newyear'
             ? 'border-red-700/50 bg-red-900/40 shadow-red-900/20'
             : theme === 'bloom'
               ? 'border-fuchsia-500/20 bg-gray-800/50 shadow-fuchsia-500/5'
               : 'border-slate-600/40 bg-gray-800/50 shadow-slate-500/5'
-        }`}>
-        <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-between">
-            <Link to="/" className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity duration-200">
+        }`}
+        role="banner"
+        aria-label="Main navigation">
+        <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-between">
+            <Link to="/" className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity duration-200 order-1 shrink-0" aria-label={t('app.title')}>
                 <span className="flex shrink-0 w-9 h-9 rounded-xl overflow-hidden bg-white/5 ring-1 ring-white/10">
                   <LogoIcon className="w-full h-full object-contain" />
                 </span>
@@ -98,11 +100,11 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                 </div>
             </Link>
 
-            <div className="flex-1 min-w-[260px] flex justify-center">
-              <StartTabNav currentTab={currentTab} navigate={navigate} />
+            <div className="w-full order-3 md:order-2 md:flex-1 md:min-w-[260px] md:flex md:justify-center">
+              <StartTabNav currentTab={currentTab} navigate={navigate} theme={theme} />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 order-2 md:order-3 shrink-0">
                 <button
                     onClick={() => setIsSettingsOpen(true)}
                     className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-white/10 ${
