@@ -25,6 +25,8 @@ dist-ssr
 .shared/
 .cursor/
 
+# Required small assets (DO commit): public/logo/bloomrender_bg.png, public/images/taiwan-map.png
+
 # Scene reference images (large; not committed; see docs/SCENE_IMAGES_SOURCES.md)
 public/images/scenes/*.jpg
 public/images/scenes/*.jpeg

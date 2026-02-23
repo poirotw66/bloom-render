@@ -142,7 +142,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
       }}
     >
       <div className="flex flex-col items-center gap-6 animate-fade-in">
-        <img src="/logo/bloomrender_bg.png" alt="" className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 object-contain drop-shadow-lg" aria-hidden="true" />
+        <img src={`${import.meta.env.BASE_URL}logo/bloomrender_bg.png`} alt="" className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 object-contain drop-shadow-lg" aria-hidden="true" />
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
           {t('start.title_part1')} <span className={`bg-gradient-to-r ${s.titleGradient} bg-clip-text text-transparent`}>{t('start.title_part2')}</span>.
         </h1>

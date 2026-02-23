@@ -27,7 +27,7 @@ const TaiwanMap: React.FC<TaiwanMapProps> = ({ selectedSceneId, onSceneSelect, c
         <div className="relative w-full max-w-[500px] aspect-[0.85] mx-auto rounded-xl overflow-hidden border-2 border-amber-800/30 shadow-2xl">
             {/* Hand-drawn Taiwan map background image */}
             <img
-                src="/images/taiwan-map.png"
+                src={`${import.meta.env.BASE_URL}images/taiwan-map.png`}
                 alt="Taiwan Map"
                 className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                 draggable={false}

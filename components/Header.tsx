@@ -10,10 +10,13 @@ import { CogIcon } from './icons';
 import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
 
+/** Base URL for static assets (correct for GitHub Pages subpath) */
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+
 /** BloomRender logo for header (product branding) */
 const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
   <img
-    src="/logo/bloomrender_bg.png"
+    src={asset('logo/bloomrender_bg.png')}
     alt="BloomRender"
     className={className}
     width={36}
