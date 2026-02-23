@@ -228,11 +228,11 @@ export const handleApiResponse = (
 };
 
 export const getClient = (settings?: ServiceSettings) => {
-  const apiKey = settings?.apiKey || process.env.API_KEY || '';
+  const apiKey = settings?.apiKey || '';
   const key = typeof apiKey === 'string' ? apiKey.trim() : '';
   if (!key) {
     throw new Error(
-      'API Key not found. Add GEMINI_API_KEY to .env.local in the project root, or set your key in App Settings (gear icon).'
+      'API Key not found. Please set your key in App Settings (gear icon).'
     );
   }
   return new GoogleGenAI({ apiKey: key });

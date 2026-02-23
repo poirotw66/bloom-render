@@ -24,11 +24,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const settings = useSettings();
   const tryOn = useTryOn();
-  const hasApiKeyInSettings = Boolean(settings.apiKey?.trim());
-  const hasEnvApiKey = Boolean(
-    process.env.API_KEY && String(process.env.API_KEY).trim()
-  );
-  const hasApiKey = hasApiKeyInSettings || hasEnvApiKey;
+  const hasApiKey = Boolean(settings.apiKey?.trim());
 
   const resultList = tryOn.results.length > 0
     ? tryOn.results

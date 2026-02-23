@@ -348,7 +348,7 @@ const translations: Record<Language, Record<string, string>> = {
     "tryon.error_too_many_clothing": "Maximum 5 clothing photos allowed.",
     "tryon.error_generation_failed": "Failed to generate try-on. Please try again.",
     "tryon.api_key_required": "API key required to use Try-On.",
-    "tryon.api_key_hint": "Add GEMINI_API_KEY to .env.local in the project root, or set your key in Settings (gear icon in the header).",
+    "tryon.api_key_hint": "Set your API key in Settings (gear icon in the header).",
     "tryon.quantity_hint": "Generate 1–4 outfit style variations to choose from.",
     "tryon.batch_download": "Download All",
     "tryon.choose_style_hint": "Choose your favorite style to download or edit in the editor.",
@@ -896,7 +896,7 @@ const translations: Record<Language, Record<string, string>> = {
     "settings.language.zh": "Traditional Chinese",
     "settings.api_key": "API Key",
     "settings.api_key_placeholder": "Enter your Google GenAI API Key",
-    "settings.api_key_desc": "Leave empty to use the default system key. Your key is stored locally.",
+    "settings.api_key_desc": "Your key is stored locally in your browser.",
     "settings.save": "Save",
     "settings.cancel": "Cancel",
     "settings.compression": "Image Compression",
@@ -1249,7 +1249,7 @@ const translations: Record<Language, Record<string, string>> = {
     "tryon.error_too_many_clothing": "最多可上傳 5 張服裝照片。",
     "tryon.error_generation_failed": "試衣生成失敗，請重試。",
     "tryon.api_key_required": "使用試衣功能前請先設定 API 金鑰。",
-    "tryon.api_key_hint": "在專案根目錄的 .env.local 加入 GEMINI_API_KEY，或於上方工具列點擊齒輪進入「設定」輸入金鑰。",
+    "tryon.api_key_hint": "請於上方工具列點擊齒輪進入「設定」輸入 API 金鑰。",
     "tryon.quantity_hint": "可生成 1～4 張不同穿搭風格供選擇。",
     "tryon.batch_download": "全部下載",
     "tryon.choose_style_hint": "選擇喜歡的風格下載或進入編輯器。",
@@ -1789,7 +1789,7 @@ const translations: Record<Language, Record<string, string>> = {
     "settings.language.zh": "繁體中文",
     "settings.api_key": "API 金鑰",
     "settings.api_key_placeholder": "輸入您的 Google GenAI API Key",
-    "settings.api_key_desc": "留空則使用系統預設金鑰。您的金鑰僅儲存在本地。",
+    "settings.api_key_desc": "您的金鑰僅儲存在瀏覽器本地。",
     "settings.save": "儲存",
     "settings.cancel": "取消",
     "settings.compression": "圖片壓縮",
@@ -1813,7 +1813,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 function interpolate(template: string, vars: Record<string, string | number>): string {
   let out = template;
   for (const [k, v] of Object.entries(vars)) {
-    out = out.replace(new RegExp(`\\{\\{\\s*${k}\\s*\\}\\}`, 'g'), String(v));
+    out = out.replace(new RegExp(`\\{\\s*${k}\\s*\\}`, 'g'), String(v));
   }
   return out;
 }
