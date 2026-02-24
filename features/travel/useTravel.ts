@@ -10,6 +10,8 @@ import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { normalizeApiError } from '../../services/gemini/shared';
+import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
 import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
 
@@ -233,13 +235,7 @@ export function useTravel() {
     setResults([]);
 
     try {
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) return prev;
-          return prev + Math.random() * 10;
-        });
-      }, 500);
+      const stopProgress = startRandomProgressTicker(setProgress);
       // Enhance the prompt with dynamic variations and selected style/weather/time/vibe
       const stylePrompt = TRAVEL_STYLES.find(s => s.id === style)?.prompt || '';
 
@@ -312,11 +308,9 @@ export function useTravel() {
       });
 
       const settledResults = await Promise.allSettled(generationPromises);
-      const generatedResults = settledResults
-        .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
-        .map((result) => result.value);
+      const generatedResults = getFulfilledResults(settledResults);
 
-      clearInterval(progressInterval);
+      stopProgress();
       setProgress(100);
 
       console.log(`Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`);
@@ -403,30 +397,11 @@ export function useTravel() {
   const handleBatchDownload = useCallback(async () => {
     if (results.length === 0) return;
 
-    try {
-      const JSZip = await import('jszip');
-      const zip = new JSZip.default();
-      results.forEach((result, index) => {
-        const base64 = result.split(',')[1];
-        zip.file(`travel-photo-${index + 1}.png`, base64, { base64: true });
-      });
-
-      const content = await zip.generateAsync({ type: 'blob' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = `travel-photos-${Date.now()}.zip`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    } catch {
-      results.forEach((result, index) => {
-        setTimeout(() => {
-          const link = document.createElement('a');
-          link.href = result;
-          link.download = `travel-photo-${index + 1}.png`;
-          link.click();
-        }, index * 100);
-      });
-    }
+    await downloadBatchWithZipFallback({
+      dataUrls: results,
+      itemFileName: (index) => `travel-photo-${index + 1}.png`,
+      zipFileName: `travel-photos-${Date.now()}.zip`,
+    });
   }, [results]);
 
   const clearResult = useCallback(() => {

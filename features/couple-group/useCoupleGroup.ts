@@ -11,6 +11,8 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { fileToPartAuto, getClient, getModel, handleApiResponse, normalizeApiError } from '../../services/gemini/shared';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
+import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import type { CoupleStyle, GroupStyle } from '../../types';
 import {
@@ -184,13 +186,7 @@ export function useCoupleGroup() {
     setResults([]);
 
     try {
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) return prev;
-          return prev + Math.random() * 10;
-        });
-      }, 500);
+      const stopProgress = startRandomProgressTicker(setProgress);
       // Find the style configuration
       const styleConfig =
         mode === 'couple'
@@ -257,11 +253,9 @@ export function useCoupleGroup() {
       });
 
       const settledResults = await Promise.allSettled(generationPromises);
-      const generatedResults = settledResults
-        .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
-        .map((result) => result.value);
+      const generatedResults = getFulfilledResults(settledResults);
 
-      clearInterval(progressInterval);
+      stopProgress();
       setProgress(100);
 
       if (generatedResults.length === 0) {
@@ -295,30 +289,11 @@ export function useCoupleGroup() {
   const handleBatchDownload = useCallback(async () => {
     if (results.length === 0) return;
 
-    try {
-      const JSZip = await import('jszip');
-      const zip = new JSZip.default();
-      results.forEach((result, index) => {
-        const base64 = result.split(',')[1];
-        zip.file(`couple-group-${mode}-${index + 1}.png`, base64, { base64: true });
-      });
-
-      const content = await zip.generateAsync({ type: 'blob' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = `couple-group-${Date.now()}.zip`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    } catch {
-      results.forEach((result, index) => {
-        setTimeout(() => {
-          const link = document.createElement('a');
-          link.href = result;
-          link.download = `couple-group-${mode}-${index + 1}.png`;
-          link.click();
-        }, index * 100);
-      });
-    }
+    await downloadBatchWithZipFallback({
+      dataUrls: results,
+      itemFileName: (index) => `couple-group-${mode}-${index + 1}.png`,
+      zipFileName: `couple-group-${Date.now()}.zip`,
+    });
   }, [results, mode]);
 
   return {

@@ -10,6 +10,8 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { normalizeApiError } from '../../services/gemini/shared';
 import { useHistory } from '../../hooks/useHistory';
+import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { DEFAULT_THEMED_TYPE } from '../../constants/themed';
 import type { ThemedType } from '../../types';
 
@@ -72,13 +74,7 @@ export function useThemed() {
         setThemedResults([]);
 
         try {
-            // Simulate progress
-            const progressInterval = setInterval(() => {
-                setProgress((prev) => {
-                    if (prev >= 90) return prev;
-                    return prev + Math.random() * 10;
-                });
-            }, 500);
+            const stopProgress = startRandomProgressTicker(setProgress);
 
             // Generate all images in parallel with variations
             const generationPromises = Array.from({ length: quantity }, (_, i) =>
@@ -101,11 +97,9 @@ export function useThemed() {
             );
 
             const settledResults = await Promise.allSettled(generationPromises);
-            const results = settledResults
-                .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
-                .map((result) => result.value);
+            const results = getFulfilledResults(settledResults);
 
-            clearInterval(progressInterval);
+            stopProgress();
             setProgress(100);
 
             if (results.length === 0) {
@@ -144,30 +138,11 @@ export function useThemed() {
     const handleThemedBatchDownload = useCallback(async () => {
         if (themedResults.length === 0) return;
 
-        try {
-            const JSZip = await import('jszip');
-            const zip = new JSZip.default();
-            themedResults.forEach((result, index) => {
-                const base64 = result.split(',')[1];
-                zip.file(`themed-${index + 1}.png`, base64, { base64: true });
-            });
-
-            const content = await zip.generateAsync({ type: 'blob' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(content);
-            link.download = `themed-${Date.now()}.zip`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-        } catch {
-            themedResults.forEach((result, index) => {
-                setTimeout(() => {
-                    const link = document.createElement('a');
-                    link.href = result;
-                    link.download = `themed-${index + 1}.png`;
-                    link.click();
-                }, index * 100);
-            });
-        }
+        await downloadBatchWithZipFallback({
+            dataUrls: themedResults,
+            itemFileName: (index) => `themed-${index + 1}.png`,
+            zipFileName: `themed-${Date.now()}.zip`,
+        });
     }, [themedResults]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {

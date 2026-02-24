@@ -9,6 +9,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { generateVirtualTryOn } from '../../services/geminiService';
+import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import { getFulfilledResults } from '../../utils/generationHelpers';
 import {
   TRYON_BACKGROUNDS,
   TRYON_STYLES,
@@ -177,9 +179,7 @@ export function useTryOn() {
       );
 
       const settled = await Promise.allSettled(promises);
-      const fulfilled = settled
-        .filter((s): s is PromiseFulfilledResult<string> => s.status === 'fulfilled')
-        .map((s) => s.value);
+      const fulfilled = getFulfilledResults(settled);
       generated.push(...fulfilled);
 
       setProgress(100);
@@ -220,29 +220,11 @@ export function useTryOn() {
   const handleBatchDownload = useCallback(async () => {
     const list = results.length > 0 ? results : result ? [result] : [];
     if (list.length === 0) return;
-    try {
-      const JSZip = await import('jszip');
-      const zip = new JSZip.default();
-      list.forEach((dataUrl, index) => {
-        const base64 = dataUrl.split(',')[1];
-        zip.file(`try-on-${index + 1}.png`, base64, { base64: true });
-      });
-      const content = await zip.generateAsync({ type: 'blob' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = `try-on-${Date.now()}.zip`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    } catch {
-      list.forEach((dataUrl, index) => {
-        setTimeout(() => {
-          const link = document.createElement('a');
-          link.href = dataUrl;
-          link.download = `try-on-${index + 1}.png`;
-          link.click();
-        }, index * 100);
-      });
-    }
+    await downloadBatchWithZipFallback({
+      dataUrls: list,
+      itemFileName: (index) => `try-on-${index + 1}.png`,
+      zipFileName: `try-on-${Date.now()}.zip`,
+    });
   }, [results, result]);
 
   const canGenerate =

@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { normalizeApiError } from '../services/gemini/shared';
+import { startRandomProgressTicker } from '../utils/generationHelpers';
 
 export interface GeneratePageOptions<TFile = File, TOptions = unknown> {
   defaultFile?: TFile | null;
@@ -81,20 +82,14 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
     setProgress(0);
 
     try {
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) return prev;
-          return prev + Math.random() * 10;
-        });
-      }, 500);
+      const stopProgress = startRandomProgressTicker(setProgress);
 
       const url = await generateApi(file, options, {
         apiKey: settings.apiKey,
         model: settings.model,
       });
 
-      clearInterval(progressInterval);
+      stopProgress();
       setProgress(100);
       setResult(url);
     } catch (err) {
