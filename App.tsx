@@ -15,6 +15,7 @@ import AdjustmentPanel from './components/AdjustmentPanel';
 import CropPanel from './components/CropPanel';
 import { UndoIcon, RedoIcon, EyeIcon } from './components/icons';
 import StartScreen from './components/StartScreen';
+import { ErrorDisplay } from './components/ErrorDisplay';
 import { dataURLtoFile } from './utils/fileUtils';
 import { getEditorThemeClasses } from './utils/themeUtils';
 
@@ -301,7 +302,7 @@ const App: React.FC = () => {
       return (
         <div className="text-center animate-fade-in bg-red-500/10 border border-red-500/20 p-8 rounded-lg max-w-2xl mx-auto flex flex-col items-center gap-4">
           <h2 className="text-2xl font-bold text-red-300">{t('main.error_title')}</h2>
-          <p className="text-md text-red-400">{error}</p>
+          <ErrorDisplay message={error} className="text-md" />
           <button
             onClick={() => setError(null)}
             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg text-md transition-colors"

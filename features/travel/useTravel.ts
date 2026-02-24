@@ -9,6 +9,7 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { normalizeApiError } from '../../services/gemini/shared';
 import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
 import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
 
@@ -19,16 +20,16 @@ const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
 // Helper to load an image from a URL (e.g., from public folder) as a File object
 async function urlToFile(url: string, filename: string, mimeType: string): Promise<File> {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+  if (!res.ok) throw new Error('error.failed_fetch');
 
   const contentType = res.headers.get('content-type');
   if (contentType && !contentType.startsWith('image/')) {
-    throw new Error(`Invalid content type: ${contentType} for ${url}. Expected image.`);
+    throw new Error('error.invalid_content_type');
   }
 
   const blob = await res.blob();
   if (blob.size < 100) { // arbitrary small size check to avoid empty/error responses
-    throw new Error(`File too small: ${url}`);
+    throw new Error('error.file_too_small');
   }
   return new File([blob], filename, { type: mimeType });
 }
@@ -321,7 +322,7 @@ export function useTravel() {
       console.log(`Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`);
 
       if (generatedResults.length === 0) {
-        throw new Error('All generations failed');
+        throw new Error('error.all_generations_failed');
       }
 
       // Always use results array if quantity > 1, even if only one succeeded
@@ -349,8 +350,10 @@ export function useTravel() {
         clearBackground
       });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(`${t('travel.error_failed')} ${msg}`);
+      const normalizedError = normalizeApiError(err, 'travel');
+      const errorKey = normalizedError.message || 'error.unknown';
+      setError(t(errorKey));
+      console.error('Travel generation error:', normalizedError.originalError ?? err);
     } finally {
       setLoading(false);
       setProgress(0);

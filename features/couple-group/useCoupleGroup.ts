@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { fileToPartAuto, getClient, getModel, handleApiResponse } from '../../services/gemini/shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, normalizeApiError } from '../../services/gemini/shared';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import type { CoupleStyle, GroupStyle } from '../../types';
@@ -198,7 +198,7 @@ export function useCoupleGroup() {
           : GROUP_STYLES.find((s) => s.id === style);
 
       if (!styleConfig) {
-        throw new Error('Invalid style');
+        throw new Error('error.invalid_style');
       }
 
       // Use a unified generation function for couple/group photos
@@ -265,7 +265,7 @@ export function useCoupleGroup() {
       setProgress(100);
 
       if (generatedResults.length === 0) {
-        throw new Error('All generations failed');
+        throw new Error('error.all_generations_failed');
       }
 
       if (generatedResults.length === 1) {
@@ -274,8 +274,10 @@ export function useCoupleGroup() {
         setResults(generatedResults);
       }
     } catch (err) {
-      console.error('Generation error:', err);
-      setError(err instanceof Error ? err.message : t('couple_group.error_generation_failed'));
+      const normalizedError = normalizeApiError(err, 'couple_group');
+      const errorKey = normalizedError.message || 'error.unknown';
+      setError(t(errorKey));
+      console.error('Generation error:', normalizedError.originalError ?? err);
     } finally {
       setLoading(false);
       setProgress(0);

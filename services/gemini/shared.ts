@@ -30,10 +30,21 @@ export interface ApiError {
   originalError?: Error;
 }
 
+/** i18n key prefix for thrown app errors (pass-through to UI). */
+const I18N_ERROR_PREFIX = 'error.';
+
 /**
  * Convert API errors to user-friendly error messages with i18n keys.
+ * If error.message is already an i18n key (starts with "error."), it is passed through.
  */
 export const normalizeApiError = (error: unknown, context: string = 'generation'): ApiError => {
+  if (error instanceof Error && error.message.startsWith(I18N_ERROR_PREFIX)) {
+    return {
+      type: ApiErrorType.UNKNOWN,
+      message: error.message,
+      originalError: error,
+    };
+  }
   if (error instanceof Error) {
     const errorMessage = error.message.toLowerCase();
 

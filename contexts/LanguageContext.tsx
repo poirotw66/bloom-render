@@ -923,6 +923,11 @@ const translations: Record<Language, Record<string, string>> = {
     "error.invalid_request": "Invalid request. Please check your input and try again.",
     "error.unknown": "An unknown error occurred. Please try again.",
     "error.generation_failed": "Generation failed. Please try again.",
+    "error.all_generations_failed": "All generations failed. Please try again.",
+    "error.invalid_style": "Invalid style selected.",
+    "error.failed_fetch": "Failed to fetch resource. Please check your connection.",
+    "error.invalid_content_type": "Invalid content type. Expected an image.",
+    "error.file_too_small": "File too small or invalid.",
 
     "history.title": "Generation History",
     "history.subtitle": "View and manage your generated photos",
@@ -1926,6 +1931,11 @@ const translations: Record<Language, Record<string, string>> = {
     "error.invalid_request": "無效的請求。請檢查輸入後重試。",
     "error.unknown": "發生未知錯誤。請重試。",
     "error.generation_failed": "生成失敗。請重試。",
+    "error.all_generations_failed": "全部生成失敗。請重試。",
+    "error.invalid_style": "所選風格無效。",
+    "error.failed_fetch": "無法取得資源。請檢查連線。",
+    "error.invalid_content_type": "內容類型錯誤，應為圖片。",
+    "error.file_too_small": "檔案過小或無效。",
 
     "history.title": "生成歷史",
     "history.subtitle": "查看與管理您生成的照片",

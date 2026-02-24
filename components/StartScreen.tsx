@@ -8,6 +8,7 @@ import { UploadIcon, MagicWandIcon, PaletteIcon, SunIcon, BullseyeIcon } from '.
 import { generateImageFromText } from '../services/geminiService';
 import { dataURLtoFile } from '../utils/fileUtils';
 import BloomFlowerLoader from './BloomFlowerLoader';
+import { ErrorDisplay } from './ErrorDisplay';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -246,7 +247,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                     </div>
                 </div>
 
-                {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+                {error && <ErrorDisplay message={error} className="mt-2" />}
 
                 {settings.model === 'gemini-3-pro-image-preview' && (
                     <p className="text-xs text-gray-300">{t('start.generate_pro_slow_hint')}</p>

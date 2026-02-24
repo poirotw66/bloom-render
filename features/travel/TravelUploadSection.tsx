@@ -6,6 +6,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { TravelIcon } from '../../components/icons';
+import { ErrorDisplay } from '../../components/ErrorDisplay';
 
 interface TravelUploadSectionProps {
   files: File[];
@@ -120,7 +121,7 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                 : t('travel.upload_hint')}
             </p>
 
-            {error && <p className="text-red-400 text-sm animate-pulse font-medium">⚠️ {error}</p>}
+            {error && <ErrorDisplay message={error} />}
 
             <div className="flex items-center gap-4">
               {!isGroupMode && (

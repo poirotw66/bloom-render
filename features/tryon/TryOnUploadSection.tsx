@@ -8,6 +8,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import QuantitySelector from '../../components/QuantitySelector';
+import { ErrorDisplay } from '../../components/ErrorDisplay';
 
 interface TryOnUploadSectionProps {
   personPreviewUrl: string | null;
@@ -187,9 +188,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         </p>
       </div>
 
-      {error && (
-        <p className="text-red-400 text-sm font-medium animate-pulse">⚠️ {error}</p>
-      )}
+      {error && <ErrorDisplay message={error} />}
 
       <button
         type="button"

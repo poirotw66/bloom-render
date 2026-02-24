@@ -117,7 +117,7 @@ export function usePortrait() {
             setProgress(100);
 
             if (results.length === 0) {
-                throw new Error('All generations failed');
+                throw new Error('error.all_generations_failed');
             }
 
             if (results.length === 1) {

@@ -6,6 +6,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { IdPhotoIcon } from '../../components/icons';
+import { ErrorDisplay } from '../../components/ErrorDisplay';
 
 interface IdPhotoUploadSectionProps {
   idPhotoFile: File | null;
@@ -42,7 +43,7 @@ const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
           {idPhotoPreviewUrl && <img src={idPhotoPreviewUrl} alt="Uploaded portrait" className="max-w-full max-h-full w-auto h-auto object-contain" />}
         </div>
         <p className="text-sm text-gray-400">{t('start.idphoto_upload_hint')}</p>
-        {idPhotoError && <p className="text-red-400 text-sm">{idPhotoError}</p>}
+        {idPhotoError && <ErrorDisplay message={idPhotoError} />}
         <div className="flex items-center gap-3">
           <label className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-300 border border-gray-600 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
             <input type="file" className="hidden" accept="image/*" onChange={onFileChange} aria-label={t('start.idphoto_change_photo')} />

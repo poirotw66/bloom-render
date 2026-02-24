@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { ErrorDisplay } from './ErrorDisplay';
 
 interface BatchUploadSectionProps {
   files: File[];
@@ -110,9 +111,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
               )}
             </div>
 
-            {error && (
-              <p className="text-red-400 text-sm animate-pulse font-medium">⚠️ {error}</p>
-            )}
+            {error && <ErrorDisplay message={error} />}
 
             <div className="flex items-center gap-4">
               <label className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-gray-300 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
