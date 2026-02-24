@@ -57,7 +57,9 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 font-semibold">
                   📍 {sceneLabel}
                 </span>
-                <span className="text-gray-400 hidden md:inline">{t('travel.map_instruction')}</span>
+                <span className="text-gray-400 hidden md:inline">
+                  {viewMode === 'list' ? t('travel.list_instruction') : t('travel.map_instruction')}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex bg-gray-900/70 p-1.5 rounded-xl border border-gray-800 shadow-inner">
@@ -79,7 +81,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                       }`}
                   >
                     <span>📋</span>
-                    <span>{t('travel.list_view') || 'List View'}</span>
+                    <span>{t('travel.list_view')}</span>
                   </button>
                 </div>
                 <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-100 text-xs font-semibold">
@@ -142,7 +144,39 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
             statusMessages={['travel.generating']}
           />
         ) : (
-          <div className={`w-full ${viewMode === 'map' ? 'flex flex-col gap-6' : 'grid grid-cols-1 lg:grid-cols-2 gap-6 items-start'}`}>
+          <div className="w-full flex flex-col gap-6">
+            {/* View mode toggle - visible directly above map/form so users can switch to list */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-between gap-3 p-4 rounded-2xl border border-blue-500/20 bg-blue-500/5">
+              <span className="text-sm text-blue-100/90 font-medium">
+                {viewMode === 'list' ? t('travel.list_instruction') : t('travel.map_instruction')}
+              </span>
+              <div className="flex bg-gray-900/70 p-1.5 rounded-xl border border-gray-800 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('map')}
+                  className={`px-4 py-2.5 text-sm font-bold rounded-lg transition-all duration-200 flex items-center gap-2 ${viewMode === 'map'
+                    ? 'bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                    }`}
+                >
+                  <span>🗺️</span>
+                  <span>{t('travel.map_world')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('list')}
+                  className={`px-4 py-2.5 text-sm font-bold rounded-lg transition-all duration-200 flex items-center gap-2 ${viewMode === 'list'
+                    ? 'bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                    }`}
+                >
+                  <span>📋</span>
+                  <span>{t('travel.list_view')}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className={`w-full ${viewMode === 'map' ? 'flex flex-col gap-6' : 'grid grid-cols-1 lg:grid-cols-2 gap-6 items-start'}`}>
             <div className={viewMode === 'map' ? 'w-full' : 'space-y-4'}>
               {viewMode === 'map' ? (
                 <div className="flex flex-col gap-6">
@@ -282,6 +316,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                 onDragLeave={tr.handleDragLeave}
                 onDrop={tr.handleDrop}
               />
+            </div>
             </div>
           </div>
         )}
