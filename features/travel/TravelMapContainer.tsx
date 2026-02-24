@@ -361,12 +361,20 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                             </div>
                         </div>
 
-                        {/* Gourmet Description Card */}
-                        {
-                            isFood && scene.descriptionKey && (
-                                <div className="animate-slide-up flex flex-col sm:flex-row gap-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl backdrop-blur-md">
+                        {/* Scene / Food description card (all locations) */}
+                        {(() => {
+                            const descKey = scene.descriptionKey ?? `${scene.nameKey}.desc`;
+                            const descText = t(descKey);
+                            if (descText === descKey) return null;
+                            const isScenery = scene.category === 'scenery';
+                            const cardBg = isScenery ? 'bg-amber-500/10 border-amber-500/30' : 'bg-orange-500/10 border-orange-500/30';
+                            const borderCls = isScenery ? 'border-amber-500/20' : 'border-orange-500/20';
+                            const titleCls = isScenery ? 'text-amber-400' : 'text-orange-400';
+                            const icon = isScenery ? '📍' : '🍜';
+                            return (
+                                <div className={`animate-slide-up flex flex-col sm:flex-row gap-4 p-4 ${cardBg} border rounded-xl backdrop-blur-md`}>
                                     {scene.referenceImagePath && (
-                                        <div className="w-full sm:w-32 aspect-square rounded-lg overflow-hidden border border-orange-500/20 shadow-lg flex-shrink-0 bg-gray-900">
+                                        <div className={`w-full sm:w-32 aspect-square rounded-lg overflow-hidden border ${borderCls} shadow-lg flex-shrink-0 bg-gray-900`}>
                                             <img
                                                 src={scene.referenceImagePath}
                                                 alt={name}
@@ -379,16 +387,16 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                     )}
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xl">🍜</span>
-                                            <h4 className="font-bold text-orange-400">{name}</h4>
+                                            <span className="text-xl">{icon}</span>
+                                            <h4 className={`font-bold ${titleCls}`}>{name}</h4>
                                         </div>
                                         <p className="text-sm text-gray-300 leading-relaxed italic">
-                                            「{t(scene.descriptionKey)}」
+                                            「{descText}」
                                         </p>
                                     </div>
                                 </div>
-                            )
-                        }
+                            );
+                        })()}
                     </div>
                 );
             })()}
