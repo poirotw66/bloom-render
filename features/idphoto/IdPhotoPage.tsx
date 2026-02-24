@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -22,35 +21,40 @@ interface IdPhotoPageProps {
 const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
-  const navigate = useNavigate();
   const id = useIdPhoto();
 
-  const surface = theme === 'newyear'
-    ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
-    : theme === 'bloom'
-      ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
-      : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
+  const surface =
+    theme === 'newyear'
+      ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
+      : theme === 'bloom'
+        ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
+        : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
 
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
-    onImageSelected(dataURLtoFile(result, `id-photo-${index !== undefined ? index + 1 : Date.now()}.png`));
+    const filename = index !== undefined ? `id-photo-${index + 1}.png` : 'id-photo-export.png';
+    onImageSelected(dataURLtoFile(result, filename));
   };
 
   return (
-    <div className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}>
+    <div
+      className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}
+    >
       <div className="flex flex-col items-center gap-6 animate-fade-in">
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl md:text-7xl">
-          <span className={`${
-            theme === 'newyear'
-              ? 'text-red-200'
-              : theme === 'bloom'
-                ? 'text-fuchsia-200'
-                : 'text-blue-200'
-          }`}>{t('idphoto.title')}</span>
+          <span
+            className={`${
+              theme === 'newyear'
+                ? 'text-red-200'
+                : theme === 'bloom'
+                  ? 'text-fuchsia-200'
+                  : 'text-blue-200'
+            }`}
+          >
+            {t('idphoto.title')}
+          </span>
         </h1>
-        <p className="max-w-3xl text-lg text-gray-300 md:text-xl">
-          {t('idphoto.subtitle')}
-        </p>
+        <p className="max-w-3xl text-lg text-gray-300 md:text-xl">{t('idphoto.subtitle')}</p>
 
         {id.idPhotoResults && id.idPhotoResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
@@ -101,10 +105,7 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
             onEditInEditor={() => handleEditInEditor(id.idPhotoResult!)}
           />
         ) : id.idPhotoLoading ? (
-          <ProgressIndicator
-            progress={id.progress}
-            statusMessages={['start.idphoto_generating']}
-          />
+          <ProgressIndicator progress={id.progress} statusMessages={['start.idphoto_generating']} />
         ) : (
           <>
             <IdPhotoForm
@@ -131,7 +132,6 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
               />
             </div>
             <IdPhotoUploadSection
-              idPhotoFile={id.idPhotoFile}
               idPhotoPreviewUrl={id.idPhotoPreviewUrl}
               idPhotoError={id.idPhotoError}
               idPhotoLoading={id.idPhotoLoading}

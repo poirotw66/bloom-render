@@ -7,46 +7,43 @@ import React from 'react';
 import { SingleImageUploadPanel } from '../../components/SingleImageUploadPanel';
 
 interface PortraitUploadSectionProps {
-    portraitFile: File | null;
-    portraitPreviewUrl: string | null;
-    portraitError: string | null;
-    portraitLoading: boolean;
-    isDraggingOver: boolean;
-    onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onGenerate: () => void;
-    onDragOver: (e: React.DragEvent) => void;
-    onDragLeave: () => void;
-    onDrop: (e: React.DragEvent) => void;
+  portraitPreviewUrl: string | null;
+  portraitError: string | null;
+  portraitLoading: boolean;
+  isDraggingOver: boolean;
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onGenerate: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: () => void;
+  onDrop: (e: React.DragEvent) => void;
 }
 
 const PortraitUploadSection: React.FC<PortraitUploadSectionProps> = ({
-    portraitFile,
-    portraitPreviewUrl,
-    portraitError,
-    portraitLoading,
-    isDraggingOver,
-    onFileChange,
-    onGenerate,
-    onDragOver,
-    onDragLeave,
-    onDrop,
+  portraitPreviewUrl,
+  portraitError,
+  portraitLoading,
+  isDraggingOver,
+  onFileChange,
+  onGenerate,
+  onDragOver,
+  onDragLeave,
+  onDrop,
 }) => (
-    <SingleImageUploadPanel
-        file={portraitFile}
-        previewUrl={portraitPreviewUrl}
-        error={portraitError}
-        loading={portraitLoading}
-        isDraggingOver={isDraggingOver}
-        onFileChange={onFileChange}
-        onGenerate={onGenerate}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
-        titleKey="start.tab_portrait"
-        generateButtonKey="service.action.generate"
-        uploadInputId="image-upload-portrait"
-        accent="blue"
-    />
+  <SingleImageUploadPanel
+    previewUrl={portraitPreviewUrl}
+    error={portraitError}
+    loading={portraitLoading}
+    isDraggingOver={isDraggingOver}
+    onFileChange={onFileChange}
+    onGenerate={onGenerate}
+    onDragOver={onDragOver}
+    onDragLeave={onDragLeave}
+    onDrop={onDrop}
+    titleKey="start.tab_portrait"
+    generateButtonKey="service.action.generate"
+    uploadInputId="image-upload-portrait"
+    accent="blue"
+  />
 );
 
 export default PortraitUploadSection;

@@ -25,6 +25,7 @@ interface GenericUploadSectionProps {
   icon?: string;
   canGenerate?: boolean;
   className?: string;
+  uploadInputId?: string;
 }
 
 const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
@@ -43,6 +44,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
   icon = '📸',
   canGenerate = true,
   className = '',
+  uploadInputId = 'generic-image-upload',
 }) => {
   const { t } = useLanguage();
 
@@ -63,11 +65,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
         {previewUrl ? (
           <div className="w-full flex flex-col items-center gap-6">
             <div className="relative w-full max-w-md">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-full h-auto rounded-xl shadow-xl"
-              />
+              <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-xl shadow-xl" />
             </div>
 
             {error && <ErrorDisplay message={error} />}
@@ -114,14 +112,14 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
             </div>
 
             <label
-              htmlFor="generic-image-upload"
+              htmlFor={uploadInputId}
               className="relative inline-flex items-center justify-center px-10 py-5 text-xl font-black text-white rounded-2xl cursor-pointer transition-all duration-300 shadow-2xl hover:-translate-y-1 active:scale-95 bg-blue-600 hover:bg-blue-500 shadow-blue-600/30"
             >
               <span className="mr-3">{icon}</span>
               {t('start.upload_button')}
             </label>
             <input
-              id="generic-image-upload"
+              id={uploadInputId}
               type="file"
               className="hidden"
               accept="image/*"

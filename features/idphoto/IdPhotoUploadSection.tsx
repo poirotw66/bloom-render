@@ -7,7 +7,6 @@ import React from 'react';
 import { SingleImageUploadPanel } from '../../components/SingleImageUploadPanel';
 
 interface IdPhotoUploadSectionProps {
-  idPhotoFile: File | null;
   idPhotoPreviewUrl: string | null;
   idPhotoError: string | null;
   idPhotoLoading: boolean;
@@ -20,7 +19,6 @@ interface IdPhotoUploadSectionProps {
 }
 
 const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
-  idPhotoFile,
   idPhotoPreviewUrl,
   idPhotoError,
   idPhotoLoading,
@@ -32,7 +30,6 @@ const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
   onDrop,
 }) => (
   <SingleImageUploadPanel
-    file={idPhotoFile}
     previewUrl={idPhotoPreviewUrl}
     error={idPhotoError}
     loading={idPhotoLoading}
