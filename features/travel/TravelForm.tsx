@@ -9,7 +9,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
 import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
 
-const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
+import { supportsMultiResolution } from '../../services/gemini/shared';
 
 interface TravelFormProps {
   selectedSceneId: string;
@@ -129,7 +129,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
 }) => {
   const { t } = useLanguage();
   const { model } = useSettings();
-  const imageSizeOptions = IS_PRO(model) ? TRAVEL_IMAGE_SIZES : TRAVEL_IMAGE_SIZES.filter((s) => !s.proOnly);
+  const imageSizeOptions = supportsMultiResolution(model) ? TRAVEL_IMAGE_SIZES : TRAVEL_IMAGE_SIZES.filter((s) => !s.proOnly);
 
   return (
     <div className={`flex flex-col gap-6 w-full animate-fade-in bg-gray-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}>

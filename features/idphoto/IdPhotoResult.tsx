@@ -73,7 +73,9 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
           value:
             settings.model === 'gemini-3-pro-image-preview'
               ? t('settings.model.pro')
-              : t('settings.model.flash'),
+              : settings.model === 'gemini-3.1-flash-image-preview'
+                ? t('settings.model.flash31')
+                : t('settings.model.flash'),
         },
       ]}
     />

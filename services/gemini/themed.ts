@@ -8,7 +8,7 @@
 import { GenerateContentResponse } from '@google/genai';
 import type { ThemedType } from '../../types';
 import { THEMED_TYPES, DEFAULT_THEMED_TYPE } from '../../constants/themed';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
 import { generateThemedPrompt } from './prompts';
 
 export type ImageOutputSize = '1K' | '2K' | '4K';
@@ -59,14 +59,14 @@ export const generateThemedPhoto = async (
 
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
-  const isGemini3 = model === 'gemini-3-pro-image-preview';
-  const effectiveSize: '1K' | '2K' | '4K' = isGemini3 ? (options.outputSize || '1K') : '1K';
+  const supportsMultiRes = supportsMultiResolution(model);
+  const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? (options.outputSize || '1K') : '1K';
   const aspectRatio = options.aspectRatio || '16:9';
 
   const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
     aspectRatio,
   };
-  if (isGemini3) imageConfig.imageSize = effectiveSize;
+  if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
   console.log('Starting themed photo generation', { themeType, fileCount, outputSize: effectiveSize, aspectRatio });
   const response: GenerateContentResponse = await ai.models.generateContent({

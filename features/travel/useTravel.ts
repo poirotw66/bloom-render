@@ -9,7 +9,7 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { normalizeApiError } from '../../services/gemini/shared';
+import { normalizeApiError, supportsMultiResolution } from '../../services/gemini/shared';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
@@ -17,7 +17,6 @@ import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, Tr
 
 export type TravelSceneIdOrCustom = string;
 
-const IS_PRO = (m: string) => m === 'gemini-3-pro-image-preview';
 
 // Helper to load an image from a URL (e.g., from public folder) as a File object
 async function urlToFile(url: string, filename: string, mimeType: string): Promise<File> {
@@ -113,7 +112,7 @@ export function useTravel() {
 
   /** When switching to Flash, 2K/4K are not supported; reset to 1K. */
   useEffect(() => {
-    if (!IS_PRO(settings.model) && imageSize !== '1K') {
+    if (!supportsMultiResolution(settings.model) && imageSize !== '1K') {
       setImageSize('1K');
     }
   }, [settings.model, imageSize]);

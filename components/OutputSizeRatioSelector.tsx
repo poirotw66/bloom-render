@@ -9,6 +9,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { supportsMultiResolution } from '../services/gemini/shared';
 
 export type OutputSize = '1K' | '2K' | '4K';
 export type AspectRatio = '1:1' | '16:9' | '9:16';
@@ -46,8 +47,8 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
 }) => {
   const { t } = useLanguage();
   const { model } = useSettings();
-  const isGemini3 = model === 'gemini-3-pro-image-preview';
-  const allowedSizes: OutputSize[] = isGemini3 ? OUTPUT_SIZES : ['1K'];
+  const supportsMultiRes = supportsMultiResolution(model);
+  const allowedSizes: OutputSize[] = supportsMultiRes ? OUTPUT_SIZES : ['1K'];
 
   return (
     <div className={`flex flex-col gap-6 w-full max-w-2xl mx-auto ${className}`}>
@@ -55,7 +56,7 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
         <div className="flex flex-col gap-3 flex-1 min-w-0">
           <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
             {t('common.output_size')}
-            {!isGemini3 && (
+            {!supportsMultiRes && (
               <span className="ml-2 text-xs font-normal normal-case text-gray-500">
                 ({t('common.gemini2_only_1k')})
               </span>

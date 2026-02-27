@@ -6,7 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
 import { generateTravelPrompt } from './prompts';
 
 export interface GenerateTravelPhotoOptions {
@@ -47,13 +47,13 @@ export const generateTravelPhoto = async (
 
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
-  const isPro = model === 'gemini-3-pro-image-preview';
-  const effectiveImageSize: '1K' | '2K' | '4K' = isPro ? (requestedSize || '1K') : '1K';
+  const supportsMultiRes = supportsMultiResolution(model);
+  const effectiveImageSize: '1K' | '2K' | '4K' = supportsMultiRes ? (requestedSize || '1K') : '1K';
 
   const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
     aspectRatio: aspectRatio || '1:1',
   };
-  if (isPro) imageConfig.imageSize = effectiveImageSize;
+  if (supportsMultiRes) imageConfig.imageSize = effectiveImageSize;
 
   console.log('Starting travel photo generation', {
     scenePrompt: scenePrompt.slice(0, 60),

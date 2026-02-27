@@ -5,7 +5,7 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from 'react';
 
-export type ModelType = 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
+export type ModelType = 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview' | 'gemini-3.1-flash-image-preview';
 
 interface SettingsContextType {
   apiKey: string;
@@ -38,8 +38,9 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const storedCompressionThreshold = localStorage.getItem(STORAGE_KEY_COMPRESSION_THRESHOLD);
 
     if (storedKey) setApiKeyState(storedKey);
-    if (storedModel && (storedModel === 'gemini-2.5-flash-image' || storedModel === 'gemini-3-pro-image-preview')) {
-        setModelState(storedModel as ModelType);
+    const validModels: ModelType[] = ['gemini-2.5-flash-image', 'gemini-3-pro-image-preview', 'gemini-3.1-flash-image-preview'];
+    if (storedModel && validModels.includes(storedModel as ModelType)) {
+      setModelState(storedModel as ModelType);
     }
     if (storedCompressionEnabled !== null) {
       setEnableImageCompressionState(storedCompressionEnabled === 'true');

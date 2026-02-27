@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, normalizeApiError } from '../../services/gemini/shared';
+import { fileToPartAuto, getClient, getModel, handleApiResponse, normalizeApiError, supportsMultiResolution } from '../../services/gemini/shared';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
@@ -220,12 +220,12 @@ export function useCoupleGroup() {
 
       const ai = getClient(settings);
       const model = getModel(settings);
-      const isGemini3 = model === 'gemini-3-pro-image-preview';
-      const effectiveSize: '1K' | '2K' | '4K' = isGemini3 ? outputSize : '1K';
+      const supportsMultiRes = supportsMultiResolution(model);
+      const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? outputSize : '1K';
       const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
         aspectRatio,
       };
-      if (isGemini3) imageConfig.imageSize = effectiveSize;
+      if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
       console.log('Starting couple/group photo generation', { mode, style, fileCount, outputSize: effectiveSize, aspectRatio });
 

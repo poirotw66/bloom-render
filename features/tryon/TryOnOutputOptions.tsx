@@ -9,6 +9,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { supportsMultiResolution } from '../../services/gemini/shared';
 import {
   TRYON_OUTPUT_SIZES,
   TRYON_ASPECT_RATIOS,
@@ -33,15 +34,15 @@ const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
 }) => {
   const { t } = useLanguage();
   const { model } = useSettings();
-  const isGemini3 = model === 'gemini-3-pro-image-preview';
-  const allowedSizes: TryOnOutputSize[] = isGemini3 ? TRYON_OUTPUT_SIZES : ['1K'];
+  const supportsMultiRes = supportsMultiResolution(model);
+  const allowedSizes: TryOnOutputSize[] = supportsMultiRes ? TRYON_OUTPUT_SIZES : ['1K'];
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
       <div className="flex flex-col gap-3">
         <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
           {t('tryon.label.output_size')}
-          {!isGemini3 && (
+          {!supportsMultiRes && (
             <span className="ml-2 text-xs font-normal normal-case text-gray-500">
               ({t('tryon.gemini2_only_1k')})
             </span>

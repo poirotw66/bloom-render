@@ -240,6 +240,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                                     }`}
                                 >
                                     <option value="gemini-2.5-flash-image">{t('settings.model.flash')}</option>
+                                    <option value="gemini-3.1-flash-image-preview">{t('settings.model.flash31')}</option>
                                     <option value="gemini-3-pro-image-preview">{t('settings.model.pro')}</option>
                                 </select>
 

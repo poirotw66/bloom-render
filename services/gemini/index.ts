@@ -7,7 +7,7 @@
  */
 
 export type { ServiceSettings } from './shared';
-export { fileToPart, handleApiResponse, getClient, getModel } from './shared';
+export { fileToPart, handleApiResponse, getClient, getModel, supportsMultiResolution } from './shared';
 
 export { generateEditedImage } from './edit';
 export { generateFilteredImage } from './filter';

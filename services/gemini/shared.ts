@@ -249,6 +249,15 @@ export const getClient = (settings?: ServiceSettings) => {
   return new GoogleGenAI({ apiKey: key });
 };
 
+/** Model IDs that support multiple output resolutions (e.g. 1K, 2K, 4K). */
+export const MODELS_SUPPORTING_MULTI_RESOLUTION = [
+  'gemini-3-pro-image-preview',
+  'gemini-3.1-flash-image-preview',
+] as const;
+
+export const supportsMultiResolution = (model?: string): boolean =>
+  !!model && MODELS_SUPPORTING_MULTI_RESOLUTION.includes(model as (typeof MODELS_SUPPORTING_MULTI_RESOLUTION)[number]);
+
 export const getModel = (settings?: ServiceSettings) => {
   return settings?.model || 'gemini-2.5-flash-image';
 };

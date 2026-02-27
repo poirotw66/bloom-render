@@ -6,7 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import { getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
 
 /**
  * Generates one or more images from scratch based on a text prompt.
@@ -31,7 +31,7 @@ export const generateImageFromText = async (
         responseModalities: ['TEXT', 'IMAGE'],
         imageConfig: {
           aspectRatio: aspectRatio,
-          ...(model === 'gemini-3-pro-image-preview' ? { imageSize: '1K' as const } : {}),
+          ...(supportsMultiResolution(model) ? { imageSize: '1K' as const } : {}),
         },
       },
     });
