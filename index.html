@@ -75,9 +75,42 @@
         --shooting-star-glow: #e879f9;
       }
 
-      /* 繁花 (Bloom): same as :root – warm gradients + petals */
+      /* 繁花 (Bloom): Sakura cherry-blossom theme – 花盛開 feel, palette #FEEAC9 #FFCDC9 #FDACAC #FD7979 */
       [data-theme='bloom'] {
-        /* uses :root vars */
+        --bg-main: #1a1412;
+        --bg-gradient-1: radial-gradient(
+          ellipse 90% 55% at 20% 90%,
+          rgba(253, 121, 121, 0.42) 0%,
+          transparent 55%
+        );
+        --bg-gradient-2: radial-gradient(
+          ellipse 75% 45% at 85% 20%,
+          rgba(255, 205, 201, 0.38) 0%,
+          transparent 50%
+        );
+        --bg-gradient-3: radial-gradient(
+          ellipse 70% 70% at 50% 50%,
+          rgba(253, 172, 172, 0.35) 0%,
+          transparent 65%
+        );
+        --bg-gradient-4: radial-gradient(
+          ellipse 110% 65% at 50% 110%,
+          rgba(254, 234, 201, 0.32) 0%,
+          transparent 55%
+        );
+        --bg-gradient-5: radial-gradient(
+          ellipse 55% 45% at 10% 30%,
+          rgba(255, 205, 201, 0.4) 0%,
+          transparent 50%
+        );
+        --bg-gradient-6: radial-gradient(
+          ellipse 45% 55% at 90% 70%,
+          rgba(253, 121, 121, 0.35) 0%,
+          transparent 50%
+        );
+        --star-color: rgba(255, 220, 210, 0.65);
+        --shooting-star-color: #fdacac;
+        --shooting-star-glow: #ffcdc9;
       }
 
       /* 深夜 (Night): dark blue/slate, no petals */
@@ -365,6 +398,28 @@
         right: 25%;
         animation-delay: -3s;
         animation-duration: 20s;
+      }
+      /* Sakura orbs for Bloom theme – 花盛開 palette #FEEAC9 #FFCDC9 #FDACAC #FD7979 */
+      [data-theme='bloom'] .bloom-petal-orb {
+        opacity: 0.48;
+      }
+      [data-theme='bloom'] .bloom-petal-orb:nth-child(1) {
+        background: rgba(253, 121, 121, 0.5);
+      }
+      [data-theme='bloom'] .bloom-petal-orb:nth-child(2) {
+        background: rgba(255, 205, 201, 0.5);
+      }
+      [data-theme='bloom'] .bloom-petal-orb:nth-child(3) {
+        background: rgba(253, 172, 172, 0.48);
+      }
+      [data-theme='bloom'] .bloom-petal-orb:nth-child(4) {
+        background: rgba(254, 234, 201, 0.45);
+      }
+      [data-theme='bloom'] .bloom-petal-orb:nth-child(5) {
+        background: rgba(253, 121, 121, 0.42);
+      }
+      [data-theme='bloom'] .bloom-petal-orb:nth-child(6) {
+        background: rgba(255, 205, 201, 0.48);
       }
       @keyframes bloom-float {
         0%,
