@@ -36,13 +36,6 @@ interface StartTabNavProps {
 
 const tabs: TabItem[] = [
   {
-    tab: 'photography-service',
-    path: '/photography-service',
-    i18nKey: 'start.tab_service',
-    activeClass: 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20',
-    focusRing: 'focus:ring-indigo-500',
-  },
-  {
     tab: 'upload',
     path: '/',
     i18nKey: 'start.tab_upload',
@@ -55,6 +48,13 @@ const tabs: TabItem[] = [
     i18nKey: 'start.tab_generate',
     activeClass: 'bg-blue-600 text-white shadow-lg shadow-blue-500/20',
     focusRing: 'focus:ring-blue-500',
+  },
+  {
+    tab: 'photography-service',
+    path: '/photography-service',
+    i18nKey: 'start.tab_service',
+    activeClass: 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20',
+    focusRing: 'focus:ring-indigo-500',
   },
   {
     tab: 'idphoto',

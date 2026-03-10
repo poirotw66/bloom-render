@@ -4,9 +4,17 @@
  */
 
 import React, { useState } from 'react';
-import { UploadIcon, MagicWandIcon, PaletteIcon, SunIcon, BullseyeIcon } from './icons';
+import {
+  UploadIcon,
+  MagicWandIcon,
+  PaletteIcon,
+  SunIcon,
+  BullseyeIcon,
+  DownloadIcon,
+} from './icons';
 import { generateImageFromText } from '../services/geminiService';
 import { dataURLtoFile } from '../utils/fileUtils';
+import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import BloomFlowerLoader from './BloomFlowerLoader';
 import { ErrorDisplay } from './ErrorDisplay';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -129,6 +137,22 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     onImageSelected(newFile);
   };
 
+  const handleDownloadOne = (e: React.MouseEvent, dataUrl: string, index: number) => {
+    e.stopPropagation();
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `generated-${index + 1}.png`;
+    link.click();
+  };
+
+  const handleDownloadAllZip = async () => {
+    await downloadBatchWithZipFallback({
+      dataUrls: generatedImages,
+      itemFileName: (i) => `generated-${i + 1}.png`,
+      zipFileName: `generated-images-${Date.now()}.zip`,
+    });
+  };
+
   return (
     <div
       className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface} ${isDraggingOver && tab === 'upload' ? s.drag : ''}`}
@@ -198,6 +222,25 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-6 rounded-2xl border backdrop-blur-sm shadow-lg ${s.borderCard}`}
           >
             <h3 className="text-xl font-bold text-white">{t('start.select_image')}</h3>
+            <div className="flex flex-wrap items-center justify-center gap-3 w-full">
+              {generatedImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={handleDownloadAllZip}
+                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-500/20 ${theme === 'bloom' ? 'focus:ring-green-500' : theme === 'newyear' ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
+                >
+                  <DownloadIcon className="w-5 h-5" />
+                  {t('start.download_all_zip')}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setGeneratedImages([])}
+                className="text-gray-300 hover:text-white underline underline-offset-4 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 rounded px-2 py-1"
+              >
+                {t('start.generate_new')}
+              </button>
+            </div>
             <div
               className={`grid gap-4 w-full ${generatedImages.length >= 2 ? 'grid-cols-2' : 'grid-cols-1'}`}
             >
@@ -221,9 +264,18 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                     className="max-w-full max-h-full w-auto h-auto object-contain"
                     alt={`${t('start.select_image')} ${idx + 1}`}
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={(e) => handleDownloadOne(e, url, idx)}
+                      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold bg-white/90 text-gray-900 hover:bg-white transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white shadow-lg`}
+                      aria-label={t('start.download_image')}
+                    >
+                      <DownloadIcon className="w-4 h-4" />
+                      {t('start.download_image')}
+                    </button>
                     <span
-                      className={`bg-gradient-to-r ${s.btnSecondary} text-white px-6 py-2 rounded-full font-bold shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-200`}
+                      className={`bg-gradient-to-r ${s.btnSecondary} text-white px-5 py-2 rounded-full font-bold shadow-lg`}
                     >
                       {t('start.edit_this')}
                     </span>
@@ -231,12 +283,6 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                 </div>
               ))}
             </div>
-            <button
-              onClick={() => setGeneratedImages([])}
-              className={`text-gray-300 hover:text-white underline underline-offset-4 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 rounded ${theme === 'newyear' ? 'focus:ring-red-500' : theme === 'bloom' ? 'focus:ring-fuchsia-500' : 'focus:ring-blue-500'}`}
-            >
-              {t('start.generate_new')}
-            </button>
           </div>
         ) : (
           <div

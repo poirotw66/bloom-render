@@ -37,6 +37,8 @@ const translations: Record<Language, Record<string, string>> = {
     'start.upload_drag': 'or drag and drop a file',
     'start.select_image': 'Select an image to edit',
     'start.edit_this': 'Edit This',
+    'start.download_image': 'Download',
+    'start.download_all_zip': 'Download All as ZIP',
     'start.generate_new': 'Generate New Images',
     'start.prompt_placeholder':
       "Describe the image you want to create (e.g., 'A futuristic city with neon lights at night')",
@@ -1134,6 +1136,8 @@ const translations: Record<Language, Record<string, string>> = {
     'start.upload_drag': '或拖放檔案至此',
     'start.select_image': '選擇一張圖片進行編輯',
     'start.edit_this': '編輯這張',
+    'start.download_image': '下載',
+    'start.download_all_zip': '全部下載為 ZIP',
     'start.generate_new': '生成新圖片',
     'start.prompt_placeholder': "描述您想創建的圖片 (例如: '夜晚擁有霓虹燈的未來城市')",
     'start.aspect_ratio': '長寬比',
