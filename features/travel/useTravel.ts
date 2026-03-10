@@ -12,11 +12,37 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { normalizeApiError, supportsMultiResolution } from '../../services/gemini/shared';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
-import { TRAVEL_SCENES, TRAVEL_SCENE_ID_RANDOM, pickRandomTravelScene, DEFAULT_TRAVEL_ASPECT, DEFAULT_TRAVEL_IMAGE_SIZE, TRAVEL_STYLES, DEFAULT_TRAVEL_STYLE, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
+import {
+  TRAVEL_SCENES,
+  TRAVEL_SCENE_ID_RANDOM,
+  pickRandomTravelScene,
+  DEFAULT_TRAVEL_ASPECT,
+  DEFAULT_TRAVEL_IMAGE_SIZE,
+  TRAVEL_STYLES,
+  DEFAULT_TRAVEL_STYLE,
+  TRAVEL_WEATHER_OPTIONS,
+  TRAVEL_TIME_OPTIONS,
+  TRAVEL_VIBE_OPTIONS,
+  TRAVEL_OUTFIT_OPTIONS,
+  TRAVEL_POSE_OPTIONS,
+  TRAVEL_RELATIONSHIP_OPTIONS,
+  TRAVEL_FRAMING_OPTIONS,
+  OUTFIT_COLOR_PRESETS,
+} from '../../constants/travel';
+import type {
+  TravelAspectRatio,
+  TravelImageSize,
+  TravelStyle,
+  TravelWeather,
+  TravelTimeOfDay,
+  TravelVibe,
+  TravelOutfit,
+  TravelPose,
+  TravelRelationship,
+  TravelFraming,
+} from '../../constants/travel';
 
 export type TravelSceneIdOrCustom = string;
-
 
 // Helper to load an image from a URL (e.g., from public folder) as a File object
 async function urlToFile(url: string, filename: string, mimeType: string): Promise<File> {
@@ -29,7 +55,8 @@ async function urlToFile(url: string, filename: string, mimeType: string): Promi
   }
 
   const blob = await res.blob();
-  if (blob.size < 100) { // arbitrary small size check to avoid empty/error responses
+  if (blob.size < 100) {
+    // arbitrary small size check to avoid empty/error responses
     throw new Error('error.file_too_small');
   }
   return new File([blob], filename, { type: mimeType });
@@ -48,7 +75,9 @@ export function useTravel() {
   const [quantity, setQuantity] = useState<number>(1);
   const [progress, setProgress] = useState<number>(0);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [selectedSceneId, setSelectedSceneId] = useState<TravelSceneIdOrCustom>(TRAVEL_SCENES[0]?.id ?? 'shibuya');
+  const [selectedSceneId, setSelectedSceneId] = useState<TravelSceneIdOrCustom>(
+    TRAVEL_SCENES[0]?.id ?? 'shibuya',
+  );
   const [customSceneText, setCustomSceneText] = useState('');
   const [customSceneReferenceFile, setCustomSceneReferenceFile] = useState<File | null>(null);
   const [customSceneReferenceUrl, setCustomSceneReferenceUrl] = useState<string | null>(null);
@@ -92,9 +121,9 @@ export function useTravel() {
 
   useEffect(() => {
     if (files.length > 0) {
-      const urls = files.map(f => URL.createObjectURL(f));
+      const urls = files.map((f) => URL.createObjectURL(f));
       setPreviewUrls(urls);
-      return () => urls.forEach(u => URL.revokeObjectURL(u));
+      return () => urls.forEach((u) => URL.revokeObjectURL(u));
     } else {
       setPreviewUrls([]);
     }
@@ -125,23 +154,26 @@ export function useTravel() {
     return scene?.prompt ?? customSceneText.trim();
   }, [selectedSceneId, customSceneText]);
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-    if (selectedFiles.length > 0) {
-      if (isGroupMode) {
-        setFiles(prev => [...prev, ...selectedFiles].slice(0, 4));
-      } else {
-        setFiles([selectedFiles[0]]);
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFiles = Array.from(e.target.files || []);
+      if (selectedFiles.length > 0) {
+        if (isGroupMode) {
+          setFiles((prev) => [...prev, ...selectedFiles].slice(0, 4));
+        } else {
+          setFiles([selectedFiles[0]]);
+        }
+        setResult(null);
+        setResults([]);
+        setError(null);
       }
-      setResult(null);
-      setResults([]);
-      setError(null);
-    }
-    e.target.value = '';
-  }, [isGroupMode]);
+      e.target.value = '';
+    },
+    [isGroupMode],
+  );
 
   const removeFile = useCallback((index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   const handleGenerate = useCallback(async () => {
@@ -164,7 +196,11 @@ export function useTravel() {
 
       if (useReferenceImage && picked.referenceImagePath) {
         try {
-          sceneReferenceImage = await urlToFile(picked.referenceImagePath, `${picked.id}_ref.jpg`, 'image/jpeg');
+          sceneReferenceImage = await urlToFile(
+            picked.referenceImagePath,
+            `${picked.id}_ref.jpg`,
+            'image/jpeg',
+          );
         } catch (e) {
           sceneReferenceImage = undefined;
         }
@@ -186,13 +222,13 @@ export function useTravel() {
           scenePrompt = await generateOptimizedPrompt(
             rawPrompt,
             customSceneReferenceFile ?? undefined,
-            { apiKey: settings.apiKey, model: settings.model }
+            { apiKey: settings.apiKey, model: settings.model },
           );
         } else {
-          scenePrompt = "";
+          scenePrompt = '';
         }
       } catch (e) {
-        console.warn("Prompt optimization failed, using raw prompt", e);
+        console.warn('Prompt optimization failed, using raw prompt', e);
         scenePrompt = rawPrompt;
       }
 
@@ -216,9 +252,15 @@ export function useTravel() {
         sceneReferenceImage = customSceneReferenceFile;
       } else if (useReferenceImage && scene?.referenceImagePath) {
         try {
-          sceneReferenceImage = await urlToFile(scene.referenceImagePath, `${scene.id}_ref.jpg`, 'image/jpeg');
+          sceneReferenceImage = await urlToFile(
+            scene.referenceImagePath,
+            `${scene.id}_ref.jpg`,
+            'image/jpeg',
+          );
         } catch (e) {
-          console.log(`Note: No valid reference image found at ${scene.referenceImagePath}, falling back to text prompt.`);
+          console.log(
+            `Note: No valid reference image found at ${scene.referenceImagePath}, falling back to text prompt.`,
+          );
           sceneReferenceImage = undefined;
         }
       } else {
@@ -236,27 +278,29 @@ export function useTravel() {
     try {
       const stopProgress = startRandomProgressTicker(setProgress);
       // Enhance the prompt with dynamic variations and selected style/weather/time/vibe
-      const stylePrompt = TRAVEL_STYLES.find(s => s.id === style)?.prompt || '';
+      const stylePrompt = TRAVEL_STYLES.find((s) => s.id === style)?.prompt || '';
 
       // Handle random weather
       let effectiveWeather = weather;
       if (weather === 'random') {
-        const available = TRAVEL_WEATHER_OPTIONS.filter(w => w.id !== 'random');
+        const available = TRAVEL_WEATHER_OPTIONS.filter((w) => w.id !== 'random');
         effectiveWeather = available[Math.floor(Math.random() * available.length)].id;
       }
-      const weatherPrompt = TRAVEL_WEATHER_OPTIONS.find(w => w.id === effectiveWeather)?.prompt || '';
+      const weatherPrompt =
+        TRAVEL_WEATHER_OPTIONS.find((w) => w.id === effectiveWeather)?.prompt || '';
 
       // Handle random time
       let effectiveTime = timeOfDay;
       if (timeOfDay === 'random') {
-        const available = TRAVEL_TIME_OPTIONS.filter(t => t.id !== 'random');
+        const available = TRAVEL_TIME_OPTIONS.filter((t) => t.id !== 'random');
         effectiveTime = available[Math.floor(Math.random() * available.length)].id;
       }
-      const timePrompt = TRAVEL_TIME_OPTIONS.find(t => t.id === effectiveTime)?.prompt || '';
+      const timePrompt = TRAVEL_TIME_OPTIONS.find((t) => t.id === effectiveTime)?.prompt || '';
 
-      const vibePrompt = vibe !== 'none' ? TRAVEL_VIBE_OPTIONS.find(v => v.id === vibe)?.prompt || '' : '';
-      const outfitPrompt = TRAVEL_OUTFIT_OPTIONS.find(o => o.id === outfit)?.prompt || '';
-      const posePrompt = TRAVEL_POSE_OPTIONS.find(p => p.id === pose)?.prompt || '';
+      const vibePrompt =
+        vibe !== 'none' ? TRAVEL_VIBE_OPTIONS.find((v) => v.id === vibe)?.prompt || '' : '';
+      const outfitPrompt = TRAVEL_OUTFIT_OPTIONS.find((o) => o.id === outfit)?.prompt || '';
+      const posePrompt = TRAVEL_POSE_OPTIONS.find((p) => p.id === pose)?.prompt || '';
 
       const finalPrompt = generateDynamicTravelPrompt(scenePrompt, {
         style: stylePrompt,
@@ -268,10 +312,10 @@ export function useTravel() {
         outfitColor: outfitColor,
         pose: posePrompt,
         customPoseText: pose === 'custom' ? customPoseText : undefined,
-        relationship: TRAVEL_RELATIONSHIP_OPTIONS.find(r => r.id === relationship)?.prompt || '',
-        framing: TRAVEL_FRAMING_OPTIONS.find(f => f.id === framing)?.prompt || '',
+        relationship: TRAVEL_RELATIONSHIP_OPTIONS.find((r) => r.id === relationship)?.prompt || '',
+        framing: TRAVEL_FRAMING_OPTIONS.find((f) => f.id === framing)?.prompt || '',
         clearBackground: clearBackground,
-        isGroup: isGroupMode || files.length > 1
+        isGroup: isGroupMode || files.length > 1,
       });
 
       // Generate all images in parallel with variations
@@ -287,8 +331,9 @@ export function useTravel() {
           outfitColor: outfitColor,
           pose: posePrompt,
           customPoseText: pose === 'custom' ? customPoseText : undefined,
-          relationship: TRAVEL_RELATIONSHIP_OPTIONS.find(r => r.id === relationship)?.prompt || '',
-          framing: TRAVEL_FRAMING_OPTIONS.find(f => f.id === framing)?.prompt || '',
+          relationship:
+            TRAVEL_RELATIONSHIP_OPTIONS.find((r) => r.id === relationship)?.prompt || '',
+          framing: TRAVEL_FRAMING_OPTIONS.find((f) => f.id === framing)?.prompt || '',
           clearBackground: clearBackground,
           isGroup: isGroupMode || files.length > 1,
           variationIndex: i, // Use index to create different variations
@@ -312,7 +357,9 @@ export function useTravel() {
       stopProgress();
       setProgress(100);
 
-      console.log(`Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`);
+      console.log(
+        `Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`,
+      );
 
       if (generatedResults.length === 0) {
         throw new Error('error.all_generations_failed');
@@ -340,7 +387,7 @@ export function useTravel() {
         vibe,
         style,
         framing,
-        clearBackground
+        clearBackground,
       });
     } catch (err) {
       const normalizedError = normalizeApiError(err, 'travel');
@@ -351,7 +398,31 @@ export function useTravel() {
       setLoading(false);
       setProgress(0);
     }
-  }, [files, isGroupMode, selectedSceneId, customSceneText, customSceneReferenceFile, resolveScenePrompt, aspectRatio, imageSize, style, weather, timeOfDay, vibe, outfit, outfitColor, pose, relationship, framing, clearBackground, settings.apiKey, settings.model, t, useReferenceImage, quantity]);
+  }, [
+    files,
+    isGroupMode,
+    selectedSceneId,
+    customSceneText,
+    customSceneReferenceFile,
+    resolveScenePrompt,
+    aspectRatio,
+    imageSize,
+    style,
+    weather,
+    timeOfDay,
+    vibe,
+    outfit,
+    outfitColor,
+    pose,
+    relationship,
+    framing,
+    clearBackground,
+    settings.apiKey,
+    settings.model,
+    t,
+    useReferenceImage,
+    quantity,
+  ]);
 
   const handleSurpriseMe = useCallback(() => {
     // Pick random scene
@@ -363,10 +434,10 @@ export function useTravel() {
     setStyle(randomStyle.id);
 
     // Pick random weather & time
-    const availableWeather = TRAVEL_WEATHER_OPTIONS.filter(w => w.id !== 'random');
+    const availableWeather = TRAVEL_WEATHER_OPTIONS.filter((w) => w.id !== 'random');
     setWeather(availableWeather[Math.floor(Math.random() * availableWeather.length)].id);
 
-    const availableTime = TRAVEL_TIME_OPTIONS.filter(t => t.id !== 'random');
+    const availableTime = TRAVEL_TIME_OPTIONS.filter((t) => t.id !== 'random');
     setTimeOfDay(availableTime[Math.floor(Math.random() * availableTime.length)].id);
 
     // Random outfit & pose
@@ -375,7 +446,9 @@ export function useTravel() {
 
     // Random color
     if (Math.random() > 0.5) {
-      setOutfitColor(OUTFIT_COLOR_PRESETS[Math.floor(Math.random() * OUTFIT_COLOR_PRESETS.length)].id);
+      setOutfitColor(
+        OUTFIT_COLOR_PRESETS[Math.floor(Math.random() * OUTFIT_COLOR_PRESETS.length)].id,
+      );
     } else {
       setOutfitColor('');
     }
@@ -411,16 +484,19 @@ export function useTravel() {
     setResultMetadata(null);
   }, []);
 
-  const setFilesFromDrop = useCallback((incoming: File[]) => {
-    if (isGroupMode) {
-      setFiles(prev => [...prev, ...incoming].slice(0, 4));
-    } else {
-      setFiles([incoming[0]]);
-    }
-    setResult(null);
-    setResults([]);
-    setError(null);
-  }, [isGroupMode]);
+  const setFilesFromDrop = useCallback(
+    (incoming: File[]) => {
+      if (isGroupMode) {
+        setFiles((prev) => [...prev, ...incoming].slice(0, 4));
+      } else {
+        setFiles([incoming[0]]);
+      }
+      setResult(null);
+      setResults([]);
+      setError(null);
+    },
+    [isGroupMode],
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -429,14 +505,19 @@ export function useTravel() {
 
   const handleDragLeave = useCallback(() => setIsDraggingOver(false), []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    const incomingFiles = Array.from(e.dataTransfer.files).filter(f => (f as File).type.startsWith('image/')) as File[];
-    if (incomingFiles.length > 0) {
-      setFilesFromDrop(incomingFiles);
-    }
-  }, [setFilesFromDrop]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDraggingOver(false);
+      const incomingFiles = Array.from(e.dataTransfer.files).filter((f) =>
+        (f as File).type.startsWith('image/'),
+      ) as File[];
+      if (incomingFiles.length > 0) {
+        setFilesFromDrop(incomingFiles);
+      }
+    },
+    [setFilesFromDrop],
+  );
 
   return {
     files,

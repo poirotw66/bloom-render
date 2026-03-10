@@ -11,6 +11,7 @@
 **新路由**：`/couple-group`
 
 **導覽位置**：
+
 - 在 `StartTabNav` 新增「雙人/多人寫真」按鈕
 - 照片館「couple」與「group」分類項目導向 `/couple-group?mode=couple` 或 `/couple-group?mode=group`
 
@@ -47,11 +48,13 @@ CoupleGroupPage
 **檔案限制**：嚴格 2 個檔案
 
 **支援風格**：
+
 - **形象照風格**：專業雙人照、情侶形象照、閨蜜照
 - **主題寫真風格**：拍立得、美式校園、復古、浪漫
 - **旅遊照風格**：景點雙人照、美食地圖雙人照
 
 **進階選項**：
+
 - 形象照：選擇形象類型、輸出規格（半身/全身）
 - 主題寫真：選擇主題類型
 - 旅遊照：選擇場景、長寬比、風格等
@@ -61,11 +64,13 @@ CoupleGroupPage
 **檔案限制**：3-6 個檔案（建議上限 4-6 人）
 
 **支援風格**：
+
 - **形象照風格**：家庭照、畢業團體照、公司團體照
 - **主題寫真風格**：團體拍立得、派對主題
 - **旅遊照風格**：團體旅遊照、家庭出遊照
 
 **進階選項**：
+
 - 形象照：選擇形象類型、輸出規格
 - 主題寫真：選擇主題類型
 - 旅遊照：選擇場景、長寬比、風格等
@@ -115,14 +120,14 @@ export function useCoupleGroup() {
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // 風格相關狀態（依 style 動態使用）
   const [portraitType, setPortraitType] = useState<PortraitType>(...);
   const [portraitSpec, setPortraitSpec] = useState<OutputSpec>(...);
   const [themedType, setThemedType] = useState<ThemedType>(...);
   const [travelScene, setTravelScene] = useState<string>(...);
   // ... 其他旅遊照選項
-  
+
   const handleGenerate = async () => {
     // 驗證檔案數量
     if (mode === 'couple' && files.length !== 2) {
@@ -133,7 +138,7 @@ export function useCoupleGroup() {
       setError('多人寫真需要上傳 3-6 張照片');
       return;
     }
-    
+
     // 依風格調用對應的生成函數
     if (style === 'portrait') {
       const result = await generateProfessionalPortrait(files, { ... });
@@ -146,7 +151,7 @@ export function useCoupleGroup() {
       setResult(result);
     }
   };
-  
+
   return { ... };
 }
 ```
@@ -156,7 +161,7 @@ export function useCoupleGroup() {
 ```typescript
 const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const selectedFiles = Array.from(e.target.files || []);
-  
+
   if (mode === 'couple') {
     if (selectedFiles.length > 2) {
       setError('雙人寫真最多上傳 2 張照片');
@@ -168,7 +173,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setError('多人寫真最多上傳 6 張照片');
       return;
     }
-    setFiles(prev => [...prev, ...selectedFiles].slice(0, 6));
+    setFiles((prev) => [...prev, ...selectedFiles].slice(0, 6));
   }
 };
 ```
@@ -176,6 +181,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 ### 4.3 Gemini 服務調整
 
 **需要修改的服務函數**：
+
 1. `services/gemini/portrait.ts`：
    - `generateProfessionalPortrait` 參數改為 `File | File[]`
    - Prompt 調整：2 人時加入 "couple portrait"，3+ 人時加入 "group portrait" / "family portrait"
@@ -195,9 +201,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     <button
       onClick={() => setMode('couple')}
       className={`px-6 py-2 rounded-full font-bold transition-all ${
-        mode === 'couple'
-          ? 'bg-pink-600 text-white shadow-lg'
-          : 'text-gray-400 hover:text-gray-200'
+        mode === 'couple' ? 'bg-pink-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-200'
       }`}
     >
       💑 雙人寫真
@@ -223,6 +227,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 ### 5.1 路由參數設計
 
 **雙人寫真項目**：
+
 ```
 /couple-group?mode=couple&style=portrait&type=premium_leader
 /couple-group?mode=couple&style=themed&type=themed-polaroid
@@ -230,6 +235,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 ```
 
 **多人寫真項目**：
+
 ```
 /couple-group?mode=group&style=portrait&type=business
 /couple-group?mode=group&style=themed&type=themed-birthday
@@ -265,6 +271,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 ## 六、實作步驟
 
 ### Phase 1: 基礎頁面結構
+
 1. 建立 `features/couple-group/` 目錄
 2. 建立 `CoupleGroupPage.tsx`（基本容器）
 3. 建立 `CoupleGroupModeTabs.tsx`（雙人/多人切換）
@@ -273,28 +280,33 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 6. 在 `StartTabNav` 新增按鈕
 
 ### Phase 2: 上傳與風格選擇
+
 1. 建立 `CoupleGroupUploadSection.tsx`（多檔案上傳）
 2. 建立 `CoupleGroupStyleSelector.tsx`（形象照/主題寫真/旅遊照切換）
 3. 實作檔案驗證邏輯（雙人 2 檔、多人 3-6 檔）
 
 ### Phase 3: 進階選項表單
+
 1. 建立 `CoupleGroupForm.tsx`（依風格動態顯示選項）
 2. 整合形象照選項（類型、規格）
 3. 整合主題寫真選項（主題類型）
 4. 整合旅遊照選項（場景、長寬比等）
 
 ### Phase 4: 生成與結果
+
 1. 修改 `services/gemini/portrait.ts` 支援 `File[]`
 2. 修改 `services/gemini/themed.ts` 支援 `File[]`
 3. 建立 `CoupleGroupResult.tsx`（結果展示）
 4. 實作生成邏輯（依風格調用對應服務）
 
 ### Phase 5: 照片館對接
+
 1. 更新 `constants/photographyService.ts` 中「couple」與「group」項目的 `targetRoute`
 2. 新增 `queryParams` 參數
 3. 在 `CoupleGroupPage` 中讀取 URL 參數並預填選項
 
 ### Phase 6: 多語與樣式
+
 1. 在 `LanguageContext` 新增相關翻譯 key
 2. 調整樣式與動畫
 3. 測試與優化
@@ -315,6 +327,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 ## 八、預期成果
 
 完成後：
+
 - ✅ 新增 `/couple-group` 路由與頁面
 - ✅ 頁面內有「雙人寫真」與「多人寫真」Tab 切換
 - ✅ 支援形象照、主題寫真、旅遊照三種風格

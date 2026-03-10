@@ -13,7 +13,7 @@ interface BatchDownloadOptions {
 
 function fallbackDownloadSequentially(
   dataUrls: string[],
-  itemFileName: (index: number) => string
+  itemFileName: (index: number) => string,
 ): void {
   dataUrls.forEach((dataUrl, index) => {
     setTimeout(() => {

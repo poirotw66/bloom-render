@@ -65,7 +65,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
       >
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
               {icon} {t('batch.uploaded_files', { count: files.length, max: maxFiles })}
             </h3>
 
@@ -76,11 +76,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
                   key={idx}
                   className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-xl transition-transform hover:scale-105"
                 >
-                  <img
-                    src={url}
-                    alt={`File ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={url} alt={`File ${idx + 1}`} className="w-full h-full object-cover" />
                   <button
                     onClick={() => onRemoveFile(idx)}
                     className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
@@ -146,7 +142,9 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
             </div>
 
             <p className="text-xs text-gray-500 italic max-w-sm text-center">
-              {t('batch.hint').replace('{min}', String(minFiles)).replace('{max}', String(maxFiles))}
+              {t('batch.hint')
+                .replace('{min}', String(minFiles))
+                .replace('{max}', String(maxFiles))}
             </p>
           </div>
         ) : (
@@ -156,11 +154,11 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
             </div>
 
             <div className="text-center">
-              <h3 className="text-2xl font-black text-white mb-2">
-                {t('batch.title')}
-              </h3>
-              <p className="text-sm text-gray-400 max-w-xs">
-                {t('batch.upload_hint').replace('{min}', String(minFiles)).replace('{max}', String(maxFiles))}
+              <h3 className="text-2xl font-black text-white mb-2">{t('batch.title')}</h3>
+              <p className="text-base text-gray-400 max-w-xs leading-relaxed">
+                {t('batch.upload_hint')
+                  .replace('{min}', String(minFiles))
+                  .replace('{max}', String(maxFiles))}
               </p>
             </div>
 

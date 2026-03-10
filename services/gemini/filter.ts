@@ -6,7 +6,13 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  type ServiceSettings,
+} from './shared';
 
 /**
  * Generates an image with a filter applied using generative AI.
@@ -14,7 +20,7 @@ import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSet
 export const generateFilteredImage = async (
   originalImage: File,
   filterPrompt: string,
-  settings?: ServiceSettings
+  settings?: ServiceSettings,
 ): Promise<string> => {
   console.log(`Starting filter generation: ${filterPrompt}`);
   const ai = getClient(settings);

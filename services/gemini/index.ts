@@ -7,39 +7,30 @@
  */
 
 export type { ServiceSettings } from './shared';
-export { fileToPart, handleApiResponse, getClient, getModel, supportsMultiResolution } from './shared';
+export {
+  fileToPart,
+  handleApiResponse,
+  getClient,
+  getModel,
+  supportsMultiResolution,
+} from './shared';
 
 export { generateEditedImage } from './edit';
 export { generateFilteredImage } from './filter';
 export { generateAdjustedImage } from './adjustment';
 
-export {
-  generateIdPhoto,
-  type GenerateIdPhotoOptions,
-} from './idPhoto';
+export { generateIdPhoto, type GenerateIdPhotoOptions } from './idPhoto';
 
-export {
-  generateProfessionalPortrait,
-  type GeneratePortraitOptions,
-} from './portrait';
+export { generateProfessionalPortrait, type GeneratePortraitOptions } from './portrait';
 
-export {
-  generateThemedPhoto,
-  type GenerateThemedPhotoOptions,
-} from './themed';
+export { generateThemedPhoto, type GenerateThemedPhotoOptions } from './themed';
 
-export {
-  generateTravelPhoto,
-  type GenerateTravelPhotoOptions,
-} from './travel';
+export { generateTravelPhoto, type GenerateTravelPhotoOptions } from './travel';
 
 export { generateImageFromText } from './generate';
 export { generateOptimizedPrompt } from './optimizePrompt';
 
-export {
-  generateVirtualTryOn,
-  type GenerateTryOnOptions,
-} from './tryOn';
+export { generateVirtualTryOn, type GenerateTryOnOptions } from './tryOn';
 
 // Re-export domain types from root for consumers that import from geminiService
 export type {

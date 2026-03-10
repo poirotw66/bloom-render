@@ -8,28 +8,28 @@
 
 ### 1.1 已實作項目（對照 PROJECT_PLAN_PHOTOGRAPHY_SERVICE.md）
 
-| 規劃項目 | 狀態 | 說明 |
-|----------|------|------|
-| **資料層** | ✅ | `constants/photographyService.ts`：`PHOTOGRAPHY_SERVICE_CATEGORIES`、`PHOTOGRAPHY_SERVICE_ITEMS`，靜態陣列，含 nameKey/descriptionKey/priceRange/targetRoute/actionLabelKey/badgeKey |
-| **路由** | ✅ | `/photography-service` → `PhotographyServicePage` |
-| **入口** | ✅ | `StartTabNav` 含「照片館」Tab，與 upload / generate / idphoto / portrait / travel / themed 並列 |
-| **分類 Tab** | ✅ | 依 `PHOTOGRAPHY_SERVICE_CATEGORIES` 渲染，點選後篩選方案列表 |
-| **方案列表** | ✅ | 依目前選中分類過濾 `PHOTOGRAPHY_SERVICE_ITEMS`，grid 排版 |
-| **ServiceCard** | ✅ | 名稱、描述、原價/售價、badge、主按鈕；點擊依 `targetRoute`（及可選 `queryParams`）導向 |
-| **與既有功能串接** | ✅ | 見下表 |
-| **多語** | ✅ | 分類、方案名稱/描述、按鈕文案皆用 `LanguageContext` key（中/英） |
-| **精選區塊（Phase 3 可選）** | ✅ | 頁底「作品精選」區塊，使用 `service.showcase.title` / `service.showcase.desc` |
+| 規劃項目                     | 狀態 | 說明                                                                                                                                                                                 |
+| ---------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **資料層**                   | ✅   | `constants/photographyService.ts`：`PHOTOGRAPHY_SERVICE_CATEGORIES`、`PHOTOGRAPHY_SERVICE_ITEMS`，靜態陣列，含 nameKey/descriptionKey/priceRange/targetRoute/actionLabelKey/badgeKey |
+| **路由**                     | ✅   | `/photography-service` → `PhotographyServicePage`                                                                                                                                    |
+| **入口**                     | ✅   | `StartTabNav` 含「照片館」Tab，與 upload / generate / idphoto / portrait / travel / themed 並列                                                                                      |
+| **分類 Tab**                 | ✅   | 依 `PHOTOGRAPHY_SERVICE_CATEGORIES` 渲染，點選後篩選方案列表                                                                                                                         |
+| **方案列表**                 | ✅   | 依目前選中分類過濾 `PHOTOGRAPHY_SERVICE_ITEMS`，grid 排版                                                                                                                            |
+| **ServiceCard**              | ✅   | 名稱、描述、原價/售價、badge、主按鈕；點擊依 `targetRoute`（及可選 `queryParams`）導向                                                                                               |
+| **與既有功能串接**           | ✅   | 見下表                                                                                                                                                                               |
+| **多語**                     | ✅   | 分類、方案名稱/描述、按鈕文案皆用 `LanguageContext` key（中/英）                                                                                                                     |
+| **精選區塊（Phase 3 可選）** | ✅   | 頁底「作品精選」區塊，使用 `service.showcase.title` / `service.showcase.desc`                                                                                                        |
 
 ### 1.2 目前分類與導向一覽
 
-| 分類 | 方案數 | 導向目標 | 備註 |
-|------|--------|----------|------|
-| 韓式證件照 (idphoto) | 3 | `/idphoto?level=self|standard|premium` | 依方案帶修圖等級 |
-| 職業形象照 (corporate) | 11 | `/portrait?type=...` 或 `type=...&spec=half_body|full_body` | 領袖之境、爾雅界、MAG、學士、職業半/全身、空服、模特卡等 |
-| 肖像履歷照 (portrait) | 2 | `/portrait?type=portrait_resume_grad|portrait_resume` | 學士/碩士/博士、一般肖像履歷照 |
-| 主題寫真 (themed) | 15 | `/themed?type=themed-xxx` | 生日、雜誌、撕拉片、運動、孕婦、肯豆、美式學院等，皆可上傳照片用 Gemini 生成 |
-| 雙人寫真 (couple) | 10 | `/travel` 或 `/idphoto` | 多數為 `/travel`；結婚登記套餐為 `/idphoto` |
-| 多人寫真 (group) | 6 | `/travel` | 全家福、新中式、畢業等 |
+| 分類                   | 方案數 | 導向目標                                         | 備註                                                                         |
+| ---------------------- | ------ | ------------------------------------------------ | ---------------------------------------------------------------------------- | -------------------------------------------------------- | ---------------- |
+| 韓式證件照 (idphoto)   | 3      | `/idphoto?level=self                             | standard                                                                     | premium`                                                 | 依方案帶修圖等級 |
+| 職業形象照 (corporate) | 11     | `/portrait?type=...` 或 `type=...&spec=half_body | full_body`                                                                   | 領袖之境、爾雅界、MAG、學士、職業半/全身、空服、模特卡等 |
+| 肖像履歷照 (portrait)  | 2      | `/portrait?type=portrait_resume_grad             | portrait_resume`                                                             | 學士/碩士/博士、一般肖像履歷照                           |
+| 主題寫真 (themed)      | 15     | `/themed?type=themed-xxx`                        | 生日、雜誌、撕拉片、運動、孕婦、肯豆、美式學院等，皆可上傳照片用 Gemini 生成 |
+| 雙人寫真 (couple)      | 10     | `/travel` 或 `/idphoto`                          | 多數為 `/travel`；結婚登記套餐為 `/idphoto`                                  |
+| 多人寫真 (group)       | 6      | `/travel`                                        | 全家福、新中式、畢業等                                                       |
 
 已移除之分類：**票券/團體**、**高級訂製**（規劃中之 promotions/combo 未獨立成分類）。
 

@@ -27,7 +27,13 @@ export interface TravelPromptOptions {
  * Generate travel photo prompt
  */
 export function generateTravelPrompt(options: TravelPromptOptions): string {
-  const { scenePrompt, sceneReferenceImage, aspectRatio = '1:1', isGroup = false, variationIndex } = options;
+  const {
+    scenePrompt,
+    sceneReferenceImage,
+    aspectRatio = '1:1',
+    isGroup = false,
+    variationIndex,
+  } = options;
 
   // Build scene description
   const sceneForTemplate = sceneReferenceImage
@@ -45,7 +51,7 @@ export function generateTravelPrompt(options: TravelPromptOptions): string {
     const angle = getVariation(TRAVEL_CAMERA_ANGLES, variationIndex);
     const pose = getVariation(TRAVEL_POSES_AND_ACTIONS, variationIndex);
     const style = getVariation(TRAVEL_VISUAL_STYLES, variationIndex);
-    
+
     variationModifiers = `\nVariation Modifiers:\n- ${lighting}\n- ${angle}\n- ${pose}\n- ${style}`;
   }
 

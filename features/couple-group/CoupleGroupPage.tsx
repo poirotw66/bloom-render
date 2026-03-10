@@ -32,9 +32,10 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
-            {t('couple_group.title_part1')} <span className="text-pink-400">{t('couple_group.title_part2')}</span>
+            {t('couple_group.title_part1')}{' '}
+            <span className="text-pink-400">{t('couple_group.title_part2')}</span>
           </h1>
-          <p className="max-w-2xl text-base text-gray-400 md:text-lg">
+          <p className="max-w-2xl text-lg text-gray-300 md:text-xl leading-relaxed">
             {t('couple_group.subtitle')}
           </p>
           <CoupleGroupModeTabs mode={coupleGroup.mode} onChange={coupleGroup.setMode} />
@@ -73,9 +74,7 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
                   }}
                   onAgain={coupleGroup.clearResult}
                   onEditInEditor={() => {
-                    onImageSelected(
-                      dataURLtoFile(result, `couple-group-${idx + 1}.png`)
-                    );
+                    onImageSelected(dataURLtoFile(result, `couple-group-${idx + 1}.png`));
                   }}
                 />
               ))}
@@ -96,9 +95,7 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
             onAgain={coupleGroup.clearResult}
             onEditInEditor={() => {
               if (!coupleGroup.result) return;
-              onImageSelected(
-                dataURLtoFile(coupleGroup.result, `couple-group-${Date.now()}.png`)
-              );
+              onImageSelected(dataURLtoFile(coupleGroup.result, `couple-group-${Date.now()}.png`));
             }}
           />
         ) : coupleGroup.loading ? (

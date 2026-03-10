@@ -6,7 +6,12 @@
  */
 
 import type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption } from '../../../types';
-import { buildPrompt, IDENTITY_PRESERVATION, QUALITY_REQUIREMENTS, buildNegativePrompt } from './base';
+import {
+  buildPrompt,
+  IDENTITY_PRESERVATION,
+  QUALITY_REQUIREMENTS,
+  buildNegativePrompt,
+} from './base';
 import { getVariation, ID_PHOTO_VARIATIONS, buildVariationNote } from './variations';
 
 export interface IdPhotoPromptOptions {
@@ -22,14 +27,8 @@ export interface IdPhotoPromptOptions {
  * Generate ID photo prompt
  */
 export function generateIdPhotoPrompt(options: IdPhotoPromptOptions): string {
-  const {
-    retouchLevel,
-    idType,
-    outputSpec,
-    clothingHint,
-    clothingReferenceImage,
-    variationIndex,
-  } = options;
+  const { retouchLevel, idType, outputSpec, clothingHint, clothingReferenceImage, variationIndex } =
+    options;
 
   // Build positive requirements
   const positiveParts = [
@@ -64,8 +63,15 @@ export function generateIdPhotoPrompt(options: IdPhotoPromptOptions): string {
       clothingHint,
       variationNote,
     ].filter(Boolean),
-    negative: buildNegativePrompt(['identity', 'filters', 'aiArtifacts', 'expressions', 'lighting', 'quality']) + 
-      (retouchLevel.negativeExtra ? `, ${retouchLevel.negativeExtra}` : ''),
+    negative:
+      buildNegativePrompt([
+        'identity',
+        'filters',
+        'aiArtifacts',
+        'expressions',
+        'lighting',
+        'quality',
+      ]) + (retouchLevel.negativeExtra ? `, ${retouchLevel.negativeExtra}` : ''),
     output: 'Output: Return ONLY the final ID/passport-style image. Do not return any text.',
   });
 }

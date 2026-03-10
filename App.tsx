@@ -1,13 +1,16 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
-
+ */
 
 import React, { useState, useCallback, useRef, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
-import { generateEditedImage, generateFilteredImage, generateAdjustedImage } from './services/geminiService';
+import {
+  generateEditedImage,
+  generateFilteredImage,
+  generateAdjustedImage,
+} from './services/geminiService';
 import Header from './components/Header';
 import Spinner from './components/Spinner';
 import FilterPanel from './components/FilterPanel';
@@ -23,7 +26,9 @@ const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
 const PortraitPage = lazy(() => import('./features/portrait/PortraitPage'));
 const TravelPage = lazy(() => import('./features/travel/TravelPage'));
 const ThemedPage = lazy(() => import('./features/themed/ThemedPage'));
-const PhotographyServicePage = lazy(() => import('./features/photography-service/PhotographyServicePage'));
+const PhotographyServicePage = lazy(
+  () => import('./features/photography-service/PhotographyServicePage'),
+);
 const CoupleGroupPage = lazy(() => import('./features/couple-group/CoupleGroupPage'));
 const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
 import { useLanguage } from './contexts/LanguageContext';
@@ -43,8 +48,8 @@ const App: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [editHotspot, setEditHotspot] = useState<{ x: number, y: number } | null>(null);
-  const [displayHotspot, setDisplayHotspot] = useState<{ x: number, y: number } | null>(null);
+  const [editHotspot, setEditHotspot] = useState<{ x: number; y: number } | null>(null);
+  const [displayHotspot, setDisplayHotspot] = useState<{ x: number; y: number } | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('retouch');
 
   const [crop, setCrop] = useState<Crop>();
@@ -81,31 +86,36 @@ const App: React.FC = () => {
     }
   }, [originalImage]);
 
-
   const canUndo = historyIndex > 0;
   const canRedo = historyIndex < history.length - 1;
 
-  const addImageToHistory = useCallback((newImageFile: File) => {
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(newImageFile);
-    setHistory(newHistory);
-    setHistoryIndex(newHistory.length - 1);
-    // Reset transient states after an action
-    setCrop(undefined);
-    setCompletedCrop(undefined);
-  }, [history, historyIndex]);
+  const addImageToHistory = useCallback(
+    (newImageFile: File) => {
+      const newHistory = history.slice(0, historyIndex + 1);
+      newHistory.push(newImageFile);
+      setHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+      // Reset transient states after an action
+      setCrop(undefined);
+      setCompletedCrop(undefined);
+    },
+    [history, historyIndex],
+  );
 
-  const handleImageUpload = useCallback((file: File) => {
-    setError(null);
-    setHistory([file]);
-    setHistoryIndex(0);
-    setEditHotspot(null);
-    setDisplayHotspot(null);
-    setActiveTab('retouch');
-    setCrop(undefined);
-    setCompletedCrop(undefined);
-    navigate('/edit');
-  }, [navigate]);
+  const handleImageUpload = useCallback(
+    (file: File) => {
+      setError(null);
+      setHistory([file]);
+      setHistoryIndex(0);
+      setEditHotspot(null);
+      setDisplayHotspot(null);
+      setActiveTab('retouch');
+      setCrop(undefined);
+      setCompletedCrop(undefined);
+      navigate('/edit');
+    },
+    [navigate],
+  );
 
   const handleGenerate = useCallback(async () => {
     if (!currentImage) {
@@ -127,7 +137,10 @@ const App: React.FC = () => {
     setError(null);
 
     try {
-      const editedImageUrl = await generateEditedImage(currentImage, prompt, editHotspot, { apiKey: settings.apiKey, model: settings.model });
+      const editedImageUrl = await generateEditedImage(currentImage, prompt, editHotspot, {
+        apiKey: settings.apiKey,
+        model: settings.model,
+      });
       const newImageFile = dataURLtoFile(editedImageUrl, `edited-${Date.now()}.png`);
       addImageToHistory(newImageFile);
       setEditHotspot(null);
@@ -141,49 +154,61 @@ const App: React.FC = () => {
     }
   }, [currentImage, prompt, editHotspot, addImageToHistory, t, settings]);
 
-  const handleApplyFilter = useCallback(async (filterPrompt: string) => {
-    if (!currentImage) {
-      setError(t('main.error_no_image_filter'));
-      return;
-    }
+  const handleApplyFilter = useCallback(
+    async (filterPrompt: string) => {
+      if (!currentImage) {
+        setError(t('main.error_no_image_filter'));
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const filteredImageUrl = await generateFilteredImage(currentImage, filterPrompt, { apiKey: settings.apiKey, model: settings.model });
-      const newImageFile = dataURLtoFile(filteredImageUrl, `filtered-${Date.now()}.png`);
-      addImageToHistory(newImageFile);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(`${t('main.error_failed_filter')} ${errorMessage}`);
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentImage, addImageToHistory, t, settings]);
+      try {
+        const filteredImageUrl = await generateFilteredImage(currentImage, filterPrompt, {
+          apiKey: settings.apiKey,
+          model: settings.model,
+        });
+        const newImageFile = dataURLtoFile(filteredImageUrl, `filtered-${Date.now()}.png`);
+        addImageToHistory(newImageFile);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+        setError(`${t('main.error_failed_filter')} ${errorMessage}`);
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [currentImage, addImageToHistory, t, settings],
+  );
 
-  const handleApplyAdjustment = useCallback(async (adjustmentPrompt: string) => {
-    if (!currentImage) {
-      setError(t('main.error_no_image_adjust'));
-      return;
-    }
+  const handleApplyAdjustment = useCallback(
+    async (adjustmentPrompt: string) => {
+      if (!currentImage) {
+        setError(t('main.error_no_image_adjust'));
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const adjustedImageUrl = await generateAdjustedImage(currentImage, adjustmentPrompt, { apiKey: settings.apiKey, model: settings.model });
-      const newImageFile = dataURLtoFile(adjustedImageUrl, `adjusted-${Date.now()}.png`);
-      addImageToHistory(newImageFile);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(`${t('main.error_failed_adjust')} ${errorMessage}`);
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentImage, addImageToHistory, t, settings]);
+      try {
+        const adjustedImageUrl = await generateAdjustedImage(currentImage, adjustmentPrompt, {
+          apiKey: settings.apiKey,
+          model: settings.model,
+        });
+        const newImageFile = dataURLtoFile(adjustedImageUrl, `adjusted-${Date.now()}.png`);
+        addImageToHistory(newImageFile);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+        setError(`${t('main.error_failed_adjust')} ${errorMessage}`);
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [currentImage, addImageToHistory, t, settings],
+  );
 
   const handleApplyCrop = useCallback(() => {
     if (!completedCrop || !imgRef.current) {
@@ -226,7 +251,6 @@ const App: React.FC = () => {
     const croppedImageUrl = canvas.toDataURL('image/png');
     const newImageFile = dataURLtoFile(croppedImageUrl, `cropped-${Date.now()}.png`);
     addImageToHistory(newImageFile);
-
   }, [completedCrop, addImageToHistory, t]);
 
   const handleUndo = useCallback(() => {
@@ -276,26 +300,29 @@ const App: React.FC = () => {
     }
   }, [currentImage]);
 
-  const handleImageClick = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
-    if (activeTab !== 'retouch') return;
+  const handleImageClick = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      if (activeTab !== 'retouch') return;
 
-    const img = e.currentTarget;
-    const rect = img.getBoundingClientRect();
+      const img = e.currentTarget;
+      const rect = img.getBoundingClientRect();
 
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
 
-    setDisplayHotspot({ x: offsetX, y: offsetY });
+      setDisplayHotspot({ x: offsetX, y: offsetY });
 
-    const { naturalWidth, naturalHeight, clientWidth, clientHeight } = img;
-    const scaleX = naturalWidth / clientWidth;
-    const scaleY = naturalHeight / clientHeight;
+      const { naturalWidth, naturalHeight, clientWidth, clientHeight } = img;
+      const scaleX = naturalWidth / clientWidth;
+      const scaleY = naturalHeight / clientHeight;
 
-    const originalX = Math.round(offsetX * scaleX);
-    const originalY = Math.round(offsetY * scaleY);
+      const originalX = Math.round(offsetX * scaleX);
+      const originalY = Math.round(offsetY * scaleY);
 
-    setEditHotspot({ x: originalX, y: originalY });
-  }, [activeTab]);
+      setEditHotspot({ x: originalX, y: originalY });
+    },
+    [activeTab],
+  );
 
   const renderEditor = () => {
     if (error) {
@@ -347,7 +374,6 @@ const App: React.FC = () => {
       />
     );
 
-
     return (
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-6 animate-fade-in">
         <div className="relative w-full shadow-2xl rounded-xl overflow-hidden bg-black/20">
@@ -361,14 +387,16 @@ const App: React.FC = () => {
           {activeTab === 'crop' ? (
             <ReactCrop
               crop={crop}
-              onChange={c => setCrop(c)}
-              onComplete={c => setCompletedCrop(c)}
+              onChange={(c) => setCrop(c)}
+              onComplete={(c) => setCompletedCrop(c)}
               aspect={aspect}
               className="max-h-[60vh]"
             >
               {cropImageElement}
             </ReactCrop>
-          ) : imageDisplay}
+          ) : (
+            imageDisplay
+          )}
 
           {displayHotspot && !isLoading && activeTab === 'retouch' && (
             <div
@@ -380,8 +408,10 @@ const App: React.FC = () => {
           )}
         </div>
 
-        <div className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${editorTheme.tabContainer}`}>
-          {(['retouch', 'crop', 'adjust', 'filters'] as Tab[]).map(tab => (
+        <div
+          className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${editorTheme.tabContainer}`}
+        >
+          {(['retouch', 'crop', 'adjust', 'filters'] as Tab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -398,12 +428,22 @@ const App: React.FC = () => {
               <p className={`text-md ${editorTheme.retouchInstruction}`}>
                 {editHotspot ? t('main.retouch_instr_ready') : t('main.retouch_instr_initial')}
               </p>
-              <form onSubmit={(e) => { e.preventDefault(); handleGenerate(); }} className="w-full flex items-center gap-2">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleGenerate();
+                }}
+                className="w-full flex items-center gap-2"
+              >
                 <input
                   type="text"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder={editHotspot ? t('main.retouch_placeholder_ready') : t('main.retouch_placeholder_initial')}
+                  placeholder={
+                    editHotspot
+                      ? t('main.retouch_placeholder_ready')
+                      : t('main.retouch_placeholder_initial')
+                  }
                   className={`flex-grow border rounded-lg p-5 text-lg focus:ring-2 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60 ${editorTheme.input}`}
                   disabled={isLoading || !editHotspot}
                 />
@@ -417,9 +457,20 @@ const App: React.FC = () => {
               </form>
             </div>
           )}
-          {activeTab === 'crop' && <CropPanel onApplyCrop={handleApplyCrop} onSetAspect={setAspect} isLoading={isLoading} isCropping={!!completedCrop?.width && completedCrop.width > 0} />}
-          {activeTab === 'adjust' && <AdjustmentPanel onApplyAdjustment={handleApplyAdjustment} isLoading={isLoading} />}
-          {activeTab === 'filters' && <FilterPanel onApplyFilter={handleApplyFilter} isLoading={isLoading} />}
+          {activeTab === 'crop' && (
+            <CropPanel
+              onApplyCrop={handleApplyCrop}
+              onSetAspect={setAspect}
+              isLoading={isLoading}
+              isCropping={!!completedCrop?.width && completedCrop.width > 0}
+            />
+          )}
+          {activeTab === 'adjust' && (
+            <AdjustmentPanel onApplyAdjustment={handleApplyAdjustment} isLoading={isLoading} />
+          )}
+          {activeTab === 'filters' && (
+            <FilterPanel onApplyFilter={handleApplyFilter} isLoading={isLoading} />
+          )}
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
@@ -487,19 +538,50 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen text-gray-100 flex flex-col">
       <Header onImageSelected={handleImageUpload} />
-      <main className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex justify-center min-w-0 ${currentImage ? 'items-start' : 'items-center'}`}>
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[40vh]"><Spinner /></div>}>
+      <main
+        className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex justify-center min-w-0 ${currentImage ? 'items-start' : 'items-center'}`}
+      >
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-[40vh]">
+              <Spinner />
+            </div>
+          }
+        >
           <Routes>
-            <Route path="/" element={<StartScreen tab="upload" onImageSelected={handleImageUpload} navigate={navigate} />} />
-            <Route path="/generate" element={<StartScreen tab="generate" onImageSelected={handleImageUpload} navigate={navigate} />} />
+            <Route
+              path="/"
+              element={
+                <StartScreen tab="upload" onImageSelected={handleImageUpload} navigate={navigate} />
+              }
+            />
+            <Route
+              path="/generate"
+              element={
+                <StartScreen
+                  tab="generate"
+                  onImageSelected={handleImageUpload}
+                  navigate={navigate}
+                />
+              }
+            />
             <Route path="/idphoto" element={<IdPhotoPage onImageSelected={handleImageUpload} />} />
-            <Route path="/portrait" element={<PortraitPage onImageSelected={handleImageUpload} />} />
+            <Route
+              path="/portrait"
+              element={<PortraitPage onImageSelected={handleImageUpload} />}
+            />
             <Route path="/travel" element={<TravelPage onImageSelected={handleImageUpload} />} />
             <Route path="/themed" element={<ThemedPage onImageSelected={handleImageUpload} />} />
-            <Route path="/couple-group" element={<CoupleGroupPage onImageSelected={handleImageUpload} />} />
+            <Route
+              path="/couple-group"
+              element={<CoupleGroupPage onImageSelected={handleImageUpload} />}
+            />
             <Route path="/try-on" element={<TryOnPage onImageSelected={handleImageUpload} />} />
             <Route path="/photography-service" element={<PhotographyServicePage />} />
-            <Route path="/edit" element={!currentImage ? <Navigate to="/" replace /> : renderEditor()} />
+            <Route
+              path="/edit"
+              element={!currentImage ? <Navigate to="/" replace /> : renderEditor()}
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

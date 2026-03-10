@@ -8,18 +8,18 @@
 
 ### 1.1 現有功能支援狀況
 
-| 功能 | 路由 | 單人 | 雙人 | 多人（3+） | 備註 |
-|------|------|------|------|------------|------|
-| **旅遊照** | `/travel` | ✅ | ✅ | ✅ | 已完整支援，有單人/團體模式切換，最多4人 |
-| **形象照** | `/portrait` | ✅ | ❌ | ❌ | 目前僅支援單人 |
-| **主題寫真** | `/themed` | ✅ | ❌ | ❌ | 目前僅支援單人 |
+| 功能         | 路由        | 單人 | 雙人 | 多人（3+） | 備註                                     |
+| ------------ | ----------- | ---- | ---- | ---------- | ---------------------------------------- |
+| **旅遊照**   | `/travel`   | ✅   | ✅   | ✅         | 已完整支援，有單人/團體模式切換，最多4人 |
+| **形象照**   | `/portrait` | ✅   | ❌   | ❌         | 目前僅支援單人                           |
+| **主題寫真** | `/themed`   | ✅   | ❌   | ❌         | 目前僅支援單人                           |
 
 ### 1.2 照片館項目現況
 
-| 分類 | 項目數 | 目前導向 | 問題 |
-|------|--------|----------|------|
-| **情侶 (couple)** | 11 項 | `/travel` | 部分項目應為形象照或主題寫真風格 |
-| **團體 (group)** | 7 項 | `/travel` | 家庭照、畢業照可能更適合形象照風格 |
+| 分類              | 項目數 | 目前導向  | 問題                               |
+| ----------------- | ------ | --------- | ---------------------------------- |
+| **情侶 (couple)** | 11 項  | `/travel` | 部分項目應為形象照或主題寫真風格   |
+| **團體 (group)**  | 7 項   | `/travel` | 家庭照、畢業照可能更適合形象照風格 |
 
 ---
 
@@ -32,6 +32,7 @@
 #### Phase 1: 擴展形象照 (`/portrait`) 支援多人
 
 **實作項目**：
+
 1. **`usePortrait.ts`**：
    - 新增 `isGroupMode: boolean` 狀態
    - 將 `portraitFile: File | null` 改為 `portraitFiles: File[]`
@@ -56,6 +57,7 @@
 #### Phase 2: 擴展主題寫真 (`/themed`) 支援多人
 
 **實作項目**：
+
 1. **`useThemed.ts`**：
    - 新增 `isGroupMode: boolean` 狀態
    - 將 `themedFile: File | null` 改為 `themedFiles: File[]`
@@ -78,21 +80,22 @@
 #### Phase 3: 照片館項目重新分類與導向
 
 **分類原則**：
+
 - **形象照風格**（專業、工作室、家庭、畢業）→ `/portrait`
 - **主題寫真風格**（拍立得、美式校園、復古、生日派對）→ `/themed`
 - **旅遊場景風格**（景點、美食地圖）→ `/travel`（維持現狀）
 
 **調整項目**：
 
-| 分類 | 項目 ID | 建議導向 | 模式參數 |
-|------|---------|----------|----------|
-| couple | `couple-romance` | `/portrait` | `?mode=couple` |
-| couple | `couple-office` | `/portrait` | `?mode=couple` |
-| couple | `couple-polaroid` | `/themed` | `?mode=couple&type=themed-polaroid` |
-| couple | `couple-us-college` | `/themed` | `?mode=couple&type=themed-us-college` |
-| group | `group-family` | `/portrait` | `?mode=group` |
-| group | `group-grad` | `/portrait` | `?mode=group` |
-| group | `group-new-style` | `/themed` | `?mode=group` |
+| 分類   | 項目 ID             | 建議導向    | 模式參數                              |
+| ------ | ------------------- | ----------- | ------------------------------------- |
+| couple | `couple-romance`    | `/portrait` | `?mode=couple`                        |
+| couple | `couple-office`     | `/portrait` | `?mode=couple`                        |
+| couple | `couple-polaroid`   | `/themed`   | `?mode=couple&type=themed-polaroid`   |
+| couple | `couple-us-college` | `/themed`   | `?mode=couple&type=themed-us-college` |
+| group  | `group-family`      | `/portrait` | `?mode=group`                         |
+| group  | `group-grad`        | `/portrait` | `?mode=group`                         |
+| group  | `group-new-style`   | `/themed`   | `?mode=group`                         |
 
 ---
 
@@ -101,16 +104,13 @@
 ### 3.1 模式切換 UI
 
 參考 `TravelUploadSection` 的實作：
+
 ```tsx
 // 單人 / 雙人 / 多人切換
 <div className="flex justify-center mb-2">
   <div className="flex bg-gray-900/60 p-1 rounded-full">
-    <button onClick={() => setIsGroupMode(false)}>
-      👤 單人
-    </button>
-    <button onClick={() => setIsGroupMode(true)}>
-      👥 雙人/多人
-    </button>
+    <button onClick={() => setIsGroupMode(false)}>👤 單人</button>
+    <button onClick={() => setIsGroupMode(true)}>👥 雙人/多人</button>
   </div>
 </div>
 ```
@@ -118,26 +118,32 @@
 ### 3.2 Prompt 調整範例
 
 **形象照（多人）**：
+
 ```typescript
 const positive = [
   'Professional group photography portrait',
-  isGroupMode && files.length === 2 
-    ? 'Couple portrait, two people' 
+  isGroupMode && files.length === 2
+    ? 'Couple portrait, two people'
     : `Group portrait with ${files.length} people`,
   'High-end studio retouching',
   'Preserve identity and facial features of all people in the source images',
   style.promptHint,
   spec.cropHint,
   // ...
-].filter(Boolean).join('. ');
+]
+  .filter(Boolean)
+  .join('. ');
 ```
 
 **主題寫真（多人）**：
+
 ```typescript
 const prompt = `... 
-${files.length === 2 
-  ? 'Create a couple themed photoshoot' 
-  : `Create a group themed photoshoot with ${files.length} people`}
+${
+  files.length === 2
+    ? 'Create a couple themed photoshoot'
+    : `Create a group themed photoshoot with ${files.length} people`
+}
 ...`;
 ```
 
@@ -152,16 +158,19 @@ ${files.length === 2
 ## 四、實作優先順序
 
 ### 階段 1：形象照多人支援（優先）
+
 1. 擴展 `usePortrait` 與 `PortraitUploadSection`
 2. 修改 `generateProfessionalPortrait` 支援 `File[]`
 3. 照片館「couple」與「group」中形象照風格項目導向 `/portrait`
 
 ### 階段 2：主題寫真多人支援
+
 1. 擴展 `useThemed` 與 `ThemedUploadSection`
 2. 修改 `generateThemedPhoto` 支援 `File[]`
 3. 照片館「couple」與「group」中主題寫真風格項目導向 `/themed`
 
 ### 階段 3：照片館項目重新分類
+
 1. 檢視所有「couple」與「group」項目
 2. 依性質重新設定 `targetRoute` 與 `queryParams`
 3. 更新多語 key（如有需要）
@@ -181,6 +190,7 @@ ${files.length === 2
 ## 六、預期成果
 
 完成後：
+
 - ✅ `/portrait` 支援單人、雙人、多人（最多 4-6 人）
 - ✅ `/themed` 支援單人、雙人、多人（最多 4-6 人）
 - ✅ `/travel` 維持現有多人支援

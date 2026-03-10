@@ -45,18 +45,10 @@ export function generateThemedPrompt(options: ThemedPromptOptions): string {
     : '';
 
   const identityConsistency =
-    fileCount === 1
-      ? 'the person'
-      : fileCount === 2
-        ? 'both people'
-        : 'all people';
+    fileCount === 1 ? 'the person' : fileCount === 2 ? 'both people' : 'all people';
 
   const subjectDescription =
-    fileCount === 1
-      ? 'the subject'
-      : fileCount === 2
-        ? 'both subjects'
-        : 'all subjects';
+    fileCount === 1 ? 'the subject' : fileCount === 2 ? 'both subjects' : 'all subjects';
 
   return buildPrompt({
     intro,
@@ -68,7 +60,9 @@ export function generateThemedPrompt(options: ThemedPromptOptions): string {
       `Apply the requested themed style (lighting, mood, aesthetic) while keeping ${subjectDescription} recognizable.`,
       'Output should be photorealistic and high quality.',
       ...(fileCount > 1
-        ? [`Arrange ${fileCount === 2 ? 'the couple' : 'the group'} naturally and harmoniously in the themed composition.`]
+        ? [
+            `Arrange ${fileCount === 2 ? 'the couple' : 'the group'} naturally and harmoniously in the themed composition.`,
+          ]
         : []),
     ],
     output: 'Output: Return ONLY the final themed image. Do not return any text.',

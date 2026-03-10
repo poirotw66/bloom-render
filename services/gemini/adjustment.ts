@@ -6,7 +6,13 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  type ServiceSettings,
+} from './shared';
 
 /**
  * Generates an image with a global adjustment applied using generative AI.
@@ -14,7 +20,7 @@ import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSet
 export const generateAdjustedImage = async (
   originalImage: File,
   adjustmentPrompt: string,
-  settings?: ServiceSettings
+  settings?: ServiceSettings,
 ): Promise<string> => {
   console.log(`Starting global adjustment generation: ${adjustmentPrompt}`);
   const ai = getClient(settings);

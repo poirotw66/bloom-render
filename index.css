@@ -1,11 +1,30 @@
+/* Typography scale (consistent across features): page title = text-4xl→6xl, section = text-xl, body = text-base, label = text-sm, caption = text-xs. Body text uses leading-relaxed for readability. */
+#root {
+  font-size: 16px;
+}
+#root .text-body {
+  font-size: 1rem;
+  line-height: 1.625;
+}
+
 /* BloomRender: ensure sufficient text contrast on dark bloom background */
-#root .text-muted-contrast { color: rgb(203 213 225); }
+#root .text-muted-contrast {
+  color: rgb(203 213 225);
+}
 #root input::placeholder,
-#root textarea::placeholder { color: rgb(148 163 184); }
+#root textarea::placeholder {
+  color: rgb(148 163 184);
+}
 
 /* BloomRender design tokens (logo-aligned gradient) */
 .bg-bloom-gradient {
-  background: linear-gradient(135deg, rgb(249 115 22 / 0.9) 0%, rgb(236 72 153 / 0.9) 35%, rgb(168 85 247 / 0.9) 65%, rgb(59 130 246 / 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(249 115 22 / 0.9) 0%,
+    rgb(236 72 153 / 0.9) 35%,
+    rgb(168 85 247 / 0.9) 65%,
+    rgb(59 130 246 / 0.9) 100%
+  );
 }
 .text-bloom-gradient {
   background: linear-gradient(135deg, #f97316, #ec4899, #a855f7, #3b82f6);
@@ -14,7 +33,14 @@
   background-clip: text;
 }
 .border-bloom {
-  border-image: linear-gradient(135deg, rgba(249,115,22,0.5), rgba(236,72,153,0.5), rgba(168,85,247,0.5), rgba(59,130,246,0.5)) 1;
+  border-image: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.5),
+      rgba(236, 72, 153, 0.5),
+      rgba(168, 85, 247, 0.5),
+      rgba(59, 130, 246, 0.5)
+    )
+    1;
 }
 .ring-bloom:focus-within,
 .ring-bloom:focus {

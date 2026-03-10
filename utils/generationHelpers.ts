@@ -19,7 +19,7 @@ interface RandomProgressOptions {
  */
 export function startRandomProgressTicker(
   setProgress: ProgressSetter,
-  options: RandomProgressOptions = {}
+  options: RandomProgressOptions = {},
 ): () => void {
   const intervalMs = options.intervalMs ?? 500;
   const maxBeforeDone = options.maxBeforeDone ?? 90;

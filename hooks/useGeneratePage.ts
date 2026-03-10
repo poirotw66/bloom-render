@@ -16,7 +16,11 @@ export interface GeneratePageOptions<TFile = File, TOptions = unknown> {
   defaultFile?: TFile | null;
   defaultOptions?: TOptions;
   readSearchParams?: (searchParams: URLSearchParams) => Partial<TOptions> | void;
-  generateApi: (file: TFile, options: TOptions, settings: { apiKey?: string; model?: string }) => Promise<string>;
+  generateApi: (
+    file: TFile,
+    options: TOptions,
+    settings: { apiKey?: string; model?: string },
+  ) => Promise<string>;
   errorContext?: string;
 }
 
@@ -45,7 +49,7 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
     if (readSearchParams) {
       const params = readSearchParams(searchParams);
       if (params) {
-        setOptions((prev) => ({ ...prev, ...params } as TOptions));
+        setOptions((prev) => ({ ...prev, ...params }) as TOptions);
       }
     }
   }, [searchParams, readSearchParams]);
@@ -126,19 +130,16 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
     setIsDraggingOver(false);
   }, []);
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDraggingOver(false);
-      const droppedFile = e.dataTransfer.files?.[0];
-      if (droppedFile) {
-        setFile(droppedFile as TFile);
-        setResult(null);
-        setError(null);
-      }
-    },
-    []
-  );
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile) {
+      setFile(droppedFile as TFile);
+      setResult(null);
+      setError(null);
+    }
+  }, []);
 
   return {
     file,

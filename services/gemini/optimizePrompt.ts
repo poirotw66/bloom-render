@@ -13,7 +13,7 @@ import { fileToPartAuto, getClient, type ServiceSettings } from './shared';
 export const generateOptimizedPrompt = async (
   userText: string,
   referenceImage?: File,
-  settings?: ServiceSettings
+  settings?: ServiceSettings,
 ): Promise<string> => {
   console.log('Optimizing prompt for:', userText, referenceImage ? '(with image)' : '(text only)');
   const ai = getClient(settings);
@@ -22,7 +22,7 @@ export const generateOptimizedPrompt = async (
   const instructions = `You are an expert prompt engineer for AI image generation.
 Task: Create a detailed, high-quality image generation prompt based on the user's input.
 User Input: "${userText}"
-${referenceImage ? "Reference Image: I have attached an image. Extract its key visual elements (lighting, style, atmosphere, location details) and incorporate them into the text prompt." : ''}
+${referenceImage ? 'Reference Image: I have attached an image. Extract its key visual elements (lighting, style, atmosphere, location details) and incorporate them into the text prompt.' : ''}
 
 Requirements:
 1. Expansion: Expand the short description into a full scene description.
@@ -30,9 +30,7 @@ Requirements:
 3. Photorealism: Ensure the prompt targets a realistic travel photo style.
 4. Output: Return ONLY the optimized prompt text. Do not add explanations.`;
 
-  const parts: Array<
-    { inlineData?: { mimeType: string; data: string } } | { text: string }
-  > = [];
+  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [];
 
   if (referenceImage) {
     parts.push(await fileToPartAuto(referenceImage));

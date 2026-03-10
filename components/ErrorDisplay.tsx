@@ -20,12 +20,20 @@ export interface ErrorDisplayProps {
 
 const DEFAULT_CLASS = 'text-red-400 text-sm';
 
-export function ErrorDisplay({ message, showIcon = true, className = '' }: ErrorDisplayProps): React.ReactElement | null {
+export function ErrorDisplay({
+  message,
+  showIcon = true,
+  className = '',
+}: ErrorDisplayProps): React.ReactElement | null {
   if (!message) return null;
   const classes = [DEFAULT_CLASS, className].filter(Boolean).join(' ');
   return (
     <p className={classes} role="alert">
-      {showIcon && <span className="mr-1" aria-hidden>⚠️</span>}
+      {showIcon && (
+        <span className="mr-1" aria-hidden>
+          ⚠️
+        </span>
+      )}
       {message}
     </p>
   );

@@ -6,8 +6,34 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN, TRAVEL_SCENE_ID_RANDOM, TRAVEL_ASPECT_RATIOS, TRAVEL_IMAGE_SIZES, TRAVEL_STYLES, TRAVEL_WEATHER_OPTIONS, TRAVEL_TIME_OPTIONS, TRAVEL_VIBE_OPTIONS, TRAVEL_OUTFIT_OPTIONS, TRAVEL_POSE_OPTIONS, TRAVEL_RELATIONSHIP_OPTIONS, TRAVEL_FRAMING_OPTIONS, OUTFIT_COLOR_PRESETS } from '../../constants/travel';
-import type { TravelAspectRatio, TravelImageSize, TravelStyle, TravelWeather, TravelTimeOfDay, TravelVibe, TravelOutfit, TravelPose, TravelRelationship, TravelFraming } from '../../constants/travel';
+import {
+  TRAVEL_SCENES_INTERNATIONAL,
+  TRAVEL_SCENES_TAIWAN,
+  TRAVEL_SCENE_ID_RANDOM,
+  TRAVEL_ASPECT_RATIOS,
+  TRAVEL_IMAGE_SIZES,
+  TRAVEL_STYLES,
+  TRAVEL_WEATHER_OPTIONS,
+  TRAVEL_TIME_OPTIONS,
+  TRAVEL_VIBE_OPTIONS,
+  TRAVEL_OUTFIT_OPTIONS,
+  TRAVEL_POSE_OPTIONS,
+  TRAVEL_RELATIONSHIP_OPTIONS,
+  TRAVEL_FRAMING_OPTIONS,
+  OUTFIT_COLOR_PRESETS,
+} from '../../constants/travel';
+import type {
+  TravelAspectRatio,
+  TravelImageSize,
+  TravelStyle,
+  TravelWeather,
+  TravelTimeOfDay,
+  TravelVibe,
+  TravelOutfit,
+  TravelPose,
+  TravelRelationship,
+  TravelFraming,
+} from '../../constants/travel';
 
 import { supportsMultiResolution } from '../../services/gemini/shared';
 
@@ -54,11 +80,18 @@ interface TravelFormProps {
   showSceneSelector?: boolean;
 }
 
-const SCENE_BTN = 'px-3 py-2 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
-const SCENE_ACTIVE = 'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/30 scale-[1.02]';
-const SCENE_INACTIVE = 'bg-gray-800/50 text-gray-400 border-gray-700 hover:bg-gray-700/50 hover:border-gray-600 hover:text-gray-200';
+const SCENE_BTN =
+  'px-3 py-2 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
+const SCENE_ACTIVE =
+  'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/30 scale-[1.02]';
+const SCENE_INACTIVE =
+  'bg-gray-800/50 text-gray-400 border-gray-700 hover:bg-gray-700/50 hover:border-gray-600 hover:text-gray-200';
 
-const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; icon?: string }> = ({ title, children, icon }) => {
+const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; icon?: string }> = ({
+  title,
+  children,
+  icon,
+}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="border border-gray-700/50 rounded-lg overflow-hidden bg-gray-900/20">
@@ -129,11 +162,14 @@ const TravelForm: React.FC<TravelFormProps> = ({
 }) => {
   const { t } = useLanguage();
   const { model } = useSettings();
-  const imageSizeOptions = supportsMultiResolution(model) ? TRAVEL_IMAGE_SIZES : TRAVEL_IMAGE_SIZES.filter((s) => !s.proOnly);
+  const imageSizeOptions = supportsMultiResolution(model)
+    ? TRAVEL_IMAGE_SIZES
+    : TRAVEL_IMAGE_SIZES.filter((s) => !s.proOnly);
 
   return (
-    <div className={`flex flex-col gap-6 w-full animate-fade-in bg-gray-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}>
-
+    <div
+      className={`flex flex-col gap-6 w-full animate-fade-in bg-gray-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}
+    >
       <button
         onClick={handleSurpriseMe}
         disabled={disabled}
@@ -149,80 +185,102 @@ const TravelForm: React.FC<TravelFormProps> = ({
       {/* Scene selector (list) - shown first when in list view so users can pick destination from list */}
       {showSceneSelector && (
         <div className="space-y-4 p-5 bg-amber-500/10 rounded-2xl border border-amber-500/20">
-          <label className="block text-sm font-bold text-amber-200/90">{t('travel.label.scene')}</label>
+          <label className="block text-sm font-bold text-amber-200/90">
+            {t('travel.label.scene')}
+          </label>
           <p className="text-xs text-gray-400 mb-3">{t('travel.scene_hint')}</p>
 
           <div className="space-y-4">
             <div>
-              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">{t('travel.group.international')}</h4>
+              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">
+                {t('travel.group.international')}
+              </h4>
 
               <div className="space-y-2">
                 <CollapsibleSection title={t('travel.category.scenery')} icon="🏞️">
                   <div className="space-y-4 pt-2">
-                    {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(continent => {
-                      const continentScenes = TRAVEL_SCENES_INTERNATIONAL.filter(s => s.category === 'scenery' && s.continent === continent);
-                      if (continentScenes.length === 0) return null;
-                      return (
-                        <div key={`intl-scenery-${continent}`}>
-                          <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">{t(`travel.continent.${continent}`)}</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {continentScenes.map((s) => (
-                              <button
-                                key={s.id}
-                                onClick={() => setSelectedSceneId(s.id)}
-                                disabled={disabled}
-                                className={`${SCENE_BTN} ${selectedSceneId === s.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
-                              >
-                                {t(s.nameKey)}
-                              </button>
-                            ))}
+                    {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(
+                      (continent) => {
+                        const continentScenes = TRAVEL_SCENES_INTERNATIONAL.filter(
+                          (s) => s.category === 'scenery' && s.continent === continent,
+                        );
+                        if (continentScenes.length === 0) return null;
+                        return (
+                          <div key={`intl-scenery-${continent}`}>
+                            <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">
+                              {t(`travel.continent.${continent}`)}
+                            </h5>
+                            <div className="flex flex-wrap gap-2">
+                              {continentScenes.map((s) => (
+                                <button
+                                  key={s.id}
+                                  onClick={() => setSelectedSceneId(s.id)}
+                                  disabled={disabled}
+                                  className={`${SCENE_BTN} ${selectedSceneId === s.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
+                                >
+                                  {t(s.nameKey)}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      },
+                    )}
                   </div>
                 </CollapsibleSection>
 
                 <CollapsibleSection title={t('travel.category.food')} icon="🍜">
                   <div className="space-y-4 pt-2">
-                    {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(continent => {
-                      const continentScenes = TRAVEL_SCENES_INTERNATIONAL.filter(s => s.category === 'food' && s.continent === continent);
-                      if (continentScenes.length === 0) return null;
-                      return (
-                        <div key={`intl-food-${continent}`}>
-                          <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">{t(`travel.continent.${continent}`)}</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {continentScenes.map((s) => (
-                              <button
-                                key={s.id}
-                                onClick={() => setSelectedSceneId(s.id)}
-                                disabled={disabled}
-                                className={`${SCENE_BTN} ${selectedSceneId === s.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
-                              >
-                                {t(s.nameKey)}
-                              </button>
-                            ))}
+                    {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(
+                      (continent) => {
+                        const continentScenes = TRAVEL_SCENES_INTERNATIONAL.filter(
+                          (s) => s.category === 'food' && s.continent === continent,
+                        );
+                        if (continentScenes.length === 0) return null;
+                        return (
+                          <div key={`intl-food-${continent}`}>
+                            <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">
+                              {t(`travel.continent.${continent}`)}
+                            </h5>
+                            <div className="flex flex-wrap gap-2">
+                              {continentScenes.map((s) => (
+                                <button
+                                  key={s.id}
+                                  onClick={() => setSelectedSceneId(s.id)}
+                                  disabled={disabled}
+                                  className={`${SCENE_BTN} ${selectedSceneId === s.id ? SCENE_ACTIVE : SCENE_INACTIVE}`}
+                                >
+                                  {t(s.nameKey)}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      },
+                    )}
                   </div>
                 </CollapsibleSection>
               </div>
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">{t('travel.group.taiwan')}</h4>
+              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">
+                {t('travel.group.taiwan')}
+              </h4>
 
               <div className="space-y-2">
                 <CollapsibleSection title={t('travel.category.scenery')} icon="🏞️">
                   <div className="space-y-4 pt-2">
-                    {(['north', 'central', 'south', 'east', 'islands'] as const).map(region => {
-                      const regionalScenes = TRAVEL_SCENES_TAIWAN.filter(s => s.category === 'scenery' && s.region === region);
+                    {(['north', 'central', 'south', 'east', 'islands'] as const).map((region) => {
+                      const regionalScenes = TRAVEL_SCENES_TAIWAN.filter(
+                        (s) => s.category === 'scenery' && s.region === region,
+                      );
                       if (regionalScenes.length === 0) return null;
                       return (
                         <div key={`scenery-${region}`}>
-                          <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">{t(`travel.region.${region}`)}</h5>
+                          <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">
+                            {t(`travel.region.${region}`)}
+                          </h5>
                           <div className="flex flex-wrap gap-2">
                             {regionalScenes.map((s) => (
                               <button
@@ -243,12 +301,16 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
                 <CollapsibleSection title={t('travel.category.food')} icon="🍜">
                   <div className="space-y-4 pt-2">
-                    {(['north', 'central', 'south', 'east', 'islands'] as const).map(region => {
-                      const regionalScenes = TRAVEL_SCENES_TAIWAN.filter(s => s.category === 'food' && s.region === region);
+                    {(['north', 'central', 'south', 'east', 'islands'] as const).map((region) => {
+                      const regionalScenes = TRAVEL_SCENES_TAIWAN.filter(
+                        (s) => s.category === 'food' && s.region === region,
+                      );
                       if (regionalScenes.length === 0) return null;
                       return (
                         <div key={`food-${region}`}>
-                          <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">{t(`travel.region.${region}`)}</h5>
+                          <h5 className="text-[10px] font-bold text-gray-500 uppercase mb-1.5 px-1">
+                            {t(`travel.region.${region}`)}
+                          </h5>
                           <div className="flex flex-wrap gap-2">
                             {regionalScenes.map((s) => (
                               <button
@@ -270,7 +332,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">{t('travel.group.random')}</h4>
+              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">
+                {t('travel.group.random')}
+              </h4>
               <button
                 onClick={() => setSelectedSceneId(TRAVEL_SCENE_ID_RANDOM)}
                 disabled={disabled}
@@ -281,7 +345,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('travel.custom')}</h4>
+              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                {t('travel.custom')}
+              </h4>
               <button
                 onClick={() => setSelectedSceneId('custom')}
                 disabled={disabled}
@@ -300,12 +366,18 @@ const TravelForm: React.FC<TravelFormProps> = ({
                     className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                   />
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">{t('travel.custom_reference_label')}</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      {t('travel.custom_reference_label')}
+                    </label>
                     {customSceneReferenceFile ? (
                       <div className="flex items-center gap-2">
                         <div className="w-14 h-14 rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
                           {customSceneReferenceUrl && (
-                            <img src={customSceneReferenceUrl} alt="Scene reference" className="w-full h-full object-cover" />
+                            <img
+                              src={customSceneReferenceUrl}
+                              alt="Scene reference"
+                              className="w-full h-full object-cover"
+                            />
                           )}
                         </div>
                         <button
@@ -324,7 +396,11 @@ const TravelForm: React.FC<TravelFormProps> = ({
                           className="hidden"
                           accept="image/*"
                           disabled={disabled}
-                          onChange={(e) => { const f = e.target.files?.[0]; if (f) setCustomSceneReferenceFile(f); e.target.value = ''; }}
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) setCustomSceneReferenceFile(f);
+                            e.target.value = '';
+                          }}
                         />
                         {t('travel.custom_reference_btn')}
                       </label>
@@ -340,7 +416,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
       {/* Basic Settings Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-white/5 rounded-2xl border border-white/5">
         <div className="space-y-3">
-          <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-1">{t('travel.label.image_size')}</label>
+          <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-1">
+            {t('travel.label.image_size')}
+          </label>
           <div className="flex flex-wrap gap-2">
             {imageSizeOptions.map((a) => (
               <button
@@ -355,7 +433,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
         </div>
         <div className="space-y-3">
-          <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-1">{t('travel.label.aspect_ratio')}</label>
+          <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-1">
+            {t('travel.label.aspect_ratio')}
+          </label>
           <div className="flex flex-wrap gap-2">
             {TRAVEL_ASPECT_RATIOS.map((a) => (
               <button
@@ -380,7 +460,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
 
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.outfit')}</label>
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {t('travel.label.outfit')}
+            </label>
             <div className="flex flex-wrap gap-2">
               {TRAVEL_OUTFIT_OPTIONS.map((o) => (
                 <button
@@ -409,7 +491,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
             )}
 
             <div className="pt-2 space-y-2">
-              <label className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{t('travel.label.outfit_color')}</label>
+              <label className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
+                {t('travel.label.outfit_color')}
+              </label>
               <div className="flex flex-wrap gap-2">
                 {OUTFIT_COLOR_PRESETS.map((c) => (
                   <button
@@ -424,7 +508,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                 ))}
                 <input
                   type="text"
-                  value={OUTFIT_COLOR_PRESETS.some(c => c.id === outfitColor) ? '' : outfitColor}
+                  value={OUTFIT_COLOR_PRESETS.some((c) => c.id === outfitColor) ? '' : outfitColor}
                   onChange={(e) => setOutfitColor(e.target.value)}
                   placeholder={t('travel.label.outfit_color_custom')}
                   disabled={disabled}
@@ -436,7 +520,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
           {/* Relationship settings only shown when multiple people are considered */}
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.relationship')}</label>
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {t('travel.label.relationship')}
+            </label>
             <div className="flex flex-wrap gap-2">
               {TRAVEL_RELATIONSHIP_OPTIONS.map((r) => (
                 <button
@@ -453,7 +539,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
 
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.pose')}</label>
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {t('travel.label.pose')}
+            </label>
             <div className="flex flex-wrap gap-2">
               {TRAVEL_POSE_OPTIONS.map((p) => (
                 <button
@@ -489,12 +577,16 @@ const TravelForm: React.FC<TravelFormProps> = ({
         <div className="space-y-4 p-5 bg-blue-500/5 rounded-2xl border border-blue-500/10">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-            <h3 className="text-xs font-bold text-blue-300">{t('travel.label.group_environment')}</h3>
+            <h3 className="text-xs font-bold text-blue-300">
+              {t('travel.label.group_environment')}
+            </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.weather')}</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                {t('travel.label.weather')}
+              </label>
               <div className="flex flex-wrap gap-2">
                 {TRAVEL_WEATHER_OPTIONS.map((w) => (
                   <button
@@ -511,7 +603,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.time')}</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                {t('travel.label.time')}
+              </label>
               <div className="flex flex-wrap gap-2">
                 {TRAVEL_TIME_OPTIONS.map((tod) => (
                   <button
@@ -531,15 +625,21 @@ const TravelForm: React.FC<TravelFormProps> = ({
           <div className="pt-2 border-t border-blue-500/10">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('travel.label.clear_background')}</label>
-                <p className="text-[10px] text-gray-600 italic">{t('travel.clear_background.hint')}</p>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  {t('travel.label.clear_background')}
+                </label>
+                <p className="text-[10px] text-gray-600 italic">
+                  {t('travel.clear_background.hint')}
+                </p>
               </div>
               <button
                 onClick={() => setClearBackground(!clearBackground)}
                 disabled={disabled}
                 className={`w-12 h-6 rounded-full transition-all relative ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
               >
-                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${clearBackground ? 'left-7' : 'left-1'}`} />
+                <div
+                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${clearBackground ? 'left-7' : 'left-1'}`}
+                />
               </button>
             </div>
           </div>
@@ -550,12 +650,16 @@ const TravelForm: React.FC<TravelFormProps> = ({
       <div className="space-y-4 p-5 bg-purple-500/5 rounded-2xl border border-purple-500/10">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-          <h3 className="text-xs font-bold text-purple-300">{t('travel.label.group_aesthetics')}</h3>
+          <h3 className="text-xs font-bold text-purple-300">
+            {t('travel.label.group_aesthetics')}
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.style')}</label>
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {t('travel.label.style')}
+            </label>
             <div className="flex flex-wrap gap-2">
               {TRAVEL_STYLES.map((s) => (
                 <button
@@ -571,7 +675,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
 
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.framing')}</label>
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {t('travel.label.framing')}
+            </label>
             <div className="flex flex-wrap gap-2">
               {TRAVEL_FRAMING_OPTIONS.map((f) => (
                 <button
@@ -590,7 +696,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
         {showSceneSelector && (
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('travel.label.vibe')}</label>
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {t('travel.label.vibe')}
+            </label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setVibe('none')}
@@ -616,7 +724,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
       </div>
 
       <div className="bg-gray-900/30 p-3 rounded-lg border border-gray-700/50">
-        <label className="block text-sm font-medium text-gray-400 mb-2">{t('travel.label.ref_image')}</label>
+        <label className="block text-sm font-medium text-gray-400 mb-2">
+          {t('travel.label.ref_image')}
+        </label>
 
         <div className="flex items-center gap-3 mb-2">
           <button
@@ -624,7 +734,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
             disabled={disabled}
             className={`px-3 py-1.5 flex items-center gap-2 rounded text-xs font-medium transition-colors ${useReferenceImage ? 'bg-indigo-600 text-white border border-indigo-500' : 'bg-gray-800 text-gray-400 border border-gray-600'}`}
           >
-            <span className={`w-2 h-2 rounded-full ${useReferenceImage ? 'bg-white' : 'bg-gray-500'}`}></span>
+            <span
+              className={`w-2 h-2 rounded-full ${useReferenceImage ? 'bg-white' : 'bg-gray-500'}`}
+            ></span>
             {useReferenceImage ? t('travel.ref_image.on') : t('travel.ref_image.off')}
           </button>
           <span className="text-[10px] text-gray-500">{t('travel.ref_image.hint')}</span>
@@ -636,7 +748,11 @@ const TravelForm: React.FC<TravelFormProps> = ({
               <div className="flex items-center gap-3">
                 <div className="w-16 h-16 rounded border border-gray-600 bg-gray-900 overflow-hidden flex-shrink-0">
                   {customSceneReferenceUrl && (
-                    <img src={customSceneReferenceUrl} alt="Ref" className="w-full h-full object-cover" />
+                    <img
+                      src={customSceneReferenceUrl}
+                      alt="Ref"
+                      className="w-full h-full object-cover"
+                    />
                   )}
                 </div>
                 <button
@@ -654,7 +770,11 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   className="hidden"
                   accept="image/*"
                   disabled={disabled}
-                  onChange={(e) => { const f = e.target.files?.[0]; if (f) setCustomSceneReferenceFile(f); e.target.value = ''; }}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) setCustomSceneReferenceFile(f);
+                    e.target.value = '';
+                  }}
                 />
                 + {t('travel.ref_image.upload')}
               </label>
@@ -662,7 +782,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 };
 

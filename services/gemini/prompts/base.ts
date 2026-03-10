@@ -9,18 +9,23 @@
  * Common identity preservation requirements
  */
 export const IDENTITY_PRESERVATION = {
-  single: 'preserve identity, same face, same person, same facial structure, no face change, no age change, no gender change',
-  couple: 'preserve identity of both people, same faces, same facial structures, no face change, no age change, no gender change',
-  group: (count: number) => `preserve identity of all ${count} people, same faces, same facial structures, no face change, no age change, no gender change`,
+  single:
+    'preserve identity, same face, same person, same facial structure, no face change, no age change, no gender change',
+  couple:
+    'preserve identity of both people, same faces, same facial structures, no face change, no age change, no gender change',
+  group: (count: number) =>
+    `preserve identity of all ${count} people, same faces, same facial structures, no face change, no age change, no gender change`,
 };
 
 /**
  * Common quality requirements
  */
 export const QUALITY_REQUIREMENTS = {
-  photorealistic: 'realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration',
+  photorealistic:
+    'realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration',
   highQuality: 'high quality, sharp focus, detailed, professional photography',
-  studio: 'professional studio photo retouch, even and soft studio lighting, no shadow on face, no shadow on background',
+  studio:
+    'professional studio photo retouch, even and soft studio lighting, no shadow on face, no shadow on background',
 };
 
 /**
@@ -28,11 +33,15 @@ export const QUALITY_REQUIREMENTS = {
  */
 export const COMMON_NEGATIVES = {
   identity: 'different person, change face, change identity, face swap, wrong person',
-  filters: 'beautify, over-beautify, beauty filter, meitu, snow app, filter, plastic skin, doll face, over-smooth, airbrushed, fake skin',
+  filters:
+    'beautify, over-beautify, beauty filter, meitu, snow app, filter, plastic skin, doll face, over-smooth, airbrushed, fake skin',
   aiArtifacts: 'CGI, AI face, AI generated look, anime, cartoon, illustration, painting, 3d render',
-  expressions: 'smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away',
-  lighting: 'dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background',
-  quality: 'low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face',
+  expressions:
+    'smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away',
+  lighting:
+    'dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background',
+  quality:
+    'low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face',
 };
 
 /**

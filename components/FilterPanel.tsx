@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -19,19 +19,35 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilter, isLoading }) =
   const [customPrompt, setCustomPrompt] = useState('');
 
   const presets = [
-    { name: t('panel.filter.synthwave'), prompt: 'Apply a vibrant 80s synthwave aesthetic with neon magenta and cyan glows, and subtle scan lines.' },
-    { name: t('panel.filter.anime'), prompt: 'Give the image a vibrant Japanese anime style, with bold outlines, cel-shading, and saturated colors.' },
-    { name: t('panel.filter.lomo'), prompt: 'Apply a Lomography-style cross-processing film effect with high-contrast, oversaturated colors, and dark vignetting.' },
-    { name: t('panel.filter.glitch'), prompt: 'Transform the image into a futuristic holographic projection with digital glitch effects and chromatic aberration.' },
+    {
+      name: t('panel.filter.synthwave'),
+      prompt:
+        'Apply a vibrant 80s synthwave aesthetic with neon magenta and cyan glows, and subtle scan lines.',
+    },
+    {
+      name: t('panel.filter.anime'),
+      prompt:
+        'Give the image a vibrant Japanese anime style, with bold outlines, cel-shading, and saturated colors.',
+    },
+    {
+      name: t('panel.filter.lomo'),
+      prompt:
+        'Apply a Lomography-style cross-processing film effect with high-contrast, oversaturated colors, and dark vignetting.',
+    },
+    {
+      name: t('panel.filter.glitch'),
+      prompt:
+        'Transform the image into a futuristic holographic projection with digital glitch effects and chromatic aberration.',
+    },
   ];
-  
+
   const activePrompt = selectedPresetPrompt || customPrompt;
 
   const handlePresetClick = (prompt: string) => {
     setSelectedPresetPrompt(prompt);
     setCustomPrompt('');
   };
-  
+
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomPrompt(e.target.value);
     setSelectedPresetPrompt(null);
@@ -44,19 +60,29 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilter, isLoading }) =
   };
 
   return (
-    <div className={`w-full rounded-lg p-4 flex flex-col gap-4 animate-fade-in backdrop-blur-sm ${
-      theme === 'newyear'
-        ? 'bg-red-900/30 border border-red-700/50'
-        : theme === 'bloom'
-          ? 'bg-gray-800/50 border border-fuchsia-500/20'
-          : 'bg-gray-800/50 border border-gray-700'
-    }`}>
-      <h3 className={`text-lg font-semibold text-center ${
-        theme === 'newyear' ? 'text-red-200' : theme === 'bloom' ? 'text-gray-200' : 'text-gray-300'
-      }`}>{t('panel.filter.title')}</h3>
-      
+    <div
+      className={`w-full rounded-lg p-4 flex flex-col gap-4 animate-fade-in backdrop-blur-sm ${
+        theme === 'newyear'
+          ? 'bg-red-900/30 border border-red-700/50'
+          : theme === 'bloom'
+            ? 'bg-gray-800/50 border border-fuchsia-500/20'
+            : 'bg-gray-800/50 border border-gray-700'
+      }`}
+    >
+      <h3
+        className={`text-lg font-semibold text-center ${
+          theme === 'newyear'
+            ? 'text-red-200'
+            : theme === 'bloom'
+              ? 'text-gray-200'
+              : 'text-gray-300'
+        }`}
+      >
+        {t('panel.filter.title')}
+      </h3>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        {presets.map(preset => (
+        {presets.map((preset) => (
           <button
             key={preset.name}
             onClick={() => handlePresetClick(preset.prompt)}
@@ -89,7 +115,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilter, isLoading }) =
         disabled={isLoading}
         aria-label={t('panel.filter.placeholder')}
       />
-      
+
       {activePrompt && (
         <div className="animate-fade-in flex flex-col gap-4 pt-2">
           <button

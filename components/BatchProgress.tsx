@@ -32,7 +32,9 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
   const isComplete = completed === total;
 
   return (
-    <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto p-8 bg-gray-800/40 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}>
+    <div
+      className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto p-8 bg-gray-800/40 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}
+    >
       <div className="relative w-full">
         {/* Progress Bar */}
         <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
@@ -40,9 +42,7 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
             className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ease-out flex items-center justify-center"
             style={{ width: `${progress}%` }}
           >
-            {progress > 10 && (
-              <span className="text-xs font-bold text-white">{progress}%</span>
-            )}
+            {progress > 10 && <span className="text-xs font-bold text-white">{progress}%</span>}
           </div>
         </div>
       </div>
@@ -54,18 +54,20 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
             <div className="flex items-center justify-center gap-3">
               <Spinner />
               <p className="text-xl font-bold text-gray-100">
-                {t('batch.processing').replace('{current}', String(current)).replace('{total}', String(total))}
+                {t('batch.processing')
+                  .replace('{current}', String(current))
+                  .replace('{total}', String(total))}
               </p>
             </div>
             <p className="text-sm text-gray-400">
-              {t('batch.progress').replace('{completed}', String(completed)).replace('{total}', String(total))}
+              {t('batch.progress')
+                .replace('{completed}', String(completed))
+                .replace('{total}', String(total))}
             </p>
           </>
         ) : (
           <>
-            <p className="text-xl font-bold text-green-400">
-              {t('batch.completed')}
-            </p>
+            <p className="text-xl font-bold text-green-400">{t('batch.completed')}</p>
             <p className="text-sm text-gray-400">
               {t('batch.summary')
                 .replace('{success}', String(results.length))

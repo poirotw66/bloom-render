@@ -16,11 +16,7 @@ export type CoupleStyle =
   | 'couple_robe'
   | 'couple_polaroid';
 
-export type GroupStyle =
-  | 'group_family'
-  | 'group_family_spring'
-  | 'group_new_style'
-  | 'group_grad';
+export type GroupStyle = 'group_family' | 'group_family_spring' | 'group_new_style' | 'group_grad';
 
 export const COUPLE_STYLES: {
   id: CoupleStyle;

@@ -48,8 +48,7 @@ export function generateTryOnPrompt(options: TryOnPromptOptions): string {
     : 'Present the overall outfit style clearly: full body or clear half-body framing. Natural pose that showcases the clothing, like a fashion catalog or lookbook.';
 
   return buildPrompt({
-    role:
-      'You are a top-tier fashion and catalog photography AI. Generate a NEW photograph that showcases the person from the first image wearing the clothing from the following image(s). The image must look like a high-end fashion catalog or magazine: very fashionable, aspirational, and desirable—the kind of image that makes people want to buy. Do NOT keep the person\'s original scene or background.',
+    role: "You are a top-tier fashion and catalog photography AI. Generate a NEW photograph that showcases the person from the first image wearing the clothing from the following image(s). The image must look like a high-end fashion catalog or magazine: very fashionable, aspirational, and desirable—the kind of image that makes people want to buy. Do NOT keep the person's original scene or background.",
     requirements: [
       'The FIRST image is the person (model). Preserve their face, body shape, skin tone, and identity exactly.',
       `The NEXT ${clothingCount} image(s) are clothing items. Dress the person in these garments so the full outfit is clearly visible, well-fitted, and looks natural. If multiple items are provided (e.g. top + bottom), combine them into one coherent, stylish outfit.`,
@@ -60,7 +59,7 @@ export function generateTryOnPrompt(options: TryOnPromptOptions): string {
     ].filter(Boolean),
     guidelines: [
       IDENTITY_PRESERVATION.single,
-      'Do not change the person\'s face, age, or body type.',
+      "Do not change the person's face, age, or body type.",
       'Lighting and shadows must be consistent and natural on both person and clothing.',
       'Output a single image only; no text, no multiple images.',
     ],

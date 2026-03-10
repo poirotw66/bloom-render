@@ -8,7 +8,14 @@
 import { GenerateContentResponse } from '@google/genai';
 import type { ThemedType } from '../../types';
 import { THEMED_TYPES, DEFAULT_THEMED_TYPE } from '../../constants/themed';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  supportsMultiResolution,
+  type ServiceSettings,
+} from './shared';
 import { generateThemedPrompt } from './prompts';
 
 export type ImageOutputSize = '1K' | '2K' | '4K';
@@ -28,7 +35,7 @@ export interface GenerateThemedPhotoOptions {
  */
 export const generateThemedPhoto = async (
   originalImage: File | File[],
-  options: GenerateThemedPhotoOptions
+  options: GenerateThemedPhotoOptions,
 ): Promise<string> => {
   const themeType = options.themeType ?? DEFAULT_THEMED_TYPE;
   const serviceSettings = options.settings;
@@ -60,7 +67,7 @@ export const generateThemedPhoto = async (
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
   const supportsMultiRes = supportsMultiResolution(model);
-  const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? (options.outputSize || '1K') : '1K';
+  const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? options.outputSize || '1K' : '1K';
   const aspectRatio = options.aspectRatio || '16:9';
 
   const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
@@ -68,7 +75,12 @@ export const generateThemedPhoto = async (
   };
   if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
-  console.log('Starting themed photo generation', { themeType, fileCount, outputSize: effectiveSize, aspectRatio });
+  console.log('Starting themed photo generation', {
+    themeType,
+    fileCount,
+    outputSize: effectiveSize,
+    aspectRatio,
+  });
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
     contents: { parts },

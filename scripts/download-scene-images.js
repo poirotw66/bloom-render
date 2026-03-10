@@ -162,7 +162,9 @@ async function fetchWithRetry(url, opts = {}) {
     const res = await fetch(url, opts);
     if (res.status !== 429) return res;
     const retryAfter = Number(res.headers.get('Retry-After')) * 1000 || RETRY_AFTER_429_MS;
-    console.log(`   [429] waiting ${Math.round(retryAfter / 1000)}s before retry (${attempt}/${MAX_RETRIES})`);
+    console.log(
+      `   [429] waiting ${Math.round(retryAfter / 1000)}s before retry (${attempt}/${MAX_RETRIES})`,
+    );
     await sleep(retryAfter);
   }
   return fetch(url, opts);
@@ -222,7 +224,9 @@ async function main() {
         if (url) console.log(`   (used Chinese query: ${queryZh})`);
       }
       if (!url) {
-        console.log(`[fail] ${file} – no result for "${query}"${queryZh ? ` or "${queryZh}"` : ''}`);
+        console.log(
+          `[fail] ${file} – no result for "${query}"${queryZh ? ` or "${queryZh}"` : ''}`,
+        );
         fail++;
         await sleep(DELAY_MS);
         continue;

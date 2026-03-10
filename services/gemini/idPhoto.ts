@@ -6,12 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import type {
-  RetouchLevel,
-  IdPhotoType,
-  OutputSpec,
-  ClothingOption,
-} from '../../types';
+import type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption } from '../../types';
 import {
   RETOUCH_LEVELS,
   ID_PHOTO_TYPES,
@@ -22,7 +17,13 @@ import {
   DEFAULT_OUTPUT_SPEC,
   DEFAULT_CLOTHING_OPTION,
 } from '../../constants/idPhoto';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  type ServiceSettings,
+} from './shared';
 import { generateIdPhotoPrompt } from './prompts';
 
 export interface GenerateIdPhotoOptions {
@@ -41,7 +42,7 @@ export interface GenerateIdPhotoOptions {
  */
 export const generateIdPhoto = async (
   originalImage: File,
-  options?: GenerateIdPhotoOptions | ServiceSettings
+  options?: GenerateIdPhotoOptions | ServiceSettings,
 ): Promise<string> => {
   const isNewFormat =
     options &&
@@ -101,9 +102,9 @@ export const generateIdPhoto = async (
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
   const originalImagePart = await fileToPartAuto(originalImage);
-  const parts: Array<
-    { inlineData?: { mimeType: string; data: string } } | { text: string }
-  > = [originalImagePart];
+  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [
+    originalImagePart,
+  ];
   if (clothingReferenceImage) {
     parts.push(await fileToPartAuto(clothingReferenceImage));
   }

@@ -18,7 +18,12 @@ import {
   DEFAULT_OUTPUT_SPEC,
   DEFAULT_CLOTHING_OPTION,
 } from '../../constants/idPhoto';
-import type { IdPhotoType, RetouchLevel, OutputSpec, ClothingOption } from '../../constants/idPhoto';
+import type {
+  IdPhotoType,
+  RetouchLevel,
+  OutputSpec,
+  ClothingOption,
+} from '../../constants/idPhoto';
 
 export function useIdPhoto() {
   const { t } = useLanguage();
@@ -33,12 +38,18 @@ export function useIdPhoto() {
   const [idPhotoError, setIdPhotoError] = useState<string | null>(null);
   const [idPhotoPreviewUrl, setIdPhotoPreviewUrl] = useState<string | null>(null);
   const [idPhotoType, setIdPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
-  const [idPhotoRetouchLevel, setIdPhotoRetouchLevel] = useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
+  const [idPhotoRetouchLevel, setIdPhotoRetouchLevel] =
+    useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
   const [idPhotoOutputSpec, setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
-  const [idPhotoClothingOption, setIdPhotoClothingOption] = useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
+  const [idPhotoClothingOption, setIdPhotoClothingOption] =
+    useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
   const [idPhotoClothingCustomText, setIdPhotoClothingCustomText] = useState('');
-  const [idPhotoClothingReferenceFile, setIdPhotoClothingReferenceFile] = useState<File | null>(null);
-  const [idPhotoClothingReferenceUrl, setIdPhotoClothingReferenceUrl] = useState<string | null>(null);
+  const [idPhotoClothingReferenceFile, setIdPhotoClothingReferenceFile] = useState<File | null>(
+    null,
+  );
+  const [idPhotoClothingReferenceUrl, setIdPhotoClothingReferenceUrl] = useState<string | null>(
+    null,
+  );
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
@@ -86,7 +97,11 @@ export function useIdPhoto() {
       setIdPhotoError(t('start.error_no_image_idphoto'));
       return;
     }
-    if (idPhotoClothingOption === 'custom' && !idPhotoClothingCustomText.trim() && !idPhotoClothingReferenceFile) {
+    if (
+      idPhotoClothingOption === 'custom' &&
+      !idPhotoClothingCustomText.trim() &&
+      !idPhotoClothingReferenceFile
+    ) {
       setIdPhotoError(t('idphoto.error_custom_clothing_empty'));
       return;
     }
@@ -99,18 +114,24 @@ export function useIdPhoto() {
     try {
       const stopProgress = startRandomProgressTicker(setProgress);
 
-            // Generate all images in parallel with variations
-            const generationPromises = Array.from({ length: quantity }, (_, i) =>
-                generateIdPhoto(idPhotoFile, {
-                    retouchLevel: idPhotoRetouchLevel,
-                    idType: idPhotoType,
-                    outputSpec: idPhotoOutputSpec,
-                    clothingOption: idPhotoClothingOption,
-                    clothingCustomText: idPhotoClothingOption === 'custom' ? idPhotoClothingCustomText.trim() || undefined : undefined,
-                    clothingReferenceImage: idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile ? idPhotoClothingReferenceFile : undefined,
-                    settings: { apiKey: settings.apiKey, model: settings.model },
-                    variationIndex: i, // Use index to create different variations
-                })
+      // Generate all images in parallel with variations
+      const generationPromises = Array.from({ length: quantity }, (_, i) =>
+        generateIdPhoto(idPhotoFile, {
+          retouchLevel: idPhotoRetouchLevel,
+          idType: idPhotoType,
+          outputSpec: idPhotoOutputSpec,
+          clothingOption: idPhotoClothingOption,
+          clothingCustomText:
+            idPhotoClothingOption === 'custom'
+              ? idPhotoClothingCustomText.trim() || undefined
+              : undefined,
+          clothingReferenceImage:
+            idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile
+              ? idPhotoClothingReferenceFile
+              : undefined,
+          settings: { apiKey: settings.apiKey, model: settings.model },
+          variationIndex: i, // Use index to create different variations
+        })
           .then((url) => {
             // Add to history
             addToHistory('idphoto', url, {
@@ -124,7 +145,7 @@ export function useIdPhoto() {
           .catch((err) => {
             console.error(`ID photo generation error for item ${i + 1}:`, err);
             throw err;
-          })
+          }),
       );
 
       const settledResults = await Promise.allSettled(generationPromises);
@@ -151,7 +172,20 @@ export function useIdPhoto() {
       setIdPhotoLoading(false);
       setProgress(0);
     }
-  }, [idPhotoFile, idPhotoRetouchLevel, idPhotoType, idPhotoOutputSpec, idPhotoClothingOption, idPhotoClothingCustomText, idPhotoClothingReferenceFile, settings.apiKey, settings.model, t, addToHistory, quantity]);
+  }, [
+    idPhotoFile,
+    idPhotoRetouchLevel,
+    idPhotoType,
+    idPhotoOutputSpec,
+    idPhotoClothingOption,
+    idPhotoClothingCustomText,
+    idPhotoClothingReferenceFile,
+    settings.apiKey,
+    settings.model,
+    t,
+    addToHistory,
+    quantity,
+  ]);
 
   const handleIdPhotoDownload = useCallback(() => {
     if (!idPhotoResult) return;
@@ -191,12 +225,15 @@ export function useIdPhoto() {
     setIsDraggingOver(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) setFileFromDrop(file);
-  }, [setFileFromDrop]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDraggingOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) setFileFromDrop(file);
+    },
+    [setFileFromDrop],
+  );
 
   return {
     idPhotoFile,

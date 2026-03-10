@@ -43,14 +43,14 @@ const GenericResult: React.FC<GenericResultProps> = ({
 
       {params.length > 0 && paramsTitleKey && (
         <div className="w-full bg-gray-800/40 rounded-xl p-6 border border-gray-700/50 backdrop-blur-sm">
-          <h3 className="text-lg font-bold text-white mb-4">{t(paramsTitleKey)}</h3>
+          <h3 className="text-xl font-bold text-white mb-4">{t(paramsTitleKey)}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {params.map((param, idx) => (
               <div key={idx}>
                 <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {t(param.labelKey)}
                 </span>
-                <span className="text-gray-200">
+                <span className="text-base text-gray-200 leading-relaxed">
                   {typeof param.value === 'string' ? param.value : param.value}
                 </span>
               </div>

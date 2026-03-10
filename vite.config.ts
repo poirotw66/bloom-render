@@ -13,7 +13,7 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
-      }
+      },
     },
     build: {
       rollupOptions: {
@@ -22,10 +22,10 @@ export default defineConfig(() => {
             if (id.includes('node_modules')) {
               return 'vendor';
             }
-          }
-        }
+          },
+        },
       },
       chunkSizeWarningLimit: 1000,
-    }
+    },
   };
 });

@@ -6,7 +6,13 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
+import {
+  getClient,
+  getModel,
+  handleApiResponse,
+  supportsMultiResolution,
+  type ServiceSettings,
+} from './shared';
 
 /**
  * Generates one or more images from scratch based on a text prompt.
@@ -15,10 +21,10 @@ export const generateImageFromText = async (
   prompt: string,
   aspectRatio: '1:1' | '3:4' | '4:3' | '16:9' | '9:16' = '1:1',
   numberOfImages: number = 1,
-  settings?: ServiceSettings
+  settings?: ServiceSettings,
 ): Promise<string[]> => {
   console.log(
-    `Starting text-to-image generation: ${prompt}, Aspect Ratio: ${aspectRatio}, Count: ${numberOfImages}`
+    `Starting text-to-image generation: ${prompt}, Aspect Ratio: ${aspectRatio}, Count: ${numberOfImages}`,
   );
   const ai = getClient(settings);
   const model = getModel(settings);

@@ -41,7 +41,7 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
       className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}
     >
       <div className="flex flex-col items-center gap-6 animate-fade-in">
-        <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl md:text-7xl">
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
           <span
             className={`${
               theme === 'newyear'
@@ -54,7 +54,9 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
             {t('idphoto.title')}
           </span>
         </h1>
-        <p className="max-w-3xl text-lg text-gray-300 md:text-xl">{t('idphoto.subtitle')}</p>
+        <p className="max-w-3xl text-lg text-gray-300 md:text-xl leading-relaxed">
+          {t('idphoto.subtitle')}
+        </p>
 
         {id.idPhotoResults && id.idPhotoResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">

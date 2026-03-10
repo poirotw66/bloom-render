@@ -61,7 +61,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
       >
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
               {mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'} {t(`couple_group.mode.${mode}`)}
             </h3>
 
@@ -71,11 +71,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                   key={idx}
                   className="group relative w-32 h-32 rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-xl transition-transform hover:scale-105"
                 >
-                  <img
-                    src={url}
-                    alt={`Person ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={url} alt={`Person ${idx + 1}`} className="w-full h-full object-cover" />
                   <button
                     onClick={() => onRemoveFile(idx)}
                     className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
@@ -107,9 +103,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
             </div>
 
             <p className="text-xs text-gray-500 italic max-w-sm text-center">
-              {mode === 'couple'
-                ? t('couple_group.hint_couple')
-                : t('couple_group.hint_group')}
+              {mode === 'couple' ? t('couple_group.hint_couple') : t('couple_group.hint_group')}
             </p>
 
             {error && <ErrorDisplay message={error} />}
@@ -170,7 +164,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
               <h3 className="text-2xl font-black text-white mb-2">
                 {t(`couple_group.mode.${mode}`)}
               </h3>
-              <p className="text-sm text-gray-400 max-w-xs">
+              <p className="text-base text-gray-400 max-w-xs leading-relaxed">
                 {mode === 'couple'
                   ? t('couple_group.upload_hint_couple')
                   : t('couple_group.upload_hint_group')}

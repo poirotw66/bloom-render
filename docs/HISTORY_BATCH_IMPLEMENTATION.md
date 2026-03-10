@@ -12,6 +12,7 @@
 **檔案**：`components/HistoryPanel.tsx`
 
 **功能**：
+
 - ✅ 側邊滑出面板，顯示所有生成歷史
 - ✅ 搜尋功能（依類型或選項）
 - ✅ 類型篩選（全部、portrait、themed、idphoto、travel、couple、group）
@@ -22,6 +23,7 @@
 - ✅ 計數顯示（顯示 X / 總數 Y 項）
 
 **整合**：
+
 - ✅ 整合到 `Header.tsx`，點擊歷史圖示開啟側邊欄
 - ✅ 支援點擊歷史項目直接進入編輯器
 
@@ -30,6 +32,7 @@
 **檔案**：`pages/HistoryPage.tsx`
 
 **功能**：
+
 - ✅ 完整頁面顯示所有歷史記錄
 - ✅ 搜尋與篩選功能（與側邊欄相同）
 - ✅ 網格/列表兩種顯示模式
@@ -40,6 +43,7 @@
 **路由**：`/history`
 
 **整合**：
+
 - ✅ 新增到 `StartTabNav` 導覽列
 - ✅ 新增到 `App.tsx` 路由
 
@@ -52,6 +56,7 @@
 **檔案**：`components/BatchUploadSection.tsx`
 
 **功能**：
+
 - ✅ 多檔案上傳（拖放或選擇）
 - ✅ 檔案預覽網格（顯示縮圖與編號）
 - ✅ 移除單個檔案
@@ -64,6 +69,7 @@
 **檔案**：`components/BatchProgress.tsx`
 
 **功能**：
+
 - ✅ 整體進度條（百分比）
 - ✅ 當前處理狀態（處理中 X / Y）
 - ✅ 成功結果預覽（網格顯示前 8 張）
@@ -77,6 +83,7 @@
 **檔案**：`features/idphoto/IdPhotoPage.tsx`
 
 **功能**：
+
 - ✅ 單張/批量模式切換按鈕
 - ✅ 批量模式使用 `BatchUploadSection`
 - ✅ 批量生成進度顯示
@@ -85,6 +92,7 @@
 - ✅ 單個結果編輯功能
 
 **使用方式**：
+
 1. 進入證件照頁面
 2. 點擊「批量」按鈕切換到批量模式
 3. 上傳多張照片（最多 10 張）
@@ -97,6 +105,7 @@
 **檔案**：`features/portrait/PortraitPage.tsx`
 
 **功能**：
+
 - ✅ 單張/批量模式切換按鈕
 - ✅ 批量模式使用 `BatchUploadSection`
 - ✅ 批量生成進度顯示
@@ -126,6 +135,7 @@
 ### 3.2 翻譯 Key 新增
 
 **歷史記錄相關**：
+
 - `history.title` - 標題
 - `history.subtitle` - 副標題
 - `history.empty` - 空狀態
@@ -147,6 +157,7 @@
 - `history.batch_download` - 批量下載
 
 **批量處理相關**：
+
 - `batch.title` - 批量上傳
 - `batch.upload_hint` - 上傳提示
 - `batch.upload_button` - 上傳按鈕
@@ -199,6 +210,7 @@ features/portrait/
 ```
 
 **操作流程**：
+
 1. 點擊 Header 的歷史圖示
 2. 側邊欄滑出顯示歷史記錄
 3. 使用搜尋框或類型篩選
@@ -213,7 +225,9 @@ const batch = useBatchProcessing();
 
 await batch.processBatch(files, {
   generateApi: generateIdPhoto,
-  options: { /* ... */ },
+  options: {
+    /* ... */
+  },
   settings: { apiKey, model },
   maxConcurrent: 3,
   historyType: 'idphoto',
@@ -221,6 +235,7 @@ await batch.processBatch(files, {
 ```
 
 **操作流程**：
+
 1. 切換到批量模式
 2. 上傳多張照片（拖放或選擇）
 3. 設定生成選項

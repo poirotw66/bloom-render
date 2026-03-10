@@ -11,10 +11,8 @@ import {
   TRAVEL_POSE_OPTIONS,
   TRAVEL_WEATHER_OPTIONS,
   TRAVEL_TIME_OPTIONS,
-  TRAVEL_VIBE_OPTIONS,
   TRAVEL_STYLES,
   TRAVEL_RELATIONSHIP_OPTIONS,
-  TRAVEL_FRAMING_OPTIONS,
   TravelOutfit,
   TravelPose,
   TravelWeather,
@@ -22,7 +20,7 @@ import {
   TravelVibe,
   TravelStyle,
   TravelRelationship,
-  TravelFraming
+  TravelFraming,
 } from '../../constants/travel';
 
 interface TravelResultProps {
@@ -60,7 +58,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
   const { t } = useLanguage();
   const sceneLabel = resultSceneNameKey
     ? t(resultSceneNameKey)
-    : (resultSceneCustomLabel || t('travel.custom_btn'));
+    : resultSceneCustomLabel || t('travel.custom_btn');
 
   const m = resultMetadata;
 
@@ -70,7 +68,11 @@ const TravelResult: React.FC<TravelResultProps> = ({
         <h3 className="text-xl font-bold text-white">{t('travel.title')}</h3>
       </div>
       <div className="w-full aspect-[4/3] max-h-[400px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center shadow-2xl">
-        <img src={result} alt="Travel photo" className="max-w-full max-h-full w-auto h-auto object-contain" />
+        <img
+          src={result}
+          alt="Travel photo"
+          className="max-w-full max-h-full w-auto h-auto object-contain"
+        />
       </div>
 
       {m && (
@@ -81,8 +83,12 @@ const TravelResult: React.FC<TravelResultProps> = ({
               📍
             </div>
             <div className="space-y-0.5">
-              <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">{t('travel.label.scene')}</h4>
-              <div className="text-base font-bold text-amber-400 tracking-tight leading-tight">{sceneLabel}</div>
+              <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">
+                {t('travel.label.scene')}
+              </h4>
+              <div className="text-base font-bold text-amber-400 tracking-tight leading-tight">
+                {sceneLabel}
+              </div>
             </div>
           </div>
 
@@ -96,11 +102,16 @@ const TravelResult: React.FC<TravelResultProps> = ({
                 </h4>
               </div>
               <div className="space-y-2.5 ml-3">
-                <div className="flex items-center gap-3 text-sm text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">👗</span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">{t('travel.label.outfit')}</span>
+                <div className="flex items-center gap-3 text-base text-gray-200 group">
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
+                    👗
+                  </span>
+                  <span className="text-gray-500 text-xs min-w-[60px]">
+                    {t('travel.label.outfit')}
+                  </span>
                   <span className="font-medium">
-                    {m.customOutfitText || t(TRAVEL_OUTFIT_OPTIONS.find(o => o.id === m.outfit)?.nameKey || '')}
+                    {m.customOutfitText ||
+                      t(TRAVEL_OUTFIT_OPTIONS.find((o) => o.id === m.outfit)?.nameKey || '')}
                     {m.outfitColor && (
                       <span className="ml-1.5 px-1.5 py-0.5 bg-gray-700/50 rounded text-[10px] text-gray-400 font-normal">
                         {m.outfitColor}
@@ -108,16 +119,32 @@ const TravelResult: React.FC<TravelResultProps> = ({
                     )}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">🧘</span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">{t('travel.label.pose')}</span>
-                  <span className="font-medium">{m.customPoseText || t(TRAVEL_POSE_OPTIONS.find(p => p.id === m.pose)?.nameKey || '')}</span>
+                <div className="flex items-center gap-3 text-base text-gray-200 group">
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
+                    🧘
+                  </span>
+                  <span className="text-gray-500 text-xs min-w-[60px]">
+                    {t('travel.label.pose')}
+                  </span>
+                  <span className="font-medium">
+                    {m.customPoseText ||
+                      t(TRAVEL_POSE_OPTIONS.find((p) => p.id === m.pose)?.nameKey || '')}
+                  </span>
                 </div>
                 {m.relationship !== 'default' && (
-                  <div className="flex items-center gap-3 text-sm text-gray-200 group">
-                    <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">👥</span>
-                    <span className="text-gray-500 text-xs min-w-[60px]">{t('travel.label.relationship')}</span>
-                    <span className="font-medium">{t(TRAVEL_RELATIONSHIP_OPTIONS.find(r => r.id === m.relationship)?.nameKey || '')}</span>
+                  <div className="flex items-center gap-3 text-base text-gray-200 group">
+                    <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
+                      👥
+                    </span>
+                    <span className="text-gray-500 text-xs min-w-[60px]">
+                      {t('travel.label.relationship')}
+                    </span>
+                    <span className="font-medium">
+                      {t(
+                        TRAVEL_RELATIONSHIP_OPTIONS.find((r) => r.id === m.relationship)?.nameKey ||
+                          '',
+                      )}
+                    </span>
                   </div>
                 )}
               </div>
@@ -132,24 +159,38 @@ const TravelResult: React.FC<TravelResultProps> = ({
                 </h4>
               </div>
               <div className="space-y-2.5 ml-3">
-                <div className="flex items-center gap-3 text-sm text-gray-200 group">
+                <div className="flex items-center gap-3 text-base text-gray-200 group">
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    {TRAVEL_WEATHER_OPTIONS.find(w => w.id === m.weather)?.icon || '☁️'}
+                    {TRAVEL_WEATHER_OPTIONS.find((w) => w.id === m.weather)?.icon || '☁️'}
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">{t('travel.label.weather')}</span>
-                  <span className="font-medium">{t(TRAVEL_WEATHER_OPTIONS.find(w => w.id === m.weather)?.nameKey || '')}</span>
+                  <span className="text-gray-500 text-xs min-w-[60px]">
+                    {t('travel.label.weather')}
+                  </span>
+                  <span className="font-medium">
+                    {t(TRAVEL_WEATHER_OPTIONS.find((w) => w.id === m.weather)?.nameKey || '')}
+                  </span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-200 group">
+                <div className="flex items-center gap-3 text-base text-gray-200 group">
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    {TRAVEL_TIME_OPTIONS.find(t_ => t_.id === m.time)?.icon || '🕒'}
+                    {TRAVEL_TIME_OPTIONS.find((t_) => t_.id === m.time)?.icon || '🕒'}
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">{t('travel.label.time')}</span>
-                  <span className="font-medium">{t(TRAVEL_TIME_OPTIONS.find(t_ => t_.id === m.time)?.nameKey || '')}</span>
+                  <span className="text-gray-500 text-xs min-w-[60px]">
+                    {t('travel.label.time')}
+                  </span>
+                  <span className="font-medium">
+                    {t(TRAVEL_TIME_OPTIONS.find((t_) => t_.id === m.time)?.nameKey || '')}
+                  </span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">🎨</span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">{t('travel.label.style')}</span>
-                  <span className="font-medium">{t(TRAVEL_STYLES.find(s => s.id === m.style)?.nameKey || '')}</span>
+                <div className="flex items-center gap-3 text-base text-gray-200 group">
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
+                    🎨
+                  </span>
+                  <span className="text-gray-500 text-xs min-w-[60px]">
+                    {t('travel.label.style')}
+                  </span>
+                  <span className="font-medium">
+                    {t(TRAVEL_STYLES.find((s) => s.id === m.style)?.nameKey || '')}
+                  </span>
                 </div>
                 {m.clearBackground && (
                   <div className="pt-1">

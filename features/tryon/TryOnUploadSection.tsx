@@ -60,14 +60,17 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
     <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
       {/* Person photo */}
       <div
-        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${isDraggingOver ? 'border-teal-400 bg-teal-500/10' : 'border-gray-700/50 bg-gray-800/40'
-          } ${hasPerson ? 'border-teal-500/30' : ''}`}
+        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${
+          isDraggingOver ? 'border-teal-400 bg-teal-500/10' : 'border-gray-700/50 bg-gray-800/40'
+        } ${hasPerson ? 'border-teal-500/30' : ''}`}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDropPerson}
       >
         <div className="flex items-center gap-2 mb-4">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold">1</span>
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold">
+            1
+          </span>
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
             {t('tryon.person_photo')}
           </h3>
@@ -81,7 +84,9 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                <span className="text-[10px] text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">{t('tryon.change_person')}</span>
+                <span className="text-[10px] text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">
+                  {t('tryon.change_person')}
+                </span>
               </div>
               <input
                 type="file"
@@ -94,17 +99,18 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
           </div>
         ) : (
           <label className="flex flex-col items-center justify-center gap-3 py-12 rounded-2xl border-2 border-dashed border-gray-700 bg-gray-900/40 cursor-pointer hover:border-teal-500/50 hover:bg-teal-500/5 transition-all group">
-            <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">👤</div>
-            <div className="text-center">
-              <span className="block text-sm font-bold text-gray-300 group-hover:text-teal-400 transition-colors">{t('tryon.upload_person_hint')}</span>
-              <span className="text-[10px] text-gray-500 mt-1 uppercase tracking-tighter">{t('start.upload_drag')}</span>
+            <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
+              👤
             </div>
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={onPersonFileChange}
-            />
+            <div className="text-center">
+              <span className="block text-sm font-bold text-gray-300 group-hover:text-teal-400 transition-colors">
+                {t('tryon.upload_person_hint')}
+              </span>
+              <span className="text-[10px] text-gray-500 mt-1 uppercase tracking-tighter">
+                {t('start.upload_drag')}
+              </span>
+            </div>
+            <input type="file" className="hidden" accept="image/*" onChange={onPersonFileChange} />
           </label>
         )}
       </div>
@@ -112,26 +118,35 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
       {/* Visual Connector */}
       <div className="flex justify-center -my-3 z-10">
         <div className="bg-gray-900 px-3 py-1 rounded-full border border-gray-700 flex items-center gap-2">
-          <span className="text-xs text-gray-500 font-bold uppercase tracking-tighter self-center">+</span>
+          <span className="text-xs text-gray-500 font-bold uppercase tracking-tighter self-center">
+            +
+          </span>
         </div>
       </div>
 
       {/* Clothing photos */}
       <div
-        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${isDraggingOver ? 'border-amber-400/60 bg-amber-500/10' : 'border-gray-700/50 bg-gray-800/40'
-          } ${clothingCount > 0 ? 'border-amber-500/30' : ''}`}
+        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${
+          isDraggingOver
+            ? 'border-amber-400/60 bg-amber-500/10'
+            : 'border-gray-700/50 bg-gray-800/40'
+        } ${clothingCount > 0 ? 'border-amber-500/30' : ''}`}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDropClothing}
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">2</span>
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
+              2
+            </span>
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
               {t('tryon.clothing_photos')}
             </h3>
           </div>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${clothingCount >= minClothing ? 'text-amber-400 bg-amber-500/10' : 'text-gray-500 bg-gray-800'}`}>
+          <span
+            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${clothingCount >= minClothing ? 'text-amber-400 bg-amber-500/10' : 'text-gray-500 bg-gray-800'}`}
+          >
             {clothingCount} / {maxClothing}
           </span>
         </div>
@@ -142,7 +157,11 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               key={idx}
               className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-800 bg-gray-900 shadow-lg"
             >
-              <img src={url} alt={`Clothing ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <img
+                src={url}
+                alt={`Clothing ${idx + 1}`}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
               <button
                 type="button"
                 onClick={() => onRemoveClothing(idx)}
@@ -165,8 +184,12 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 multiple
                 onChange={onClothingFileChange}
               />
-              <span className="text-2xl group-hover:scale-125 transition-transform duration-300">+</span>
-              <span className="text-[8px] font-black uppercase tracking-tighter opacity-70">{t('tryon.add_clothing')}</span>
+              <span className="text-2xl group-hover:scale-125 transition-transform duration-300">
+                +
+              </span>
+              <span className="text-[8px] font-black uppercase tracking-tighter opacity-70">
+                {t('tryon.add_clothing')}
+              </span>
             </label>
           )}
         </div>
@@ -183,9 +206,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
           min={1}
           max={4}
         />
-        <p className="text-xs text-gray-500 mt-1 text-center">
-          {t('tryon.quantity_hint')}
-        </p>
+        <p className="text-xs text-gray-500 mt-1 text-center">{t('tryon.quantity_hint')}</p>
       </div>
 
       {error && <ErrorDisplay message={error} />}

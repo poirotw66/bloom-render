@@ -20,11 +20,14 @@ const PortraitPage = React.lazy(() => import('./features/portrait/PortraitPage')
 // ... etc
 
 // In Routes, wrap with Suspense
-<Route path="/idphoto" element={
-  <Suspense fallback={<Spinner />}>
-    <IdPhotoPage onImageSelected={handleImageUpload} />
-  </Suspense>
-} />
+<Route
+  path="/idphoto"
+  element={
+    <Suspense fallback={<Spinner />}>
+      <IdPhotoPage onImageSelected={handleImageUpload} />
+    </Suspense>
+  }
+/>;
 ```
 
 **影響**：縮小初始 bundle，加快首屏載入；與 `OPTIMIZATION_ROADMAP.md` 中「Code Splitting」一致。
@@ -131,23 +134,23 @@ copyFileSync('dist/index.html', 'dist/404.html');
 
 ## 五、與既有路線圖的對應
 
-| 本文件建議 | OPTIMIZATION_ROADMAP / FUTURE 對應 |
-|------------|-------------------------------------|
-| 路由 Code Splitting | 2.3 Code Splitting、FUTURE React.lazy |
-| 主題樣式集中 / helper | 1.3 程式碼重複消除（可一併考慮 UI 重複） |
-| Context value useMemo | 屬效能與架構優化，路線圖未明列 |
-| 建置 404 腳本、API key 說明 | 文檔與維護、部署安全 |
-| TypeScript strict、ESLint | 程式碼品質與長期維護 |
+| 本文件建議                  | OPTIMIZATION_ROADMAP / FUTURE 對應       |
+| --------------------------- | ---------------------------------------- |
+| 路由 Code Splitting         | 2.3 Code Splitting、FUTURE React.lazy    |
+| 主題樣式集中 / helper       | 1.3 程式碼重複消除（可一併考慮 UI 重複） |
+| Context value useMemo       | 屬效能與架構優化，路線圖未明列           |
+| 建置 404 腳本、API key 說明 | 文檔與維護、部署安全                     |
+| TypeScript strict、ESLint   | 程式碼品質與長期維護                     |
 
 ---
 
 ## 六、建議優先順序（摘要）
 
-1. **高**：路由層級 `React.lazy` + `Suspense`（縮小首屏、與路線圖一致）。  
-2. **高**：建置 404 改為 ESM 腳本，避免 `require` 在 ESM 專案中的相容性問題。  
-3. **中**：Context provider 的 value 以 `useMemo` 包裝，減少不必要重繪。  
-4. **中**：主題樣式抽成 helper 或 data-theme CSS，減少 App 內重複。  
-5. **中**：`handleImageClick` 改為 `useCallback`。  
+1. **高**：路由層級 `React.lazy` + `Suspense`（縮小首屏、與路線圖一致）。
+2. **高**：建置 404 改為 ESM 腳本，避免 `require` 在 ESM 專案中的相容性問題。
+3. **中**：Context provider 的 value 以 `useMemo` 包裝，減少不必要重繪。
+4. **中**：主題樣式抽成 helper 或 data-theme CSS，減少 App 內重複。
+5. **中**：`handleImageClick` 改為 `useCallback`。
 6. **低**：啟用 TypeScript strict（或先 strictNullChecks）、加入 ESLint；文件補充 API key 與建置環境說明。
 
 以上項目可依人力與時程與既有 `OPTIMIZATION_ROADMAP.md` 一併排程實作。
@@ -190,17 +193,17 @@ copyFileSync('dist/index.html', 'dist/404.html');
 
 ## 八、已實作項目（本次檢視後完成）
 
-| 項目 | 說明 |
-|------|------|
-| **建置 404** | 新增 `scripts/copy-404.mjs`（ESM），`package.json` build 改為 `vite build && node scripts/copy-404.mjs`。 |
-| **ServiceCard 無障礙** | `features/photography-service/ServiceCard.tsx` 新增 `role="button"`、`tabIndex={0}`、`onKeyDown`（Enter/Space）、`aria-label`、focus ring。 |
-| **SettingsModal 型別** | `components/SettingsModal.tsx` 的 model 選單改為 `ModelType` 型別斷言，移除 `any`。 |
-| **路由 Code Splitting** | `App.tsx` 功能頁改為 `React.lazy` + `Suspense`（fallback `<Spinner />`），建置產出各頁獨立 chunk，首屏僅載入 index + vendor。 |
-| **Context value useMemo** | `SettingsContext`、`ThemeContext` 的 Provider value 改為 `useMemo` 包裝，減少不必要重繪。 |
-| **handleImageClick useCallback** | `App.tsx` 編輯器區 `handleImageClick` 改為 `useCallback(..., [activeTab])`。 |
-| **根層 Error Boundary** | 新增 `components/ErrorBoundary.tsx`，於 `index.tsx` 包裝整棵樹，catch 時顯示錯誤 UI 與「Reload page」。 |
-| **主題 helper** | `utils/themeUtils.ts` 新增 `getEditorThemeClasses(theme)`，App 編輯器區改用 `editorTheme.*`。 |
-| **TypeScript strict** | `tsconfig.json` 啟用 `strict`、`strictNullChecks`；新增 `vite-env.d.ts`、`@types/react` / `@types/react-dom`；修正相關型別錯誤。 |
-| **ESLint** | 新增 `eslint.config.js`（flat config）、TypeScript + React + React Hooks 規則、`npm run lint`。 |
+| 項目                             | 說明                                                                                                                                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **建置 404**                     | 新增 `scripts/copy-404.mjs`（ESM），`package.json` build 改為 `vite build && node scripts/copy-404.mjs`。                                   |
+| **ServiceCard 無障礙**           | `features/photography-service/ServiceCard.tsx` 新增 `role="button"`、`tabIndex={0}`、`onKeyDown`（Enter/Space）、`aria-label`、focus ring。 |
+| **SettingsModal 型別**           | `components/SettingsModal.tsx` 的 model 選單改為 `ModelType` 型別斷言，移除 `any`。                                                         |
+| **路由 Code Splitting**          | `App.tsx` 功能頁改為 `React.lazy` + `Suspense`（fallback `<Spinner />`），建置產出各頁獨立 chunk，首屏僅載入 index + vendor。               |
+| **Context value useMemo**        | `SettingsContext`、`ThemeContext` 的 Provider value 改為 `useMemo` 包裝，減少不必要重繪。                                                   |
+| **handleImageClick useCallback** | `App.tsx` 編輯器區 `handleImageClick` 改為 `useCallback(..., [activeTab])`。                                                                |
+| **根層 Error Boundary**          | 新增 `components/ErrorBoundary.tsx`，於 `index.tsx` 包裝整棵樹，catch 時顯示錯誤 UI 與「Reload page」。                                     |
+| **主題 helper**                  | `utils/themeUtils.ts` 新增 `getEditorThemeClasses(theme)`，App 編輯器區改用 `editorTheme.*`。                                               |
+| **TypeScript strict**            | `tsconfig.json` 啟用 `strict`、`strictNullChecks`；新增 `vite-env.d.ts`、`@types/react` / `@types/react-dom`；修正相關型別錯誤。            |
+| **ESLint**                       | 新增 `eslint.config.js`（flat config）、TypeScript + React + React Hooks 規則、`npm run lint`。                                             |
 
 以上已實作項目可直接沿用；其餘建議（單元測試、生產環境 console 等）仍可依優先順序排入後續迭代。

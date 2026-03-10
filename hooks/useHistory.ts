@@ -60,7 +60,7 @@ export function useHistory() {
 
       return item.id;
     },
-    []
+    [],
   );
 
   const removeFromHistory = useCallback((id: string) => {
@@ -75,7 +75,7 @@ export function useHistory() {
     (type: string) => {
       return history.filter((item) => item.type === type);
     },
-    [history]
+    [history],
   );
 
   return {

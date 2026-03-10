@@ -13,7 +13,13 @@ import {
   DEFAULT_PORTRAIT_TYPE,
   DEFAULT_PORTRAIT_SPEC,
 } from '../../constants/portrait';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  type ServiceSettings,
+} from './shared';
 import { generatePortraitPrompt } from './prompts';
 
 export interface GeneratePortraitOptions {
@@ -29,7 +35,7 @@ export interface GeneratePortraitOptions {
  */
 export const generateProfessionalPortrait = async (
   originalImage: File | File[],
-  options: GeneratePortraitOptions
+  options: GeneratePortraitOptions,
 ): Promise<string> => {
   const portraitType = options.portraitType ?? DEFAULT_PORTRAIT_TYPE;
   const outputSpec = options.outputSpec ?? DEFAULT_PORTRAIT_SPEC;
@@ -39,8 +45,7 @@ export const generateProfessionalPortrait = async (
   const fileCount = isGroup ? originalImage.length : 1;
 
   const style = PORTRAIT_TYPES.find((t) => t.id === portraitType) || PORTRAIT_TYPES[0];
-  const spec =
-    PORTRAIT_OUTPUT_SPECS.find((s) => s.id === outputSpec) || PORTRAIT_OUTPUT_SPECS[0];
+  const spec = PORTRAIT_OUTPUT_SPECS.find((s) => s.id === outputSpec) || PORTRAIT_OUTPUT_SPECS[0];
 
   // Generate prompt using unified prompt system
   const prompt = generatePortraitPrompt({

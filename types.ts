@@ -72,7 +72,16 @@ export type TravelSceneRegion = 'north' | 'central' | 'south' | 'east' | 'island
 
 export type TravelContinent = 'europe' | 'asia' | 'namerica' | 'samerica' | 'oceania' | 'africa';
 
-export type TravelVibe = 'zen' | 'retro' | 'cyberpunk' | 'street' | 'elegant' | 'adventure' | 'cozy' | 'futuristic' | 'romantic';
+export type TravelVibe =
+  | 'zen'
+  | 'retro'
+  | 'cyberpunk'
+  | 'street'
+  | 'elegant'
+  | 'adventure'
+  | 'cozy'
+  | 'futuristic'
+  | 'romantic';
 
 export interface TravelScene {
   id: string;
@@ -106,13 +115,59 @@ export interface TravelVibeOption {
   icon: string;
 }
 
-export type TravelOutfit = 'default' | 'casual' | 'formal' | 'traditional' | 'winter' | 'summer' | 'hiking' | 'cyberpunk' | 'luxury' | 'vintage' | 'street_chic' | 'preppy' | 'boho' | 'parisian' | 'academic' | 'y2k' | 'custom';
+export type TravelOutfit =
+  | 'default'
+  | 'casual'
+  | 'formal'
+  | 'traditional'
+  | 'winter'
+  | 'summer'
+  | 'hiking'
+  | 'cyberpunk'
+  | 'luxury'
+  | 'vintage'
+  | 'street_chic'
+  | 'preppy'
+  | 'boho'
+  | 'parisian'
+  | 'academic'
+  | 'y2k'
+  | 'custom';
 
-export type TravelRelationship = 'default' | 'couple' | 'family' | 'friends' | 'siblings' | 'parent_child';
+export type TravelRelationship =
+  | 'default'
+  | 'couple'
+  | 'family'
+  | 'friends'
+  | 'siblings'
+  | 'parent_child';
 
-export type TravelFraming = 'default' | 'closeup' | 'portrait' | 'full_body' | 'wide_angle' | 'aerial';
+export type TravelFraming =
+  | 'default'
+  | 'closeup'
+  | 'portrait'
+  | 'full_body'
+  | 'wide_angle'
+  | 'aerial';
 
-export type TravelPose = 'natural' | 'hugging' | 'jumping' | 'hand_in_hand' | 'pointing' | 'looking_at_each_other' | 'peace_sign' | 'walking_away' | 'sitting_relaxed' | 'candid_laugh' | 'leaning' | 'coffee_time' | 'adjusting_shades' | 'cafe_sitting' | 'photographer' | 'heart' | 'custom';
+export type TravelPose =
+  | 'natural'
+  | 'hugging'
+  | 'jumping'
+  | 'hand_in_hand'
+  | 'pointing'
+  | 'looking_at_each_other'
+  | 'peace_sign'
+  | 'walking_away'
+  | 'sitting_relaxed'
+  | 'candid_laugh'
+  | 'leaning'
+  | 'coffee_time'
+  | 'adjusting_shades'
+  | 'cafe_sitting'
+  | 'photographer'
+  | 'heart'
+  | 'custom';
 
 // --- Couple/Group photo types ---
 
@@ -127,8 +182,4 @@ export type CoupleStyle =
   | 'couple_robe'
   | 'couple_polaroid';
 
-export type GroupStyle =
-  | 'group_family'
-  | 'group_family_spring'
-  | 'group_new_style'
-  | 'group_grad';
+export type GroupStyle = 'group_family' | 'group_family_spring' | 'group_new_style' | 'group_grad';

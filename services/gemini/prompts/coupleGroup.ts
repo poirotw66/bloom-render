@@ -42,20 +42,11 @@ export function generateCoupleGroupPrompt(options: CoupleGroupPromptOptions): st
     });
   }
 
-  const identityConsistency =
-    fileCount === 2
-      ? 'both people'
-      : `all ${fileCount} people`;
+  const identityConsistency = fileCount === 2 ? 'both people' : `all ${fileCount} people`;
 
-  const groupDescription =
-    fileCount === 2
-      ? 'couple'
-      : `group of ${fileCount} people`;
+  const groupDescription = fileCount === 2 ? 'couple' : `group of ${fileCount} people`;
 
-  const arrangementDescription =
-    fileCount === 2
-      ? 'the couple'
-      : 'the group';
+  const arrangementDescription = fileCount === 2 ? 'the couple' : 'the group';
 
   return buildPrompt({
     role: `You are a world-class ${mode === 'couple' ? 'couple' : 'group'} portrait photographer and retouching AI. Transform the provided ${groupDescription} portrait${isGroup ? 's' : ''} into a high-end, professional style image.`,

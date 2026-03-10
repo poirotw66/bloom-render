@@ -53,15 +53,20 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 type="button"
                 onClick={() => !disabled && onBackgroundChange(opt.id)}
                 disabled={disabled}
-                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all duration-300 ${isActive
+                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all duration-300 ${
+                  isActive
                     ? 'bg-teal-600 text-white shadow-xl shadow-teal-600/20 scale-105 z-10'
                     : 'bg-gray-800/40 text-gray-400 border border-gray-700/50 hover:bg-gray-700/60 hover:border-teal-500/30'
-                  } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
+                } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
-                <span className={`text-2xl transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>
+                <span
+                  className={`text-2xl transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                >
                   {opt.emoji}
                 </span>
-                <span className={`text-[10px] font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}>
+                <span
+                  className={`text-[10px] font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}
+                >
                   {t(opt.nameKey).split(' ').pop()}
                 </span>
                 {isActive && (
@@ -101,15 +106,20 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 type="button"
                 onClick={() => !disabled && onStyleChange(opt.id)}
                 disabled={disabled}
-                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all duration-300 ${isActive
+                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all duration-300 ${
+                  isActive
                     ? 'bg-amber-600 text-white shadow-xl shadow-amber-600/20 scale-105 z-10'
                     : 'bg-gray-800/40 text-gray-400 border border-gray-700/50 hover:bg-gray-700/60 hover:border-amber-500/30'
-                  } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
+                } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
-                <span className={`text-2xl transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>
+                <span
+                  className={`text-2xl transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                >
                   {opt.emoji}
                 </span>
-                <span className={`text-[10px] font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}>
+                <span
+                  className={`text-[10px] font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}
+                >
                   {t(opt.nameKey).split(' ').pop()}
                 </span>
                 {isActive && (

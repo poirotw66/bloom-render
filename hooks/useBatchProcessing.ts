@@ -10,7 +10,11 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useHistory } from './useHistory';
 
 export interface BatchProcessingOptions<TFile = File, TOptions = unknown> {
-  generateApi: (file: TFile, options: TOptions, settings: { apiKey?: string; model?: string }) => Promise<string>;
+  generateApi: (
+    file: TFile,
+    options: TOptions,
+    settings: { apiKey?: string; model?: string },
+  ) => Promise<string>;
   options: TOptions;
   settings: { apiKey?: string; model?: string };
   maxConcurrent?: number;
@@ -27,7 +31,9 @@ export function useBatchProcessing<TFile = File, TOptions = unknown>() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState({ completed: 0, total: 0, current: 0 });
-  const [results, setResults] = useState<Array<{ file: TFile; result: string; index: number; error?: Error }>>([]);
+  const [results, setResults] = useState<
+    Array<{ file: TFile; result: string; index: number; error?: Error }>
+  >([]);
   const [errors, setErrors] = useState<Array<{ file: TFile; error: Error; index: number }>>([]);
 
   const processBatch = useCallback(
@@ -104,7 +110,7 @@ export function useBatchProcessing<TFile = File, TOptions = unknown>() {
 
       return { results: allResults, errors: allErrors };
     },
-    [addToHistory]
+    [addToHistory],
   );
 
   const reset = useCallback(() => {

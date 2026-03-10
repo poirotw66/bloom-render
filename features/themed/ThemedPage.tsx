@@ -58,7 +58,9 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
               {t('themed.title')}
             </span>
           </h1>
-          <p className="max-w-2xl text-base text-gray-400 md:text-lg">{t('themed.subtitle')}</p>
+          <p className="max-w-2xl text-lg text-gray-300 md:text-xl leading-relaxed">
+            {t('themed.subtitle')}
+          </p>
         </header>
 
         {themed.themedResults && themed.themedResults.length > 0 ? (

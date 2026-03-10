@@ -92,11 +92,11 @@ function getWorker(): Worker {
         }
       };
     `;
-    
+
     const blob = new Blob([workerCode], { type: 'application/javascript' });
     worker = new Worker(URL.createObjectURL(blob));
   }
-  
+
   return worker;
 }
 
@@ -106,16 +106,8 @@ function getWorker(): Worker {
  * @param options Compression options
  * @returns Compressed File
  */
-export async function compressImage(
-  file: File,
-  options: CompressionOptions = {}
-): Promise<File> {
-  const {
-    maxWidth = 2048,
-    maxHeight = 2048,
-    quality = 0.85,
-    mimeType = 'image/jpeg',
-  } = options;
+export async function compressImage(file: File, options: CompressionOptions = {}): Promise<File> {
+  const { maxWidth = 2048, maxHeight = 2048, quality = 0.85, mimeType = 'image/jpeg' } = options;
 
   // Read file as ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
@@ -125,7 +117,7 @@ export async function compressImage(
 
   return new Promise((resolve, reject) => {
     const worker = getWorker();
-    
+
     // Set up message handler
     const handleMessage = (e: MessageEvent<CompressionResult>) => {
       if (e.data.id !== id) return;
@@ -139,7 +131,7 @@ export async function compressImage(
         const compressedFile = new File(
           [compressedBlob],
           file.name.replace(/\.[^.]+$/, `.${mimeType.split('/')[1]}`),
-          { type: mimeType }
+          { type: mimeType },
         );
         resolve(compressedFile);
       } else {

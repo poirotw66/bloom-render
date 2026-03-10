@@ -44,9 +44,11 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
           className="max-w-full max-h-full w-auto h-auto object-contain"
         />
       </div>
-      
+
       <div className="w-full bg-gray-800/60 backdrop-blur-sm p-4 rounded-xl border border-gray-700">
-        <h3 className="text-sm font-bold text-white mb-3">{t('couple_group.result.params_title')}</h3>
+        <h3 className="text-sm font-bold text-white mb-3">
+          {t('couple_group.result.params_title')}
+        </h3>
         <div className="space-y-2 text-sm">
           <div>
             <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -58,9 +60,7 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
             <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
               {t('couple_group.result.style')}
             </span>
-            <span className="text-gray-200">
-              {styleConfig ? t(styleConfig.nameKey) : style}
-            </span>
+            <span className="text-gray-200">{styleConfig ? t(styleConfig.nameKey) : style}</span>
           </div>
         </div>
       </div>

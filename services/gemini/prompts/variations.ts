@@ -174,14 +174,14 @@ export interface VariationNote {
 
 export function buildVariationNote(variations: VariationNote): string {
   const parts: string[] = [];
-  
+
   if (variations.lighting) parts.push(`- Apply ${variations.lighting}.`);
   if (variations.angle) parts.push(`- Use ${variations.angle}.`);
   if (variations.expression) parts.push(`- Capture ${variations.expression}.`);
   if (variations.composition) parts.push(`- Apply ${variations.composition}.`);
   if (variations.detail) parts.push(`- Include ${variations.detail}.`);
-  
+
   if (parts.length === 0) return '';
-  
+
   return `\nVariation Requirements:\n${parts.join('\n')}\n- Create a unique interpretation while maintaining all requirements.`;
 }

@@ -35,10 +35,10 @@ export function dataURLtoFile(dataurl: string, filename: string): File {
 export async function compressImageIfNeeded(
   file: File,
   options: CompressionOptions = {},
-  sizeThresholdMB: number = 5
+  sizeThresholdMB: number = 5,
 ): Promise<File> {
   const sizeThresholdBytes = sizeThresholdMB * 1024 * 1024;
-  
+
   // Only compress if file exceeds threshold
   if (file.size <= sizeThresholdBytes) {
     return file;
@@ -47,7 +47,7 @@ export async function compressImageIfNeeded(
   try {
     const compressed = await compressImage(file, options);
     console.log(
-      `Image compressed: ${(file.size / 1024 / 1024).toFixed(2)}MB -> ${(compressed.size / 1024 / 1024).toFixed(2)}MB`
+      `Image compressed: ${(file.size / 1024 / 1024).toFixed(2)}MB -> ${(compressed.size / 1024 / 1024).toFixed(2)}MB`,
     );
     return compressed;
   } catch (error) {

@@ -19,7 +19,12 @@ import {
   DEFAULT_OUTPUT_SPEC,
   DEFAULT_CLOTHING_OPTION,
 } from '../../constants/idPhoto';
-import type { IdPhotoType, RetouchLevel, OutputSpec, ClothingOption } from '../../constants/idPhoto';
+import type {
+  IdPhotoType,
+  RetouchLevel,
+  OutputSpec,
+  ClothingOption,
+} from '../../constants/idPhoto';
 import { dataURLtoFile } from '../../utils/fileUtils';
 
 interface IdPhotoBatchPageProps {
@@ -28,26 +33,33 @@ interface IdPhotoBatchPageProps {
 
 const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const settings = useSettings();
-  const batch = useBatchProcessing<File, {
-    retouchLevel: RetouchLevel;
-    idType: IdPhotoType;
-    outputSpec: OutputSpec;
-    clothingOption: ClothingOption;
-    clothingCustomText?: string;
-    clothingReferenceImage?: File;
-  }>();
+  const batch = useBatchProcessing<
+    File,
+    {
+      retouchLevel: RetouchLevel;
+      idType: IdPhotoType;
+      outputSpec: OutputSpec;
+      clothingOption: ClothingOption;
+      clothingCustomText?: string;
+      clothingReferenceImage?: File;
+    }
+  >();
 
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [idPhotoType, setIdPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
-  const [idPhotoRetouchLevel, setIdPhotoRetouchLevel] = useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
-  const [idPhotoOutputSpec, setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
-  const [idPhotoClothingOption, setIdPhotoClothingOption] = useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
-  const [idPhotoClothingCustomText, setIdPhotoClothingCustomText] = useState('');
-  const [idPhotoClothingReferenceFile, setIdPhotoClothingReferenceFile] = useState<File | null>(null);
+  const [idPhotoType, _setIdPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
+  const [idPhotoRetouchLevel, _setIdPhotoRetouchLevel] =
+    useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
+  const [idPhotoOutputSpec, _setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
+  const [idPhotoClothingOption, _setIdPhotoClothingOption] =
+    useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
+  const [idPhotoClothingCustomText, _setIdPhotoClothingCustomText] = useState('');
+  const [idPhotoClothingReferenceFile, _setIdPhotoClothingReferenceFile] = useState<File | null>(
+    null,
+  );
 
   // Generate preview URLs
   useEffect(() => {
@@ -81,14 +93,18 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
     e.preventDefault();
     setIsDraggingOver(false);
     const droppedFiles = Array.from(e.dataTransfer.files).filter((file) =>
-      file.type.startsWith('image/')
+      file.type.startsWith('image/'),
     );
     setFiles((prev) => [...prev, ...droppedFiles].slice(0, 10));
   }, []);
 
   const handleBatchGenerate = useCallback(async () => {
     if (files.length === 0) return;
-    if (idPhotoClothingOption === 'custom' && !idPhotoClothingCustomText.trim() && !idPhotoClothingReferenceFile) {
+    if (
+      idPhotoClothingOption === 'custom' &&
+      !idPhotoClothingCustomText.trim() &&
+      !idPhotoClothingReferenceFile
+    ) {
       return;
     }
 
@@ -99,8 +115,14 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
         idType: idPhotoType,
         outputSpec: idPhotoOutputSpec,
         clothingOption: idPhotoClothingOption,
-        clothingCustomText: idPhotoClothingOption === 'custom' ? idPhotoClothingCustomText.trim() || undefined : undefined,
-        clothingReferenceImage: idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile ? idPhotoClothingReferenceFile : undefined,
+        clothingCustomText:
+          idPhotoClothingOption === 'custom'
+            ? idPhotoClothingCustomText.trim() || undefined
+            : undefined,
+        clothingReferenceImage:
+          idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile
+            ? idPhotoClothingReferenceFile
+            : undefined,
       },
       settings: { apiKey: settings.apiKey, model: settings.model },
       maxConcurrent: 3,
@@ -155,7 +177,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl">
           {t('start.title_part1')} <span className="text-emerald-400">{t('batch.title')}</span>
         </h1>
-        <p className="max-w-2xl text-lg text-gray-400 md:text-xl">
+        <p className="max-w-2xl text-lg text-gray-400 md:text-xl leading-relaxed">
           {t('batch.upload_hint', { min: 1, max: 10 })}
         </p>
 
@@ -195,7 +217,9 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
                     className="w-full rounded-lg border-2 border-gray-700"
                   />
                   <button
-                    onClick={() => onImageSelected(dataURLtoFile(item.result, `id-photo-${idx + 1}.png`))}
+                    onClick={() =>
+                      onImageSelected(dataURLtoFile(item.result, `id-photo-${idx + 1}.png`))
+                    }
                     className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
                   >
                     <span className="text-white font-bold">{t('history.edit')}</span>

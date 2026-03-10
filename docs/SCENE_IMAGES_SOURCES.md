@@ -16,11 +16,11 @@ The script fetches images from **Wikimedia Commons** (free to use). If you see H
 
 For missing images or food/dessert scenes not in the script, search on these free stock photo sites and save with the correct filename:
 
-| Site | URL | License |
-|------|-----|--------|
-| **Wikimedia Commons** | https://commons.wikimedia.org/ | Public domain / CC |
-| **Pexels** | https://www.pexels.com/ | Free for commercial use |
-| **Unsplash** | https://unsplash.com/ | Free (attribution appreciated) |
+| Site                  | URL                            | License                        |
+| --------------------- | ------------------------------ | ------------------------------ |
+| **Wikimedia Commons** | https://commons.wikimedia.org/ | Public domain / CC             |
+| **Pexels**            | https://www.pexels.com/        | Free for commercial use        |
+| **Unsplash**          | https://unsplash.com/          | Free (attribution appreciated) |
 
 ### Search keywords (English)
 

@@ -6,7 +6,14 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  supportsMultiResolution,
+  type ServiceSettings,
+} from './shared';
 import { generateTryOnPrompt } from './prompts/tryOn';
 
 export interface GenerateTryOnOptions {
@@ -32,7 +39,7 @@ export interface GenerateTryOnOptions {
 export const generateVirtualTryOn = async (
   personImage: File,
   clothingImages: File[],
-  options: GenerateTryOnOptions = {}
+  options: GenerateTryOnOptions = {},
 ): Promise<string> => {
   const serviceSettings = options.settings;
 
@@ -53,7 +60,7 @@ export const generateVirtualTryOn = async (
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
   const supportsMultiRes = supportsMultiResolution(model);
-  const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? (options.outputSize || '1K') : '1K';
+  const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? options.outputSize || '1K' : '1K';
   const aspectRatio = options.aspectRatio || '9:16';
 
   const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {

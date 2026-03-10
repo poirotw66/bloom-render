@@ -90,11 +90,14 @@ export function useTryOn() {
     setError(null);
   }, []);
 
-  const handlePersonFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = (e.target.files || [])[0];
-    setPerson(file || null);
-    e.target.value = '';
-  }, [setPerson]);
+  const handlePersonFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = (e.target.files || [])[0];
+      setPerson(file || null);
+      e.target.value = '';
+    },
+    [setPerson],
+  );
 
   const handleClothingFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +105,7 @@ export function useTryOn() {
       addClothing(files);
       e.target.value = '';
     },
-    [addClothing]
+    [addClothing],
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -121,7 +124,7 @@ export function useTryOn() {
       const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/'));
       if (file) setPerson(file);
     },
-    [setPerson]
+    [setPerson],
   );
 
   const handleDropClothing = useCallback(
@@ -131,7 +134,7 @@ export function useTryOn() {
       const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
       addClothing(files);
     },
-    [addClothing]
+    [addClothing],
   );
 
   const handleGenerate = useCallback(async () => {
@@ -175,7 +178,7 @@ export function useTryOn() {
           completedCount += 1;
           setProgress(Math.round((completedCount / total) * 90));
           return dataUrl;
-        })
+        }),
       );
 
       const settled = await Promise.allSettled(promises);
@@ -184,7 +187,9 @@ export function useTryOn() {
 
       setProgress(100);
       if (generated.length === 0) {
-        const firstRejection = settled.find((s): s is PromiseRejectedResult => s.status === 'rejected');
+        const firstRejection = settled.find(
+          (s): s is PromiseRejectedResult => s.status === 'rejected',
+        );
         const reason = firstRejection?.reason;
         const detail = reason instanceof Error ? reason.message : String(reason ?? 'Unknown error');
         console.error('Try-on generation failed (all requests failed). First reason:', reason);
@@ -207,7 +212,17 @@ export function useTryOn() {
       setLoading(false);
       setProgress(0);
     }
-  }, [personFile, clothingFiles, quantity, background, style, outputSize, aspectRatio, settings, t]);
+  }, [
+    personFile,
+    clothingFiles,
+    quantity,
+    background,
+    style,
+    outputSize,
+    aspectRatio,
+    settings,
+    t,
+  ]);
 
   const clearResult = useCallback(() => {
     setResult(null);

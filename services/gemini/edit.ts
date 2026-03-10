@@ -6,7 +6,13 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  type ServiceSettings,
+} from './shared';
 
 /**
  * Generates an edited image using generative AI based on a text prompt and a specific point.
@@ -15,7 +21,7 @@ export const generateEditedImage = async (
   originalImage: File,
   userPrompt: string,
   hotspot: { x: number; y: number },
-  settings?: ServiceSettings
+  settings?: ServiceSettings,
 ): Promise<string> => {
   console.log('Starting generative edit at:', hotspot);
   const ai = getClient(settings);

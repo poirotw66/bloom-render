@@ -6,7 +6,14 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
-import { fileToPartAuto, getClient, getModel, handleApiResponse, supportsMultiResolution, type ServiceSettings } from './shared';
+import {
+  fileToPartAuto,
+  getClient,
+  getModel,
+  handleApiResponse,
+  supportsMultiResolution,
+  type ServiceSettings,
+} from './shared';
 import { generateTravelPrompt } from './prompts';
 
 export interface GenerateTravelPhotoOptions {
@@ -23,7 +30,7 @@ export interface GenerateTravelPhotoOptions {
  */
 export const generateTravelPhoto = async (
   originalImage: File | File[],
-  options: GenerateTravelPhotoOptions
+  options: GenerateTravelPhotoOptions,
 ): Promise<string> => {
   const {
     scenePrompt,
@@ -48,7 +55,7 @@ export const generateTravelPhoto = async (
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
   const supportsMultiRes = supportsMultiResolution(model);
-  const effectiveImageSize: '1K' | '2K' | '4K' = supportsMultiRes ? (requestedSize || '1K') : '1K';
+  const effectiveImageSize: '1K' | '2K' | '4K' = supportsMultiRes ? requestedSize || '1K' : '1K';
 
   const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
     aspectRatio: aspectRatio || '1:1',
@@ -63,9 +70,7 @@ export const generateTravelPhoto = async (
     imageSize: effectiveImageSize,
   });
 
-  const parts: Array<
-    { inlineData?: { mimeType: string; data: string } } | { text: string }
-  > = [];
+  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [];
 
   if (isGroup) {
     for (const file of originalImage) {

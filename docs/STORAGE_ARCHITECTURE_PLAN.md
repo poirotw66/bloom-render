@@ -10,6 +10,7 @@
 ### 1.1 現有實作限制
 
 **當前架構**：
+
 - 使用 `localStorage` 儲存歷史記錄
 - 將完整的 base64 圖片數據（data URL）儲存在本地
 - 最多儲存 50 條記錄
@@ -56,6 +57,7 @@
 **方案**：
 
 1. **只儲存縮圖**
+
    ```typescript
    // 將完整圖片轉換為縮圖（例如 200x200）再儲存
    function createThumbnail(dataUrl: string, maxSize: number = 200): Promise<string> {
@@ -64,12 +66,14 @@
    ```
 
 2. **使用 IndexedDB**
+
    ```typescript
    // IndexedDB 支援更大的儲存空間（通常 50MB+）
    // 可以儲存 Blob 而非 base64，節省空間
    ```
 
 3. **減少儲存數量**
+
    ```typescript
    // 降低 MAX_HISTORY_ITEMS 從 50 到 20-30
    // 或根據儲存空間動態調整
@@ -132,12 +136,14 @@
 #### 3.2.1 後端框架
 
 **選項 A：Node.js + Express/Fastify**
+
 - ✅ 與前端技術棧一致（TypeScript）
 - ✅ 生態系統豐富
 - ✅ 開發速度快
 - ✅ 適合中小型團隊
 
 **選項 B：Python + FastAPI**
+
 - ✅ AI/ML 整合方便（未來可能擴展）
 - ✅ 性能優秀
 - ✅ 類型提示支援好
@@ -147,12 +153,14 @@
 #### 3.2.2 資料庫
 
 **PostgreSQL**
+
 - ✅ 關聯式資料庫，適合複雜查詢
 - ✅ JSON 欄位支援（儲存選項數據）
 - ✅ 成熟穩定
 - ✅ 免費開源
 
 **MongoDB**（可選）
+
 - ✅ NoSQL，適合快速迭代
 - ✅ 文件儲存方便
 - ⚠️ 但關聯查詢較複雜
@@ -162,17 +170,20 @@
 #### 3.2.3 物件儲存
 
 **AWS S3**
+
 - ✅ 業界標準
 - ✅ CDN 整合（CloudFront）
 - ✅ 成本效益高
 - ⚠️ 需要 AWS 帳號
 
 **Cloudflare R2**
+
 - ✅ S3 相容 API
 - ✅ 無出口費用
 - ✅ 價格較低
 
 **Google Cloud Storage**
+
 - ✅ 與 Gemini API 同平台
 - ✅ 整合方便
 
@@ -181,17 +192,20 @@
 #### 3.2.4 認證系統
 
 **選項 A：自建（JWT）**
+
 - ✅ 完全控制
 - ✅ 無第三方依賴
 - ⚠️ 需要實作安全機制
 
 **選項 B：Auth0 / Firebase Auth**
+
 - ✅ 快速整合
 - ✅ 安全可靠
 - ✅ 支援多種登入方式
 - ⚠️ 有成本
 
 **選項 C：Supabase Auth**
+
 - ✅ 開源
 - ✅ 整合 PostgreSQL
 - ✅ 免費額度
@@ -201,12 +215,14 @@
 #### 3.2.5 付費系統
 
 **Stripe**
+
 - ✅ 業界標準
 - ✅ 支援訂閱
 - ✅ 全球支付
 - ✅ 文檔完善
 
 **PayPal**
+
 - ✅ 用戶接受度高
 - ⚠️ 但 API 較複雜
 
@@ -249,7 +265,7 @@ CREATE TABLE generation_history (
   thumbnail_url TEXT, -- 縮圖 URL
   options JSONB, -- 儲存生成選項（retouchLevel, portraitType 等）
   created_at TIMESTAMP DEFAULT NOW(),
-  
+
   CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -269,7 +285,7 @@ CREATE TABLE usage_stats (
   generation_count INTEGER DEFAULT 0,
   generation_type VARCHAR(50),
   created_at TIMESTAMP DEFAULT NOW(),
-  
+
   UNIQUE(user_id, date, generation_type)
 );
 
@@ -391,7 +407,7 @@ Response: {
     generationsThisMonth: number;
     maxPerDay: number;
     maxPerMonth: number;
-  };
+  }
 }
 
 // POST /api/subscription/upgrade
@@ -426,16 +442,18 @@ Body: {
 ### 6.2 階段二：前端整合（1 週）
 
 1. **創建 API Client**
+
    ```typescript
    // services/apiClient.ts
    class ApiClient {
-     async getHistory(params): Promise<HistoryItem[]>
-     async addToHistory(imageUrl, options): Promise<HistoryItem>
-     async deleteHistory(id): Promise<void>
+     async getHistory(params): Promise<HistoryItem[]>;
+     async addToHistory(imageUrl, options): Promise<HistoryItem>;
+     async deleteHistory(id): Promise<void>;
    }
    ```
 
 2. **更新 useHistory Hook**
+
    ```typescript
    // hooks/useHistory.ts
    // 改為調用 API 而非 localStorage
@@ -485,12 +503,12 @@ Body: {
 
 ### 7.1 基礎設施成本（月）
 
-| 項目 | 免費額度 | 付費價格 | 說明 |
-|------|---------|---------|------|
-| **Supabase** | 500MB DB<br>1GB Storage | $25/月起 | PostgreSQL + Auth + Storage |
-| **Cloudflare R2** | 10GB | $0.015/GB | 物件儲存（無出口費用） |
-| **Vercel/Netlify** | 100GB 頻寬 | $20/月起 | 前端部署 |
-| **Stripe** | - | 2.9% + $0.30/交易 | 支付處理 |
+| 項目               | 免費額度                | 付費價格          | 說明                        |
+| ------------------ | ----------------------- | ----------------- | --------------------------- |
+| **Supabase**       | 500MB DB<br>1GB Storage | $25/月起          | PostgreSQL + Auth + Storage |
+| **Cloudflare R2**  | 10GB                    | $0.015/GB         | 物件儲存（無出口費用）      |
+| **Vercel/Netlify** | 100GB 頻寬              | $20/月起          | 前端部署                    |
+| **Stripe**         | -                       | 2.9% + $0.30/交易 | 支付處理                    |
 
 ### 7.2 預估成本（1000 活躍用戶）
 

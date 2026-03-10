@@ -70,7 +70,9 @@ export function generatePortraitPrompt(options: PortraitPromptOptions): string {
     });
   }
 
-  positiveParts.push(`${lightingVar}${angleVar ? `, ${angleVar}` : ''}${expressionVar ? `, ${expressionVar}` : ''}`);
+  positiveParts.push(
+    `${lightingVar}${angleVar ? `, ${angleVar}` : ''}${expressionVar ? `, ${expressionVar}` : ''}`,
+  );
   positiveParts.push('Realistic, photorealistic, premium quality');
 
   // Build intro for multiple images
@@ -79,11 +81,7 @@ export function generatePortraitPrompt(options: PortraitPromptOptions): string {
     : '';
 
   const identityConsistency =
-    fileCount === 1
-      ? 'the person'
-      : fileCount === 2
-        ? 'both people'
-        : 'all people';
+    fileCount === 1 ? 'the person' : fileCount === 2 ? 'both people' : 'all people';
 
   return buildPrompt({
     intro,
@@ -94,7 +92,9 @@ export function generatePortraitPrompt(options: PortraitPromptOptions): string {
       'Do NOT change facial structure or age.',
       'Only enhance lighting, skin texture, and apply the requested professional photography style.',
       ...(fileCount > 1
-        ? [`Arrange ${fileCount === 2 ? 'the couple' : 'the group'} naturally and harmoniously in the composition.`]
+        ? [
+            `Arrange ${fileCount === 2 ? 'the couple' : 'the group'} naturally and harmoniously in the composition.`,
+          ]
         : []),
     ],
     output: 'Output: Return ONLY the final professional portrait image. Do not return any text.',

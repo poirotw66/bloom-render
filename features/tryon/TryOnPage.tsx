@@ -26,11 +26,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
   const tryOn = useTryOn();
   const hasApiKey = Boolean(settings.apiKey?.trim());
 
-  const resultList = tryOn.results.length > 0
-    ? tryOn.results
-    : tryOn.result
-      ? [tryOn.result]
-      : [];
+  const resultList = tryOn.results.length > 0 ? tryOn.results : tryOn.result ? [tryOn.result] : [];
   const hasMultipleResults = resultList.length > 1;
 
   return (
@@ -40,19 +36,15 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
             {t('tryon.title_part1')} <span className="text-teal-400">{t('tryon.title_part2')}</span>
           </h1>
-          <p className="max-w-2xl text-base text-gray-400 md:text-lg">
+          <p className="max-w-2xl text-lg text-gray-300 md:text-xl leading-relaxed">
             {t('tryon.subtitle')}
           </p>
         </header>
 
         {!hasApiKey && (
           <div className="w-full max-w-xl mx-auto rounded-xl bg-amber-500/20 border border-amber-500/50 px-4 py-3 text-left">
-            <p className="text-amber-200 text-sm font-medium">
-              ⚙️ {t('tryon.api_key_required')}
-            </p>
-            <p className="text-amber-200/80 text-xs mt-1">
-              {t('tryon.api_key_hint')}
-            </p>
+            <p className="text-amber-200 text-sm font-medium">⚙️ {t('tryon.api_key_required')}</p>
+            <p className="text-amber-200/80 text-xs mt-1">{t('tryon.api_key_hint')}</p>
           </div>
         )}
 
@@ -76,7 +68,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
                 {t('tryon.again')}
               </button>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-base text-gray-400 leading-relaxed">
               {t('tryon.choose_style_hint')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
@@ -92,9 +84,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
                     link.click();
                   }}
                   onEditInEditor={() => {
-                    onImageSelected(
-                      dataURLtoFile(dataUrl, `try-on-${idx + 1}.png`)
-                    );
+                    onImageSelected(dataURLtoFile(dataUrl, `try-on-${idx + 1}.png`));
                   }}
                   hideAgain
                 />
@@ -102,10 +92,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
             </div>
           </section>
         ) : tryOn.loading ? (
-          <ProgressIndicator
-            progress={tryOn.progress}
-            statusMessages={['tryon.generating']}
-          />
+          <ProgressIndicator progress={tryOn.progress} statusMessages={['tryon.generating']} />
         ) : (
           <div className="w-full max-w-2xl mx-auto bg-gray-800/30 border border-gray-700/50 rounded-2xl p-6 md:p-8 flex flex-col gap-6">
             <TryOnOptionSelectors

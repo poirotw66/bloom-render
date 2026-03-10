@@ -25,7 +25,9 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   const { t } = useLanguage();
 
   return (
-    <div className={`flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-8 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}>
+    <div
+      className={`flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-8 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}
+    >
       <div className="relative">
         <BloomFlowerLoader size={80} />
         {progress !== undefined && (

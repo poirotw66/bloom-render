@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from 'react';
 
@@ -13,28 +13,28 @@ interface ThemeColors {
   primaryHover: string;
   primaryLight: string;
   primaryDark: string;
-  
+
   // Background colors
   bgMain: string;
   bgCard: string;
   bgCardHover: string;
   bgOverlay: string;
-  
+
   // Text colors
   textPrimary: string;
   textSecondary: string;
   textMuted: string;
-  
+
   // Border colors
   border: string;
   borderHover: string;
-  
+
   // Accent colors
   accent: string;
   accentHover: string;
   success: string;
   successHover: string;
-  
+
   // Background gradients
   bgGradient1: string;
   bgGradient2: string;
@@ -148,7 +148,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const setTheme = (newTheme: ThemeType) => {
     setThemeState(newTheme);
     localStorage.setItem(STORAGE_KEY_THEME, newTheme);
-    
+
     // Apply theme to document root for CSS variables
     document.documentElement.setAttribute('data-theme', newTheme);
   };
@@ -161,11 +161,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const colors = themeColorMap[theme];
   const value = useMemo(() => ({ theme, setTheme, colors }), [theme, colors]);
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = () => {

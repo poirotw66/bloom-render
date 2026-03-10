@@ -14,14 +14,7 @@ const CENTER = VIEWBOX / 2;
 
 /** Single petal: ellipse from center. Rotation and bloom animation are in CSS (--r per nth-child). */
 const Petal: React.FC = () => (
-  <ellipse
-    cx={CENTER}
-    cy={CENTER}
-    rx={6}
-    ry={14}
-    fill="currentColor"
-    className="bloom-petal"
-  />
+  <ellipse cx={CENTER} cy={CENTER} rx={6} ry={14} fill="currentColor" className="bloom-petal" />
 );
 
 interface BloomFlowerLoaderProps {
@@ -29,10 +22,7 @@ interface BloomFlowerLoaderProps {
   size?: number;
 }
 
-const BloomFlowerLoader: React.FC<BloomFlowerLoaderProps> = ({
-  className = '',
-  size = 80,
-}) => {
+const BloomFlowerLoader: React.FC<BloomFlowerLoaderProps> = ({ className = '', size = 80 }) => {
   return (
     <div className={`bloom-flower-loader inline-flex items-center justify-center ${className}`}>
       <style>{`

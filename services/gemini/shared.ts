@@ -131,11 +131,11 @@ export const normalizeApiError = (error: unknown, context: string = 'generation'
 /** Convert a File to a Gemini API inlineData part. */
 export const fileToPart = async (
   file: File,
-  compressIfNeeded?: (file: File) => Promise<File>
+  compressIfNeeded?: (file: File) => Promise<File>,
 ): Promise<{ inlineData: { mimeType: string; data: string } }> => {
   // Apply compression if provided
   const finalFile = compressIfNeeded ? await compressIfNeeded(file) : file;
-  
+
   const dataUrl = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(finalFile);
@@ -170,7 +170,11 @@ export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
 
   return async (file: File) => {
     try {
-      return await compressImageIfNeeded(file, { maxWidth: 2048, maxHeight: 2048, quality: 0.85 }, thresholdMB);
+      return await compressImageIfNeeded(
+        file,
+        { maxWidth: 2048, maxHeight: 2048, quality: 0.85 },
+        thresholdMB,
+      );
     } catch (error) {
       console.warn('Failed to compress image, using original:', error);
       return file;
@@ -183,17 +187,14 @@ export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
  * This is a convenience wrapper that automatically applies compression based on settings.
  */
 export const fileToPartAuto = async (
-  file: File
+  file: File,
 ): Promise<{ inlineData: { mimeType: string; data: string } }> => {
   const compressFn = getCompressionFunction();
   return fileToPart(file, compressFn);
 };
 
 /** Extract image data URL from GenerateContentResponse; throws if blocked or no image. */
-export const handleApiResponse = (
-  response: GenerateContentResponse,
-  context: string
-): string => {
+export const handleApiResponse = (response: GenerateContentResponse, context: string): string => {
   if (response.promptFeedback?.blockReason) {
     const { blockReason, blockReasonMessage } = response.promptFeedback;
     const errorMessage = `Request was blocked. Reason: ${blockReason}. ${blockReasonMessage || ''}`;
@@ -242,9 +243,7 @@ export const getClient = (settings?: ServiceSettings) => {
   const apiKey = settings?.apiKey || '';
   const key = typeof apiKey === 'string' ? apiKey.trim() : '';
   if (!key) {
-    throw new Error(
-      'API Key not found. Please set your key in App Settings (gear icon).'
-    );
+    throw new Error('API Key not found. Please set your key in App Settings (gear icon).');
   }
   return new GoogleGenAI({ apiKey: key });
 };
@@ -256,7 +255,10 @@ export const MODELS_SUPPORTING_MULTI_RESOLUTION = [
 ] as const;
 
 export const supportsMultiResolution = (model?: string): boolean =>
-  !!model && MODELS_SUPPORTING_MULTI_RESOLUTION.includes(model as (typeof MODELS_SUPPORTING_MULTI_RESOLUTION)[number]);
+  !!model &&
+  MODELS_SUPPORTING_MULTI_RESOLUTION.includes(
+    model as (typeof MODELS_SUPPORTING_MULTI_RESOLUTION)[number],
+  );
 
 export const getModel = (settings?: ServiceSettings) => {
   return settings?.model || 'gemini-2.5-flash-image';
