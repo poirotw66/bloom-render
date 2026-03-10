@@ -436,6 +436,186 @@
           transform: translate(20px, 10px) scale(1.02);
         }
       }
+
+      /* Falling sakura petals – Bloom theme only, 花瓣飄落 */
+      #bloom-falling-petals {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      [data-theme='bloom'] #bloom-falling-petals {
+        display: block;
+      }
+      .falling-petal {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(0deg);
+        opacity: 0.85;
+        will-change: transform;
+      }
+      .falling-petal:nth-child(3n) {
+        width: 8px;
+        height: 8px;
+      }
+      .falling-petal:nth-child(4n) {
+        width: 12px;
+        height: 11px;
+      }
+      /* Sakura palette #FEEAC9 #FFCDC9 #FDACAC #FD7979 */
+      .falling-petal:nth-child(5n + 1) {
+        background: rgba(254, 234, 201, 0.9);
+      }
+      .falling-petal:nth-child(5n + 2) {
+        background: rgba(255, 205, 201, 0.9);
+      }
+      .falling-petal:nth-child(5n + 3) {
+        background: rgba(253, 172, 172, 0.9);
+      }
+      .falling-petal:nth-child(5n + 4) {
+        background: rgba(253, 121, 121, 0.85);
+      }
+      .falling-petal:nth-child(5n + 5) {
+        background: rgba(255, 220, 210, 0.85);
+      }
+      .falling-petal {
+        animation: petal-fall 18s linear infinite;
+      }
+      .falling-petal:nth-child(1) {
+        left: 2%;
+        animation-delay: 0s;
+        animation-duration: 16s;
+      }
+      .falling-petal:nth-child(2) {
+        left: 12%;
+        animation-delay: -2s;
+        animation-duration: 22s;
+      }
+      .falling-petal:nth-child(3) {
+        left: 22%;
+        animation-delay: -5s;
+        animation-duration: 19s;
+      }
+      .falling-petal:nth-child(4) {
+        left: 35%;
+        animation-delay: -1s;
+        animation-duration: 24s;
+      }
+      .falling-petal:nth-child(5) {
+        left: 45%;
+        animation-delay: -8s;
+        animation-duration: 15s;
+      }
+      .falling-petal:nth-child(6) {
+        left: 55%;
+        animation-delay: -3s;
+        animation-duration: 20s;
+      }
+      .falling-petal:nth-child(7) {
+        left: 68%;
+        animation-delay: -6s;
+        animation-duration: 17s;
+      }
+      .falling-petal:nth-child(8) {
+        left: 78%;
+        animation-delay: -4s;
+        animation-duration: 23s;
+      }
+      .falling-petal:nth-child(9) {
+        left: 88%;
+        animation-delay: -7s;
+        animation-duration: 18s;
+      }
+      .falling-petal:nth-child(10) {
+        left: 95%;
+        animation-delay: -9s;
+        animation-duration: 21s;
+      }
+      .falling-petal:nth-child(11) {
+        left: 8%;
+        animation-delay: -11s;
+        animation-duration: 19s;
+      }
+      .falling-petal:nth-child(12) {
+        left: 28%;
+        animation-delay: -10s;
+        animation-duration: 16s;
+      }
+      .falling-petal:nth-child(13) {
+        left: 52%;
+        animation-delay: -12s;
+        animation-duration: 25s;
+      }
+      .falling-petal:nth-child(14) {
+        left: 72%;
+        animation-delay: -14s;
+        animation-duration: 18s;
+      }
+      .falling-petal:nth-child(15) {
+        left: 92%;
+        animation-delay: -13s;
+        animation-duration: 20s;
+      }
+      .falling-petal:nth-child(16) {
+        left: 5%;
+        animation-delay: -15s;
+        animation-duration: 22s;
+      }
+      .falling-petal:nth-child(17) {
+        left: 42%;
+        animation-delay: -16s;
+        animation-duration: 17s;
+      }
+      .falling-petal:nth-child(18) {
+        left: 62%;
+        animation-delay: -17s;
+        animation-duration: 21s;
+      }
+      .falling-petal:nth-child(19) {
+        left: 85%;
+        animation-delay: -18s;
+        animation-duration: 19s;
+      }
+      .falling-petal:nth-child(20) {
+        left: 18%;
+        animation-delay: -20s;
+        animation-duration: 23s;
+      }
+      @keyframes petal-fall {
+        0% {
+          transform: translateY(-10%) translateX(0) rotate(0deg);
+          opacity: 0.9;
+        }
+        25% {
+          transform: translateY(25vh) translateX(15px) rotate(90deg);
+          opacity: 0.85;
+        }
+        50% {
+          transform: translateY(50vh) translateX(-10px) rotate(180deg);
+          opacity: 0.8;
+        }
+        75% {
+          transform: translateY(75vh) translateX(8px) rotate(270deg);
+          opacity: 0.75;
+        }
+        100% {
+          transform: translateY(110vh) translateX(-5px) rotate(360deg);
+          opacity: 0.5;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .falling-petal {
+          animation-duration: 28s;
+          animation-timing-function: ease-in-out;
+        }
+      }
     </style>
     <link rel="stylesheet" href="./index.css" />
   </head>
@@ -447,6 +627,28 @@
       <div class="bloom-petal-orb"></div>
       <div class="bloom-petal-orb"></div>
       <div class="bloom-petal-orb"></div>
+    </div>
+    <div id="bloom-falling-petals" aria-hidden="true">
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
+      <span class="falling-petal"></span>
     </div>
     <div id="star-bg">
       <div id="stars1"></div>
