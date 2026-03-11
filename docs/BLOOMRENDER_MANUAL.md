@@ -110,30 +110,15 @@
 這一段示範如何把「背景雜亂、構圖不佳的自拍」，轉成**乾淨、合規格的證件照**。  
 對應圖片檔案：`idphoto_0~6_*.png`。
 
-### 2.1 問題範例：雜亂文字提示與結果
+### 2.1 準備一張日常的照片
 
-![雜亂的證件照提示詞](../images/idphoto_0_messy_prompt.png)
-![雜亂輸入產生的錯誤畫面](../images/idphoto_1_messy_image.png)
+- 單人日常照單人日常照
+  ![單人日常照](../images/idphoto_0_messy_prompt.png)
 
-- 若在證件照流程中輸入過於**雜亂或含糊的描述**：
-  - 可能會得到背景複雜、服裝不符合規範，或表情不適合證件的結果。
-- 建議在 ID Photo 表單中，盡量使用結構化選項，而不是長篇自由文字。
+- 單人私下邋遢
+  ![單人私下邋遢](../images/idphoto_1_messy_image.png)
 
-### 2.2 常見錯誤：規格與輸出設定不一致
-
-![錯誤的證件照輸出設定](../images/idphoto_2_messy_idp.png)
-
-- 當「證件類型」「輸出規格」「服裝與修圖等級」設定彼此矛盾時：
-  - 例如：選擇護照規格，但服裝或背景描述不符合官方要求。
-  - 可能會導致輸出影像不符尺寸或構圖要求。
-- 解決方式：
-  - 優先使用 **欄位選單** 來指定：
-    - 證件類型（例如：台灣身分證、美國簽證、履歷照…）
-    - 修圖等級（自然 / 加強）
-    - 背景顏色（白、藍、紅等標準色）
-    - 服裝選項（自動西裝、自備照片等）
-
-### 2.3 重新填寫規範清楚的表單
+### 2.2 私下邋遢照片，填寫規範清楚的表單
 
 ![修正後的證件照設定與描述](../images/idphoto_3_gidp_messy_prompt.png)
 
@@ -147,9 +132,19 @@
 
 - 旁邊的提示文字會指引你：哪些欄位與官方規範最相關。
 
-### 2.4 產出乾淨的人像底圖
+### 2.3 私下邋遢照片，證件照
 
-![背景與構圖乾淨的人像結果](../images/idphoto_4_gidp_image.png)
+![私下邋遢照片，證件照](../images/idphoto_2_messy_idp.png)
+
+- 使用 **欄位選單** 來指定：
+  - 證件類型（例如：台灣身分證、美國簽證、履歷照…）
+  - 修圖等級（自然 / 加強）
+  - 背景顏色（白、藍、紅等標準色）
+  - 服裝選項（自動西裝、自備照片等）
+
+### 2.4 單人日常照
+
+![單人日常照](../images/idphoto_4_gidp_image.png)
 
 - 送出設定後，系統會產生**構圖正確、背景乾淨**的人像：
   - 背景符合所選顏色（多為白底或單色）。
@@ -158,7 +153,7 @@
 
 ### 2.5 完整 ID Photo 排版輸出
 
-![正式的證件照排版結果](../images/idphoto_5_idp.png)
+![單人日常照的證件照](../images/idphoto_5_idp.png)
 
 - 在 ID Photo 的最終結果頁，你會看到：
   - 多張依規格排版好的證件照（可直接印出）。
@@ -166,6 +161,8 @@
 - 下載方式：
   - 單張下載：點各張圖片下方的下載按鈕。
   - 批次下載：使用「Download All」或 ZIP 下載（依實作為準）。
+
+> 輸出格式可以透過edit工具進行微調或裁剪，[前往編輯器步驟](#photo-editor)
 
 ---
 
@@ -178,8 +175,10 @@
 
 ![在編輯器中輸入修圖指令](../images/edit_1_prompt.png)
 
-- 在主編輯器中，可以：
-  - 使用「修圖」面板，輸入更精細的指令，例如：
+- 在主編輯器中，可以
+  - 使用「Retouch」功能，可以選中圖片上位子，讓模型重點關注該位子，進行修改，例如：
+    - 「This person's solo photo」
+  - 使用「Adjust」面板，輸入更精細的指令，例如：
     - 「柔和膚色，保留臉部細節」
     - 「稍微提亮眼睛與笑容，不要過度美肌」
   - 或使用畫筆／熱區（hotspot），只對特定區域進行處理。
@@ -193,7 +192,7 @@
   - 臉部細節是否自然、不過度磨皮。
   - 背景邊緣是否乾淨，沒有殘影或鋸齒。
 
-### 3.3 將證件照送入編輯器做細節調整
+### 3.3 將證件照送入編輯器做細節調整 {#photo-editor}
 
 ![正式證件照在編輯器中的微調](../images/idphoto_6_edit.png)
 
@@ -207,8 +206,6 @@
 ---
 
 ## 4. AI 形象照（Portrait）：履歷與個人品牌照片
-
-對應圖片檔案：`portrait_1_prompt.png`、`portrait_2_half.png`、`portrait_3_full.png`。
 
 ### 4.1 填寫形象照需求
 
@@ -244,19 +241,79 @@
 
 ## 5. AI 旅遊照（Travel）：世界與台灣場景
 
-對應圖片檔案：`travel_0_girl.png`、`travel_1_map.png`、`travel_2_setting.png`、  
-`travel_3_man.png`、`travel_4_group_set.png`、`travel_5_cuple_img.png`。
-
 ### 5.1 選擇旅遊主角與目標感覺
 
-![旅遊照主角與基本風格](../images/travel_0_girl.png)
+- 男主角
+  ![旅遊照主角與基本風格男主角](../images/idphoto_0_messy_prompt.png)
+- 女主角
+  為我們的男主角生成一個女性伴侶，prompt如下：
+
+```
+{
+  "subject_analysis": {
+    "identity_features": {
+      "gender": "female",
+      "ethnicity": "East Asian",
+      "estimated_age": "early 20s",
+      "facial_features": {
+        "shape": "soft oval with youthful jawline",
+        "eyes": "large, expressive, dark brown, slightly hooded eyelids",
+        "nose": "straight, delicate bridge with a rounded tip",
+        "lips": "plump, natural coral-pink gradient, soft semi-matte finish",
+        "expression": "dreamy, calm, direct gaze towards camera"
+      },
+      "body_art": {
+        "tattoos": [
+          "fine-line illustration on right forearm",
+          "small minimalist graphic on left wrist"
+        ]
+      }
+    },
+    "hair_style": {
+      "color": "natural soft black / dark espresso",
+      "length": "long, reaching mid-back",
+      "styling": "center-parted, loose natural waves, airy texture, slight volume at the roots",
+      "details": "soft strands framing the face"
+    },
+    "attire_and_styling": {
+      "top": {
+        "type": "vintage-style ringer tee / baby tee",
+        "color": "off-white or light cream with dark navy/black trim at the neckline",
+        "fabric": "soft ribbed cotton",
+        "fit": "slim fit, cropped"
+      },
+      "aesthetic": "Y2K-inspired casual, soft grunge / Japanese street style influence"
+    }
+  },
+  "environment_and_composition": {
+    "shot_type": "low-angle, medium close-up",
+    "pose": "lying prone on the floor, leaning on elbows, reading a book/magazine",
+    "background": {
+      "setting": "indoor room with warm, diffused sunlight",
+      "elements": "wooden flooring, patterned red/bohemian rug, blurred window background (bokeh effect)"
+    },
+    "lighting": {
+      "type": "soft natural side-lighting",
+      "mood": "warm, nostalgic, golden hour glow",
+      "color_temperature": "warm tones (amber and peach)"
+    },
+    "camera_specs_emulation": {
+      "depth_of_field": "shallow (f/1.8 - f/2.8)",
+      "film_grain": "subtle fine grain for a filmic look",
+      "color_grading": "low contrast, desaturated greens, warm highlights"
+    }
+  }
+}
+```
+
+![旅遊照主角與基本風格女主角](../images/travel_0_girl.png)
+
+### 5.2 使用地圖與表單設定場景
 
 - 在 Travel 分頁中，你可以先決定：
   - 主角的風格（例如：背包客、城市旅人、情侶旅遊…）。
   - 想要的整體氛圍（寫實／明信片感／膠片風）。
 - 這一步主要是幫助你在心中確立「想呈現的故事」。
-
-### 5.2 使用地圖與表單設定場景
 
 ![世界／台灣地圖與場景選擇](../images/travel_1_map.png)
 
@@ -299,8 +356,6 @@
 ---
 
 ## 6. AI 虛擬試穿（Try On）：人物 + 服裝組合
-
-對應圖片檔案：`tryon_1_set.png`、`tryon_2_img.png`、`tryon_3_girl.png`、`tryon_4_girl_img.png`。
 
 ### 6.1 上傳人物與多套服裝
 
@@ -360,14 +415,3 @@
    - 熟悉各欄位對結果的影響。
 3. **最後使用編輯器微調細節**
    - 利用修圖、濾鏡與裁切，打造最終成品。
-
----
-
-## 8. 後續可擴充的章節建議
-
-- Start 畫面與多分頁導覽總覽。
-- 主題寫真（Themed）、雙人／團體照（Couple / Group）更完整的範例流程。
-- 設定頁（Settings）與多語系（English / 繁體中文）切換教學。
-- 錯誤訊息與常見問題（例如：API Key 未設定、配額不足等）。
-
-> 後續若在 `images/` 裡新增更多對應模組的截圖，可以比照上述結構，繼續為其它功能撰寫分章，逐步擴充成完整的 BloomRender 使用指南。
