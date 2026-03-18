@@ -162,6 +162,10 @@ const translations: Record<Language, Record<string, string>> = {
     'service.item.model_card.name': 'Model Card',
     'service.item.model_card.desc': 'Essential for model casting. Build your personal brand.',
 
+    'service.item.linkedin.name': 'LinkedIn Profile Portrait',
+    'service.item.linkedin.desc':
+      'An American ID-inspired LinkedIn-ready head-and-shoulders portrait with a subtle gray-to-white gradient background and soft natural lighting.',
+
     'service.item.portrait_resume_grad.name': 'Resume Portrait (Bachelor/Master/PhD)',
     'service.item.portrait_resume_grad.desc': 'Suitable for thesis and major job platforms.',
     'service.item.portrait_resume.name': 'Resume Portrait',
@@ -323,6 +327,7 @@ const translations: Record<Language, Record<string, string>> = {
     'portrait.type.business': 'Business Professional',
     'portrait.type.cabin_crew': 'Cabin Crew',
     'portrait.type.model_card': 'Model Card',
+    'portrait.type.linkedin': 'LinkedIn Profile',
     'portrait.type.portrait_resume_grad': 'Resume Portrait (Bachelor/Master/PhD)',
     'portrait.type.portrait_resume': 'Resume Portrait',
     'portrait.spec.half_body': 'Half Body',
@@ -1244,6 +1249,10 @@ const translations: Record<Language, Record<string, string>> = {
     'service.item.model_card.name': '模特卡 Model Card',
     'service.item.model_card.desc': '台北、勤美店限定、模特甄試、創建個人品牌。',
 
+    'service.item.linkedin.name': 'LinkedIn 形象照',
+    'service.item.linkedin.desc':
+      '參考美式證件照風格的 LinkedIn 形象照：低對比、淡灰到白的漸層背景，柔和自然燈光，呈現清晰膚色與專業氣質。',
+
     'service.item.portrait_resume_grad.name': '肖像履歷照(學士/碩士/博士)',
     'service.item.portrait_resume_grad.desc': '畢業論文&各大求職平台適用。',
     'service.item.portrait_resume.name': '肖像履歷照',
@@ -1399,6 +1408,7 @@ const translations: Record<Language, Record<string, string>> = {
     'portrait.type.business': '職業形象照',
     'portrait.type.cabin_crew': '空服員形象照',
     'portrait.type.model_card': '模特卡',
+    'portrait.type.linkedin': 'LinkedIn 形象照',
     'portrait.type.portrait_resume_grad': '肖像履歷照(學士/碩士/博士)',
     'portrait.type.portrait_resume': '肖像履歷照',
     'portrait.spec.half_body': '半身',

@@ -62,6 +62,12 @@ export const PORTRAIT_TYPES: {
     promptHint:
       'Resume portrait for job applications and social profiles. Professional, approachable, suitable for LinkedIn and resumes.',
   },
+  {
+    id: 'linkedin',
+    nameKey: 'portrait.type.linkedin',
+    promptHint:
+      'LinkedIn profile portrait. Overall style references American ID photography. Subject is centered with an appropriate, comfortable head-and-shoulders proportion. Use a subtle gray-to-white gradient studio background with soft, natural lighting to emphasize true skin tone and depth. The image is crisp and high-quality, with sharp facial focus, transparent skin texture, and healthy, natural complexion. Low contrast, modern and elegant overall vibe. Expression is relaxed, naturally confident, with bright eyes and clear focus. Mid-shot portrait, subject size is appropriate, person centered. Aspect ratio 3:4. Suitable for business and professional identity photos.',
+  },
 ];
 
 export const PORTRAIT_OUTPUT_SPECS: {

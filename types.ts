@@ -41,6 +41,7 @@ export type PortraitType =
   | 'business'
   | 'cabin_crew'
   | 'model_card'
+  | 'linkedin'
   | 'portrait_resume_grad'
   | 'portrait_resume';
 

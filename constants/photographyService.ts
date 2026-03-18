@@ -174,6 +174,16 @@ export const PHOTOGRAPHY_SERVICE_ITEMS: PhotographyServiceItem[] = [
     actionLabelKey: 'service.action.generate',
     targetRoute: '/portrait?type=model_card',
   },
+  {
+    id: 'linkedin-portrait',
+    categoryId: 'corporate',
+    nameKey: 'service.item.linkedin.name',
+    descriptionKey: 'service.item.linkedin.desc',
+    priceRange: 'NT$ 3,900',
+    badgeKey: 'service.badge.new',
+    actionLabelKey: 'service.action.generate',
+    targetRoute: '/portrait?type=linkedin&spec=half_body',
+  },
 
   // --- Portrait ---
   {
