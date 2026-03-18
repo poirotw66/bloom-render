@@ -5,14 +5,21 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
+import { supportsMultiResolution } from '../../services/gemini/shared';
 import { PORTRAIT_TYPES, PORTRAIT_OUTPUT_SPECS } from '../../constants/portrait';
 import type { PortraitType, OutputSpec } from '../../types';
+
+const IMAGE_SIZES = ['1K', '2K', '4K'] as const;
+type ImageSize = (typeof IMAGE_SIZES)[number];
 
 interface PortraitFormProps {
   portraitType: PortraitType;
   setPortraitType: (v: PortraitType) => void;
   portraitOutputSpec: OutputSpec;
   setPortraitOutputSpec: (v: OutputSpec) => void;
+  imageSize: ImageSize;
+  setImageSize: (v: ImageSize) => void;
   disabled?: boolean;
 }
 
@@ -21,9 +28,13 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
   setPortraitType,
   portraitOutputSpec,
   setPortraitOutputSpec,
+  imageSize,
+  setImageSize,
   disabled = false,
 }) => {
   const { t } = useLanguage();
+  const { model } = useSettings();
+  const supportsMultiRes = supportsMultiResolution(model);
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-2xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
@@ -64,6 +75,37 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
               {t(spec.nameKey)}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-2">
+          {t('common.output_size')}
+          {!supportsMultiRes && (
+            <span className="ml-2 text-xs font-normal text-gray-500">
+              ({t('common.gemini2_only_1k')})
+            </span>
+          )}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {IMAGE_SIZES.map((size) => {
+            const isActive = imageSize === size;
+            const isDisabled = disabled || (!supportsMultiRes && size !== '1K');
+            return (
+              <button
+                key={size}
+                onClick={() => setImageSize(size)}
+                disabled={isDisabled}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                  isActive
+                    ? 'bg-blue-600 text-white border border-blue-500'
+                    : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
+                } disabled:opacity-30 disabled:cursor-not-allowed`}
+              >
+                {t(`common.size_${size.toLowerCase()}`)}
+              </button>
+            );
+          })}
         </div>
       </div>
 

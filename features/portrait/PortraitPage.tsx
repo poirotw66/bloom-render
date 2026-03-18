@@ -114,6 +114,8 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
               setPortraitType={portrait.setPortraitType}
               portraitOutputSpec={portrait.portraitOutputSpec}
               setPortraitOutputSpec={portrait.setPortraitOutputSpec}
+              imageSize={portrait.imageSize}
+              setImageSize={portrait.setImageSize}
               disabled={portrait.portraitLoading}
             />
             <div className="w-full max-w-md mx-auto">

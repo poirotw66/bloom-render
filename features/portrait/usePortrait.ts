@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { generateProfessionalPortrait } from '../../services/geminiService';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { normalizeApiError } from '../../services/gemini/shared';
+import { normalizeApiError, supportsMultiResolution } from '../../services/gemini/shared';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
@@ -29,9 +29,16 @@ export function usePortrait() {
   const [portraitPreviewUrl, setPortraitPreviewUrl] = useState<string | null>(null);
   const [portraitType, setPortraitType] = useState<PortraitType>(DEFAULT_PORTRAIT_TYPE);
   const [portraitOutputSpec, setPortraitOutputSpec] = useState<OutputSpec>(DEFAULT_PORTRAIT_SPEC);
+  const [imageSize, setImageSize] = useState<'1K' | '2K' | '4K'>('1K');
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
+
+  useEffect(() => {
+    if (!supportsMultiResolution(settings.model) && imageSize !== '1K') {
+      setImageSize('1K');
+    }
+  }, [settings.model, imageSize]);
 
   useEffect(() => {
     const typeParam = searchParams.get('type');
@@ -84,8 +91,9 @@ export function usePortrait() {
         generateProfessionalPortrait(portraitFile, {
           portraitType,
           outputSpec: portraitOutputSpec,
+          imageSize,
           settings: { apiKey: settings.apiKey, model: settings.model },
-          variationIndex: i, // Use index to create different variations
+          variationIndex: i,
         })
           .then((url) => {
             // Add to history
@@ -129,6 +137,7 @@ export function usePortrait() {
     portraitFile,
     portraitType,
     portraitOutputSpec,
+    imageSize,
     settings.apiKey,
     settings.model,
     t,
@@ -195,6 +204,8 @@ export function usePortrait() {
     setPortraitType,
     portraitOutputSpec,
     setPortraitOutputSpec,
+    imageSize,
+    setImageSize,
     progress,
     quantity,
     setQuantity,

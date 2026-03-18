@@ -18,6 +18,7 @@ import {
   getClient,
   getModel,
   handleApiResponse,
+  supportsMultiResolution,
   type ServiceSettings,
 } from './shared';
 import { generatePortraitPrompt } from './prompts';
@@ -25,8 +26,9 @@ import { generatePortraitPrompt } from './prompts';
 export interface GeneratePortraitOptions {
   portraitType?: PortraitType;
   outputSpec?: OutputSpec;
+  imageSize?: '1K' | '2K' | '4K';
   settings?: ServiceSettings;
-  variationIndex?: number; // For generating different variations
+  variationIndex?: number;
 }
 
 /**
@@ -40,6 +42,7 @@ export const generateProfessionalPortrait = async (
   const portraitType = options.portraitType ?? DEFAULT_PORTRAIT_TYPE;
   const outputSpec = options.outputSpec ?? DEFAULT_PORTRAIT_SPEC;
   const serviceSettings = options.settings;
+  const requestedImageSize = options.imageSize;
 
   const isGroup = Array.isArray(originalImage);
   const fileCount = isGroup ? originalImage.length : 1;
@@ -67,15 +70,29 @@ export const generateProfessionalPortrait = async (
   }
   parts.push(textPart);
 
-  console.log('Starting portrait generation', { portraitType, outputSpec, fileCount });
   const ai = getClient(serviceSettings);
   const model = getModel(serviceSettings);
+  const supportsMultiRes = supportsMultiResolution(model);
+  const effectiveImageSize: '1K' | '2K' | '4K' = supportsMultiRes
+    ? requestedImageSize || '1K'
+    : '1K';
+
+  const imageConfig: { imageSize?: '1K' | '2K' | '4K' } = {};
+  if (supportsMultiRes) imageConfig.imageSize = effectiveImageSize;
+
+  console.log('Starting portrait generation', {
+    portraitType,
+    outputSpec,
+    fileCount,
+    imageSize: effectiveImageSize,
+  });
 
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
     contents: { parts },
     config: {
       responseModalities: ['TEXT', 'IMAGE'],
+      imageConfig,
     },
   });
 
