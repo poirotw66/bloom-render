@@ -40,7 +40,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 50,
     y: 28,
-    referenceImagePath: '/images/scenes/eiffel.jpg',
+    referenceImagePath: '/images/scenes/eiffel.webp',
     descriptionKey: 'travel.scene.eiffel.desc',
   },
   {
@@ -52,7 +52,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 45,
     y: 17,
-    referenceImagePath: '/images/scenes/iceland.jpg',
+    referenceImagePath: '/images/scenes/iceland.webp',
     descriptionKey: 'travel.scene.iceland.desc',
   },
   {
@@ -64,7 +64,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 55,
     y: 35,
-    referenceImagePath: '/images/scenes/santorini.jpg',
+    referenceImagePath: '/images/scenes/santorini.webp',
     descriptionKey: 'travel.scene.santorini.desc',
   },
   {
@@ -77,7 +77,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 48,
     y: 27,
-    referenceImagePath: '/images/scenes/london.jpg',
+    referenceImagePath: '/images/scenes/london.webp',
     descriptionKey: 'travel.scene.london.desc',
   },
   {
@@ -89,7 +89,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 53,
     y: 33,
-    referenceImagePath: '/images/scenes/rome.jpg',
+    referenceImagePath: '/images/scenes/rome.webp',
     descriptionKey: 'travel.scene.rome.desc',
   },
   {
@@ -101,7 +101,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 49,
     y: 34,
-    referenceImagePath: '/images/scenes/barcelona.jpg',
+    referenceImagePath: '/images/scenes/barcelona.webp',
     descriptionKey: 'travel.scene.barcelona.desc',
   },
   {
@@ -114,7 +114,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 52,
     y: 30,
-    referenceImagePath: '/images/scenes/swiss_alps.jpg',
+    referenceImagePath: '/images/scenes/swiss_alps.webp',
     descriptionKey: 'travel.scene.swiss_alps.desc',
   },
   {
@@ -126,7 +126,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 53,
     y: 29,
-    referenceImagePath: '/images/scenes/neuschwanstein.jpg',
+    referenceImagePath: '/images/scenes/neuschwanstein.webp',
     descriptionKey: 'travel.scene.neuschwanstein.desc',
   },
   {
@@ -138,7 +138,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 52,
     y: 32,
-    referenceImagePath: '/images/scenes/pisa.jpg',
+    referenceImagePath: '/images/scenes/pisa.webp',
     descriptionKey: 'travel.scene.pisa.desc',
   },
   {
@@ -151,7 +151,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 56,
     y: 35,
-    referenceImagePath: '/images/scenes/athens.jpg',
+    referenceImagePath: '/images/scenes/athens.webp',
     descriptionKey: 'travel.scene.athens.desc',
   },
   {
@@ -164,7 +164,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 61,
     y: 24,
-    referenceImagePath: '/images/scenes/moscow.jpg',
+    referenceImagePath: '/images/scenes/moscow.webp',
     descriptionKey: 'travel.scene.moscow.desc',
   },
   {
@@ -177,7 +177,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 53,
     y: 30,
-    referenceImagePath: '/images/scenes/venice.jpg',
+    referenceImagePath: '/images/scenes/venice.webp',
     descriptionKey: 'travel.scene.venice.desc',
   },
   {
@@ -190,7 +190,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 54,
     y: 27,
-    referenceImagePath: '/images/scenes/prague.jpg',
+    referenceImagePath: '/images/scenes/prague.webp',
     descriptionKey: 'travel.scene.prague.desc',
   },
   {
@@ -203,7 +203,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 51,
     y: 26,
-    referenceImagePath: '/images/scenes/amsterdam.jpg',
+    referenceImagePath: '/images/scenes/amsterdam.webp',
     descriptionKey: 'travel.scene.amsterdam.desc',
   },
 
@@ -217,7 +217,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 89,
     y: 36,
-    referenceImagePath: '/images/scenes/shibuya.jpg',
+    referenceImagePath: '/images/scenes/shibuya.webp',
     descriptionKey: 'travel.scene.shibuya.desc',
   },
   {
@@ -229,7 +229,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 71,
     y: 42,
-    referenceImagePath: '/images/scenes/taj_mahal.jpg',
+    referenceImagePath: '/images/scenes/taj_mahal.webp',
     descriptionKey: 'travel.scene.taj_mahal.desc',
   },
   {
@@ -242,7 +242,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 82,
     y: 32,
-    referenceImagePath: '/images/scenes/great_wall.jpg',
+    referenceImagePath: '/images/scenes/great_wall.webp',
     descriptionKey: 'travel.scene.great_wall.desc',
   },
   {
@@ -255,7 +255,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 88,
     y: 36,
-    referenceImagePath: '/images/scenes/mt_fuji.jpg',
+    referenceImagePath: '/images/scenes/mt_fuji.webp',
     descriptionKey: 'travel.scene.mt_fuji.desc',
   },
   {
@@ -267,7 +267,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 65,
     y: 43,
-    referenceImagePath: '/images/scenes/dubai.jpg',
+    referenceImagePath: '/images/scenes/dubai.webp',
     descriptionKey: 'travel.scene.dubai.desc',
   },
   {
@@ -279,7 +279,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 60,
     y: 40,
-    referenceImagePath: '/images/scenes/petra.jpg',
+    referenceImagePath: '/images/scenes/petra.webp',
     descriptionKey: 'travel.scene.petra.desc',
   },
   {
@@ -292,7 +292,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 79,
     y: 51,
-    referenceImagePath: '/images/scenes/ankor_wat.jpg',
+    referenceImagePath: '/images/scenes/ankor_wat.webp',
     descriptionKey: 'travel.scene.ankor_wat.desc',
   },
   {
@@ -304,7 +304,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 82,
     y: 65,
-    referenceImagePath: '/images/scenes/bali.jpg',
+    referenceImagePath: '/images/scenes/bali.webp',
     descriptionKey: 'travel.scene.bali.desc',
   },
   {
@@ -316,7 +316,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 85,
     y: 34,
-    referenceImagePath: '/images/scenes/seoul.jpg',
+    referenceImagePath: '/images/scenes/seoul.webp',
     descriptionKey: 'travel.scene.seoul.desc',
   },
   {
@@ -328,7 +328,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 79,
     y: 59,
-    referenceImagePath: '/images/scenes/singapore.jpg',
+    referenceImagePath: '/images/scenes/singapore.webp',
     descriptionKey: 'travel.scene.singapore.desc',
   },
   {
@@ -341,7 +341,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 60,
     y: 35,
-    referenceImagePath: '/images/scenes/cappadocia.jpg',
+    referenceImagePath: '/images/scenes/cappadocia.webp',
     descriptionKey: 'travel.scene.cappadocia.desc',
   },
   {
@@ -354,7 +354,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 87,
     y: 36,
-    referenceImagePath: '/images/scenes/kyoto.jpg',
+    referenceImagePath: '/images/scenes/kyoto.webp',
     descriptionKey: 'travel.scene.kyoto.desc',
   },
   {
@@ -367,7 +367,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 80,
     y: 45,
-    referenceImagePath: '/images/scenes/halong_bay.jpg',
+    referenceImagePath: '/images/scenes/halong_bay.webp',
     descriptionKey: 'travel.scene.halong_bay.desc',
   },
   {
@@ -380,7 +380,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 78,
     y: 50,
-    referenceImagePath: '/images/scenes/bangkok.jpg',
+    referenceImagePath: '/images/scenes/bangkok.webp',
     descriptionKey: 'travel.scene.bangkok.desc',
   },
   {
@@ -393,7 +393,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 80,
     y: 64,
-    referenceImagePath: '/images/scenes/borobudur.jpg',
+    referenceImagePath: '/images/scenes/borobudur.webp',
     descriptionKey: 'travel.scene.borobudur.desc',
   },
   {
@@ -406,7 +406,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 73,
     y: 41,
-    referenceImagePath: '/images/scenes/everest.jpg',
+    referenceImagePath: '/images/scenes/everest.webp',
     descriptionKey: 'travel.scene.everest.desc',
   },
   {
@@ -418,7 +418,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 92,
     y: 83,
-    referenceImagePath: '/images/scenes/sydney.jpg',
+    referenceImagePath: '/images/scenes/sydney.webp',
     descriptionKey: 'travel.scene.sydney.desc',
   },
   {
@@ -431,7 +431,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 98,
     y: 89,
-    referenceImagePath: '/images/scenes/nz.jpg',
+    referenceImagePath: '/images/scenes/nz.webp',
     descriptionKey: 'travel.scene.nz.desc',
   },
   {
@@ -444,7 +444,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 86,
     y: 78,
-    referenceImagePath: '/images/scenes/uluru.jpg',
+    referenceImagePath: '/images/scenes/uluru.webp',
     descriptionKey: 'travel.scene.uluru.desc',
   },
   {
@@ -457,7 +457,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 8,
     y: 71,
-    referenceImagePath: '/images/scenes/bora_bora.jpg',
+    referenceImagePath: '/images/scenes/bora_bora.webp',
     descriptionKey: 'travel.scene.bora_bora.desc',
   },
 
@@ -471,7 +471,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 29,
     y: 31,
-    referenceImagePath: '/images/scenes/nyc.jpg',
+    referenceImagePath: '/images/scenes/nyc.webp',
     descriptionKey: 'travel.scene.nyc.desc',
   },
   {
@@ -484,7 +484,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 19,
     y: 34,
-    referenceImagePath: '/images/scenes/grand_canyon.jpg',
+    referenceImagePath: '/images/scenes/grand_canyon.webp',
     descriptionKey: 'travel.scene.grand_canyon.desc',
   },
   {
@@ -497,7 +497,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 16,
     y: 33,
-    referenceImagePath: '/images/scenes/san_francisco.jpg',
+    referenceImagePath: '/images/scenes/san_francisco.webp',
     descriptionKey: 'travel.scene.san_francisco.desc',
   },
   {
@@ -510,7 +510,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 18,
     y: 25,
-    referenceImagePath: '/images/scenes/banff.jpg',
+    referenceImagePath: '/images/scenes/banff.webp',
     descriptionKey: 'travel.scene.banff.desc',
   },
   {
@@ -522,7 +522,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 25,
     y: 46,
-    referenceImagePath: '/images/scenes/mexico.jpg',
+    referenceImagePath: '/images/scenes/mexico.webp',
     descriptionKey: 'travel.scene.mexico.desc',
   },
   {
@@ -535,7 +535,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 27,
     y: 44,
-    referenceImagePath: '/images/scenes/havana.jpg',
+    referenceImagePath: '/images/scenes/havana.webp',
     descriptionKey: 'travel.scene.havana.desc',
   },
 
@@ -550,7 +550,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 30,
     y: 68,
-    referenceImagePath: '/images/scenes/machu_picchu.jpg',
+    referenceImagePath: '/images/scenes/machu_picchu.webp',
     descriptionKey: 'travel.scene.machu_picchu.desc',
   },
   {
@@ -563,7 +563,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 38,
     y: 76,
-    referenceImagePath: '/images/scenes/rio.jpg',
+    referenceImagePath: '/images/scenes/rio.webp',
     descriptionKey: 'travel.scene.rio.desc',
   },
   {
@@ -576,7 +576,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 24,
     y: 58,
-    referenceImagePath: '/images/scenes/galapagos.jpg',
+    referenceImagePath: '/images/scenes/galapagos.webp',
     descriptionKey: 'travel.scene.galapagos.desc',
   },
   {
@@ -589,7 +589,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 19,
     y: 79,
-    referenceImagePath: '/images/scenes/easter_island.jpg',
+    referenceImagePath: '/images/scenes/easter_island.webp',
     descriptionKey: 'travel.scene.easter_island.desc',
   },
   {
@@ -602,7 +602,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 35,
     y: 78,
-    referenceImagePath: '/images/scenes/iguazu.jpg',
+    referenceImagePath: '/images/scenes/iguazu.webp',
     descriptionKey: 'travel.scene.iguazu.desc',
   },
 
@@ -617,7 +617,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 59,
     y: 40,
-    referenceImagePath: '/images/scenes/pyramids.jpg',
+    referenceImagePath: '/images/scenes/pyramids.webp',
     descriptionKey: 'travel.scene.pyramids.desc',
   },
   {
@@ -630,7 +630,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 55,
     y: 84,
-    referenceImagePath: '/images/scenes/cape_town.jpg',
+    referenceImagePath: '/images/scenes/cape_town.webp',
     descriptionKey: 'travel.scene.cape_town.desc',
   },
   {
@@ -643,7 +643,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 57,
     y: 72,
-    referenceImagePath: '/images/scenes/victoria_falls.jpg',
+    referenceImagePath: '/images/scenes/victoria_falls.webp',
     descriptionKey: 'travel.scene.victoria_falls.desc',
   },
   {
@@ -656,7 +656,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 60,
     y: 61,
-    referenceImagePath: '/images/scenes/serengeti.jpg',
+    referenceImagePath: '/images/scenes/serengeti.webp',
     descriptionKey: 'travel.scene.serengeti.desc',
   },
   {
@@ -669,7 +669,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 48,
     y: 39,
-    referenceImagePath: '/images/scenes/marrakesh.jpg',
+    referenceImagePath: '/images/scenes/marrakesh.webp',
     descriptionKey: 'travel.scene.marrakesh.desc',
   },
 
@@ -685,7 +685,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 53,
     y: 32,
-    referenceImagePath: '/images/scenes/food_italy_pizza.jpg',
+    referenceImagePath: '/images/scenes/food_italy_pizza.webp',
     descriptionKey: 'travel.food.italy_pizza.desc',
   },
   {
@@ -697,7 +697,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 50,
     y: 28,
-    referenceImagePath: '/images/scenes/food_france_croissant.jpg',
+    referenceImagePath: '/images/scenes/food_france_croissant.webp',
     descriptionKey: 'travel.food.france_croissant.desc',
   },
   {
@@ -710,7 +710,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 49,
     y: 34,
-    referenceImagePath: '/images/scenes/food_spain_paella.jpg',
+    referenceImagePath: '/images/scenes/food_spain_paella.webp',
     descriptionKey: 'travel.food.spain_paella.desc',
   },
   {
@@ -723,7 +723,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 53,
     y: 29,
-    referenceImagePath: '/images/scenes/food_germany_pretzel.jpg',
+    referenceImagePath: '/images/scenes/food_germany_pretzel.webp',
     descriptionKey: 'travel.food.germany_pretzel.desc',
   },
   {
@@ -736,7 +736,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 48,
     y: 27,
-    referenceImagePath: '/images/scenes/food_uk_fishchips.jpg',
+    referenceImagePath: '/images/scenes/food_uk_fishchips.webp',
     descriptionKey: 'travel.food.uk_fishchips.desc',
   },
   {
@@ -749,7 +749,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 51,
     y: 27,
-    referenceImagePath: '/images/scenes/food_belgium_waffle.jpg',
+    referenceImagePath: '/images/scenes/food_belgium_waffle.webp',
     descriptionKey: 'travel.food.belgium_waffle.desc',
   },
   {
@@ -762,7 +762,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 55,
     y: 35,
-    referenceImagePath: '/images/scenes/food_greece_gyro.jpg',
+    referenceImagePath: '/images/scenes/food_greece_gyro.webp',
     descriptionKey: 'travel.food.greece_gyro.desc',
   },
   {
@@ -775,7 +775,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 44,
     y: 34,
-    referenceImagePath: '/images/scenes/food_portugal_tart.jpg',
+    referenceImagePath: '/images/scenes/food_portugal_tart.webp',
     descriptionKey: 'travel.food.portugal_tart.desc',
   },
   {
@@ -788,7 +788,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 52,
     y: 30,
-    referenceImagePath: '/images/scenes/food_switzerland_fondue.jpg',
+    referenceImagePath: '/images/scenes/food_switzerland_fondue.webp',
     descriptionKey: 'travel.food.switzerland_fondue.desc',
   },
   {
@@ -800,7 +800,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 60,
     y: 35,
-    referenceImagePath: '/images/scenes/food_turkey_kebab.jpg',
+    referenceImagePath: '/images/scenes/food_turkey_kebab.webp',
     descriptionKey: 'travel.food.turkey_kebab.desc',
   },
 
@@ -815,7 +815,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 89,
     y: 36,
-    referenceImagePath: '/images/scenes/food_japan_sushi.jpg',
+    referenceImagePath: '/images/scenes/food_japan_sushi.webp',
     descriptionKey: 'travel.food.japan_sushi.desc',
   },
   {
@@ -828,7 +828,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 88,
     y: 36,
-    referenceImagePath: '/images/scenes/food_japan_ramen.jpg',
+    referenceImagePath: '/images/scenes/food_japan_ramen.webp',
     descriptionKey: 'travel.food.japan_ramen.desc',
   },
   {
@@ -841,7 +841,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 85,
     y: 34,
-    referenceImagePath: '/images/scenes/food_korea_bibimbap.jpg',
+    referenceImagePath: '/images/scenes/food_korea_bibimbap.webp',
     descriptionKey: 'travel.food.korea_bibimbap.desc',
   },
   {
@@ -854,7 +854,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 78,
     y: 50,
-    referenceImagePath: '/images/scenes/food_thailand_padthai.jpg',
+    referenceImagePath: '/images/scenes/food_thailand_padthai.webp',
     descriptionKey: 'travel.food.thailand_padthai.desc',
   },
   {
@@ -867,7 +867,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 80,
     y: 46,
-    referenceImagePath: '/images/scenes/food_vietnam_pho.jpg',
+    referenceImagePath: '/images/scenes/food_vietnam_pho.webp',
     descriptionKey: 'travel.food.vietnam_pho.desc',
   },
   {
@@ -880,7 +880,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 71,
     y: 42,
-    referenceImagePath: '/images/scenes/food_india_curry.jpg',
+    referenceImagePath: '/images/scenes/food_india_curry.webp',
     descriptionKey: 'travel.food.india_curry.desc',
   },
   {
@@ -893,7 +893,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 82,
     y: 35,
-    referenceImagePath: '/images/scenes/food_china_dimsum.jpg',
+    referenceImagePath: '/images/scenes/food_china_dimsum.webp',
     descriptionKey: 'travel.food.china_dimsum.desc',
   },
   {
@@ -906,7 +906,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 79,
     y: 59,
-    referenceImagePath: '/images/scenes/food_singapore_crab.jpg',
+    referenceImagePath: '/images/scenes/food_singapore_crab.webp',
     descriptionKey: 'travel.food.singapore_crab.desc',
   },
   {
@@ -918,7 +918,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 82,
     y: 65,
-    referenceImagePath: '/images/scenes/food_indonesia_satay.jpg',
+    referenceImagePath: '/images/scenes/food_indonesia_satay.webp',
     descriptionKey: 'travel.food.indonesia_satay.desc',
   },
   {
@@ -931,7 +931,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 78,
     y: 57,
-    referenceImagePath: '/images/scenes/food_malaysia_laksa.jpg',
+    referenceImagePath: '/images/scenes/food_malaysia_laksa.webp',
     descriptionKey: 'travel.food.malaysia_laksa.desc',
   },
   {
@@ -944,7 +944,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 85,
     y: 50,
-    referenceImagePath: '/images/scenes/food_philippines_adobo.jpg',
+    referenceImagePath: '/images/scenes/food_philippines_adobo.webp',
     descriptionKey: 'travel.food.philippines_adobo.desc',
   },
 
@@ -959,7 +959,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 29,
     y: 31,
-    referenceImagePath: '/images/scenes/food_usa_burger.jpg',
+    referenceImagePath: '/images/scenes/food_usa_burger.webp',
     descriptionKey: 'travel.food.usa_burger.desc',
   },
   {
@@ -971,7 +971,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 30,
     y: 31,
-    referenceImagePath: '/images/scenes/food_usa_hotdog.jpg',
+    referenceImagePath: '/images/scenes/food_usa_hotdog.webp',
     descriptionKey: 'travel.food.usa_hotdog.desc',
   },
   {
@@ -984,7 +984,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 25,
     y: 46,
-    referenceImagePath: '/images/scenes/food_mexico_tacos.jpg',
+    referenceImagePath: '/images/scenes/food_mexico_tacos.webp',
     descriptionKey: 'travel.food.mexico_tacos.desc',
   },
   {
@@ -997,7 +997,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 28,
     y: 25,
-    referenceImagePath: '/images/scenes/food_canada_poutine.jpg',
+    referenceImagePath: '/images/scenes/food_canada_poutine.webp',
     descriptionKey: 'travel.food.canada_poutine.desc',
   },
   {
@@ -1009,7 +1009,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 25,
     y: 36,
-    referenceImagePath: '/images/scenes/food_usa_bbq.jpg',
+    referenceImagePath: '/images/scenes/food_usa_bbq.webp',
     descriptionKey: 'travel.food.usa_bbq.desc',
   },
   {
@@ -1022,7 +1022,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'namerica',
     x: 27,
     y: 44,
-    referenceImagePath: '/images/scenes/food_cuba_sandwich.jpg',
+    referenceImagePath: '/images/scenes/food_cuba_sandwich.webp',
     descriptionKey: 'travel.food.cuba_sandwich.desc',
   },
 
@@ -1037,7 +1037,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 26,
     y: 64,
-    referenceImagePath: '/images/scenes/food_peru_ceviche.jpg',
+    referenceImagePath: '/images/scenes/food_peru_ceviche.webp',
     descriptionKey: 'travel.food.peru_ceviche.desc',
   },
   {
@@ -1050,7 +1050,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 38,
     y: 76,
-    referenceImagePath: '/images/scenes/food_brazil_steak.jpg',
+    referenceImagePath: '/images/scenes/food_brazil_steak.webp',
     descriptionKey: 'travel.food.brazil_steak.desc',
   },
   {
@@ -1062,7 +1062,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 35,
     y: 85,
-    referenceImagePath: '/images/scenes/food_argentina_empanada.jpg',
+    referenceImagePath: '/images/scenes/food_argentina_empanada.webp',
     descriptionKey: 'travel.food.argentina_empanada.desc',
   },
   {
@@ -1074,7 +1074,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 31,
     y: 82,
-    referenceImagePath: '/images/scenes/food_chile_wine.jpg',
+    referenceImagePath: '/images/scenes/food_chile_wine.webp',
     descriptionKey: 'travel.food.chile_wine.desc',
   },
   {
@@ -1086,7 +1086,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'samerica',
     x: 31,
     y: 55,
-    referenceImagePath: '/images/scenes/food_colombia_coffee.jpg',
+    referenceImagePath: '/images/scenes/food_colombia_coffee.webp',
     descriptionKey: 'travel.food.colombia_coffee.desc',
   },
 
@@ -1100,7 +1100,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 92,
     y: 83,
-    referenceImagePath: '/images/scenes/food_australia_meatpie.jpg',
+    referenceImagePath: '/images/scenes/food_australia_meatpie.webp',
     descriptionKey: 'travel.food.australia_meatpie.desc',
   },
   {
@@ -1113,7 +1113,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 89,
     y: 85,
-    referenceImagePath: '/images/scenes/food_australia_brunch.jpg',
+    referenceImagePath: '/images/scenes/food_australia_brunch.webp',
     descriptionKey: 'travel.food.australia_brunch.desc',
   },
   {
@@ -1126,7 +1126,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'oceania',
     x: 98,
     y: 89,
-    referenceImagePath: '/images/scenes/food_nz_lamb.jpg',
+    referenceImagePath: '/images/scenes/food_nz_lamb.webp',
     descriptionKey: 'travel.food.nz_lamb.desc',
   },
 
@@ -1140,7 +1140,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 48,
     y: 39,
-    referenceImagePath: '/images/scenes/food_morocco_tagine.jpg',
+    referenceImagePath: '/images/scenes/food_morocco_tagine.webp',
     descriptionKey: 'travel.food.morocco_tagine.desc',
   },
   {
@@ -1152,7 +1152,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 59,
     y: 40,
-    referenceImagePath: '/images/scenes/food_egypt_falafel.jpg',
+    referenceImagePath: '/images/scenes/food_egypt_falafel.webp',
     descriptionKey: 'travel.food.egypt_falafel.desc',
   },
   {
@@ -1164,7 +1164,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 55,
     y: 84,
-    referenceImagePath: '/images/scenes/food_safrica_biltong.jpg',
+    referenceImagePath: '/images/scenes/food_safrica_biltong.webp',
     descriptionKey: 'travel.food.safrica_biltong.desc',
   },
   {
@@ -1177,7 +1177,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'africa',
     x: 62,
     y: 54,
-    referenceImagePath: '/images/scenes/food_ethiopia_injera.jpg',
+    referenceImagePath: '/images/scenes/food_ethiopia_injera.webp',
     descriptionKey: 'travel.food.ethiopia_injera.desc',
   },
 
@@ -1191,7 +1191,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 50,
     y: 29,
-    referenceImagePath: '/images/scenes/food_france_macaron.jpg',
+    referenceImagePath: '/images/scenes/food_france_macaron.webp',
     descriptionKey: 'travel.food.france_macaron.desc',
   },
   {
@@ -1203,7 +1203,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 54,
     y: 29,
-    referenceImagePath: '/images/scenes/food_austria_sacher.jpg',
+    referenceImagePath: '/images/scenes/food_austria_sacher.webp',
     descriptionKey: 'travel.food.austria_sacher.desc',
   },
   {
@@ -1215,7 +1215,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 53,
     y: 31,
-    referenceImagePath: '/images/scenes/food_italy_gelato.jpg',
+    referenceImagePath: '/images/scenes/food_italy_gelato.webp',
     descriptionKey: 'travel.food.italy_gelato.desc',
   },
   {
@@ -1228,7 +1228,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 52,
     y: 23,
-    referenceImagePath: '/images/scenes/food_denmark_pastry.jpg',
+    referenceImagePath: '/images/scenes/food_denmark_pastry.webp',
     descriptionKey: 'travel.food.denmark_pastry.desc',
   },
   {
@@ -1240,7 +1240,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 63,
     y: 38,
-    referenceImagePath: '/images/scenes/food_baklava.jpg',
+    referenceImagePath: '/images/scenes/food_baklava.webp',
     descriptionKey: 'travel.food.baklava.desc',
   },
   {
@@ -1252,7 +1252,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 81,
     y: 43,
-    referenceImagePath: '/images/scenes/food_hk_eggtart.jpg',
+    referenceImagePath: '/images/scenes/food_hk_eggtart.webp',
     descriptionKey: 'travel.food.hk_eggtart.desc',
   },
   {
@@ -1265,7 +1265,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 61,
     y: 24,
-    referenceImagePath: '/images/scenes/food_russia_borscht.jpg',
+    referenceImagePath: '/images/scenes/food_russia_borscht.webp',
     descriptionKey: 'travel.food.russia_borscht.desc',
   },
   {
@@ -1278,7 +1278,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 81,
     y: 48,
-    referenceImagePath: '/images/scenes/food_vietnam_coffee.jpg',
+    referenceImagePath: '/images/scenes/food_vietnam_coffee.webp',
     descriptionKey: 'travel.food.vietnam_coffee.desc',
   },
   {
@@ -1290,7 +1290,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'asia',
     x: 87,
     y: 37,
-    referenceImagePath: '/images/scenes/food_japan_matcha.jpg',
+    referenceImagePath: '/images/scenes/food_japan_matcha.webp',
     descriptionKey: 'travel.food.japan_matcha.desc',
   },
   {
@@ -1302,7 +1302,7 @@ export const TRAVEL_SCENES_INTERNATIONAL: TravelScene[] = [
     continent: 'europe',
     x: 51,
     y: 28,
-    referenceImagePath: '/images/scenes/food_world_chocolate.jpg',
+    referenceImagePath: '/images/scenes/food_world_chocolate.webp',
     descriptionKey: 'travel.food.world_chocolate.desc',
   },
 ];
@@ -1319,7 +1319,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 55,
     y: 18,
-    referenceImagePath: '/images/scenes/taipei101.jpg',
+    referenceImagePath: '/images/scenes/taipei101.webp',
     descriptionKey: 'travel.scene.taipei101.desc',
   },
   {
@@ -1332,7 +1332,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 62,
     y: 14,
-    referenceImagePath: '/images/scenes/jiufen.jpg',
+    referenceImagePath: '/images/scenes/jiufen.webp',
     descriptionKey: 'travel.scene.jiufen.desc',
   },
   {
@@ -1344,7 +1344,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 48,
     y: 20,
-    referenceImagePath: '/images/scenes/ximending.jpg',
+    referenceImagePath: '/images/scenes/ximending.webp',
     descriptionKey: 'travel.scene.ximending.desc',
   },
   {
@@ -1357,7 +1357,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 52,
     y: 23,
-    referenceImagePath: '/images/scenes/cks_memorial.jpg',
+    referenceImagePath: '/images/scenes/cks_memorial.webp',
     descriptionKey: 'travel.scene.cks_memorial.desc',
   },
   {
@@ -1369,7 +1369,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 58,
     y: 20,
-    referenceImagePath: '/images/scenes/raohe_market.jpg',
+    referenceImagePath: '/images/scenes/raohe_market.webp',
     descriptionKey: 'travel.scene.raohe_market.desc',
   },
   {
@@ -1381,7 +1381,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 60,
     y: 10,
-    referenceImagePath: '/images/scenes/yehliu.jpg',
+    referenceImagePath: '/images/scenes/yehliu.webp',
     descriptionKey: 'travel.scene.yehliu.desc',
   },
   {
@@ -1393,7 +1393,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 64,
     y: 17,
-    referenceImagePath: '/images/scenes/shifen_waterfall.jpg',
+    referenceImagePath: '/images/scenes/shifen_waterfall.webp',
     descriptionKey: 'travel.scene.shifen.desc',
   },
   {
@@ -1405,7 +1405,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 46,
     y: 14,
-    referenceImagePath: '/images/scenes/tamsui.jpg',
+    referenceImagePath: '/images/scenes/tamsui.webp',
     descriptionKey: 'travel.scene.tamsui.desc',
   },
   {
@@ -1417,7 +1417,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 68,
     y: 24,
-    referenceImagePath: '/images/scenes/guiishan.jpg',
+    referenceImagePath: '/images/scenes/guiishan.webp',
     descriptionKey: 'travel.scene.guiishan.desc',
   },
 
@@ -1431,7 +1431,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 36,
     y: 38,
-    referenceImagePath: '/images/scenes/gaomei.jpg',
+    referenceImagePath: '/images/scenes/gaomei.webp',
     descriptionKey: 'travel.scene.gaomei.desc',
   },
   {
@@ -1443,7 +1443,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 42,
     y: 40,
-    referenceImagePath: '/images/scenes/taichung_theater.jpg',
+    referenceImagePath: '/images/scenes/taichung_theater.webp',
     descriptionKey: 'travel.scene.theater.desc',
   },
   {
@@ -1455,7 +1455,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 40,
     y: 42,
-    referenceImagePath: '/images/scenes/rainbow_village.jpg',
+    referenceImagePath: '/images/scenes/rainbow_village.webp',
     descriptionKey: 'travel.scene.rainbow.desc',
   },
   {
@@ -1467,7 +1467,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 50,
     y: 48,
-    referenceImagePath: '/images/scenes/sunmoonlake.jpg',
+    referenceImagePath: '/images/scenes/sunmoonlake.webp',
     descriptionKey: 'travel.scene.sunmoonlake.desc',
   },
   {
@@ -1479,7 +1479,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 54,
     y: 44,
-    referenceImagePath: '/images/scenes/qingjing.jpg',
+    referenceImagePath: '/images/scenes/qingjing.webp',
     descriptionKey: 'travel.scene.qingjing.desc',
   },
   {
@@ -1491,7 +1491,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 56,
     y: 40,
-    referenceImagePath: '/images/scenes/hehuanshan.jpg',
+    referenceImagePath: '/images/scenes/hehuanshan.webp',
     descriptionKey: 'travel.scene.hehuanshan.desc',
   },
   {
@@ -1503,7 +1503,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 34,
     y: 45,
-    referenceImagePath: '/images/scenes/lugang.jpg',
+    referenceImagePath: '/images/scenes/lugang.webp',
     descriptionKey: 'travel.scene.lugang.desc',
   },
 
@@ -1517,7 +1517,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 45,
     y: 55,
-    referenceImagePath: '/images/scenes/alishan.jpg',
+    referenceImagePath: '/images/scenes/alishan.webp',
     descriptionKey: 'travel.scene.alishan.desc',
   },
   {
@@ -1529,7 +1529,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 42,
     y: 56,
-    referenceImagePath: '/images/scenes/hinoki_village.jpg',
+    referenceImagePath: '/images/scenes/hinoki_village.webp',
     descriptionKey: 'travel.scene.hinoki.desc',
   },
   {
@@ -1541,7 +1541,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 40,
     y: 68,
-    referenceImagePath: '/images/scenes/tainan_confucius.jpg',
+    referenceImagePath: '/images/scenes/tainan_confucius.webp',
     descriptionKey: 'travel.scene.confucius.desc',
   },
   {
@@ -1553,7 +1553,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 41,
     y: 70,
-    referenceImagePath: '/images/scenes/chimei_museum.jpg',
+    referenceImagePath: '/images/scenes/chimei_museum.webp',
     descriptionKey: 'travel.scene.chimei.desc',
   },
   {
@@ -1565,7 +1565,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 40,
     y: 80,
-    referenceImagePath: '/images/scenes/kaohsiung_music.jpg',
+    referenceImagePath: '/images/scenes/kaohsiung_music.webp',
     descriptionKey: 'travel.scene.music_center.desc',
   },
   {
@@ -1577,7 +1577,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 41,
     y: 78,
-    referenceImagePath: '/images/scenes/dragon_tiger.jpg',
+    referenceImagePath: '/images/scenes/dragon_tiger.webp',
     descriptionKey: 'travel.scene.dragontiger.desc',
   },
   {
@@ -1589,7 +1589,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 42,
     y: 81,
-    referenceImagePath: '/images/scenes/formosa_boulevard.jpg',
+    referenceImagePath: '/images/scenes/formosa_boulevard.webp',
     descriptionKey: 'travel.scene.dome.desc',
   },
   {
@@ -1601,7 +1601,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 50,
     y: 88,
-    referenceImagePath: '/images/scenes/kenting.jpg',
+    referenceImagePath: '/images/scenes/kenting.webp',
     descriptionKey: 'travel.scene.kenting.desc',
   },
   {
@@ -1614,7 +1614,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 52,
     y: 92,
-    referenceImagePath: '/images/scenes/eluanbi.jpg',
+    referenceImagePath: '/images/scenes/eluanbi.webp',
     descriptionKey: 'travel.scene.eluanbi.desc',
   },
 
@@ -1628,7 +1628,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'east',
     x: 58,
     y: 35,
-    referenceImagePath: '/images/scenes/taroko.jpg',
+    referenceImagePath: '/images/scenes/taroko.webp',
     descriptionKey: 'travel.scene.taroko.desc',
   },
   {
@@ -1640,7 +1640,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'east',
     x: 60,
     y: 30,
-    referenceImagePath: '/images/scenes/qingshui_cliff.jpg',
+    referenceImagePath: '/images/scenes/qingshui_cliff.webp',
     descriptionKey: 'travel.scene.qingshui.desc',
   },
   {
@@ -1652,7 +1652,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'east',
     x: 55,
     y: 72,
-    referenceImagePath: '/images/scenes/mr_brown_ave.jpg',
+    referenceImagePath: '/images/scenes/mr_brown_ave.webp',
     descriptionKey: 'travel.scene.mrbrown.desc',
   },
   {
@@ -1664,7 +1664,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'east',
     x: 62,
     y: 65,
-    referenceImagePath: '/images/scenes/sanxiantai.jpg',
+    referenceImagePath: '/images/scenes/sanxiantai.webp',
     descriptionKey: 'travel.scene.sanxiantai.desc',
   },
 
@@ -1678,7 +1678,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'islands',
     x: 20,
     y: 55,
-    referenceImagePath: '/images/scenes/penghu.jpg',
+    referenceImagePath: '/images/scenes/penghu.webp',
     descriptionKey: 'travel.scene.penghu.desc',
   },
 
@@ -1694,7 +1694,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 51,
     y: 19,
-    referenceImagePath: '/images/scenes/food_boba.jpg',
+    referenceImagePath: '/images/scenes/food_boba.webp',
     descriptionKey: 'travel.food.boba.desc',
   },
   {
@@ -1707,7 +1707,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 49,
     y: 24,
-    referenceImagePath: '/images/scenes/food_beef_noodle.jpg',
+    referenceImagePath: '/images/scenes/food_beef_noodle.webp',
     descriptionKey: 'travel.food.beef_noodle.desc',
   },
   {
@@ -1720,7 +1720,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 44,
     y: 36,
-    referenceImagePath: '/images/scenes/food_fried_chicken.jpg',
+    referenceImagePath: '/images/scenes/food_fried_chicken.webp',
     descriptionKey: 'travel.food.fried_chicken.desc',
   },
   {
@@ -1733,7 +1733,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 53,
     y: 21,
-    referenceImagePath: '/images/scenes/food_xiaolongbao.jpg',
+    referenceImagePath: '/images/scenes/food_xiaolongbao.webp',
     descriptionKey: 'travel.food.xiaolongbao.desc',
   },
   {
@@ -1746,7 +1746,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 57,
     y: 22,
-    referenceImagePath: '/images/scenes/food_stinky_tofu.jpg',
+    referenceImagePath: '/images/scenes/food_stinky_tofu.webp',
     descriptionKey: 'travel.food.stinky_tofu.desc',
   },
   {
@@ -1759,7 +1759,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 50,
     y: 20,
-    referenceImagePath: '/images/scenes/food_braised_pork.jpg',
+    referenceImagePath: '/images/scenes/food_braised_pork.webp',
     descriptionKey: 'travel.food.braised_pork.desc',
   },
   {
@@ -1771,7 +1771,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 44,
     y: 14,
-    referenceImagePath: '/images/scenes/food_iron_egg.jpg',
+    referenceImagePath: '/images/scenes/food_iron_egg.webp',
     descriptionKey: 'travel.food.iron_egg.desc',
   },
   {
@@ -1784,7 +1784,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 54,
     y: 17,
-    referenceImagePath: '/images/scenes/food_scallion_pancake.jpg',
+    referenceImagePath: '/images/scenes/food_scallion_pancake.webp',
     descriptionKey: 'travel.food.scallion_pancake.desc',
   },
   {
@@ -1796,7 +1796,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 52,
     y: 20,
-    referenceImagePath: '/images/scenes/food_pineapple_cake.jpg',
+    referenceImagePath: '/images/scenes/food_pineapple_cake.webp',
     descriptionKey: 'travel.food.pineapple_cake.desc',
   },
   {
@@ -1808,7 +1808,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 46,
     y: 12,
-    referenceImagePath: '/images/scenes/food_agei.jpg',
+    referenceImagePath: '/images/scenes/food_agei.webp',
     descriptionKey: 'travel.food.agei.desc',
   },
   {
@@ -1820,7 +1820,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'north',
     x: 48,
     y: 22,
-    referenceImagePath: '/images/scenes/food_pig_blood.jpg',
+    referenceImagePath: '/images/scenes/food_pig_blood.webp',
     descriptionKey: 'travel.food.pig_blood.desc',
   },
   // Central Food
@@ -1834,7 +1834,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 34,
     y: 46,
-    referenceImagePath: '/images/scenes/food_bawan.jpg',
+    referenceImagePath: '/images/scenes/food_bawan.webp',
     descriptionKey: 'travel.food.bawan.desc',
   },
   {
@@ -1847,7 +1847,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'central',
     x: 35,
     y: 44,
-    referenceImagePath: '/images/scenes/food_oyster_omelet.jpg',
+    referenceImagePath: '/images/scenes/food_oyster_omelet.webp',
     descriptionKey: 'travel.food.oyster_omelet.desc',
   },
   // South Food
@@ -1861,7 +1861,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 41,
     y: 81,
-    referenceImagePath: '/images/scenes/food_shaved_ice.jpg',
+    referenceImagePath: '/images/scenes/food_shaved_ice.webp',
     descriptionKey: 'travel.food.shaved_ice.desc',
   },
   {
@@ -1874,7 +1874,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 38,
     y: 69,
-    referenceImagePath: '/images/scenes/food_beef_soup.jpg',
+    referenceImagePath: '/images/scenes/food_beef_soup.webp',
     descriptionKey: 'travel.food.beef_soup.desc',
   },
   {
@@ -1887,7 +1887,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 43,
     y: 55,
-    referenceImagePath: '/images/scenes/food_turkey_rice.jpg',
+    referenceImagePath: '/images/scenes/food_turkey_rice.webp',
     descriptionKey: 'travel.food.turkey_rice.desc',
   },
   {
@@ -1899,7 +1899,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 38,
     y: 72,
-    referenceImagePath: '/images/scenes/food_eel_noodle.jpg',
+    referenceImagePath: '/images/scenes/food_eel_noodle.webp',
     descriptionKey: 'travel.food.eel_noodle.desc',
   },
   {
@@ -1912,7 +1912,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 46,
     y: 58,
-    referenceImagePath: '/images/scenes/food_zongzi.jpg',
+    referenceImagePath: '/images/scenes/food_zongzi.webp',
     descriptionKey: 'travel.food.zongzi.desc',
   },
   {
@@ -1925,7 +1925,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 37,
     y: 70,
-    referenceImagePath: '/images/scenes/food_danzai_noodle.jpg',
+    referenceImagePath: '/images/scenes/food_danzai_noodle.webp',
     descriptionKey: 'travel.food.danzai_noodle.desc',
   },
   {
@@ -1937,7 +1937,7 @@ export const TRAVEL_SCENES_TAIWAN: TravelScene[] = [
     region: 'south',
     x: 40,
     y: 71,
-    referenceImagePath: '/images/scenes/food_coffin_bread.jpg',
+    referenceImagePath: '/images/scenes/food_coffin_bread.webp',
     descriptionKey: 'travel.food.coffin_bread.desc',
   },
 ];

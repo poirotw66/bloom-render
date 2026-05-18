@@ -459,6 +459,8 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                           src={scene.referenceImagePath}
                           alt={name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             (e.target as HTMLImageElement).parentElement!.style.display = 'none';
                           }}

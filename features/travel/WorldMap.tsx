@@ -36,10 +36,12 @@ const WorldMap: React.FC<WorldMapProps> = ({
     <div className="relative w-full aspect-video rounded-xl overflow-hidden border-2 border-amber-800/30 shadow-2xl">
       {/* Hand-drawn world map background image */}
       <img
-        src={`${import.meta.env.BASE_URL}images/world-map.png`}
+        src={`${import.meta.env.BASE_URL}images/world-map.webp`}
         alt="World Map"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         draggable={false}
+        decoding="async"
+        fetchPriority="high"
       />
 
       {/* Subtle overlay for better marker visibility */}
@@ -186,6 +188,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
                           src={scene.referenceImagePath}
                           alt={t(scene.nameKey)}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display = 'none';
                           }}

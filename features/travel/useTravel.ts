@@ -41,6 +41,7 @@ import type {
   TravelRelationship,
   TravelFraming,
 } from '../../constants/travel';
+import { mimeTypeForImagePath, referenceFileName } from '../../utils/imageAsset';
 
 export type TravelSceneIdOrCustom = string;
 
@@ -59,7 +60,8 @@ async function urlToFile(url: string, filename: string, mimeType: string): Promi
     // arbitrary small size check to avoid empty/error responses
     throw new Error('error.file_too_small');
   }
-  return new File([blob], filename, { type: mimeType });
+  const type = blob.type && blob.type.startsWith('image/') ? blob.type : mimeType;
+  return new File([blob], filename, { type });
 }
 
 export function useTravel() {
@@ -198,8 +200,8 @@ export function useTravel() {
         try {
           sceneReferenceImage = await urlToFile(
             picked.referenceImagePath,
-            `${picked.id}_ref.jpg`,
-            'image/jpeg',
+            referenceFileName(picked.id, picked.referenceImagePath),
+            mimeTypeForImagePath(picked.referenceImagePath),
           );
         } catch (e) {
           sceneReferenceImage = undefined;
@@ -254,8 +256,8 @@ export function useTravel() {
         try {
           sceneReferenceImage = await urlToFile(
             scene.referenceImagePath,
-            `${scene.id}_ref.jpg`,
-            'image/jpeg',
+            referenceFileName(scene.id, scene.referenceImagePath),
+            mimeTypeForImagePath(scene.referenceImagePath),
           );
         } catch (e) {
           console.log(
