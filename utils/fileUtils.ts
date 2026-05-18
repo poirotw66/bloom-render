@@ -4,6 +4,7 @@
  */
 
 import { compressImage, CompressionOptions } from './imageCompressionWorker';
+import { logger } from './logger';
 
 /**
  * Converts a data URL string to a File object.

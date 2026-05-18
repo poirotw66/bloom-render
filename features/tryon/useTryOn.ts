@@ -9,6 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { generateVirtualTryOn } from '../../services/geminiService';
+import { normalizeApiError } from '../../services/gemini/shared';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults } from '../../utils/generationHelpers';
 import {
@@ -201,9 +202,10 @@ export function useTryOn() {
         setResults(generated);
       }
     } catch (err) {
-      console.error('Try-on generation error:', err);
-      const message = err instanceof Error ? err.message : t('tryon.error_generation_failed');
-      setError(message);
+      const normalizedError = normalizeApiError(err, 'tryon');
+      const errorKey = normalizedError.message || 'error.unknown';
+      setError(t(errorKey));
+      console.error('Try-on generation error:', normalizedError.originalError ?? err);
       if (generated.length > 0) {
         setResults(generated);
         setResult(null);

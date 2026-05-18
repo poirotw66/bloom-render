@@ -2,7 +2,9 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production';
+
   return {
     base: process.env.GITHUB_PAGES === 'true' ? '/bloom-render/' : '/',
     server: {
@@ -26,6 +28,11 @@ export default defineConfig(() => {
         },
       },
       chunkSizeWarningLimit: 1000,
+    },
+    esbuild: {
+      // Remove console.log, console.debug, console.info in production
+      // Keep console.warn and console.error for important messages
+      drop: isProduction ? ['console', 'debugger'] : [],
     },
   };
 });
