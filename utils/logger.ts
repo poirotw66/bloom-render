@@ -4,7 +4,7 @@
  *
  * Unified logging utility with environment-aware output.
  * In development: all logs are output
- * In production: only warnings and errors are output
+ * In production: debug/info are skipped; warn/error still call console (see vite.config esbuild.drop).
  */
 
 const isDev = import.meta.env.DEV;

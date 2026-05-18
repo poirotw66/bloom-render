@@ -47,12 +47,12 @@ export async function compressImageIfNeeded(
 
   try {
     const compressed = await compressImage(file, options);
-    console.log(
+    logger.debug(
       `Image compressed: ${(file.size / 1024 / 1024).toFixed(2)}MB -> ${(compressed.size / 1024 / 1024).toFixed(2)}MB`,
     );
     return compressed;
   } catch (error) {
-    console.warn('Image compression failed, using original:', error);
+    logger.warn('Image compression failed, using original:', error);
     return file;
   }
 }

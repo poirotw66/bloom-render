@@ -30,9 +30,9 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1000,
     },
     esbuild: {
-      // Remove console.log, console.debug, console.info in production
-      // Keep console.warn and console.error for important messages
-      drop: isProduction ? ['console', 'debugger'] : [],
+      // Do not drop `console` entirely — logger.warn/error rely on it in production.
+      // Dev-only noise uses utils/logger (debug/info are no-ops when import.meta.env.DEV is false).
+      drop: isProduction ? ['debugger'] : [],
     },
   };
 });

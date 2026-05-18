@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { formatApiErrorMessage } from '../services/gemini/shared';
 import Spinner from './Spinner';
 
 interface BatchProgressProps {
@@ -113,7 +114,7 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
               <div key={idx} className="text-xs text-red-300">
                 {t('batch.error_item')
                   .replace('{index}', String(item.index + 1))
-                  .replace('{error}', item.error.message)}
+                  .replace('{error}', formatApiErrorMessage(item.error, t))}
               </div>
             ))}
           </div>

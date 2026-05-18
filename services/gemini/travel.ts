@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import {
   fileToPartAuto,
   getClient,
@@ -62,7 +63,7 @@ export const generateTravelPhoto = async (
   };
   if (supportsMultiRes) imageConfig.imageSize = effectiveImageSize;
 
-  console.log('Starting travel photo generation', {
+  logger.debug('Starting travel photo generation', {
     scenePrompt: scenePrompt.slice(0, 60),
     isGroup,
     hasSceneRef: !!sceneReferenceImage,
@@ -93,6 +94,6 @@ export const generateTravelPhoto = async (
       imageConfig,
     },
   });
-  console.log('Received response from model for travel photo.', response);
+  logger.debug('Received response from model for travel photo', response);
   return handleApiResponse(response, 'travel');
 };

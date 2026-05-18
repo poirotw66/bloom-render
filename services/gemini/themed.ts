@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import type { ThemedType } from '../../types';
 import { THEMED_TYPES, DEFAULT_THEMED_TYPE } from '../../constants/themed';
 import {
@@ -75,7 +76,7 @@ export const generateThemedPhoto = async (
   };
   if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
-  console.log('Starting themed photo generation', {
+  logger.debug('Starting themed photo generation', {
     themeType,
     fileCount,
     outputSize: effectiveSize,
@@ -90,6 +91,6 @@ export const generateThemedPhoto = async (
     },
   });
 
-  console.log('Received response from model for themed photo.', response);
+  logger.debug('Received response from model for themed photo', response);
   return handleApiResponse(response, 'themed');
 };

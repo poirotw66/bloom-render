@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import {
   getClient,
   getModel,
@@ -23,7 +24,7 @@ export const generateImageFromText = async (
   numberOfImages: number = 1,
   settings?: ServiceSettings,
 ): Promise<string[]> => {
-  console.log(
+  logger.debug(
     `Starting text-to-image generation: ${prompt}, Aspect Ratio: ${aspectRatio}, Count: ${numberOfImages}`,
   );
   const ai = getClient(settings);
@@ -45,7 +46,7 @@ export const generateImageFromText = async (
   });
 
   const results = await Promise.all(promises);
-  console.log(`Generated ${results.length} images.`);
+  logger.debug(`Generated ${results.length} images.`);
 
   return results;
 };

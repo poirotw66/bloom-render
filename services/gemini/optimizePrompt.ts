@@ -5,6 +5,7 @@
  * Prompt optimization for image generation.
  */
 
+import { logger } from '../../utils/logger';
 import { fileToPartAuto, getClient, type ServiceSettings } from './shared';
 
 /**
@@ -15,7 +16,7 @@ export const generateOptimizedPrompt = async (
   referenceImage?: File,
   settings?: ServiceSettings,
 ): Promise<string> => {
-  console.log('Optimizing prompt for:', userText, referenceImage ? '(with image)' : '(text only)');
+  logger.debug('Optimizing prompt for:', userText, referenceImage ? '(with image)' : '(text only)');
   const ai = getClient(settings);
   const modelName = settings?.model || 'gemini-2.5-flash-image';
 
@@ -47,7 +48,7 @@ Requirements:
     if (!optimizedText) throw new Error('No text returned from optimization');
     return optimizedText;
   } catch (e) {
-    console.warn('Prompt optimization failed, executing fallback.', e);
+    logger.warn('Prompt optimization failed, executing fallback.', e);
     return userText;
   }
 };

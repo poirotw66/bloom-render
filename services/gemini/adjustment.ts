@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import {
   fileToPartAuto,
   getClient,
@@ -22,7 +23,7 @@ export const generateAdjustedImage = async (
   adjustmentPrompt: string,
   settings?: ServiceSettings,
 ): Promise<string> => {
-  console.log(`Starting global adjustment generation: ${adjustmentPrompt}`);
+  logger.debug(`Starting global adjustment generation: ${adjustmentPrompt}`);
   const ai = getClient(settings);
   const model = getModel(settings);
 
@@ -41,12 +42,12 @@ Safety & Ethics Policy:
 Output: Return ONLY the final adjusted image. Do not return text.`;
   const textPart = { text: prompt };
 
-  console.log(`Sending image and adjustment prompt to the model (${model})...`);
+  logger.debug(`Sending image and adjustment prompt to the model (${model})...`);
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: model,
     contents: { parts: [originalImagePart, textPart] },
   });
-  console.log('Received response from model for adjustment.', response);
+  logger.debug('Received response from model for adjustment', response);
 
   return handleApiResponse(response, 'adjustment');
 };

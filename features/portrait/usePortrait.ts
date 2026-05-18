@@ -8,7 +8,8 @@ import { useSearchParams } from 'react-router-dom';
 import { generateProfessionalPortrait } from '../../services/geminiService';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { normalizeApiError, supportsMultiResolution } from '../../services/gemini/shared';
+import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
+import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
@@ -104,7 +105,7 @@ export function usePortrait() {
             return url;
           })
           .catch((err) => {
-            console.error(`Portrait generation error for item ${i + 1}:`, err);
+            logger.error(`Portrait generation error for item ${i + 1}:`, err);
             throw err;
           }),
       );
@@ -125,10 +126,8 @@ export function usePortrait() {
         setPortraitResults(results);
       }
     } catch (err) {
-      const normalizedError = normalizeApiError(err, 'portrait');
-      const errorKey = normalizedError.message || 'error.unknown';
-      setPortraitError(t(errorKey));
-      console.error('Portrait generation error:', normalizedError.originalError || err);
+      setPortraitError(formatApiErrorMessage(err, t, 'portrait'));
+      logger.error('Portrait generation error:', err);
     } finally {
       setPortraitLoading(false);
       setProgress(0);

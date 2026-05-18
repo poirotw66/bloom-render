@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import type { PortraitType, OutputSpec } from '../../types';
 import {
   PORTRAIT_TYPES,
@@ -80,7 +81,7 @@ export const generateProfessionalPortrait = async (
   const imageConfig: { imageSize?: '1K' | '2K' | '4K' } = {};
   if (supportsMultiRes) imageConfig.imageSize = effectiveImageSize;
 
-  console.log('Starting portrait generation', {
+  logger.debug('Starting portrait generation', {
     portraitType,
     outputSpec,
     fileCount,
@@ -96,6 +97,6 @@ export const generateProfessionalPortrait = async (
     },
   });
 
-  console.log('Received response from model for professional portrait.', response);
+  logger.debug('Received response from model for professional portrait', response);
   return handleApiResponse(response, 'portrait');
 };

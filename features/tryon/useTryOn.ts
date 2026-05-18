@@ -9,7 +9,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { generateVirtualTryOn } from '../../services/geminiService';
-import { normalizeApiError } from '../../services/gemini/shared';
+import { formatApiErrorMessage } from '../../services/gemini/shared';
+import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults } from '../../utils/generationHelpers';
 import {
@@ -193,7 +194,7 @@ export function useTryOn() {
         );
         const reason = firstRejection?.reason;
         const detail = reason instanceof Error ? reason.message : String(reason ?? 'Unknown error');
-        console.error('Try-on generation failed (all requests failed). First reason:', reason);
+        logger.error('Try-on generation failed (all requests failed). First reason:', reason);
         throw new Error(`${t('tryon.error_generation_failed')} ${detail}`);
       }
       if (generated.length === 1) {
@@ -202,10 +203,8 @@ export function useTryOn() {
         setResults(generated);
       }
     } catch (err) {
-      const normalizedError = normalizeApiError(err, 'tryon');
-      const errorKey = normalizedError.message || 'error.unknown';
-      setError(t(errorKey));
-      console.error('Try-on generation error:', normalizedError.originalError ?? err);
+      setError(formatApiErrorMessage(err, t, 'tryon'));
+      logger.error('Try-on generation error:', err);
       if (generated.length > 0) {
         setResults(generated);
         setResult(null);

@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import {
   fileToPartAuto,
   getClient,
@@ -68,7 +69,7 @@ export const generateVirtualTryOn = async (
   };
   if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
-  console.log('Starting virtual try-on generation', {
+  logger.debug('Starting virtual try-on generation', {
     clothingCount: clothingImages.length,
     outputSize: effectiveSize,
     aspectRatio,

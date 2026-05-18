@@ -7,6 +7,7 @@
 
 import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
 import { compressImageIfNeeded } from '../../utils/fileUtils';
+import { logger } from '../../utils/logger';
 
 export interface ServiceSettings {
   apiKey?: string;
@@ -31,13 +32,40 @@ export interface ApiError {
 }
 
 /** i18n key prefix for thrown app errors (pass-through to UI). */
-const I18N_ERROR_PREFIX = 'error.';
+export const I18N_ERROR_PREFIX = 'error.';
+
+export const I18N_ERROR_KEY_UNKNOWN = `${I18N_ERROR_PREFIX}unknown`;
+
+export function isI18nErrorKey(message: string): boolean {
+  return message.startsWith(I18N_ERROR_PREFIX);
+}
+
+/** Throw an Error whose message is an i18n key for UI translation. */
+export function createI18nError(key: string): Error {
+  if (!isI18nErrorKey(key)) {
+    throw new Error(`createI18nError expects key starting with "${I18N_ERROR_PREFIX}"`);
+  }
+  return new Error(key);
+}
+
+export function getI18nErrorKey(error: unknown, context: string = 'generation'): string {
+  return normalizeApiError(error, context).message;
+}
+
+/** Map API/transport errors to a translated user-visible string. */
+export function formatApiErrorMessage(
+  error: unknown,
+  t: (key: string) => string,
+  context: string = 'generation',
+): string {
+  return t(getI18nErrorKey(error, context));
+}
 
 /**
  * Convert API errors to user-friendly error messages with i18n keys.
  * If error.message is already an i18n key (starts with "error."), it is passed through.
  */
-export const normalizeApiError = (error: unknown, context: string = 'generation'): ApiError => {
+export const normalizeApiError = (error: unknown, _context: string = 'generation'): ApiError => {
   if (error instanceof Error && error.message.startsWith(I18N_ERROR_PREFIX)) {
     return {
       type: ApiErrorType.UNKNOWN,
@@ -123,7 +151,7 @@ export const normalizeApiError = (error: unknown, context: string = 'generation'
   // Unknown error
   return {
     type: ApiErrorType.UNKNOWN,
-    message: `error.unknown`,
+    message: I18N_ERROR_KEY_UNKNOWN,
     originalError: error instanceof Error ? error : new Error(String(error)),
   };
 };
@@ -144,9 +172,9 @@ export const fileToPart = async (
   });
 
   const arr = dataUrl.split(',');
-  if (arr.length < 2) throw new Error('Invalid data URL');
+  if (arr.length < 2) throw createI18nError('error.invalid_request');
   const mimeMatch = arr[0].match(/:(.*?);/);
-  if (!mimeMatch || !mimeMatch[1]) throw new Error('Could not parse MIME type from data URL');
+  if (!mimeMatch || !mimeMatch[1]) throw createI18nError('error.invalid_request');
 
   const mimeType = mimeMatch[1];
   const data = arr[1];
@@ -176,7 +204,7 @@ export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
         thresholdMB,
       );
     } catch (error) {
-      console.warn('Failed to compress image, using original:', error);
+      logger.warn('Failed to compress image, using original:', error);
       return file;
     }
   };
@@ -197,11 +225,8 @@ export const fileToPartAuto = async (
 export const handleApiResponse = (response: GenerateContentResponse, context: string): string => {
   if (response.promptFeedback?.blockReason) {
     const { blockReason, blockReasonMessage } = response.promptFeedback;
-    const errorMessage = `Request was blocked. Reason: ${blockReason}. ${blockReasonMessage || ''}`;
-    console.error(errorMessage, { response });
-    const error = new Error(errorMessage);
-    error.name = 'BLOCKED';
-    throw error;
+    logger.error('Request blocked by API', { blockReason, blockReasonMessage, response });
+    throw createI18nError('error.blocked');
   }
 
   const parts = response.candidates?.[0]?.content?.parts ?? [];
@@ -213,37 +238,30 @@ export const handleApiResponse = (response: GenerateContentResponse, context: st
 
   if (imagePartFromResponse?.inlineData) {
     const { mimeType, data } = imagePartFromResponse.inlineData;
-    console.log(`Received image data (${mimeType}) for ${context}`);
+    logger.debug(`Received image data (${mimeType}) for ${context}`);
     return `data:${mimeType};base64,${data}`;
   }
 
   const finishReason = response.candidates?.[0]?.finishReason;
   if (finishReason && finishReason !== 'STOP') {
-    const errorMessage = `Image generation for ${context} stopped unexpectedly. Reason: ${finishReason}. This often relates to safety settings.`;
-    console.error(errorMessage, { response });
-    const error = new Error(errorMessage);
-    error.name = 'SAFETY_FILTER';
-    throw error;
+    logger.error('Image generation stopped unexpectedly', { context, finishReason, response });
+    throw createI18nError('error.safety_filter');
   }
 
   const textFeedback = response.text?.trim();
-  const errorMessage =
-    `The AI model did not return an image for the ${context}. ` +
-    (textFeedback
-      ? `The model responded with text: "${textFeedback}"`
-      : 'This can happen due to safety filters or if the request is too complex. Please try rephrasing your prompt to be more direct.');
-
-  console.error(`Model response did not contain an image part for ${context}.`, { response });
-  const error = new Error(errorMessage);
-  error.name = 'NO_IMAGE';
-  throw error;
+  logger.error('Model response did not contain an image part', {
+    context,
+    textFeedback,
+    response,
+  });
+  throw createI18nError('error.no_image');
 };
 
 export const getClient = (settings?: ServiceSettings) => {
   const apiKey = settings?.apiKey || '';
   const key = typeof apiKey === 'string' ? apiKey.trim() : '';
   if (!key) {
-    throw new Error('API Key not found. Please set your key in App Settings (gear icon).');
+    throw createI18nError('error.api_key_missing');
   }
   return new GoogleGenAI({ apiKey: key });
 };

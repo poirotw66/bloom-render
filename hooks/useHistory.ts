@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { logger } from '../utils/logger';
 
 export interface HistoryItem {
   id: string;
@@ -30,7 +31,7 @@ export function useHistory() {
         setHistory(parsed);
       }
     } catch (err) {
-      console.error('Failed to load history:', err);
+      logger.error('Failed to load history:', err);
     }
   }, []);
 
@@ -39,7 +40,7 @@ export function useHistory() {
     try {
       localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
     } catch (err) {
-      console.error('Failed to save history:', err);
+      logger.error('Failed to save history:', err);
     }
   }, [history]);
 

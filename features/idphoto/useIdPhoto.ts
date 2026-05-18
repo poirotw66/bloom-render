@@ -8,7 +8,8 @@ import { useSearchParams } from 'react-router-dom';
 import { generateIdPhoto } from '../../services/geminiService';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { normalizeApiError } from '../../services/gemini/shared';
+import { formatApiErrorMessage } from '../../services/gemini/shared';
+import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
@@ -143,7 +144,7 @@ export function useIdPhoto() {
             return url;
           })
           .catch((err) => {
-            console.error(`ID photo generation error for item ${i + 1}:`, err);
+            logger.error(`ID photo generation error for item ${i + 1}:`, err);
             throw err;
           }),
       );
@@ -164,10 +165,8 @@ export function useIdPhoto() {
         setIdPhotoResults(results);
       }
     } catch (err) {
-      const normalizedError = normalizeApiError(err, 'idphoto');
-      const errorKey = normalizedError.message || 'error.unknown';
-      setIdPhotoError(t(errorKey));
-      console.error('ID photo generation error:', normalizedError.originalError || err);
+      setIdPhotoError(formatApiErrorMessage(err, t, 'idphoto'));
+      logger.error('ID photo generation error:', err);
     } finally {
       setIdPhotoLoading(false);
       setProgress(0);

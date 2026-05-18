@@ -14,11 +14,12 @@ import {
   getClient,
   getModel,
   handleApiResponse,
-  normalizeApiError,
+  formatApiErrorMessage,
   supportsMultiResolution,
 } from '../../services/gemini/shared';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import { logger } from '../../utils/logger';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import type { CoupleStyle, GroupStyle } from '../../types';
@@ -243,7 +244,7 @@ export function useCoupleGroup() {
       };
       if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
-      console.log('Starting couple/group photo generation', {
+      logger.debug('Starting couple/group photo generation', {
         mode,
         style,
         fileCount,
@@ -268,7 +269,7 @@ export function useCoupleGroup() {
           });
           return handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
         } catch (err) {
-          console.error(`Couple/group generation error for item ${i + 1}:`, err);
+          logger.error(`Couple/group generation error for item ${i + 1}:`, err);
           throw err;
         }
       });
@@ -289,10 +290,8 @@ export function useCoupleGroup() {
         setResults(generatedResults);
       }
     } catch (err) {
-      const normalizedError = normalizeApiError(err, 'couple_group');
-      const errorKey = normalizedError.message || 'error.unknown';
-      setError(t(errorKey));
-      console.error('Generation error:', normalizedError.originalError ?? err);
+      setError(formatApiErrorMessage(err, t, 'couple_group'));
+      logger.error('Couple/group generation error:', err);
     } finally {
       setLoading(false);
       setProgress(0);

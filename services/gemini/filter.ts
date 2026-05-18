@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import {
   fileToPartAuto,
   getClient,
@@ -22,7 +23,7 @@ export const generateFilteredImage = async (
   filterPrompt: string,
   settings?: ServiceSettings,
 ): Promise<string> => {
-  console.log(`Starting filter generation: ${filterPrompt}`);
+  logger.debug(`Starting filter generation: ${filterPrompt}`);
   const ai = getClient(settings);
   const model = getModel(settings);
 
@@ -37,12 +38,12 @@ Safety & Ethics Policy:
 Output: Return ONLY the final filtered image. Do not return text.`;
   const textPart = { text: prompt };
 
-  console.log(`Sending image and filter prompt to the model (${model})...`);
+  logger.debug(`Sending image and filter prompt to the model (${model})...`);
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: model,
     contents: { parts: [originalImagePart, textPart] },
   });
-  console.log('Received response from model for filter.', response);
+  logger.debug('Received response from model for filter', response);
 
   return handleApiResponse(response, 'filter');
 };

@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption } from '../../types';
 import {
   RETOUCH_LEVELS,
@@ -92,7 +93,7 @@ export const generateIdPhoto = async (
   });
   const textPart = { text: prompt };
 
-  console.log('Starting ID photo generation', {
+  logger.debug('Starting ID photo generation', {
     retouchLevel,
     idType,
     outputSpec,
@@ -110,11 +111,11 @@ export const generateIdPhoto = async (
   }
   parts.push(textPart);
 
-  console.log(`Sending image(s) to model (${model}) for ID photo...`);
+  logger.debug(`Sending image(s) to model (${model}) for ID photo...`);
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
     contents: { parts },
   });
-  console.log('Received response from model for ID photo.', response);
+  logger.debug('Received response from model for ID photo', response);
   return handleApiResponse(response, 'id-photo');
 };

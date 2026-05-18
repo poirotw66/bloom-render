@@ -19,7 +19,9 @@ import CropPanel from './components/CropPanel';
 import { UndoIcon, RedoIcon, EyeIcon } from './components/icons';
 import StartScreen from './components/StartScreen';
 import { ErrorDisplay } from './components/ErrorDisplay';
+import { formatApiErrorMessage } from './services/gemini/shared';
 import { dataURLtoFile } from './utils/fileUtils';
+import { logger } from './utils/logger';
 import { getEditorThemeClasses } from './utils/themeUtils';
 
 const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
@@ -146,9 +148,8 @@ const App: React.FC = () => {
       setEditHotspot(null);
       setDisplayHotspot(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(`${t('main.error_failed_gen')} ${errorMessage}`);
-      console.error(err);
+      setError(formatApiErrorMessage(err, t, 'edit'));
+      logger.error('Generative edit failed:', err);
     } finally {
       setIsLoading(false);
     }
@@ -172,9 +173,8 @@ const App: React.FC = () => {
         const newImageFile = dataURLtoFile(filteredImageUrl, `filtered-${Date.now()}.png`);
         addImageToHistory(newImageFile);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-        setError(`${t('main.error_failed_filter')} ${errorMessage}`);
-        console.error(err);
+        setError(formatApiErrorMessage(err, t, 'filter'));
+        logger.error('Filter application failed:', err);
       } finally {
         setIsLoading(false);
       }
@@ -200,9 +200,8 @@ const App: React.FC = () => {
         const newImageFile = dataURLtoFile(adjustedImageUrl, `adjusted-${Date.now()}.png`);
         addImageToHistory(newImageFile);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-        setError(`${t('main.error_failed_adjust')} ${errorMessage}`);
-        console.error(err);
+        setError(formatApiErrorMessage(err, t, 'adjustment'));
+        logger.error('Adjustment application failed:', err);
       } finally {
         setIsLoading(false);
       }

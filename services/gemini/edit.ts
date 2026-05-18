@@ -6,6 +6,7 @@
  */
 
 import { GenerateContentResponse } from '@google/genai';
+import { logger } from '../../utils/logger';
 import {
   fileToPartAuto,
   getClient,
@@ -23,7 +24,7 @@ export const generateEditedImage = async (
   hotspot: { x: number; y: number },
   settings?: ServiceSettings,
 ): Promise<string> => {
-  console.log('Starting generative edit at:', hotspot);
+  logger.debug('Starting generative edit at:', hotspot);
   const ai = getClient(settings);
   const model = getModel(settings);
 
@@ -43,12 +44,12 @@ Safety & Ethics Policy:
 Output: Return ONLY the final edited image. Do not return text.`;
   const textPart = { text: prompt };
 
-  console.log(`Sending image and prompt to the model (${model})...`);
+  logger.debug(`Sending image and prompt to the model (${model})...`);
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: model,
     contents: { parts: [originalImagePart, textPart] },
   });
-  console.log('Received response from model.', response);
+  logger.debug('Received response from model for edit', response);
 
   return handleApiResponse(response, 'edit');
 };

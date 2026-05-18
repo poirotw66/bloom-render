@@ -9,7 +9,8 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { normalizeApiError, supportsMultiResolution } from '../../services/gemini/shared';
+import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
+import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import {
@@ -230,7 +231,7 @@ export function useTravel() {
           scenePrompt = '';
         }
       } catch (e) {
-        console.warn('Prompt optimization failed, using raw prompt', e);
+        logger.warn('Prompt optimization failed, using raw prompt', e);
         scenePrompt = rawPrompt;
       }
 
@@ -260,7 +261,7 @@ export function useTravel() {
             mimeTypeForImagePath(scene.referenceImagePath),
           );
         } catch (e) {
-          console.log(
+          logger.debug(
             `Note: No valid reference image found at ${scene.referenceImagePath}, falling back to text prompt.`,
           );
           sceneReferenceImage = undefined;
@@ -348,7 +349,7 @@ export function useTravel() {
           sceneReferenceImage,
           settings: { apiKey: settings.apiKey, model: settings.model },
         }).catch((err) => {
-          console.error(`Travel generation error for item ${i + 1}:`, err);
+          logger.error(`Travel generation error for item ${i + 1}:`, err);
           throw err;
         });
       });
@@ -359,7 +360,7 @@ export function useTravel() {
       stopProgress();
       setProgress(100);
 
-      console.log(
+      logger.debug(
         `Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`,
       );
 
@@ -392,10 +393,8 @@ export function useTravel() {
         clearBackground,
       });
     } catch (err) {
-      const normalizedError = normalizeApiError(err, 'travel');
-      const errorKey = normalizedError.message || 'error.unknown';
-      setError(t(errorKey));
-      console.error('Travel generation error:', normalizedError.originalError ?? err);
+      setError(formatApiErrorMessage(err, t, 'travel'));
+      logger.error('Travel generation error:', err);
     } finally {
       setLoading(false);
       setProgress(0);

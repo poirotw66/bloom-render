@@ -13,6 +13,8 @@ import {
   DownloadIcon,
 } from './icons';
 import { generateImageFromText } from '../services/geminiService';
+import { formatApiErrorMessage } from '../services/gemini/shared';
+import { logger } from '../utils/logger';
 import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import BloomFlowerLoader from './BloomFlowerLoader';
@@ -125,8 +127,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         setGeneratedImages(urls);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(`${t('start.error_gen_failed')} ${errorMessage}`);
+      setError(formatApiErrorMessage(err, t, 'generation'));
+      logger.error('Text-to-image generation failed:', err);
     } finally {
       setIsGenerating(false);
     }

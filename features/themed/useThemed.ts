@@ -8,7 +8,8 @@ import { useSearchParams } from 'react-router-dom';
 import { generateThemedPhoto } from '../../services/geminiService';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { normalizeApiError } from '../../services/gemini/shared';
+import { formatApiErrorMessage } from '../../services/gemini/shared';
+import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
@@ -91,7 +92,7 @@ export function useThemed() {
             return url;
           })
           .catch((err) => {
-            console.error(`Themed generation error for item ${i + 1}:`, err);
+            logger.error(`Themed generation error for item ${i + 1}:`, err);
             throw err;
           }),
       );
@@ -112,10 +113,8 @@ export function useThemed() {
         setThemedResults(results);
       }
     } catch (err) {
-      const normalizedError = normalizeApiError(err, 'themed');
-      const errorKey = normalizedError.message || 'error.unknown';
-      setThemedError(t(errorKey));
-      console.error('Themed generation error:', normalizedError.originalError || err);
+      setThemedError(formatApiErrorMessage(err, t, 'themed'));
+      logger.error('Themed generation error:', err);
     } finally {
       setThemedLoading(false);
       setProgress(0);

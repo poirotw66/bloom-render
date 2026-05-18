@@ -9,7 +9,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
-import { normalizeApiError } from '../services/gemini/shared';
+import { formatApiErrorMessage } from '../services/gemini/shared';
+import { logger } from '../utils/logger';
 import { startRandomProgressTicker } from '../utils/generationHelpers';
 
 export interface GeneratePageOptions<TFile = File, TOptions = unknown> {
@@ -97,10 +98,8 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
       setProgress(100);
       setResult(url);
     } catch (err) {
-      const normalizedError = normalizeApiError(err, errorContext);
-      const errorKey = normalizedError.message || 'error.unknown';
-      setError(t(errorKey));
-      console.error('Generation error:', normalizedError.originalError || err);
+      setError(formatApiErrorMessage(err, t, errorContext));
+      logger.error('Generation error:', err);
     } finally {
       setLoading(false);
       setProgress(0);
