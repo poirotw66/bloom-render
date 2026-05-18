@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TRAVEL_SCENES_TAIWAN, TravelSceneCategory } from '../../constants/travel';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { publicAssetUrl } from '../../utils/publicAsset';
 
 interface TaiwanMapProps {
   selectedSceneId: string;
@@ -31,7 +32,7 @@ const TaiwanMap: React.FC<TaiwanMapProps> = ({
     <div className="relative w-full max-w-[500px] aspect-[0.85] mx-auto rounded-xl overflow-hidden border-2 border-amber-800/30 shadow-2xl">
       {/* Hand-drawn Taiwan map background image */}
       <img
-        src={`${import.meta.env.BASE_URL}images/taiwan-map.webp`}
+        src={publicAssetUrl('/images/taiwan-map.webp')}
         alt="Taiwan Map"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         draggable={false}
@@ -180,7 +181,7 @@ const TaiwanMap: React.FC<TaiwanMapProps> = ({
                     {scene.referenceImagePath && (
                       <div className="w-full aspect-video rounded-md overflow-hidden bg-gray-800 border border-white/10">
                         <img
-                          src={scene.referenceImagePath}
+                          src={publicAssetUrl(scene.referenceImagePath)}
                           alt={t(scene.nameKey)}
                           className="w-full h-full object-cover"
                           loading="lazy"

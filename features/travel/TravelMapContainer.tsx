@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { publicAssetUrl } from '../../utils/publicAsset';
 import { TravelSceneCategory } from '../../constants/travel';
 import WorldMap from './WorldMap';
 import TaiwanMap from './TaiwanMap';
@@ -456,7 +457,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         className={`w-full sm:w-32 aspect-square rounded-lg overflow-hidden border ${borderCls} shadow-lg flex-shrink-0 bg-gray-900`}
                       >
                         <img
-                          src={scene.referenceImagePath}
+                          src={publicAssetUrl(scene.referenceImagePath)}
                           alt={name}
                           className="w-full h-full object-cover"
                           loading="lazy"

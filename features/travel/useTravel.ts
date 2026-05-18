@@ -43,12 +43,13 @@ import type {
   TravelFraming,
 } from '../../constants/travel';
 import { mimeTypeForImagePath, referenceFileName } from '../../utils/imageAsset';
+import { publicAssetUrl } from '../../utils/publicAsset';
 
 export type TravelSceneIdOrCustom = string;
 
 // Helper to load an image from a URL (e.g., from public folder) as a File object
-async function urlToFile(url: string, filename: string, mimeType: string): Promise<File> {
-  const res = await fetch(url);
+async function urlToFile(path: string, filename: string, mimeType: string): Promise<File> {
+  const res = await fetch(publicAssetUrl(path));
   if (!res.ok) throw new Error('error.failed_fetch');
 
   const contentType = res.headers.get('content-type');

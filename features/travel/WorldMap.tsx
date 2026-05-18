@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { TRAVEL_SCENES_INTERNATIONAL, TravelSceneCategory } from '../../constants/travel';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { publicAssetUrl } from '../../utils/publicAsset';
 
 interface WorldMapProps {
   selectedSceneId: string;
@@ -36,7 +37,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
     <div className="relative w-full aspect-video rounded-xl overflow-hidden border-2 border-amber-800/30 shadow-2xl">
       {/* Hand-drawn world map background image */}
       <img
-        src={`${import.meta.env.BASE_URL}images/world-map.webp`}
+        src={publicAssetUrl('/images/world-map.webp')}
         alt="World Map"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         draggable={false}
@@ -185,7 +186,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
                     {scene.referenceImagePath && (
                       <div className="w-full aspect-video rounded-md overflow-hidden bg-gray-800 border border-white/10">
                         <img
-                          src={scene.referenceImagePath}
+                          src={publicAssetUrl(scene.referenceImagePath)}
                           alt={t(scene.nameKey)}
                           className="w-full h-full object-cover"
                           loading="lazy"

@@ -9,9 +9,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { CogIcon } from './icons';
 import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
-
-/** Base URL for static assets (correct for GitHub Pages subpath) */
-const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+import { publicAssetUrl as asset } from '../utils/publicAsset';
 
 /** BloomRender logo for header (product branding) */
 const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
