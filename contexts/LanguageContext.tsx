@@ -311,6 +311,10 @@ const translations: Record<Language, Record<string, string>> = {
     'idphoto.clothing.custom_image_label': 'Reference photo (optional)',
     'idphoto.clothing.custom_image_btn': 'Choose',
     'idphoto.clothing.custom_image_remove': 'Remove',
+    'idphoto.error_generation_failed': 'Failed to generate ID photo. Please try again.',
+    'portrait.error_generation_failed': 'Failed to generate portrait. Please try again.',
+    'themed.error_generation_failed': 'Failed to generate themed photo. Please try again.',
+    'travel.error_generation_failed': 'Failed to generate travel photo. Please try again.',
     'idphoto.error_custom_clothing_empty':
       'Please enter a description and/or upload a reference image.',
     'idphoto.model_recommendation':
@@ -1397,6 +1401,10 @@ const translations: Record<Language, Record<string, string>> = {
     'idphoto.clothing.custom_image_label': '服裝參考圖（可選）',
     'idphoto.clothing.custom_image_btn': '選擇',
     'idphoto.clothing.custom_image_remove': '移除',
+    'idphoto.error_generation_failed': '證件照生成失敗，請重試。',
+    'portrait.error_generation_failed': '肖像生成失敗，請重試。',
+    'themed.error_generation_failed': '主題照生成失敗，請重試。',
+    'travel.error_generation_failed': '旅遊照生成失敗，請重試。',
     'idphoto.error_custom_clothing_empty': '請輸入服裝描述或上傳參考圖。',
     'idphoto.model_recommendation':
       '推薦使用 Gemini 3 Pro 模型以獲得較佳的人物一致性，請在設定中切換。',

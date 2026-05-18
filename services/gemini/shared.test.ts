@@ -30,4 +30,12 @@ describe('gemini shared errors', () => {
     const result = normalizeApiError(new Error('Request was blocked. Reason: SAFETY'));
     expect(result.message).toBe('error.blocked');
   });
+
+  it('uses feature context fallback for unknown errors', () => {
+    const result = normalizeApiError(new Error('Something unexpected'), 'travel');
+    expect(result.message).toBe('travel.error_generation_failed');
+    expect(formatApiErrorMessage(new Error('x'), t, 'travel')).toBe(
+      'tr:travel.error_generation_failed',
+    );
+  });
 });

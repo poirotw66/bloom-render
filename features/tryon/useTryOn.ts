@@ -9,7 +9,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { generateVirtualTryOn } from '../../services/geminiService';
-import { formatApiErrorMessage } from '../../services/gemini/shared';
+import {
+  createI18nError,
+  formatApiErrorMessage,
+  isI18nErrorKey,
+} from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults } from '../../utils/generationHelpers';
@@ -193,9 +197,14 @@ export function useTryOn() {
           (s): s is PromiseRejectedResult => s.status === 'rejected',
         );
         const reason = firstRejection?.reason;
-        const detail = reason instanceof Error ? reason.message : String(reason ?? 'Unknown error');
         logger.error('Try-on generation failed (all requests failed). First reason:', reason);
-        throw new Error(`${t('tryon.error_generation_failed')} ${detail}`);
+        if (reason instanceof Error && isI18nErrorKey(reason.message)) {
+          throw reason;
+        }
+        if (reason instanceof Error) {
+          throw reason;
+        }
+        throw createI18nError('error.all_generations_failed');
       }
       if (generated.length === 1) {
         setResult(generated[0]);

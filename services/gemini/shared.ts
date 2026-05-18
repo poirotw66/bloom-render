@@ -148,10 +148,24 @@ export const normalizeApiError = (error: unknown, _context: string = 'generation
     }
   }
 
-  // Unknown error
+  // Unknown error — optional feature-specific fallback key via context
+  const contextFallbackKeys: Record<string, string> = {
+    idphoto: 'idphoto.error_generation_failed',
+    portrait: 'portrait.error_generation_failed',
+    themed: 'themed.error_generation_failed',
+    travel: 'travel.error_generation_failed',
+    tryon: 'tryon.error_generation_failed',
+    couple_group: 'couple_group.error_generation_failed',
+    edit: 'main.error_failed_gen',
+    filter: 'main.error_failed_filter',
+    adjustment: 'main.error_failed_adjust',
+    generation: 'start.error_gen_failed',
+  };
+  const fallbackKey = contextFallbackKeys[_context] ?? I18N_ERROR_KEY_UNKNOWN;
+
   return {
     type: ApiErrorType.UNKNOWN,
-    message: I18N_ERROR_KEY_UNKNOWN,
+    message: fallbackKey,
     originalError: error instanceof Error ? error : new Error(String(error)),
   };
 };
