@@ -7,8 +7,6 @@ import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import {
-  TRAVEL_SCENES_INTERNATIONAL,
-  TRAVEL_SCENES_TAIWAN,
   TRAVEL_SCENE_ID_RANDOM,
   TRAVEL_ASPECT_RATIOS,
   TRAVEL_IMAGE_SIZES,
@@ -22,6 +20,7 @@ import {
   TRAVEL_FRAMING_OPTIONS,
   OUTFIT_COLOR_PRESETS,
 } from '../../constants/travel';
+import type { TravelScene } from '../../types';
 import type {
   TravelAspectRatio,
   TravelImageSize,
@@ -38,6 +37,9 @@ import type {
 import { supportsMultiResolution } from '../../services/gemini/shared';
 
 interface TravelFormProps {
+  scenesInternational: TravelScene[];
+  scenesTaiwan: TravelScene[];
+  scenesLoading?: boolean;
   selectedSceneId: string;
   setSelectedSceneId: (v: string) => void;
   customSceneText: string;
@@ -119,6 +121,9 @@ const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; i
 };
 
 const TravelForm: React.FC<TravelFormProps> = ({
+  scenesInternational,
+  scenesTaiwan,
+  scenesLoading = false,
   selectedSceneId,
   setSelectedSceneId,
   customSceneText,
@@ -189,6 +194,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
             {t('travel.label.scene')}
           </label>
           <p className="text-xs text-gray-400 mb-3">{t('travel.scene_hint')}</p>
+          {scenesLoading && (
+            <p className="text-sm text-gray-400 mb-3">{t('travel.scenes_loading')}</p>
+          )}
 
           <div className="space-y-4">
             <div>
@@ -201,7 +209,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   <div className="space-y-4 pt-2">
                     {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(
                       (continent) => {
-                        const continentScenes = TRAVEL_SCENES_INTERNATIONAL.filter(
+                        const continentScenes = scenesInternational.filter(
                           (s) => s.category === 'scenery' && s.continent === continent,
                         );
                         if (continentScenes.length === 0) return null;
@@ -233,7 +241,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   <div className="space-y-4 pt-2">
                     {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(
                       (continent) => {
-                        const continentScenes = TRAVEL_SCENES_INTERNATIONAL.filter(
+                        const continentScenes = scenesInternational.filter(
                           (s) => s.category === 'food' && s.continent === continent,
                         );
                         if (continentScenes.length === 0) return null;
@@ -272,7 +280,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                 <CollapsibleSection title={t('travel.category.scenery')} icon="🏞️">
                   <div className="space-y-4 pt-2">
                     {(['north', 'central', 'south', 'east', 'islands'] as const).map((region) => {
-                      const regionalScenes = TRAVEL_SCENES_TAIWAN.filter(
+                      const regionalScenes = scenesTaiwan.filter(
                         (s) => s.category === 'scenery' && s.region === region,
                       );
                       if (regionalScenes.length === 0) return null;
@@ -302,7 +310,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                 <CollapsibleSection title={t('travel.category.food')} icon="🍜">
                   <div className="space-y-4 pt-2">
                     {(['north', 'central', 'south', 'east', 'islands'] as const).map((region) => {
-                      const regionalScenes = TRAVEL_SCENES_TAIWAN.filter(
+                      const regionalScenes = scenesTaiwan.filter(
                         (s) => s.category === 'food' && s.region === region,
                       );
                       if (regionalScenes.length === 0) return null;

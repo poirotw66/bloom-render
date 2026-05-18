@@ -7,11 +7,10 @@ import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { TravelSceneCategory } from '../../constants/travel';
+import type { TravelScene } from '../../types';
 import WorldMap from './WorldMap';
 import TaiwanMap from './TaiwanMap';
 import {
-  TRAVEL_SCENES_INTERNATIONAL,
-  TRAVEL_SCENES_TAIWAN,
   TRAVEL_WEATHER_OPTIONS,
   TRAVEL_TIME_OPTIONS,
   TRAVEL_VIBE_OPTIONS,
@@ -29,6 +28,9 @@ import {
 } from '../../constants/travel';
 
 interface TravelMapContainerProps {
+  scenesInternational: TravelScene[];
+  scenesTaiwan: TravelScene[];
+  scenesLoading?: boolean;
   selectedSceneId: string;
   onSceneSelect: (id: string) => void;
   weather: TravelWeather;
@@ -57,6 +59,9 @@ type MapType = 'world' | 'taiwan';
 type CategoryFilter = TravelSceneCategory | 'all';
 
 const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
+  scenesInternational,
+  scenesTaiwan,
+  scenesLoading = false,
   selectedSceneId,
   onSceneSelect,
   weather,
@@ -145,23 +150,31 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
 
       {/* Map display - only render the active map */}
       <div className="min-h-[450px] flex items-center justify-center rounded-xl overflow-hidden bg-gray-950/20">
-        {mapType === 'world' && (
-          <div className="w-full animate-fade-in">
-            <WorldMap
-              selectedSceneId={selectedSceneId}
-              onSceneSelect={onSceneSelect}
-              categoryFilter={categoryFilter}
-            />
-          </div>
-        )}
-        {mapType === 'taiwan' && (
-          <div className="w-full animate-fade-in">
-            <TaiwanMap
-              selectedSceneId={selectedSceneId}
-              onSceneSelect={onSceneSelect}
-              categoryFilter={categoryFilter}
-            />
-          </div>
+        {scenesLoading ? (
+          <p className="text-sm text-gray-400">{t('travel.scenes_loading')}</p>
+        ) : (
+          <>
+            {mapType === 'world' && (
+              <div className="w-full animate-fade-in">
+                <WorldMap
+                  scenes={scenesInternational}
+                  selectedSceneId={selectedSceneId}
+                  onSceneSelect={onSceneSelect}
+                  categoryFilter={categoryFilter}
+                />
+              </div>
+            )}
+            {mapType === 'taiwan' && (
+              <div className="w-full animate-fade-in">
+                <TaiwanMap
+                  scenes={scenesTaiwan}
+                  selectedSceneId={selectedSceneId}
+                  onSceneSelect={onSceneSelect}
+                  categoryFilter={categoryFilter}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -170,7 +183,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
         selectedSceneId !== 'custom' &&
         selectedSceneId !== 'random' &&
         (() => {
-          const scene = [...TRAVEL_SCENES_INTERNATIONAL, ...TRAVEL_SCENES_TAIWAN].find(
+          const scene = [...scenesInternational, ...scenesTaiwan].find(
             (s) => s.id === selectedSceneId,
           );
           if (!scene) return null;

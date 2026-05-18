@@ -15,7 +15,7 @@ Cross-feature domain types used by multiple modules:
 
 ## `constants/travel.ts`
 
-Travel **scene catalog**, prompt templates, map metadata, and helpers (`TRAVEL_SCENES_*`, `pickRandomTravelScene`, etc.).
+Travel **prompt templates**, option presets, map metadata, and helpers (`pickRandomTravelScene` takes a scene list). The **scene catalog** (149 locations) lives in `constants/travel-data/*.json` and is loaded via `loadTravelSceneCatalog()` in `constants/travelScenesLoader.ts` (separate Vite chunks).
 
 Travel **types** are defined in `types.ts` and re-exported from `constants/travel.ts` for convenience when importing scene data and types together.
 

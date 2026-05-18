@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { TRAVEL_SCENES_TAIWAN, TravelSceneCategory } from '../../constants/travel';
+import type { TravelScene } from '../../types';
+import type { TravelSceneCategory } from '../../constants/travel';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { publicAssetUrl } from '../../utils/publicAsset';
 
 interface TaiwanMapProps {
+  scenes: TravelScene[];
   selectedSceneId: string;
   onSceneSelect: (id: string) => void;
   categoryFilter?: TravelSceneCategory | 'all';
 }
 
 const TaiwanMap: React.FC<TaiwanMapProps> = ({
+  scenes,
   selectedSceneId,
   onSceneSelect,
   categoryFilter = 'all',
@@ -23,7 +26,7 @@ const TaiwanMap: React.FC<TaiwanMapProps> = ({
     onSceneSelect(sceneId);
   };
 
-  const filteredScenes = TRAVEL_SCENES_TAIWAN.filter((scene) => {
+  const filteredScenes = scenes.filter((scene) => {
     if (categoryFilter === 'all') return true;
     return scene.category === categoryFilter;
   });

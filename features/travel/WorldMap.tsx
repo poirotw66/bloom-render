@@ -4,17 +4,20 @@
  */
 
 import React, { useState } from 'react';
-import { TRAVEL_SCENES_INTERNATIONAL, TravelSceneCategory } from '../../constants/travel';
+import type { TravelScene } from '../../types';
+import type { TravelSceneCategory } from '../../constants/travel';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { publicAssetUrl } from '../../utils/publicAsset';
 
 interface WorldMapProps {
+  scenes: TravelScene[];
   selectedSceneId: string;
   onSceneSelect: (id: string) => void;
   categoryFilter?: TravelSceneCategory | 'all';
 }
 
 const WorldMap: React.FC<WorldMapProps> = ({
+  scenes,
   selectedSceneId,
   onSceneSelect,
   categoryFilter = 'all',
@@ -28,7 +31,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
     onSceneSelect(sceneId);
   };
 
-  const filteredScenes = TRAVEL_SCENES_INTERNATIONAL.filter((scene) => {
+  const filteredScenes = scenes.filter((scene) => {
     if (categoryFilter === 'all') return true;
     return (scene.category || 'scenery') === categoryFilter;
   });

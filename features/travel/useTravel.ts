@@ -14,9 +14,9 @@ import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
 import {
-  TRAVEL_SCENES,
   TRAVEL_SCENE_ID_RANDOM,
   pickRandomTravelScene,
+  loadTravelSceneCatalog,
   DEFAULT_TRAVEL_ASPECT,
   DEFAULT_TRAVEL_IMAGE_SIZE,
   TRAVEL_STYLES,
@@ -30,6 +30,7 @@ import {
   TRAVEL_FRAMING_OPTIONS,
   OUTFIT_COLOR_PRESETS,
 } from '../../constants/travel';
+import type { TravelSceneCatalog } from '../../constants/travelScenesLoader';
 import type {
   TravelAspectRatio,
   TravelImageSize,
@@ -79,9 +80,9 @@ export function useTravel() {
   const [quantity, setQuantity] = useState<number>(1);
   const [progress, setProgress] = useState<number>(0);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [selectedSceneId, setSelectedSceneId] = useState<TravelSceneIdOrCustom>(
-    TRAVEL_SCENES[0]?.id ?? 'shibuya',
-  );
+  const [sceneCatalog, setSceneCatalog] = useState<TravelSceneCatalog | null>(null);
+  const [scenesLoading, setScenesLoading] = useState(true);
+  const [selectedSceneId, setSelectedSceneId] = useState<TravelSceneIdOrCustom>('shibuya');
   const [customSceneText, setCustomSceneText] = useState('');
   const [customSceneReferenceFile, setCustomSceneReferenceFile] = useState<File | null>(null);
   const [customSceneReferenceUrl, setCustomSceneReferenceUrl] = useState<string | null>(null);
@@ -123,6 +124,32 @@ export function useTravel() {
   const [resultSceneNameKey, setResultSceneNameKey] = useState<string | null>(null);
   const [resultSceneCustomLabel, setResultSceneCustomLabel] = useState<string | null>(null);
 
+  const travelScenes = sceneCatalog?.all ?? [];
+
+  useEffect(() => {
+    let cancelled = false;
+    loadTravelSceneCatalog()
+      .then((catalog) => {
+        if (!cancelled) {
+          setSceneCatalog(catalog);
+        }
+      })
+      .catch((err) => {
+        logger.error('Failed to load travel scene catalog:', err);
+        if (!cancelled) {
+          setError(t('travel.error_scenes_load'));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setScenesLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [t]);
+
   useEffect(() => {
     if (files.length > 0) {
       const urls = files.map((f) => URL.createObjectURL(f));
@@ -154,9 +181,9 @@ export function useTravel() {
     if (selectedSceneId === 'custom') {
       return customSceneText.trim();
     }
-    const scene = TRAVEL_SCENES.find((s) => s.id === selectedSceneId);
+    const scene = travelScenes.find((s) => s.id === selectedSceneId);
     return scene?.prompt ?? customSceneText.trim();
-  }, [selectedSceneId, customSceneText]);
+  }, [selectedSceneId, customSceneText, travelScenes]);
 
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,7 +222,11 @@ export function useTravel() {
     let resolvedSceneCustomLabel: string | null = null;
 
     if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
-      const picked = pickRandomTravelScene();
+      if (travelScenes.length === 0) {
+        setError(t('travel.error_scenes_load'));
+        return;
+      }
+      const picked = pickRandomTravelScene(travelScenes);
       scenePrompt = picked.prompt;
 
       if (useReferenceImage && picked.referenceImagePath) {
@@ -239,7 +270,7 @@ export function useTravel() {
       sceneReferenceImage = customSceneReferenceFile ?? undefined;
       resolvedSceneCustomLabel = customSceneText.trim() || null;
     } else {
-      const scene = TRAVEL_SCENES.find((s) => s.id === selectedSceneId);
+      const scene = travelScenes.find((s) => s.id === selectedSceneId);
       const basePrompt = scene?.prompt ?? resolveScenePrompt();
 
       if (!basePrompt && !customSceneReferenceFile) {
@@ -421,15 +452,17 @@ export function useTravel() {
     clearBackground,
     settings.apiKey,
     settings.model,
+    travelScenes,
     t,
     useReferenceImage,
     quantity,
   ]);
 
   const handleSurpriseMe = useCallback(() => {
-    // Pick random scene
-    const randomScene = TRAVEL_SCENES[Math.floor(Math.random() * TRAVEL_SCENES.length)];
-    setSelectedSceneId(randomScene.id);
+    if (travelScenes.length > 0) {
+      const randomScene = pickRandomTravelScene(travelScenes);
+      setSelectedSceneId(randomScene.id);
+    }
 
     // Pick random style
     const randomStyle = TRAVEL_STYLES[Math.floor(Math.random() * TRAVEL_STYLES.length)];
@@ -458,7 +491,7 @@ export function useTravel() {
     // Clear result to show surprise
     setResult(null);
     setResults([]);
-  }, []);
+  }, [travelScenes]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -535,6 +568,10 @@ export function useTravel() {
     error,
     progress,
     previewUrls,
+    scenesLoading,
+    scenesInternational: sceneCatalog?.international ?? [],
+    scenesTaiwan: sceneCatalog?.taiwan ?? [],
+    scenesAll: travelScenes,
     quantity,
     setQuantity,
     selectedSceneId,

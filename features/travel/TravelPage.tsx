@@ -14,8 +14,6 @@ import TravelUploadSection from './TravelUploadSection';
 import TravelResult from './TravelResult';
 import TravelMapContainer from './TravelMapContainer';
 import QuantitySelector from '../../components/QuantitySelector';
-import { TRAVEL_SCENES_INTERNATIONAL, TRAVEL_SCENES_TAIWAN } from '../../constants/travel';
-
 interface TravelPageProps {
   onImageSelected: (file: File) => void;
 }
@@ -30,11 +28,15 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
     if (tr.selectedSceneId === 'custom') return t('travel.custom_btn');
     if (tr.selectedSceneId === 'random')
       return t('travel.random_scene') || t('travel.map_instruction');
-    const scene = [...TRAVEL_SCENES_INTERNATIONAL, ...TRAVEL_SCENES_TAIWAN].find(
-      (s) => s.id === tr.selectedSceneId,
-    );
+    const scene = tr.scenesAll.find((s) => s.id === tr.selectedSceneId);
     return scene ? t(scene.nameKey) : t('travel.map_instruction');
-  }, [tr.selectedSceneId, t]);
+  }, [tr.selectedSceneId, tr.scenesAll, t]);
+
+  const sceneCatalogProps = {
+    scenesInternational: tr.scenesInternational,
+    scenesTaiwan: tr.scenesTaiwan,
+    scenesLoading: tr.scenesLoading,
+  };
 
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
@@ -189,6 +191,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                 {viewMode === 'map' ? (
                   <div className="flex flex-col gap-6">
                     <TravelMapContainer
+                      {...sceneCatalogProps}
                       selectedSceneId={tr.selectedSceneId}
                       onSceneSelect={tr.setSelectedSceneId}
                       weather={tr.weather}
@@ -213,6 +216,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                       setClearBackground={tr.setClearBackground}
                     />
                     <TravelForm
+                      {...sceneCatalogProps}
                       selectedSceneId={tr.selectedSceneId}
                       setSelectedSceneId={tr.setSelectedSceneId}
                       customSceneText={tr.customSceneText}
@@ -257,6 +261,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   </div>
                 ) : (
                   <TravelForm
+                    {...sceneCatalogProps}
                     selectedSceneId={tr.selectedSceneId}
                     setSelectedSceneId={tr.setSelectedSceneId}
                     customSceneText={tr.customSceneText}

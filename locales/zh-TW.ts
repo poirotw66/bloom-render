@@ -582,6 +582,8 @@ export const zhTWMessages: Record<string, string> = {
   'travel.error_no_scene': '請選擇場景或輸入自訂描述。',
   'travel.error_custom_scene_empty': '請輸入描述和／或上傳參考場景照片。',
   'travel.error_failed': '旅遊照生成失敗。',
+  'travel.error_scenes_load': '無法載入地點清單，請重新整理頁面。',
+  'travel.scenes_loading': '正在載入地點…',
   'travel.map_mode_label': '選擇景點',
   'travel.map_world': '世界地圖',
   'travel.map_taiwan': '台灣地圖',

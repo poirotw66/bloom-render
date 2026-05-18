@@ -611,6 +611,8 @@ export const enMessages: Record<string, string> = {
   'travel.error_custom_scene_empty':
     'Please enter a description and/or upload a reference scene photo.',
   'travel.error_failed': 'Travel photo generation failed.',
+  'travel.error_scenes_load': 'Could not load location list. Please refresh the page.',
+  'travel.scenes_loading': 'Loading locations…',
   'travel.map_mode_label': 'Select Destination',
   'travel.map_world': 'World',
   'travel.map_taiwan': 'Taiwan',
