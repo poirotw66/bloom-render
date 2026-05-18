@@ -10,6 +10,7 @@ import { CogIcon } from './icons';
 import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
 import { publicAssetUrl as asset } from '../utils/publicAsset';
+import { ROUTES } from '../constants/routes';
 
 /** BloomRender logo for header (product branding) */
 const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -108,14 +109,14 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
 
   const currentTab: StartTab = useMemo(() => {
     const path = location.pathname;
-    if (path.startsWith('/photography-service')) return 'photography-service';
-    if (path.startsWith('/generate')) return 'generate';
-    if (path.startsWith('/idphoto')) return 'idphoto';
-    if (path.startsWith('/portrait')) return 'portrait';
-    if (path.startsWith('/travel')) return 'travel';
-    if (path.startsWith('/themed')) return 'themed';
-    if (path.startsWith('/couple-group')) return 'couple-group';
-    if (path.startsWith('/try-on')) return 'tryon';
+    if (path.startsWith(ROUTES.PHOTOGRAPHY_SERVICE)) return 'photography-service';
+    if (path.startsWith(ROUTES.GENERATE)) return 'generate';
+    if (path.startsWith(ROUTES.ID_PHOTO)) return 'idphoto';
+    if (path.startsWith(ROUTES.PORTRAIT)) return 'portrait';
+    if (path.startsWith(ROUTES.TRAVEL)) return 'travel';
+    if (path.startsWith(ROUTES.THEMED)) return 'themed';
+    if (path.startsWith(ROUTES.COUPLE_GROUP)) return 'couple-group';
+    if (path.startsWith(ROUTES.TRY_ON)) return 'tryon';
     return 'upload';
   }, [location.pathname]);
 
@@ -134,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
       >
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-between">
           <Link
-            to="/"
+            to={ROUTES.HOME}
             className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity duration-200 order-1 shrink-0"
             aria-label={t('app.title')}
           >

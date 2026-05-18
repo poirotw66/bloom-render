@@ -111,6 +111,8 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
               <p className="text-sm text-gray-400 max-w-xs">{t(uploadHintKey)}</p>
             </div>
 
+            {error && <ErrorDisplay message={error} />}
+
             <label
               htmlFor={uploadInputId}
               className="relative inline-flex items-center justify-center px-10 py-5 text-xl font-black text-white rounded-2xl cursor-pointer transition-all duration-300 shadow-2xl hover:-translate-y-1 active:scale-95 bg-blue-600 hover:bg-blue-500 shadow-blue-600/30"

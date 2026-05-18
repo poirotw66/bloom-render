@@ -5,6 +5,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../constants/routes';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import {
   generateEditedImage,
@@ -353,7 +354,7 @@ const EditorPage: React.FC = () => {
   };
 
   if (!currentImage) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={ROUTES.HOME} replace />;
   }
 
   return renderEditor();

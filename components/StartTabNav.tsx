@@ -8,6 +8,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { ThemeType } from '../contexts/ThemeContext';
+import { ROUTES } from '../constants/routes';
 
 export type StartTab =
   | 'upload'
@@ -37,63 +38,63 @@ interface StartTabNavProps {
 const tabs: TabItem[] = [
   {
     tab: 'upload',
-    path: '/',
+    path: ROUTES.HOME,
     i18nKey: 'start.tab_upload',
     activeClass: 'bg-gray-700 text-white shadow-lg',
     focusRing: 'focus:ring-blue-500',
   },
   {
     tab: 'generate',
-    path: '/generate',
+    path: ROUTES.GENERATE,
     i18nKey: 'start.tab_generate',
     activeClass: 'bg-blue-600 text-white shadow-lg shadow-blue-500/20',
     focusRing: 'focus:ring-blue-500',
   },
   {
     tab: 'photography-service',
-    path: '/photography-service',
+    path: ROUTES.PHOTOGRAPHY_SERVICE,
     i18nKey: 'start.tab_service',
     activeClass: 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20',
     focusRing: 'focus:ring-indigo-500',
   },
   {
     tab: 'idphoto',
-    path: '/idphoto',
+    path: ROUTES.ID_PHOTO,
     i18nKey: 'start.tab_idphoto',
     activeClass: 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20',
     focusRing: 'focus:ring-emerald-500',
   },
   {
     tab: 'portrait',
-    path: '/portrait',
+    path: ROUTES.PORTRAIT,
     i18nKey: 'start.tab_portrait',
     activeClass: 'bg-blue-600 text-white shadow-lg shadow-blue-500/20',
     focusRing: 'focus:ring-blue-500',
   },
   {
     tab: 'travel',
-    path: '/travel',
+    path: ROUTES.TRAVEL,
     i18nKey: 'start.tab_travel',
     activeClass: 'bg-amber-600 text-white shadow-lg shadow-amber-500/20',
     focusRing: 'focus:ring-amber-500',
   },
   {
     tab: 'themed',
-    path: '/themed',
+    path: ROUTES.THEMED,
     i18nKey: 'start.tab_themed',
     activeClass: 'bg-purple-600 text-white shadow-lg shadow-purple-500/20',
     focusRing: 'focus:ring-purple-500',
   },
   {
     tab: 'couple-group',
-    path: '/couple-group',
+    path: ROUTES.COUPLE_GROUP,
     i18nKey: 'start.tab_couple_group',
     activeClass: 'bg-pink-600 text-white shadow-lg shadow-pink-500/20',
     focusRing: 'focus:ring-pink-500',
   },
   {
     tab: 'tryon',
-    path: '/try-on',
+    path: ROUTES.TRY_ON,
     i18nKey: 'start.tab_tryon',
     activeClass: 'bg-teal-600 text-white shadow-lg shadow-teal-500/20',
     focusRing: 'focus:ring-teal-500',

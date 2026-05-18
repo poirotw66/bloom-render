@@ -12,6 +12,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { formatApiErrorMessage } from '../services/gemini/shared';
 import { logger } from '../utils/logger';
 import { startRandomProgressTicker } from '../utils/generationHelpers';
+import { applyValidatedImageFile } from '../utils/applyValidatedImageFile';
 
 export interface GeneratePageOptions<TFile = File, TOptions = unknown> {
   defaultFile?: TFile | null;
@@ -66,15 +67,32 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
     }
   }, [file]);
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile as TFile);
-      setResult(null);
-      setError(null);
-    }
-    e.target.value = '';
-  }, []);
+  const applySelectedFile = useCallback(
+    (selectedFile: File) => {
+      void applyValidatedImageFile(
+        selectedFile,
+        t,
+        (validFile) => {
+          setFile(validFile as TFile);
+          setResult(null);
+          setError(null);
+        },
+        setError,
+      );
+    },
+    [t],
+  );
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) {
+        applySelectedFile(selectedFile);
+      }
+      e.target.value = '';
+    },
+    [applySelectedFile],
+  );
 
   const handleGenerate = useCallback(async () => {
     if (!file) {
@@ -129,16 +147,17 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
     setIsDraggingOver(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile) {
-      setFile(droppedFile as TFile);
-      setResult(null);
-      setError(null);
-    }
-  }, []);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDraggingOver(false);
+      const droppedFile = e.dataTransfer.files?.[0];
+      if (droppedFile) {
+        applySelectedFile(droppedFile);
+      }
+    },
+    [applySelectedFile],
+  );
 
   return {
     file,

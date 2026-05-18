@@ -23,6 +23,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import type { ThemeType } from '../contexts/ThemeContext';
+import { applyValidatedImageFile } from '../utils/applyValidatedImageFile';
 
 type StartTab = 'upload' | 'generate';
 
@@ -97,9 +98,13 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const [error, setError] = useState<string | null>(null);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
 
+  const pickUploadFile = (file: File) => {
+    void applyValidatedImageFile(file, t, onImageSelected, setError);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      onImageSelected(e.target.files[0]);
+      pickUploadFile(e.target.files[0]);
     }
   };
 
@@ -171,7 +176,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         const file = e.dataTransfer.files?.[0];
         if (!file) return;
         if (tab === 'upload') {
-          onImageSelected(file);
+          pickUploadFile(file);
         }
       }}
     >
@@ -217,6 +222,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                 aria-label={t('start.upload_button')}
               />
               <p className="text-sm text-gray-300">{t('start.upload_drag')}</p>
+              {error && <ErrorDisplay message={error} className="mt-2 w-full max-w-md" />}
             </div>
           </div>
         ) : generatedImages.length > 0 ? (
