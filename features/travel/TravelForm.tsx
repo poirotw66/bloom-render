@@ -35,6 +35,8 @@ import type {
 } from '../../constants/travel';
 
 import { supportsMultiResolution } from '../../services/gemini/shared';
+import { GiftIcon, SparklesIcon } from '../../components/icons';
+import { TRAVEL_CHIP, TRAVEL_CHIP_ACTIVE, TRAVEL_CHIP_INACTIVE, TRAVEL_PANEL } from './travelUi';
 
 interface TravelFormProps {
   scenesInternational: TravelScene[];
@@ -82,25 +84,22 @@ interface TravelFormProps {
   showSceneSelector?: boolean;
 }
 
-const SCENE_BTN =
-  'px-3 py-2 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
-const SCENE_ACTIVE =
-  'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/30 scale-[1.02]';
-const SCENE_INACTIVE =
-  'bg-gray-800/50 text-gray-400 border-gray-700 hover:bg-gray-700/50 hover:border-gray-600 hover:text-gray-200';
+const SCENE_BTN = TRAVEL_CHIP;
+const SCENE_ACTIVE = TRAVEL_CHIP_ACTIVE;
+const SCENE_INACTIVE = TRAVEL_CHIP_INACTIVE;
 
-const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode; icon?: string }> = ({
-  title,
-  children,
-  icon,
-}) => {
+const CollapsibleSection: React.FC<{
+  title: string;
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+}> = ({ title, children, icon }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="border border-gray-700/50 rounded-lg overflow-hidden bg-gray-900/20">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-2.5 flex items-center justify-between text-sm font-semibold text-gray-300 hover:bg-gray-700/30 transition-colors"
+        className="w-full px-4 py-2.5 flex items-center justify-between text-sm font-semibold text-gray-300 hover:bg-gray-700/30 transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-2">
           {icon && <span>{icon}</span>}
@@ -173,14 +172,14 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
   return (
     <div
-      className={`flex flex-col gap-6 w-full animate-fade-in bg-gray-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}
+      className={`flex flex-col gap-6 w-full motion-safe:animate-fade-in p-6 ${TRAVEL_PANEL} ${showSceneSelector ? 'max-w-2xl' : 'max-w-full'}`}
     >
       <button
         onClick={handleSurpriseMe}
         disabled={disabled}
-        className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl font-bold shadow-lg shadow-purple-500/25 transition-all active:scale-95 flex items-center justify-center gap-2 group"
+        className="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl font-bold shadow-lg shadow-violet-500/25 transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
       >
-        <span className="text-lg group-hover:rotate-12 transition-transform">🎁</span>
+        <GiftIcon className="w-6 h-6 shrink-0" />
         <div>
           <div className="text-sm">{t('travel.surprise_me')}</div>
           <div className="text-[10px] font-normal opacity-80">{t('travel.surprise_me.hint')}</div>
@@ -205,7 +204,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
               </h4>
 
               <div className="space-y-2">
-                <CollapsibleSection title={t('travel.category.scenery')} icon="🏞️">
+                <CollapsibleSection title={t('travel.category.scenery')}>
                   <div className="space-y-4 pt-2">
                     {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(
                       (continent) => {
@@ -237,7 +236,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   </div>
                 </CollapsibleSection>
 
-                <CollapsibleSection title={t('travel.category.food')} icon="🍜">
+                <CollapsibleSection title={t('travel.category.food')}>
                   <div className="space-y-4 pt-2">
                     {(['europe', 'asia', 'namerica', 'samerica', 'oceania', 'africa'] as const).map(
                       (continent) => {
@@ -277,7 +276,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
               </h4>
 
               <div className="space-y-2">
-                <CollapsibleSection title={t('travel.category.scenery')} icon="🏞️">
+                <CollapsibleSection title={t('travel.category.scenery')}>
                   <div className="space-y-4 pt-2">
                     {(['north', 'central', 'south', 'east', 'islands'] as const).map((region) => {
                       const regionalScenes = scenesTaiwan.filter(
@@ -307,7 +306,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   </div>
                 </CollapsibleSection>
 
-                <CollapsibleSection title={t('travel.category.food')} icon="🍜">
+                <CollapsibleSection title={t('travel.category.food')}>
                   <div className="space-y-4 pt-2">
                     {(['north', 'central', 'south', 'east', 'islands'] as const).map((region) => {
                       const regionalScenes = scenesTaiwan.filter(
@@ -477,7 +476,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={o.id}
                   onClick={() => setOutfit(o.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${outfit === o.id ? 'bg-green-600 text-white border-green-500 shadow-lg shadow-green-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${outfit === o.id ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/20' : SCENE_INACTIVE}`}
                 >
                   <span>{o.icon}</span>
                   {t(o.nameKey)}
@@ -537,7 +536,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={r.id}
                   onClick={() => setRelationship(r.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${relationship === r.id ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${relationship === r.id ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/20' : SCENE_INACTIVE}`}
                 >
                   <span>{r.icon}</span>
                   {t(r.nameKey)}
@@ -556,7 +555,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={p.id}
                   onClick={() => setPose(p.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${pose === p.id ? 'bg-rose-600 text-white border-rose-500 shadow-lg shadow-rose-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${pose === p.id ? 'bg-rose-600 text-white border-rose-500 shadow-md shadow-rose-600/20' : SCENE_INACTIVE}`}
                 >
                   <span>{p.icon}</span>
                   {t(p.nameKey)}
@@ -601,7 +600,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                     key={w.id}
                     onClick={() => setWeather(w.id)}
                     disabled={disabled}
-                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-sky-600 text-white border-sky-500 shadow-md shadow-sky-600/20' : SCENE_INACTIVE}`}
                   >
                     <span>{w.icon}</span>
                     {t(w.nameKey)}
@@ -620,7 +619,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                     key={tod.id}
                     onClick={() => setTimeOfDay(tod.id)}
                     disabled={disabled}
-                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-orange-600 text-white border-orange-500 shadow-md shadow-orange-600/20' : SCENE_INACTIVE}`}
                   >
                     <span>{tod.icon}</span>
                     {t(tod.nameKey)}
@@ -674,7 +673,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={s.id}
                   onClick={() => setStyle(s.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 shadow-lg shadow-amber-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 shadow-md shadow-amber-600/20' : SCENE_INACTIVE}`}
                 >
                   {t(s.nameKey)}
                 </button>
@@ -692,7 +691,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={f.id}
                   onClick={() => setFraming(f.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${framing === f.id ? 'bg-teal-600 text-white border-teal-500 shadow-lg shadow-teal-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${framing === f.id ? 'bg-teal-600 text-white border-teal-500 shadow-md shadow-teal-600/20' : SCENE_INACTIVE}`}
                 >
                   <span>{f.icon}</span>
                   {t(f.nameKey)}
@@ -711,16 +710,17 @@ const TravelForm: React.FC<TravelFormProps> = ({
               <button
                 onClick={() => setVibe('none')}
                 disabled={disabled}
-                className={`${SCENE_BTN} ${vibe === 'none' ? 'bg-gray-600 text-white border-gray-500' : SCENE_INACTIVE}`}
+                className={`${SCENE_BTN} ${vibe === 'none' ? 'bg-slate-600 text-white border-slate-500' : SCENE_INACTIVE}`}
               >
-                ✨ {t('common.none')}
+                <SparklesIcon className="w-4 h-4" />
+                {t('common.none')}
               </button>
               {TRAVEL_VIBE_OPTIONS.map((v) => (
                 <button
                   key={v.id}
                   onClick={() => setVibe(v.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${vibe === v.id ? 'bg-purple-600 text-white border-purple-500 shadow-lg shadow-purple-600/20 scale-[1.02]' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${vibe === v.id ? 'bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-600/20' : SCENE_INACTIVE}`}
                 >
                   <span>{v.icon}</span>
                   {t(v.nameKey)}
@@ -768,7 +768,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   disabled={disabled}
                   className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
                 >
-                  ✕ {t('travel.ref_image.remove')}
+                  {t('travel.ref_image.remove')}
                 </button>
               </div>
             ) : (

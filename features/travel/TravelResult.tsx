@@ -5,6 +5,15 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import {
+  DownloadIcon,
+  EditIcon,
+  RefreshIcon,
+  SparklesIcon,
+  TravelIcon,
+  UsersIcon,
+} from '../../components/icons';
+import { TRAVEL_PANEL } from './travelUi';
 
 import {
   TRAVEL_OUTFIT_OPTIONS,
@@ -63,7 +72,9 @@ const TravelResult: React.FC<TravelResultProps> = ({
   const m = resultMetadata;
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-2xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
+    <div
+      className={`flex flex-col items-center gap-6 w-full max-w-2xl motion-safe:animate-fade-in p-6 ${TRAVEL_PANEL}`}
+    >
       <div className="text-center w-full">
         <h3 className="text-xl font-bold text-white">{t('travel.title')}</h3>
       </div>
@@ -79,8 +90,8 @@ const TravelResult: React.FC<TravelResultProps> = ({
         <div className="w-full bg-black/20 rounded-2xl p-5 border border-white/5 space-y-6">
           {/* Top Row: Scene Information */}
           <div className="flex items-start gap-4 border-b border-gray-700/30 pb-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-xl shadow-inner shrink-0">
-              📍
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shadow-inner shrink-0">
+              <TravelIcon className="w-5 h-5 text-sky-300" />
             </div>
             <div className="space-y-0.5">
               <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">
@@ -134,7 +145,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                 {m.relationship !== 'default' && (
                   <div className="flex items-center gap-3 text-base text-gray-200 group">
                     <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                      👥
+                      <UsersIcon className="w-4 h-4" />
                     </span>
                     <span className="text-gray-500 text-xs min-w-[60px]">
                       {t('travel.label.relationship')}
@@ -195,7 +206,8 @@ const TravelResult: React.FC<TravelResultProps> = ({
                 {m.clearBackground && (
                   <div className="pt-1">
                     <div className="flex items-center gap-2 text-[10px] font-black text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded uppercase tracking-widest w-fit">
-                      <span>✨ {t('travel.label.clear_background')}</span>
+                      <SparklesIcon className="w-3 h-3" />
+                      <span>{t('travel.label.clear_background')}</span>
                     </div>
                   </div>
                 )}
@@ -207,21 +219,27 @@ const TravelResult: React.FC<TravelResultProps> = ({
 
       <div className="flex flex-wrap items-center justify-center gap-3 w-full border-t border-gray-700/50 pt-6">
         <button
+          type="button"
           onClick={onDownload}
-          className="bg-gradient-to-br from-green-600 to-green-500 text-white font-bold py-3 px-5 rounded-lg transition-all duration-200 shadow-lg shadow-green-500/20 hover:shadow-green-500/40 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+          className="inline-flex items-center gap-2 bg-gradient-to-br from-emerald-600 to-emerald-500 text-white font-bold py-3 px-5 rounded-xl transition-colors duration-200 shadow-md shadow-emerald-500/20 hover:from-emerald-500 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900"
         >
+          <DownloadIcon className="w-5 h-5" />
           {t('travel.download')}
         </button>
         <button
+          type="button"
           onClick={onAgain}
-          className="bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-lg transition-colors duration-200 hover:bg-white/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+          className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900"
         >
+          <RefreshIcon className="w-5 h-5" />
           {t('travel.again')}
         </button>
         <button
+          type="button"
           onClick={() => onEditInEditor(result)}
-          className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-5 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+          className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-5 rounded-xl transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900"
         >
+          <EditIcon className="w-5 h-5" />
           {t('travel.edit_in_editor')}
         </button>
       </div>

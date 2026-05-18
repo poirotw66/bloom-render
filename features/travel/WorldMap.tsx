@@ -8,6 +8,7 @@ import type { TravelScene } from '../../types';
 import type { TravelSceneCategory } from '../../constants/travel';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { publicAssetUrl } from '../../utils/publicAsset';
+import { FoodBowlIcon } from '../../components/icons';
 
 interface WorldMapProps {
   scenes: TravelScene[];
@@ -148,14 +149,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 >
                   {/* Icon or Inner dot */}
                   {isFood ? (
-                    <span
-                      className="text-[10px] select-none"
-                      style={{
-                        color: isSelected || isHovered ? '#fff' : 'rgba(249, 115, 22, 0.6)',
-                      }}
-                    >
-                      🍜
-                    </span>
+                    <FoodBowlIcon
+                      className={`w-3.5 h-3.5 ${isSelected || isHovered ? 'text-white' : 'text-orange-400/80'}`}
+                    />
                   ) : (
                     <span
                       className="rounded-full"

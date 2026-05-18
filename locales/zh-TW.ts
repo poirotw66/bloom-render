@@ -443,6 +443,8 @@ export const zhTWMessages: Record<string, string> = {
   'travel.vibe.romantic': '浪漫',
   'travel.mode.single': '個人旅拍',
   'travel.mode.group': '多人合照',
+  'travel.add_person': '新增人物',
+  'travel.group_upload_tip': '提示：臉部清楚的多人照片，AI 合成效果最佳。',
   'travel.label.group_upload': '上傳人物照片 (最多 4 人)',
   'travel.error_no_images': '請至少挑選一張人物照片',
   'travel.status.group_analyzing': '正在分析多位成員特徵...',

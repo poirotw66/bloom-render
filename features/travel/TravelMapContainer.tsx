@@ -10,6 +10,8 @@ import { TravelSceneCategory } from '../../constants/travel';
 import type { TravelScene } from '../../types';
 import WorldMap from './WorldMap';
 import TaiwanMap from './TaiwanMap';
+import { FoodBowlIcon, GlobeAltIcon, SparklesIcon, TravelIcon } from '../../components/icons';
+import { TRAVEL_PANEL, TRAVEL_SEGMENT_TRACK } from './travelUi';
 import {
   TRAVEL_WEATHER_OPTIONS,
   TRAVEL_TIME_OPTIONS,
@@ -90,7 +92,9 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('scenery');
 
   return (
-    <div className="w-full flex flex-col gap-6 animate-fade-in bg-gradient-to-br from-gray-800/60 to-gray-900/60 p-4 rounded-xl border border-gray-700/50 backdrop-blur-sm shadow-2xl">
+    <div
+      className={`w-full flex flex-col gap-6 motion-safe:animate-fade-in p-4 md:p-5 ${TRAVEL_PANEL}`}
+    >
       {/* Header with toggle */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
@@ -100,26 +104,30 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
           <p className="text-xs text-gray-500">{t('travel.map_instruction')}</p>
         </div>
 
-        <div className="flex bg-gray-950/50 p-1 rounded-xl border border-gray-700/50 shadow-inner overflow-hidden">
+        <div className={`${TRAVEL_SEGMENT_TRACK} overflow-hidden`}>
           <button
+            type="button"
             onClick={() => setMapType('world')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 flex items-center gap-2 ${
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
               mapType === 'world'
-                ? 'bg-gradient-to-br from-amber-600 to-amber-500 text-white shadow-lg shadow-amber-500/30'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                ? 'bg-gradient-to-br from-sky-600 to-cyan-600 text-white shadow-md shadow-sky-600/30'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
-            🌍 {t('travel.map_world')}
+            <GlobeAltIcon className="w-4 h-4" />
+            {t('travel.map_world')}
           </button>
           <button
+            type="button"
             onClick={() => setMapType('taiwan')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 flex items-center gap-2 ${
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
               mapType === 'taiwan'
-                ? 'bg-gradient-to-br from-amber-600 to-amber-500 text-white shadow-lg shadow-amber-500/30'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                ? 'bg-gradient-to-br from-sky-600 to-cyan-600 text-white shadow-md shadow-sky-600/30'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
-            🏝️ {t('travel.map_taiwan')}
+            <TravelIcon className="w-4 h-4" />
+            {t('travel.map_taiwan')}
           </button>
         </div>
       </div>
@@ -131,7 +139,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all duration-200 ${
+              className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-colors duration-200 cursor-pointer ${
                 categoryFilter === cat
                   ? cat === 'food'
                     ? 'bg-orange-600/80 text-white shadow-sm'
@@ -139,9 +147,6 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                   : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
               }`}
             >
-              {cat === 'scenery' && '🏞️ '}
-              {cat === 'food' && '🍜 '}
-              {cat === 'all' && '✨ '}
               {t(`travel.category.${cat}`)}
             </button>
           ))}
@@ -420,7 +425,8 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                   : 'bg-gray-800/40 border-gray-700/50 text-gray-400'
                               }`}
                             >
-                              ✨ {t('common.none') || 'Default'}
+                              <SparklesIcon className="w-3.5 h-3.5" />
+                              {t('common.none') || 'Default'}
                             </button>
                             {sortedVibes.map((opt) => (
                               <button
@@ -460,7 +466,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                   : 'bg-orange-500/10 border-orange-500/30';
                 const borderCls = isScenery ? 'border-amber-500/20' : 'border-orange-500/20';
                 const titleCls = isScenery ? 'text-amber-400' : 'text-orange-400';
-                const icon = isScenery ? '📍' : '🍜';
+                const CategoryIcon = isScenery ? TravelIcon : FoodBowlIcon;
                 return (
                   <div
                     className={`animate-slide-up flex flex-col sm:flex-row gap-4 p-4 ${cardBg} border rounded-xl backdrop-blur-md`}
@@ -483,7 +489,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                     )}
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">{icon}</span>
+                        <CategoryIcon className={`w-5 h-5 shrink-0 ${titleCls}`} />
                         <h4 className={`font-bold ${titleCls}`}>{name}</h4>
                       </div>
                       <p className="text-sm text-gray-300 leading-relaxed italic">「{descText}」</p>

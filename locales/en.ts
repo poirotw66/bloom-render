@@ -471,6 +471,8 @@ export const enMessages: Record<string, string> = {
   'travel.vibe.romantic': 'Romantic',
   'travel.mode.single': 'Single Person',
   'travel.mode.group': 'Group / Couple',
+  'travel.add_person': 'Add person',
+  'travel.group_upload_tip': 'Tip: Clear face photos work best for group AI generation.',
   'travel.label.group_upload': 'Upload Portraits (Max 4)',
   'travel.error_no_images': "Please upload at least one person's photo",
   'travel.status.group_analyzing': 'Analyzing group features...',
