@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 /* Typography scale (consistent across features): page title = text-4xl→6xl, section = text-xl, body = text-base, label = text-sm, caption = text-xs. Body text uses leading-relaxed for readability. */
 #root {
   font-size: 16px;

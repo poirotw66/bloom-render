@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useCallback, useMemo } from 'react';
 
 type Language = 'en' | 'zh-TW';
 
@@ -1094,6 +1094,9 @@ const translations: Record<Language, Record<string, string>> = {
     'settings.model.flash31': 'Gemini 3.1 Flash',
     'settings.model.pro': 'Gemini 3 Pro',
     'settings.theme': 'Theme',
+    'settings.motion.enable': 'Background animations',
+    'settings.motion.enable_desc':
+      'Stars, petals, and gradient motion on the page background. Off by default for smoother performance.',
     'settings.language': 'Language',
     'settings.language.en': 'English',
     'settings.language.zh': 'Traditional Chinese',
@@ -2125,6 +2128,8 @@ const translations: Record<Language, Record<string, string>> = {
     'settings.model.flash31': 'Gemini 3.1 Flash',
     'settings.model.pro': 'Gemini 3 Pro',
     'settings.theme': '主題',
+    'settings.motion.enable': '背景動畫',
+    'settings.motion.enable_desc': '頁面背景的星空、花瓣與漸層動態效果。預設關閉以提升流暢度。',
     'settings.language': '語言',
     'settings.language.en': '英文',
     'settings.language.zh': '繁體中文',
@@ -2163,16 +2168,17 @@ function interpolate(template: string, vars: Record<string, string | number>): s
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  const t = (key: string, vars?: Record<string, string | number>) => {
-    const raw = translations[language][key] || key;
-    return vars ? interpolate(raw, vars) : raw;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
+  const t = useCallback(
+    (key: string, vars?: Record<string, string | number>) => {
+      const raw = translations[language][key] || key;
+      return vars ? interpolate(raw, vars) : raw;
+    },
+    [language],
   );
+
+  const value = useMemo(() => ({ language, setLanguage, t }), [language, t]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
 
 export const useLanguage = () => {

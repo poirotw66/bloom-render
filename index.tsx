@@ -5,12 +5,20 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.css';
+import 'react-image-crop/dist/ReactCrop.css';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { useBackgroundMotionPause } from './hooks/useBackgroundMotionPause';
+
+function AppWithMotionPause() {
+  useBackgroundMotionPause();
+  return <App />;
+}
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -27,7 +35,7 @@ root.render(
         <ThemeProvider>
           <SettingsProvider>
             <LanguageProvider>
-              <App />
+              <AppWithMotionPause />
             </LanguageProvider>
           </SettingsProvider>
         </ThemeProvider>

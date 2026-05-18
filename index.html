@@ -10,17 +10,12 @@
     <meta property="og:image" content="./og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="./og.png" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "react/": "https://esm.sh/react@^19.1.0/",
-          "react": "https://esm.sh/react@^19.1.0",
-          "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-          "@google/genai": "https://esm.sh/@google/genai@^1.10.0",
-          "react-image-crop": "https://esm.sh/react-image-crop@^11.0.6"
+    <script>
+      try {
+        if (localStorage.getItem('pixshop_background_motion') !== 'true') {
+          document.documentElement.classList.add('background-motion-off');
         }
-      }
+      } catch (_) {}
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,7 +23,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://esm.sh/react-image-crop@^11.0.6/dist/ReactCrop.css" />
     <style>
       :root {
         /* Bloom palette (logo-aligned: warm → cool) */
@@ -616,8 +610,69 @@
           animation-timing-function: ease-in-out;
         }
       }
+
+      /* Pause heavy background animations when tab is hidden or user prefers less motion */
+      html.animations-paused body,
+      html.animations-paused #stars1,
+      html.animations-paused #stars2,
+      html.animations-paused #stars3,
+      html.animations-paused #shooting-stars .star,
+      html.animations-paused .bloom-petal-orb,
+      html.animations-paused .falling-petal {
+        animation-play-state: paused !important;
+      }
+
+      html.reduce-motion body,
+      html.reduce-motion #stars1,
+      html.reduce-motion #stars2,
+      html.reduce-motion #stars3,
+      html.reduce-motion #shooting-stars .star,
+      html.reduce-motion .bloom-petal-orb,
+      html.reduce-motion .falling-petal,
+      html.background-motion-off body,
+      html.background-motion-off #stars1,
+      html.background-motion-off #stars2,
+      html.background-motion-off #stars3,
+      html.background-motion-off #shooting-stars .star,
+      html.background-motion-off .bloom-petal-orb,
+      html.background-motion-off .falling-petal {
+        animation: none !important;
+      }
+
+      html.reduce-motion body,
+      html.background-motion-off body {
+        background-size: 100% 100% !important;
+        animation: none !important;
+      }
+
+      /* Hide petal layers when motion is off (avoids frozen petals at translateY(-10%)) */
+      html.background-motion-off #bloom-falling-petals,
+      html.background-motion-off #bloom-petals,
+      html.reduce-motion #bloom-falling-petals,
+      html.reduce-motion #bloom-petals,
+      html.animations-paused #bloom-falling-petals {
+        display: none !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        body,
+        #stars1,
+        #stars2,
+        #stars3,
+        #shooting-stars .star,
+        .bloom-petal-orb,
+        .falling-petal {
+          animation: none !important;
+        }
+        body {
+          background-size: 100% 100% !important;
+        }
+        #bloom-falling-petals,
+        #bloom-petals {
+          display: none !important;
+        }
+      }
     </style>
-    <link rel="stylesheet" href="./index.css" />
   </head>
   <body>
     <div id="bloom-petals" aria-hidden="true">

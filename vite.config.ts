@@ -1,6 +1,7 @@
 import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
@@ -11,7 +12,7 @@ export default defineConfig(({ mode }) => {
       port: 3002,
       host: '0.0.0.0',
     },
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -22,6 +23,9 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
+              if (id.includes('@google/genai')) {
+                return 'gemini-sdk';
+              }
               return 'vendor';
             }
           },

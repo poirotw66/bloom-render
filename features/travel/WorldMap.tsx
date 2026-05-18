@@ -42,7 +42,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         draggable={false}
         decoding="async"
-        fetchPriority="high"
+        fetchPriority="low"
       />
 
       {/* Subtle overlay for better marker visibility */}
@@ -183,7 +183,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 >
                   <div className="flex flex-col gap-2">
                     {/* Preview Image */}
-                    {scene.referenceImagePath && (
+                    {scene.referenceImagePath && (isHovered || isSelected) && (
                       <div className="w-full aspect-video rounded-md overflow-hidden bg-gray-800 border border-white/10">
                         <img
                           src={publicAssetUrl(scene.referenceImagePath)}

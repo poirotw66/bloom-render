@@ -193,4 +193,4 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

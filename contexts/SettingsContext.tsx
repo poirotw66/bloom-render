@@ -19,6 +19,8 @@ interface SettingsContextType {
   setEnableImageCompression: (enabled: boolean) => void;
   compressionThresholdMB: number;
   setCompressionThresholdMB: (threshold: number) => void;
+  enableBackgroundMotion: boolean;
+  setEnableBackgroundMotion: (enabled: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -27,18 +29,21 @@ const STORAGE_KEY_API_KEY = 'pixshop_api_key';
 const STORAGE_KEY_MODEL = 'pixshop_model';
 const STORAGE_KEY_COMPRESSION_ENABLED = 'pixshop_compression_enabled';
 const STORAGE_KEY_COMPRESSION_THRESHOLD = 'pixshop_compression_threshold';
+const STORAGE_KEY_BACKGROUND_MOTION = 'pixshop_background_motion';
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [apiKey, setApiKeyState] = useState<string>('');
   const [model, setModelState] = useState<ModelType>('gemini-2.5-flash-image');
   const [enableImageCompression, setEnableImageCompressionState] = useState<boolean>(true);
   const [compressionThresholdMB, setCompressionThresholdMBState] = useState<number>(5);
+  const [enableBackgroundMotion, setEnableBackgroundMotionState] = useState<boolean>(false);
 
   useEffect(() => {
     const storedKey = localStorage.getItem(STORAGE_KEY_API_KEY);
     const storedModel = localStorage.getItem(STORAGE_KEY_MODEL);
     const storedCompressionEnabled = localStorage.getItem(STORAGE_KEY_COMPRESSION_ENABLED);
     const storedCompressionThreshold = localStorage.getItem(STORAGE_KEY_COMPRESSION_THRESHOLD);
+    const storedBackgroundMotion = localStorage.getItem(STORAGE_KEY_BACKGROUND_MOTION);
 
     if (storedKey) setApiKeyState(storedKey);
     const validModels: ModelType[] = [
@@ -57,6 +62,9 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       if (!isNaN(threshold) && threshold > 0) {
         setCompressionThresholdMBState(threshold);
       }
+    }
+    if (storedBackgroundMotion === 'true') {
+      setEnableBackgroundMotionState(true);
     }
   }, []);
 
@@ -80,6 +88,11 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(STORAGE_KEY_COMPRESSION_THRESHOLD, String(threshold));
   };
 
+  const setEnableBackgroundMotion = (enabled: boolean) => {
+    setEnableBackgroundMotionState(enabled);
+    localStorage.setItem(STORAGE_KEY_BACKGROUND_MOTION, String(enabled));
+  };
+
   const value = useMemo(
     () => ({
       apiKey,
@@ -90,8 +103,10 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       setEnableImageCompression,
       compressionThresholdMB,
       setCompressionThresholdMB,
+      enableBackgroundMotion,
+      setEnableBackgroundMotion,
     }),
-    [apiKey, model, enableImageCompression, compressionThresholdMB],
+    [apiKey, model, enableImageCompression, compressionThresholdMB, enableBackgroundMotion],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

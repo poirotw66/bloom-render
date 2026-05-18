@@ -23,6 +23,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     setEnableImageCompression,
     compressionThresholdMB,
     setCompressionThresholdMB,
+    enableBackgroundMotion,
+    setEnableBackgroundMotion,
   } = useSettings();
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
@@ -163,6 +165,46 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                       </div>
                     </button>
                   ))}
+                </div>
+                <div
+                  className={`mt-4 pt-4 border-t flex items-start gap-3 ${
+                    theme === 'newyear'
+                      ? 'border-red-700/50'
+                      : theme === 'bloom'
+                        ? 'border-fuchsia-500/20'
+                        : 'border-gray-700'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    id="enable-background-motion"
+                    checked={enableBackgroundMotion}
+                    onChange={(e) => setEnableBackgroundMotion(e.target.checked)}
+                    className={`mt-1 w-4 h-4 rounded focus:ring-2 ${
+                      theme === 'newyear'
+                        ? 'text-red-600 bg-red-900/50 border-red-700 focus:ring-red-500'
+                        : theme === 'bloom'
+                          ? 'text-fuchsia-600 bg-gray-900 border-gray-600 focus:ring-fuchsia-500'
+                          : 'text-blue-600 bg-gray-900 border-gray-600 focus:ring-blue-500'
+                    }`}
+                  />
+                  <div className="flex-1">
+                    <label
+                      htmlFor="enable-background-motion"
+                      className={`block text-sm font-medium mb-1 ${
+                        theme === 'newyear' ? 'text-red-200' : 'text-gray-300'
+                      }`}
+                    >
+                      {t('settings.motion.enable')}
+                    </label>
+                    <p
+                      className={`text-xs ${
+                        theme === 'newyear' ? 'text-red-300' : 'text-gray-500'
+                      }`}
+                    >
+                      {t('settings.motion.enable_desc')}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
