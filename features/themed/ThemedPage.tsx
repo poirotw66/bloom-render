@@ -14,6 +14,15 @@ import ThemedUploadSection from './ThemedUploadSection';
 import ThemedResult from './ThemedResult';
 import QuantitySelector from '../../components/QuantitySelector';
 import OutputSizeRatioSelector from '../../components/OutputSizeRatioSelector';
+import {
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
+} from '../../utils/uiClasses';
 
 interface ThemedPageProps {
   onImageSelected: (file: File) => void;
@@ -23,12 +32,6 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
   const themed = useThemed();
-  const surface =
-    theme === 'newyear'
-      ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
-      : theme === 'bloom'
-        ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
-        : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
 
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
@@ -40,27 +43,13 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
   const hasMultipleResults = resultCount > 1;
 
   return (
-    <div
-      className={`w-full max-w-5xl mx-auto text-center px-4 py-6 sm:p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}
-    >
+    <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
-            <span
-              className={`${
-                theme === 'newyear'
-                  ? 'text-red-200'
-                  : theme === 'bloom'
-                    ? 'text-fuchsia-200'
-                    : 'text-purple-200'
-              }`}
-            >
-              {t('themed.title')}
-            </span>
+          <h1 className={UI_TITLE}>
+            <span className={getTitleAccent(theme)}>{t('themed.title')}</span>
           </h1>
-          <p className="max-w-2xl text-lg text-gray-300 md:text-xl leading-relaxed">
-            {t('themed.subtitle')}
-          </p>
+          <p className={UI_SUBTITLE}>{t('themed.subtitle')}</p>
         </header>
 
         {themed.themedResults && themed.themedResults.length > 0 ? (
@@ -68,16 +57,14 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
             <div className="flex flex-wrap items-center justify-center gap-3">
               {hasMultipleResults && (
                 <button
+                  type="button"
                   onClick={themed.handleThemedBatchDownload}
-                  className="px-5 py-2.5 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition-colors text-sm shadow-lg shadow-green-600/20"
+                  className={UI_BTN_SUCCESS}
                 >
                   💾 {t('history.batch_download')} ({resultCount})
                 </button>
               )}
-              <button
-                onClick={themed.clearThemedResult}
-                className="px-5 py-2.5 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors text-sm border border-gray-600"
-              >
+              <button type="button" onClick={themed.clearThemedResult} className={UI_BTN_SECONDARY}>
                 {t('couple_group.again')}
               </button>
             </div>

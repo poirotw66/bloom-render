@@ -13,6 +13,7 @@ import {
 } from '../../constants/photographyService';
 import ServiceCard from './ServiceCard';
 import { PhotographyServiceItem } from './types';
+import { UI_CHIP_ACTIVE, UI_CHIP_INACTIVE, UI_SUBTITLE, UI_TITLE } from '../../utils/uiClasses';
 
 const FEATURED_SERVICE_IDS = [
   'id-photo-natural',
@@ -73,15 +74,13 @@ const PhotographyServicePage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col items-center gap-8 animate-fade-in">
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center gap-8 animate-fade-in px-4 py-6 sm:px-0">
       <div className="text-center space-y-4">
-        <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl">
+        <h1 className={UI_TITLE}>
           {t('service.title_part1')}{' '}
           <span className="text-blue-400">{t('service.title_part2')}</span>
         </h1>
-        <p className="max-w-2xl mx-auto text-lg text-gray-400 md:text-xl">
-          {t('service.subtitle')}
-        </p>
+        <p className={UI_SUBTITLE}>{t('service.subtitle')}</p>
       </div>
 
       <section className="w-full p-6 md:p-8 rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-600/10 via-indigo-600/10 to-purple-600/10 shadow-xl">
@@ -154,12 +153,9 @@ const PhotographyServicePage: React.FC = () => {
         {PHOTOGRAPHY_SERVICE_CATEGORIES.map((category) => (
           <button
             key={category.id}
+            type="button"
             onClick={() => setActiveCategoryId(category.id)}
-            className={`px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 border ${
-              activeCategoryId === category.id
-                ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20'
-                : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-600'
-            }`}
+            className={activeCategoryId === category.id ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
           >
             {t(category.labelKey)}
           </button>

@@ -15,6 +15,13 @@ import TryOnOutputOptions from './TryOnOutputOptions';
 import TryOnUploadSection from './TryOnUploadSection';
 import TryOnResult from './TryOnResult';
 import { useTryOn } from './useTryOn';
+import {
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+} from '../../utils/uiClasses';
 
 interface TryOnPageProps {
   onImageSelected: (file: File) => void;
@@ -30,15 +37,13 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
   const hasMultipleResults = resultList.length > 1;
 
   return (
-    <div className="w-full max-w-5xl mx-auto text-center px-4 py-6 sm:p-8 transition-all duration-300 rounded-2xl border-2 border-transparent">
+    <div className={`${UI_PAGE} border-transparent shadow-none`}>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
+          <h1 className={UI_TITLE}>
             {t('tryon.title_part1')} <span className="text-teal-400">{t('tryon.title_part2')}</span>
           </h1>
-          <p className="max-w-2xl text-lg text-gray-300 md:text-xl leading-relaxed">
-            {t('tryon.subtitle')}
-          </p>
+          <p className={UI_SUBTITLE}>{t('tryon.subtitle')}</p>
         </header>
 
         {!hasApiKey && (
@@ -55,16 +60,12 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
                 <button
                   type="button"
                   onClick={tryOn.handleBatchDownload}
-                  className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-bold transition-colors text-sm shadow-lg shadow-teal-600/20"
+                  className={UI_BTN_SUCCESS}
                 >
                   💾 {t('tryon.batch_download')} ({resultList.length})
                 </button>
               )}
-              <button
-                type="button"
-                onClick={tryOn.clearResult}
-                className="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-xl font-bold transition-colors text-sm border border-gray-600"
-              >
+              <button type="button" onClick={tryOn.clearResult} className={UI_BTN_SECONDARY}>
                 {t('tryon.again')}
               </button>
             </div>

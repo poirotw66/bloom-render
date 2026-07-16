@@ -16,6 +16,13 @@ import CoupleGroupResult from './CoupleGroupResult';
 import { useCoupleGroup } from './useCoupleGroup';
 import QuantitySelector from '../../components/QuantitySelector';
 import OutputSizeRatioSelector from '../../components/OutputSizeRatioSelector';
+import {
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+} from '../../utils/uiClasses';
 
 interface CoupleGroupPageProps {
   onImageSelected: (file: File) => void;
@@ -28,16 +35,14 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
   const hasMultipleResults = resultCount > 1;
 
   return (
-    <div className="w-full max-w-5xl mx-auto text-center px-4 py-6 sm:p-8 transition-all duration-300 rounded-2xl border-2 border-transparent">
+    <div className={`${UI_PAGE} border-transparent shadow-none`}>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
+          <h1 className={UI_TITLE}>
             {t('couple_group.title_part1')}{' '}
             <span className="text-pink-400">{t('couple_group.title_part2')}</span>
           </h1>
-          <p className="max-w-2xl text-lg text-gray-300 md:text-xl leading-relaxed">
-            {t('couple_group.subtitle')}
-          </p>
+          <p className={UI_SUBTITLE}>{t('couple_group.subtitle')}</p>
           <CoupleGroupModeTabs mode={coupleGroup.mode} onChange={coupleGroup.setMode} />
         </header>
 
@@ -46,16 +51,14 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {hasMultipleResults && (
                 <button
+                  type="button"
                   onClick={coupleGroup.handleBatchDownload}
-                  className="px-5 py-2.5 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition-colors text-sm shadow-lg shadow-green-600/20"
+                  className={UI_BTN_SUCCESS}
                 >
                   💾 {t('history.batch_download')} ({resultCount})
                 </button>
               )}
-              <button
-                onClick={coupleGroup.clearResult}
-                className="px-5 py-2.5 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors text-sm border border-gray-600"
-              >
+              <button type="button" onClick={coupleGroup.clearResult} className={UI_BTN_SECONDARY}>
                 {t('couple_group.again')}
               </button>
             </div>

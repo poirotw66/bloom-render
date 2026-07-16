@@ -9,16 +9,41 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useHistory, type HistoryItem } from '../../hooks/useHistory';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import {
+  UI_BTN_PRIMARY,
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_CARD_SOFT,
+  UI_CHIP_ACTIVE,
+  UI_CHIP_INACTIVE,
+  UI_INPUT,
+  UI_PAGE_WIDE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
+} from '../../utils/uiClasses';
 
 interface HistoryPageProps {
   onImageSelected: (file: File) => void;
 }
 
-const HISTORY_TYPES = ['all', 'idphoto', 'portrait', 'themed', 'travel', 'couple', 'group'] as const;
+const HISTORY_TYPES = [
+  'all',
+  'idphoto',
+  'portrait',
+  'themed',
+  'travel',
+  'couple',
+  'group',
+] as const;
 
 type HistoryFilterType = (typeof HISTORY_TYPES)[number];
 
-function formatRelativeTime(timestamp: number, t: (key: string, vars?: Record<string, string | number>) => string): string {
+function formatRelativeTime(
+  timestamp: number,
+  t: (key: string, vars?: Record<string, string | number>) => string,
+): string {
   const diffMinutes = Math.floor((Date.now() - timestamp) / 60000);
   if (diffMinutes < 1) return t('history.just_now');
   if (diffMinutes < 60) return t('history.minutes_ago', { count: diffMinutes });
@@ -39,20 +64,6 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
   const { history, removeFromHistory, clearHistory } = useHistory();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeType, setActiveType] = useState<HistoryFilterType>('all');
-
-  const surface =
-    theme === 'newyear'
-      ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
-      : theme === 'bloom'
-        ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
-        : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
-
-  const accent =
-    theme === 'newyear'
-      ? 'text-red-200'
-      : theme === 'bloom'
-        ? 'text-fuchsia-200'
-        : 'text-blue-200';
 
   const filteredHistory = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -98,17 +109,13 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
   };
 
   return (
-    <div
-      className={`w-full max-w-6xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}
-    >
+    <div className={`${UI_PAGE_WIDE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col gap-6 animate-fade-in">
         <div className="space-y-3">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
-            <span className={accent}>{t('history.title')}</span>
+          <h1 className={UI_TITLE}>
+            <span className={getTitleAccent(theme)}>{t('history.title')}</span>
           </h1>
-          <p className="max-w-3xl mx-auto text-lg text-gray-300 md:text-xl leading-relaxed">
-            {t('history.subtitle')}
-          </p>
+          <p className={UI_SUBTITLE}>{t('history.subtitle')}</p>
         </div>
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -117,25 +124,17 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder={t('history.search_placeholder')}
-            className="w-full lg:max-w-md bg-gray-900/50 border border-gray-600 rounded-xl px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+            className={`w-full lg:max-w-md ${UI_INPUT}`}
           />
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             {filteredHistory.length > 1 && (
-              <button
-                type="button"
-                onClick={handleDownloadFiltered}
-                className="px-4 py-2.5 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-500 transition-colors"
-              >
+              <button type="button" onClick={handleDownloadFiltered} className={UI_BTN_SUCCESS}>
                 {t('history.batch_download')}
               </button>
             )}
             {history.length > 0 && (
-              <button
-                type="button"
-                onClick={handleClearAll}
-                className="px-4 py-2.5 rounded-xl bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors"
-              >
+              <button type="button" onClick={handleClearAll} className={UI_BTN_SECONDARY}>
                 {t('history.clear_all')}
               </button>
             )}
@@ -152,11 +151,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
                 key={type}
                 type="button"
                 onClick={() => setActiveType(type)}
-                className={`px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 border ${
-                  isActive
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20'
-                    : 'bg-gray-800/50 border-gray-700 text-gray-300 hover:text-white hover:border-gray-500'
-                }`}
+                className={isActive ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
               >
                 {label}
               </button>
@@ -175,10 +170,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
             {filteredHistory.map((item, index) => (
-              <article
-                key={item.id}
-                className="bg-gray-900/55 border border-gray-700/70 rounded-2xl overflow-hidden shadow-lg"
-              >
+              <article key={item.id} className={UI_CARD_SOFT}>
                 <div className="aspect-square bg-gray-950 flex items-center justify-center">
                   <img
                     src={item.result}
@@ -190,7 +182,9 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
                 <div className="p-4 space-y-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h2 className="text-lg font-bold text-white">{t(`history.type.${item.type}`)}</h2>
+                      <h2 className="text-lg font-bold text-white">
+                        {t(`history.type.${item.type}`)}
+                      </h2>
                       <p className="text-sm text-gray-400">
                         {formatRelativeTime(item.timestamp, t)}
                       </p>
@@ -221,14 +215,14 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
                     <button
                       type="button"
                       onClick={() => handleEdit(item, index)}
-                      className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-500 transition-colors"
+                      className={UI_BTN_PRIMARY}
                     >
                       {t('history.edit')}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDownloadOne(item, index)}
-                      className="px-4 py-2 rounded-xl bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors"
+                      className={UI_BTN_SECONDARY}
                     >
                       {t('history.download')}
                     </button>

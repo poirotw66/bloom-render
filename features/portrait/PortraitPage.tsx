@@ -13,6 +13,15 @@ import PortraitForm from './PortraitForm';
 import PortraitUploadSection from './PortraitUploadSection';
 import PortraitResult from './PortraitResult';
 import QuantitySelector from '../../components/QuantitySelector';
+import {
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
+} from '../../utils/uiClasses';
 
 interface PortraitPageProps {
   onImageSelected: (file: File) => void;
@@ -23,13 +32,6 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
   const { theme } = useTheme();
   const portrait = usePortrait();
 
-  const surface =
-    theme === 'newyear'
-      ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
-      : theme === 'bloom'
-        ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
-        : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
-
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
     const filename = index !== undefined ? `portrait-${index + 1}.png` : 'portrait-export.png';
@@ -37,39 +39,27 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
   };
 
   return (
-    <div
-      className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}
-    >
+    <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-6 animate-fade-in">
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
-          <span
-            className={`${
-              theme === 'newyear'
-                ? 'text-red-200'
-                : theme === 'bloom'
-                  ? 'text-fuchsia-200'
-                  : 'text-blue-200'
-            }`}
-          >
-            {t('portrait.title')}
-          </span>
+        <h1 className={UI_TITLE}>
+          <span className={getTitleAccent(theme)}>{t('portrait.title')}</span>
         </h1>
-        <p className="max-w-3xl text-lg text-gray-300 md:text-xl leading-relaxed">
-          {t('portrait.subtitle')}
-        </p>
+        <p className={UI_SUBTITLE}>{t('portrait.subtitle')}</p>
 
         {portrait.portraitResults && portrait.portraitResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
             <div className="flex items-center justify-center gap-4">
               <button
+                type="button"
                 onClick={portrait.handlePortraitBatchDownload}
-                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+                className={UI_BTN_SUCCESS}
               >
                 💾 {t('history.batch_download')} ({portrait.portraitResults.length})
               </button>
               <button
+                type="button"
                 onClick={portrait.clearPortraitResult}
-                className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors"
+                className={UI_BTN_SECONDARY}
               >
                 {t('portrait.generate_again')}
               </button>

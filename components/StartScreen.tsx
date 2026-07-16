@@ -25,6 +25,16 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import type { ThemeType } from '../contexts/ThemeContext';
 import { applyValidatedImageFile } from '../utils/applyValidatedImageFile';
+import {
+  UI_BTN_GHOST,
+  UI_BTN_PRIMARY,
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+} from '../utils/uiClasses';
 
 type StartTab = 'upload' | 'generate';
 
@@ -85,12 +95,6 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const settings = useSettings();
   const { theme } = useTheme();
   const s = themeStyles[theme];
-  const surface =
-    theme === 'newyear'
-      ? 'bg-red-900/30 border-red-700/50 shadow-red-900/20'
-      : theme === 'bloom'
-        ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
-        : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [generationPrompt, setGenerationPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:4' | '4:3' | '16:9' | '9:16'>('1:1');
@@ -162,7 +166,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
   return (
     <div
-      className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface} ${isDraggingOver && tab === 'upload' ? s.drag : ''}`}
+      className={`${UI_PAGE} ${getPageSurface(theme)} ${isDraggingOver && tab === 'upload' ? s.drag : ''}`}
       onDragOver={(e) => {
         if (tab === 'upload') {
           e.preventDefault();
@@ -187,7 +191,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain drop-shadow-lg"
           aria-hidden="true"
         />
-        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
+        <h1 className={UI_TITLE}>
           {t('start.title_part1')}{' '}
           <span className={`bg-gradient-to-r ${s.titleGradient} bg-clip-text text-transparent`}>
             {t('start.title_part2')}
@@ -197,9 +201,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         <p className={`text-base md:text-lg ${s.slogan} font-medium italic mt-1`}>
           {t('app.slogan')}
         </p>
-        <p className="max-w-3xl text-lg text-gray-200 md:text-xl leading-relaxed">
-          {t('start.subtitle')}
-        </p>
+        <p className={UI_SUBTITLE}>{t('start.subtitle')}</p>
 
         {tab === 'upload' ? (
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
@@ -232,20 +234,12 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             <h3 className="text-xl font-bold text-white">{t('start.select_image')}</h3>
             <div className="flex flex-wrap items-center justify-center gap-3 w-full">
               {generatedImages.length > 1 && (
-                <button
-                  type="button"
-                  onClick={handleDownloadAllZip}
-                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-500/20 ${theme === 'bloom' ? 'focus:ring-green-500' : theme === 'newyear' ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
-                >
+                <button type="button" onClick={handleDownloadAllZip} className={UI_BTN_SUCCESS}>
                   <DownloadIcon className="w-5 h-5" />
                   {t('start.download_all_zip')}
                 </button>
               )}
-              <button
-                type="button"
-                onClick={() => setGeneratedImages([])}
-                className="text-gray-300 hover:text-white underline underline-offset-4 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 rounded px-2 py-1"
-              >
+              <button type="button" onClick={() => setGeneratedImages([])} className={UI_BTN_GHOST}>
                 {t('start.generate_new')}
               </button>
             </div>
@@ -278,13 +272,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                       <button
                         type="button"
                         onClick={() => handleSelectGenerated(url, idx)}
-                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold transition-colors duration-200 text-white ${
-                          theme === 'newyear'
-                            ? 'bg-red-600 hover:bg-red-500'
-                            : theme === 'bloom'
-                              ? 'bg-fuchsia-600 hover:bg-fuchsia-500'
-                              : 'bg-blue-600 hover:bg-blue-500'
-                        }`}
+                        className={UI_BTN_PRIMARY}
                         aria-label={`${t('start.edit_this')} ${idx + 1}`}
                       >
                         <EditIcon className="w-4 h-4" />
@@ -293,7 +281,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                       <button
                         type="button"
                         onClick={() => handleDownloadOne(url, idx)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold bg-white/90 text-gray-900 hover:bg-white transition-colors duration-200 shadow-lg"
+                        className={UI_BTN_SECONDARY}
                         aria-label={t('start.download_image')}
                       >
                         <DownloadIcon className="w-4 h-4" />

@@ -14,6 +14,13 @@ import BatchUploadSection from '../../components/BatchUploadSection';
 import BatchProgress from '../../components/BatchProgress';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+} from '../../utils/uiClasses';
+import {
   DEFAULT_ID_TYPE,
   DEFAULT_RETOUCH_LEVEL,
   DEFAULT_OUTPUT_SPEC,
@@ -54,9 +61,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   const [idPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
   const [idPhotoClothingOption] = useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
   const [idPhotoClothingCustomText] = useState('');
-  const [idPhotoClothingReferenceFile] = useState<File | null>(
-    null,
-  );
+  const [idPhotoClothingReferenceFile] = useState<File | null>(null);
 
   // Generate preview URLs
   useEffect(() => {
@@ -146,14 +151,12 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   }, [batch.results]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto text-center p-8">
+    <div className={`${UI_PAGE} border-transparent shadow-none`}>
       <div className="flex flex-col items-center gap-6">
-        <h1 className="text-5xl font-extrabold tracking-tight text-gray-100 sm:text-6xl">
+        <h1 className={UI_TITLE}>
           {t('start.title_part1')} <span className="text-emerald-400">{t('batch.title')}</span>
         </h1>
-        <p className="max-w-2xl text-lg text-gray-400 md:text-xl leading-relaxed">
-          {t('batch.upload_hint', { min: 1, max: 10 })}
-        </p>
+        <p className={UI_SUBTITLE}>{t('batch.upload_hint', { min: 1, max: 10 })}</p>
 
         {batch.isProcessing ? (
           <BatchProgress
@@ -166,18 +169,16 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
         ) : batch.results.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
             <div className="flex items-center justify-center gap-4">
-              <button
-                onClick={handleBatchDownload}
-                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
-              >
+              <button type="button" onClick={handleBatchDownload} className={UI_BTN_SUCCESS}>
                 💾 {t('history.batch_download')} ({batch.results.length})
               </button>
               <button
+                type="button"
                 onClick={() => {
                   batch.reset();
                   setFiles([]);
                 }}
-                className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors"
+                className={UI_BTN_SECONDARY}
               >
                 {t('start.idphoto_again')}
               </button>

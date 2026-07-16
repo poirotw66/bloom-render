@@ -15,6 +15,16 @@ import IdPhotoForm from './IdPhotoForm';
 import IdPhotoUploadSection from './IdPhotoUploadSection';
 import IdPhotoResult from './IdPhotoResult';
 import QuantitySelector from '../../components/QuantitySelector';
+import {
+  UI_BTN_GHOST,
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
+} from '../../utils/uiClasses';
 
 interface IdPhotoPageProps {
   onImageSelected: (file: File) => void;
@@ -26,13 +36,6 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
   const navigate = useNavigate();
   const id = useIdPhoto();
 
-  const surface =
-    theme === 'newyear'
-      ? 'bg-red-900/30 border-red-700/50 shadow-red-900/25'
-      : theme === 'bloom'
-        ? 'bg-gray-900/40 border-fuchsia-500/15 shadow-fuchsia-500/10'
-        : 'bg-black/60 border-slate-700/60 shadow-slate-900/30';
-
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
     const filename = index !== undefined ? `id-photo-${index + 1}.png` : 'id-photo-export.png';
@@ -40,58 +43,38 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
   };
 
   return (
-    <div
-      className={`w-full max-w-5xl mx-auto text-center p-8 transition-all duration-300 rounded-2xl border-2 shadow-xl backdrop-blur-xl ${surface}`}
-    >
+    <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-6 animate-fade-in">
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-100 sm:text-5xl md:text-6xl">
-          <span
-            className={`${
-              theme === 'newyear'
-                ? 'text-red-200'
-                : theme === 'bloom'
-                  ? 'text-fuchsia-200'
-                  : 'text-blue-200'
-            }`}
-          >
-            {t('idphoto.title')}
-          </span>
+        <h1 className={UI_TITLE}>
+          <span className={getTitleAccent(theme)}>{t('idphoto.title')}</span>
         </h1>
-        <p className="max-w-3xl text-lg text-gray-300 md:text-xl leading-relaxed">
-          {t('idphoto.subtitle')}
-        </p>
+        <p className={UI_SUBTITLE}>{t('idphoto.subtitle')}</p>
 
-        {!id.idPhotoResult && (!id.idPhotoResults || id.idPhotoResults.length === 0) && !id.idPhotoLoading && (
-          <div className="w-full flex justify-center">
-            <button
-              type="button"
-              onClick={() => navigate(ROUTES.ID_PHOTO_BATCH)}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold border transition-colors duration-200 ${
-                theme === 'newyear'
-                  ? 'border-red-500/40 bg-red-500/10 text-red-100 hover:bg-red-500/20'
-                  : theme === 'bloom'
-                    ? 'border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-100 hover:bg-fuchsia-500/20'
-                    : 'border-blue-500/40 bg-blue-500/10 text-blue-100 hover:bg-blue-500/20'
-              }`}
-            >
-              {t('batch.title')}
-            </button>
-          </div>
-        )}
+        {!id.idPhotoResult &&
+          (!id.idPhotoResults || id.idPhotoResults.length === 0) &&
+          !id.idPhotoLoading && (
+            <div className="w-full flex justify-center">
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.ID_PHOTO_BATCH)}
+                className={UI_BTN_GHOST}
+              >
+                {t('batch.title')}
+              </button>
+            </div>
+          )}
 
         {id.idPhotoResults && id.idPhotoResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
             <div className="flex items-center justify-center gap-4">
               <button
+                type="button"
                 onClick={id.handleIdPhotoBatchDownload}
-                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+                className={UI_BTN_SUCCESS}
               >
                 💾 {t('history.batch_download')} ({id.idPhotoResults.length})
               </button>
-              <button
-                onClick={id.clearIdPhotoResult}
-                className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600 transition-colors"
-              >
+              <button type="button" onClick={id.clearIdPhotoResult} className={UI_BTN_SECONDARY}>
                 {t('start.idphoto_again')}
               </button>
             </div>

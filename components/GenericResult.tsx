@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { UI_BTN_PRIMARY, UI_BTN_SECONDARY, UI_BTN_SUCCESS, UI_CARD } from '../utils/uiClasses';
 
 interface GenericResultProps {
   result: string;
@@ -42,7 +43,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
       </div>
 
       {params.length > 0 && paramsTitleKey && (
-        <div className="w-full bg-gray-800/40 rounded-xl p-6 border border-gray-700/50 backdrop-blur-sm">
+        <div className={`w-full p-6 ${UI_CARD}`}>
           <h3 className="text-xl font-bold text-white mb-4">{t(paramsTitleKey)}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {params.map((param, idx) => (
@@ -60,28 +61,19 @@ const GenericResult: React.FC<GenericResultProps> = ({
       )}
 
       <div className="flex flex-wrap items-center justify-center gap-4">
-        <button
-          onClick={onDownload}
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold rounded-xl shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-200 hover:-translate-y-px active:scale-95"
-        >
+        <button type="button" onClick={onDownload} className={UI_BTN_SUCCESS}>
           <span>💾</span>
           {t(downloadKey)}
         </button>
 
         {onEditInEditor && (
-          <button
-            onClick={onEditInEditor}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-200 hover:-translate-y-px active:scale-95"
-          >
+          <button type="button" onClick={onEditInEditor} className={UI_BTN_PRIMARY}>
             <span>✏️</span>
             {t(editKey)}
           </button>
         )}
 
-        <button
-          onClick={onAgain}
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-700 text-white font-bold rounded-xl shadow-lg hover:bg-gray-600 transition-all duration-200 hover:-translate-y-px active:scale-95"
-        >
+        <button type="button" onClick={onAgain} className={UI_BTN_SECONDARY}>
           <span>🔄</span>
           {t(againKey)}
         </button>
