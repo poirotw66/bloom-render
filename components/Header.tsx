@@ -6,7 +6,7 @@ import React, { useState, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { CogIcon } from './icons';
+import { CogIcon, ListBulletIcon } from './icons';
 import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
 import { publicAssetUrl as asset } from '../utils/publicAsset';
@@ -174,6 +174,22 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
 
           <div className="flex items-center gap-2 order-2 md:order-3 shrink-0">
             <button
+              type="button"
+              onClick={() => navigate(ROUTES.HISTORY)}
+              className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-white/10 ${
+                theme === 'newyear'
+                  ? 'text-red-200 hover:text-red-50 focus:ring-red-500'
+                  : theme === 'bloom'
+                    ? 'text-gray-300 hover:text-white focus:ring-fuchsia-500'
+                    : 'text-slate-300 hover:text-white focus:ring-blue-500'
+              }`}
+              aria-label={t('history.title')}
+              title={t('history.title')}
+            >
+              <ListBulletIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
               onClick={() => setIsSettingsOpen(true)}
               className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-white/10 ${
                 theme === 'newyear'
@@ -182,7 +198,8 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                     ? 'text-gray-300 hover:text-white focus:ring-fuchsia-500'
                     : 'text-slate-300 hover:text-white focus:ring-blue-500'
               }`}
-              aria-label="Settings"
+              aria-label={t('settings.title')}
+              title={t('settings.title')}
             >
               <CogIcon className="w-5 h-5" />
             </button>

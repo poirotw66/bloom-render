@@ -6,13 +6,13 @@
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useBatchProcessing } from '../../hooks/useBatchProcessing';
 import { generateIdPhoto } from '../../services/geminiService';
 import BatchUploadSection from '../../components/BatchUploadSection';
 import BatchProgress from '../../components/BatchProgress';
+import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
   DEFAULT_ID_TYPE,
   DEFAULT_RETOUCH_LEVEL,
@@ -33,7 +33,6 @@ interface IdPhotoBatchPageProps {
 
 const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
-  const _navigate = useNavigate();
   const settings = useSettings();
   const batch = useBatchProcessing<
     File,
@@ -50,14 +49,12 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [idPhotoType, _setIdPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
-  const [idPhotoRetouchLevel, _setIdPhotoRetouchLevel] =
-    useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
-  const [idPhotoOutputSpec, _setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
-  const [idPhotoClothingOption, _setIdPhotoClothingOption] =
-    useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
-  const [idPhotoClothingCustomText, _setIdPhotoClothingCustomText] = useState('');
-  const [idPhotoClothingReferenceFile, _setIdPhotoClothingReferenceFile] = useState<File | null>(
+  const [idPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
+  const [idPhotoRetouchLevel] = useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
+  const [idPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
+  const [idPhotoClothingOption] = useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
+  const [idPhotoClothingCustomText] = useState('');
+  const [idPhotoClothingReferenceFile] = useState<File | null>(
     null,
   );
 
@@ -141,34 +138,11 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   ]);
 
   const handleBatchDownload = useCallback(async () => {
-    if (batch.results.length === 0) return;
-
-    try {
-      // Try to use JSZip if available
-      const JSZip = await import('jszip');
-      const zip = new JSZip.default();
-      batch.results.forEach((item, index) => {
-        const base64 = item.result.split(',')[1];
-        zip.file(`id-photo-${index + 1}.png`, base64, { base64: true });
-      });
-
-      const content = await zip.generateAsync({ type: 'blob' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = `id-photos-batch-${Date.now()}.zip`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    } catch {
-      // Fallback: download individually
-      batch.results.forEach((item, index) => {
-        setTimeout(() => {
-          const link = document.createElement('a');
-          link.href = item.result;
-          link.download = `id-photo-${index + 1}.png`;
-          link.click();
-        }, index * 100);
-      });
-    }
+    await downloadBatchWithZipFallback({
+      dataUrls: batch.results.map((item) => item.result),
+      itemFileName: (index) => `id-photo-${index + 1}.png`,
+      zipFileName: `id-photos-batch-${Date.now()}.zip`,
+    });
   }, [batch.results]);
 
   return (

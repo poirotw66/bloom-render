@@ -54,9 +54,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ item, onClick }) => {
           <span className="text-lg font-bold text-amber-400">{item.priceRange}</span>
         </div>
 
-        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-all duration-200 group-hover:scale-105">
+        <span className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-all duration-200 group-hover:scale-105">
           {t(item.actionLabelKey)}
-        </button>
+        </span>
       </div>
     </div>
   );

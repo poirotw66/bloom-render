@@ -4,7 +4,9 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { dataURLtoFile } from '../../utils/fileUtils';
+import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import ProgressIndicator from '../../components/ProgressIndicator';
@@ -21,6 +23,7 @@ interface IdPhotoPageProps {
 const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const id = useIdPhoto();
 
   const surface =
@@ -57,6 +60,24 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
         <p className="max-w-3xl text-lg text-gray-300 md:text-xl leading-relaxed">
           {t('idphoto.subtitle')}
         </p>
+
+        {!id.idPhotoResult && (!id.idPhotoResults || id.idPhotoResults.length === 0) && !id.idPhotoLoading && (
+          <div className="w-full flex justify-center">
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.ID_PHOTO_BATCH)}
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold border transition-colors duration-200 ${
+                theme === 'newyear'
+                  ? 'border-red-500/40 bg-red-500/10 text-red-100 hover:bg-red-500/20'
+                  : theme === 'bloom'
+                    ? 'border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-100 hover:bg-fuchsia-500/20'
+                    : 'border-blue-500/40 bg-blue-500/10 text-blue-100 hover:bg-blue-500/20'
+              }`}
+            >
+              {t('batch.title')}
+            </button>
+          </div>
+        )}
 
         {id.idPhotoResults && id.idPhotoResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
