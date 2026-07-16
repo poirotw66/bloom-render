@@ -12,6 +12,16 @@ import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import { DownloadIcon, EditIcon, XMarkIcon } from './icons';
 import { ROUTES } from '../constants/routes';
+import {
+  UI_BTN_PRIMARY,
+  UI_BTN_SECONDARY,
+  UI_BTN_SUCCESS,
+  UI_CARD_SOFT,
+  UI_CHIP_ACTIVE,
+  UI_CHIP_INACTIVE,
+  UI_INPUT,
+  getTitleAccent,
+} from '../utils/uiClasses';
 
 interface HistoryPanelProps {
   isOpen: boolean;
@@ -83,8 +93,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
         ? 'bg-gray-900/95 border-fuchsia-500/20'
         : 'bg-gray-900/95 border-gray-700/60';
 
-  const accent =
-    theme === 'newyear' ? 'text-red-200' : theme === 'bloom' ? 'text-fuchsia-200' : 'text-blue-200';
+  const accent = getTitleAccent(theme);
 
   const filteredHistory = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -168,7 +177,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder={t('history.search_placeholder')}
-            className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black"
+            className={UI_INPUT}
           />
 
           <div className="flex flex-wrap gap-2">
@@ -181,11 +190,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
                   key={type}
                   type="button"
                   onClick={() => setActiveType(type)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors border ${
-                    isActive
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                  }`}
+                  className={isActive ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
                 >
                   {label}
                 </button>
@@ -212,11 +217,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
           <div className="flex flex-wrap gap-2 items-center justify-between">
             <div className="flex gap-2 items-center">
               {filteredHistory.length > 1 && (
-                <button
-                  type="button"
-                  onClick={handleDownloadFiltered}
-                  className="px-4 py-2 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-500 transition-colors"
-                >
+                <button type="button" onClick={handleDownloadFiltered} className={UI_BTN_SUCCESS}>
                   {t('history.batch_download')}
                 </button>
               )}
@@ -240,10 +241,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
           ) : (
             <div className="grid grid-cols-2 gap-4">
               {filteredHistory.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="bg-gray-900/40 border border-white/10 rounded-2xl overflow-hidden"
-                >
+                <div key={item.id} className={UI_CARD_SOFT}>
                   <div className="aspect-square bg-gray-950 flex items-center justify-center">
                     <img
                       src={item.result}
@@ -278,11 +276,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
                         type="button"
                         onClick={() => handleEdit(item, index)}
                         disabled={!onImageSelected}
-                        className={`flex-1 px-2 py-1 rounded-xl text-xs font-bold transition-colors ${
-                          onImageSelected
-                            ? 'bg-blue-600 text-white hover:bg-blue-500'
-                            : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                        }`}
+                        className={`flex-1 text-xs ${onImageSelected ? UI_BTN_PRIMARY : UI_BTN_SECONDARY}`}
                       >
                         <span className="inline-flex items-center justify-center gap-1">
                           <EditIcon className="w-3.5 h-3.5" />
@@ -292,7 +286,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
                       <button
                         type="button"
                         onClick={() => handleDownloadOne(item, index)}
-                        className="flex-1 px-2 py-1 rounded-xl text-xs font-bold bg-gray-700 text-white hover:bg-gray-600 transition-colors"
+                        className={`flex-1 text-xs ${UI_BTN_SECONDARY}`}
                       >
                         <span className="inline-flex items-center justify-center gap-1">
                           <DownloadIcon className="w-3.5 h-3.5" />
