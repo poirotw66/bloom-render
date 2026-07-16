@@ -17,6 +17,15 @@ import type {
   OutputSpec,
   ClothingOption,
 } from '../../constants/idPhoto';
+import {
+  UI_FILE_PICKER,
+  UI_FORM_CARD,
+  UI_INPUT,
+  UI_LABEL,
+  UI_LABEL_HINT,
+  UI_SELECT,
+  uiOption,
+} from '../../utils/uiClasses';
 
 interface IdPhotoFormProps {
   idPhotoType: IdPhotoType;
@@ -54,16 +63,14 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
   const { t } = useLanguage();
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-2xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
+    <div className={UI_FORM_CARD}>
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
-          {t('idphoto.label.type')}
-        </label>
+        <label className={UI_LABEL}>{t('idphoto.label.type')}</label>
         <select
           value={idPhotoType}
           onChange={(e) => setIdPhotoType(e.target.value as IdPhotoType)}
           disabled={disabled}
-          className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className={UI_SELECT}
         >
           {ID_PHOTO_TYPES.map((type) => (
             <option key={type.id} value={type.id}>
@@ -73,20 +80,15 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
         </select>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
-          {t('idphoto.label.level')}
-        </label>
+        <label className={UI_LABEL}>{t('idphoto.label.level')}</label>
         <div className="flex flex-wrap gap-2">
           {RETOUCH_LEVELS.map((level) => (
             <button
               key={level.id}
+              type="button"
               onClick={() => setIdPhotoRetouchLevel(level.id)}
               disabled={disabled}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
-                idPhotoRetouchLevel === level.id
-                  ? 'bg-emerald-600 text-white border border-emerald-500'
-                  : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={uiOption(idPhotoRetouchLevel === level.id)}
             >
               {t(level.nameKey)}
             </button>
@@ -94,20 +96,15 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
-          {t('idphoto.label.spec')}
-        </label>
+        <label className={UI_LABEL}>{t('idphoto.label.spec')}</label>
         <div className="flex flex-wrap gap-2">
           {OUTPUT_SPECS.map((spec) => (
             <button
               key={spec.id}
+              type="button"
               onClick={() => setIdPhotoOutputSpec(spec.id)}
               disabled={disabled}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
-                idPhotoOutputSpec === spec.id
-                  ? 'bg-emerald-600 text-white border border-emerald-500'
-                  : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={uiOption(idPhotoOutputSpec === spec.id)}
             >
               {t(spec.nameKey)}
             </button>
@@ -115,14 +112,12 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
-          {t('idphoto.label.clothing')}
-        </label>
+        <label className={UI_LABEL}>{t('idphoto.label.clothing')}</label>
         <select
           value={idPhotoClothingOption}
           onChange={(e) => setIdPhotoClothingOption(e.target.value as ClothingOption)}
           disabled={disabled}
-          className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 focus:ring-2 focus:ring-emerald-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className={UI_SELECT}
         >
           {CLOTHING_OPTIONS.map((c) => (
             <option key={c.id} value={c.id}>
@@ -138,15 +133,13 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
               onChange={(e) => setIdPhotoClothingCustomText(e.target.value)}
               placeholder={t('idphoto.clothing.custom_placeholder')}
               disabled={disabled}
-              className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none disabled:opacity-50"
+              className={UI_INPUT}
             />
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">
-                {t('idphoto.clothing.custom_image_label')}
-              </label>
+              <label className={UI_LABEL_HINT}>{t('idphoto.clothing.custom_image_label')}</label>
               {idPhotoClothingReferenceFile ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-14 h-14 rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
                     {idPhotoClothingReferenceUrl && (
                       <img
                         src={idPhotoClothingReferenceUrl}
@@ -165,7 +158,7 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
                   </button>
                 </div>
               ) : (
-                <label className="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-300 border border-gray-600 rounded-lg cursor-pointer hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <label className={UI_FILE_PICKER}>
                   <input
                     type="file"
                     className="hidden"

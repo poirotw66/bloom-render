@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { UI_LABEL, uiOption } from '../utils/uiClasses';
 
 interface QuantitySelectorProps {
   quantity: number;
@@ -29,9 +30,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
 
   return (
     <div className="flex flex-col gap-3 w-full max-w-md mx-auto">
-      <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
-        {t('common.output_quantity')}
-      </label>
+      <label className={UI_LABEL}>{t('common.output_quantity')}</label>
       <div className="flex justify-center gap-2">
         {quantities.map((qty) => (
           <button
@@ -39,11 +38,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
             type="button"
             onClick={() => onChange(qty)}
             disabled={disabled}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              quantity === qty
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            className={uiOption(quantity === qty)}
           >
             {qty}
           </button>

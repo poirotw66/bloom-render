@@ -8,6 +8,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ErrorDisplay } from './ErrorDisplay';
+import { UI_BTN_GENERATE, UI_BTN_UPLOAD, UI_FILE_PICKER } from '../utils/uiClasses';
 
 interface GenericUploadSectionProps {
   previewUrl: string | null;
@@ -71,7 +72,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
             {error && <ErrorDisplay message={error} />}
 
             <div className="flex items-center gap-4">
-              <label className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-gray-300 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+              <label className={UI_FILE_PICKER}>
                 <input
                   type="file"
                   className="hidden"
@@ -83,9 +84,10 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
               </label>
 
               <button
+                type="button"
                 onClick={onGenerate}
                 disabled={loading || !canGenerate}
-                className="inline-flex items-center justify-center gap-3 px-8 py-3.5 text-white font-black rounded-xl shadow-xl transition-all duration-300 transform active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 shadow-blue-600/20 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed"
+                className={UI_BTN_GENERATE}
               >
                 {loading ? (
                   <>
@@ -113,10 +115,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
 
             {error && <ErrorDisplay message={error} />}
 
-            <label
-              htmlFor={uploadInputId}
-              className="relative inline-flex items-center justify-center px-10 py-5 text-xl font-black text-white rounded-2xl cursor-pointer transition-all duration-300 shadow-2xl hover:-translate-y-1 active:scale-95 bg-blue-600 hover:bg-blue-500 shadow-blue-600/30"
-            >
+            <label htmlFor={uploadInputId} className={UI_BTN_UPLOAD}>
               <span className="mr-3">{icon}</span>
               {t('start.upload_button')}
             </label>
