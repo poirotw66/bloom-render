@@ -72,6 +72,13 @@ export const zhTWMessages: Record<string, string> = {
   'service.empty_category': '即將推出！更多服務方案正在準備中。',
   'service.showcase.title': '作品精選',
   'service.showcase.desc': '體驗專業攝影與 AI 精修帶來的的高質感視覺呈現。',
+  'service.showcase.cta': '前往服務',
+  'service.featured.eyebrow': '精選方案',
+  'service.featured.title': '從最熱門的服務組合開始',
+  'service.featured.desc': '快速進入履歷、品牌形象、主題寫真與家庭紀念等最常被選用的方案。',
+  'service.featured.quick_turnaround': '快速出圖',
+  'service.featured.multi_scene': '多場景適用',
+  'service.featured.ai_polish': 'AI 精修加值',
 
   'service.badge.popular': '熱門',
   'service.badge.limited': '限定',
