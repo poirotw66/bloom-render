@@ -11,6 +11,7 @@ import {
   SunIcon,
   BullseyeIcon,
   DownloadIcon,
+  EditIcon,
 } from './icons';
 import { generateImageFromText } from '../services/geminiService';
 import { formatApiErrorMessage } from '../services/gemini/shared';
@@ -144,8 +145,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     onImageSelected(newFile);
   };
 
-  const handleDownloadOne = (e: React.MouseEvent, dataUrl: string, index: number) => {
-    e.stopPropagation();
+  const handleDownloadOne = (dataUrl: string, index: number) => {
     const link = document.createElement('a');
     link.href = dataUrl;
     link.download = `generated-${index + 1}.png`;
@@ -253,42 +253,55 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               className={`grid gap-4 w-full ${generatedImages.length >= 2 ? 'grid-cols-2' : 'grid-cols-1'}`}
             >
               {generatedImages.map((url, idx) => (
-                <div
+                <article
                   key={idx}
-                  className={`relative group aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent transition-colors duration-200 shadow-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-800 flex items-center justify-center bg-gray-900 ${theme === 'newyear' ? 'hover:border-red-400 focus-within:ring-red-400' : theme === 'bloom' ? 'hover:border-fuchsia-400 focus-within:ring-fuchsia-400' : 'hover:border-blue-400 focus-within:ring-blue-400'}`}
-                  onClick={() => handleSelectGenerated(url, idx)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleSelectGenerated(url, idx);
-                    }
-                  }}
-                  aria-label={`${t('start.select_image')} ${idx + 1}`}
+                  className={`group rounded-xl overflow-hidden border transition-colors duration-200 shadow-lg bg-gray-900 ${
+                    theme === 'newyear'
+                      ? 'border-red-900/40 hover:border-red-400'
+                      : theme === 'bloom'
+                        ? 'border-fuchsia-900/40 hover:border-fuchsia-400'
+                        : 'border-slate-700 hover:border-blue-400'
+                  }`}
                 >
-                  <img
-                    src={url}
-                    className="max-w-full max-h-full w-auto h-auto object-contain"
-                    alt={`${t('start.select_image')} ${idx + 1}`}
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 flex-wrap">
-                    <button
-                      type="button"
-                      onClick={(e) => handleDownloadOne(e, url, idx)}
-                      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold bg-white/90 text-gray-900 hover:bg-white transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white shadow-lg`}
-                      aria-label={t('start.download_image')}
-                    >
-                      <DownloadIcon className="w-4 h-4" />
-                      {t('start.download_image')}
-                    </button>
-                    <span
-                      className={`bg-gradient-to-r ${s.btnSecondary} text-white px-5 py-2 rounded-full font-bold shadow-lg`}
-                    >
-                      {t('start.edit_this')}
-                    </span>
+                  <div className="aspect-square flex items-center justify-center bg-gray-950 p-3">
+                    <img
+                      src={url}
+                      className="max-w-full max-h-full w-auto h-auto object-contain"
+                      alt={`${t('start.select_image')} ${idx + 1}`}
+                    />
                   </div>
-                </div>
+                  <div className="p-3 flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-sm font-medium text-gray-300">
+                      {t('start.select_image')} {idx + 1}
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectGenerated(url, idx)}
+                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold transition-colors duration-200 text-white ${
+                          theme === 'newyear'
+                            ? 'bg-red-600 hover:bg-red-500'
+                            : theme === 'bloom'
+                              ? 'bg-fuchsia-600 hover:bg-fuchsia-500'
+                              : 'bg-blue-600 hover:bg-blue-500'
+                        }`}
+                        aria-label={`${t('start.edit_this')} ${idx + 1}`}
+                      >
+                        <EditIcon className="w-4 h-4" />
+                        {t('start.edit_this')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadOne(url, idx)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold bg-white/90 text-gray-900 hover:bg-white transition-colors duration-200 shadow-lg"
+                        aria-label={t('start.download_image')}
+                      >
+                        <DownloadIcon className="w-4 h-4" />
+                        {t('start.download_image')}
+                      </button>
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
           </div>

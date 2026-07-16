@@ -14,7 +14,9 @@ import { ROUTES, isEditRoutePath } from './constants/routes';
 import { useLanguage } from './contexts/LanguageContext';
 import { applyValidatedImageFile } from './utils/applyValidatedImageFile';
 
+const HistoryPage = lazy(() => import('./features/history/HistoryPage'));
 const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
+const IdPhotoBatchPage = lazy(() => import('./features/idphoto/IdPhotoBatchPage'));
 const PortraitPage = lazy(() => import('./features/portrait/PortraitPage'));
 const TravelPage = lazy(() => import('./features/travel/TravelPage'));
 const ThemedPage = lazy(() => import('./features/themed/ThemedPage'));
@@ -85,8 +87,16 @@ const App: React.FC = () => {
               }
             />
             <Route
+              path={ROUTES.HISTORY}
+              element={<HistoryPage onImageSelected={handleImageUpload} />}
+            />
+            <Route
               path={ROUTES.ID_PHOTO}
               element={<IdPhotoPage onImageSelected={handleImageUpload} />}
+            />
+            <Route
+              path={ROUTES.ID_PHOTO_BATCH}
+              element={<IdPhotoBatchPage onImageSelected={handleImageUpload} />}
             />
             <Route
               path={ROUTES.PORTRAIT}
