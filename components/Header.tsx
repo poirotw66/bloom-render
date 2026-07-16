@@ -11,6 +11,7 @@ import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
 import { publicAssetUrl as asset } from '../utils/publicAsset';
 import { ROUTES } from '../constants/routes';
+import HistoryPanel from './HistoryPanel';
 
 /** BloomRender logo for header (product branding) */
 const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -23,87 +24,15 @@ const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
   />
 );
 
-/** Bloom (繁花) theme icon – flower */
-const BloomIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 12m-8 0a8 8 0 1 0 16 0a8 8 0 1 0 -16 0"
-    />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v4m0 12v4M2 12h4m12 0h4" />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M19.07 4.93l-2.83 2.83M6.34 17.66l-2.83 2.83"
-    />
-  </svg>
-);
-
-/** Night (深夜) theme icon */
-const MoonIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-    />
-  </svg>
-);
-
-/** New Year (新年) theme icon */
-const FirecrackerIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 1 3 2.48Z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.546 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z"
-    />
-  </svg>
-);
-
 interface HeaderProps {
   onImageSelected?: (file: File) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
-  const { language, setLanguage, t } = useLanguage();
-  const { theme, setTheme } = useTheme();
+  const { t } = useLanguage();
+  const { theme } = useTheme();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -175,7 +104,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
           <div className="flex items-center gap-2 order-2 md:order-3 shrink-0">
             <button
               type="button"
-              onClick={() => navigate(ROUTES.HISTORY)}
+              onClick={() => setIsHistoryOpen(true)}
               className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-white/10 ${
                 theme === 'newyear'
                   ? 'text-red-200 hover:text-red-50 focus:ring-red-500'
@@ -207,6 +136,11 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
         </div>
       </header>
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <HistoryPanel
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        onImageSelected={onImageSelected}
+      />
     </>
   );
 };
