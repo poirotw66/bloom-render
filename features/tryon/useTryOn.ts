@@ -8,6 +8,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { useHistory } from '../../hooks/useHistory';
 import { generateVirtualTryOn } from '../../services/geminiService';
 import {
   createI18nError,
@@ -37,6 +38,7 @@ import {
 export function useTryOn() {
   const { t } = useLanguage();
   const settings = useSettings();
+  const { addToHistory } = useHistory();
 
   const [personFile, setPersonFile] = useState<File | null>(null);
   const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
@@ -183,6 +185,14 @@ export function useTryOn() {
         }).then((dataUrl) => {
           completedCount += 1;
           setProgress(Math.round((completedCount / total) * 90));
+          addToHistory('tryon', dataUrl, {
+            background,
+            style,
+            clothingCount: clothingFiles.length,
+            outputSize,
+            aspectRatio,
+            variationIndex: i,
+          });
           return dataUrl;
         }),
       );
@@ -232,6 +242,7 @@ export function useTryOn() {
     aspectRatio,
     settings,
     t,
+    addToHistory,
   ]);
 
   const clearResult = useCallback(() => {

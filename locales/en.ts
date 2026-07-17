@@ -1032,6 +1032,7 @@ export const enMessages: Record<string, string> = {
   'history.type.travel': 'Travel',
   'history.type.couple': 'Couple',
   'history.type.group': 'Group',
+  'history.type.tryon': 'Try-On',
   'history.just_now': 'Just now',
   'history.minutes_ago': '{count} minutes ago',
   'history.hours_ago': '{count} hours ago',

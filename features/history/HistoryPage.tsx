@@ -36,6 +36,7 @@ const HISTORY_TYPES = [
   'travel',
   'couple',
   'group',
+  'tryon',
 ] as const;
 
 type HistoryFilterType = (typeof HISTORY_TYPES)[number];

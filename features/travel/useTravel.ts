@@ -9,6 +9,7 @@ import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/gem
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useHistory } from '../../hooks/useHistory';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
@@ -70,6 +71,7 @@ async function urlToFile(path: string, filename: string, mimeType: string): Prom
 export function useTravel() {
   const { t } = useLanguage();
   const settings = useSettings();
+  const { addToHistory } = useHistory();
 
   const [files, setFiles] = useState<File[]>([]);
   const [isGroupMode, setIsGroupMode] = useState(false);
@@ -380,10 +382,24 @@ export function useTravel() {
           imageSize,
           sceneReferenceImage,
           settings: { apiKey: settings.apiKey, model: settings.model },
-        }).catch((err) => {
-          logger.error(`Travel generation error for item ${i + 1}:`, err);
-          throw err;
-        });
+        })
+          .then((url) => {
+            addToHistory('travel', url, {
+              sceneId: selectedSceneId,
+              style,
+              aspectRatio,
+              imageSize,
+              isGroup: isGroupMode || files.length > 1,
+              weather: effectiveWeather,
+              time: effectiveTime,
+              variationIndex: i,
+            });
+            return url;
+          })
+          .catch((err) => {
+            logger.error(`Travel generation error for item ${i + 1}:`, err);
+            throw err;
+          });
       });
 
       const settledResults = await Promise.allSettled(generationPromises);
@@ -456,6 +472,7 @@ export function useTravel() {
     t,
     useReferenceImage,
     quantity,
+    addToHistory,
   ]);
 
   const handleSurpriseMe = useCallback(() => {
