@@ -964,6 +964,7 @@ export const zhTWMessages: Record<string, string> = {
   'history.type.travel': '旅遊照',
   'history.type.couple': '雙人寫真',
   'history.type.group': '多人寫真',
+  'history.type.tryon': 'AI 試穿',
   'history.just_now': '剛剛',
   'history.minutes_ago': '{count} 分鐘前',
   'history.hours_ago': '{count} 小時前',

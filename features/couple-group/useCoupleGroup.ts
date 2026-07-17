@@ -9,6 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { useHistory } from '../../hooks/useHistory';
 import {
   fileToPartAuto,
   getClient,
@@ -33,6 +34,7 @@ import {
 export function useCoupleGroup() {
   const { t } = useLanguage();
   const settings = useSettings();
+  const { addToHistory } = useHistory();
   const [searchParams] = useSearchParams();
 
   // Mode: couple (2 files) or group (3-6 files)
@@ -267,7 +269,15 @@ export function useCoupleGroup() {
               imageConfig,
             },
           });
-          return handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
+          const url = handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
+          addToHistory(mode, url, {
+            style,
+            fileCount,
+            aspectRatio,
+            outputSize: effectiveSize,
+            variationIndex: i,
+          });
+          return url;
         } catch (err) {
           logger.error(`Couple/group generation error for item ${i + 1}:`, err);
           throw err;
@@ -296,7 +306,7 @@ export function useCoupleGroup() {
       setLoading(false);
       setProgress(0);
     }
-  }, [mode, files, style, settings, t, quantity, outputSize, aspectRatio]);
+  }, [mode, files, style, settings, t, quantity, outputSize, aspectRatio, addToHistory]);
 
   // Clear result
   const clearResult = useCallback(() => {
