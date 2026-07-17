@@ -9,6 +9,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { supportsMultiResolution } from '../../services/gemini/shared';
 import { PORTRAIT_TYPES, PORTRAIT_OUTPUT_SPECS } from '../../constants/portrait';
 import type { PortraitType, OutputSpec } from '../../types';
+import { UI_FORM_CARD, UI_LABEL, UI_SELECT, uiOption } from '../../utils/uiClasses';
 
 const IMAGE_SIZES = ['1K', '2K', '4K'] as const;
 type ImageSize = (typeof IMAGE_SIZES)[number];
@@ -37,16 +38,14 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
   const supportsMultiRes = supportsMultiResolution(model);
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-2xl animate-fade-in bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
+    <div className={UI_FORM_CARD}>
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
-          {t('portrait.label.type')}
-        </label>
+        <label className={UI_LABEL}>{t('portrait.label.type')}</label>
         <select
           value={portraitType}
           onChange={(e) => setPortraitType(e.target.value as PortraitType)}
           disabled={disabled}
-          className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className={UI_SELECT}
         >
           {PORTRAIT_TYPES.map((type) => (
             <option key={type.id} value={type.id}>
@@ -57,20 +56,15 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
-          {t('portrait.label.spec')}
-        </label>
+        <label className={UI_LABEL}>{t('portrait.label.spec')}</label>
         <div className="flex flex-wrap gap-2">
           {PORTRAIT_OUTPUT_SPECS.map((spec) => (
             <button
               key={spec.id}
+              type="button"
               onClick={() => setPortraitOutputSpec(spec.id)}
               disabled={disabled}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
-                portraitOutputSpec === spec.id
-                  ? 'bg-blue-600 text-white border border-blue-500'
-                  : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={uiOption(portraitOutputSpec === spec.id)}
             >
               {t(spec.nameKey)}
             </button>
@@ -79,7 +73,7 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-2">
+        <label className={UI_LABEL}>
           {t('common.output_size')}
           {!supportsMultiRes && (
             <span className="ml-2 text-xs font-normal text-gray-500">
@@ -94,13 +88,10 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
             return (
               <button
                 key={size}
+                type="button"
                 onClick={() => setImageSize(size)}
                 disabled={isDisabled}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
-                  isActive
-                    ? 'bg-blue-600 text-white border border-blue-500'
-                    : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500'
-                } disabled:opacity-30 disabled:cursor-not-allowed`}
+                className={uiOption(isActive)}
               >
                 {t(`common.size_${size.toLowerCase()}`)}
               </button>

@@ -9,6 +9,7 @@ import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import type { CoupleGroupMode } from './types';
+import { UI_BTN, UI_FILE_PICKER } from '../../utils/uiClasses';
 
 interface CoupleGroupUploadSectionProps {
   mode: CoupleGroupMode;
@@ -109,7 +110,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
             {error && <ErrorDisplay message={error} />}
 
             <div className="flex items-center gap-4">
-              <label className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-gray-300 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+              <label className={UI_FILE_PICKER}>
                 <input
                   type="file"
                   className="hidden"
@@ -122,17 +123,18 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
               </label>
 
               <button
+                type="button"
                 onClick={onGenerate}
                 disabled={
                   loading ||
                   (mode === 'couple' && files.length !== 2) ||
                   (mode === 'group' && (files.length < minFiles || files.length > maxFiles))
                 }
-                className={`inline-flex items-center justify-center gap-3 px-8 py-3.5 text-white font-black rounded-xl shadow-xl transition-all duration-300 transform active:scale-95 ${
+                className={`${UI_BTN} px-8 py-3.5 font-black text-white shadow-lg ${
                   mode === 'couple'
-                    ? 'bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 shadow-pink-600/20'
-                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-purple-600/20'
-                } disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed`}
+                    ? 'bg-pink-600 hover:bg-pink-500 focus:ring-pink-500 shadow-pink-600/20'
+                    : 'bg-purple-600 hover:bg-purple-500 focus:ring-purple-500 shadow-purple-600/20'
+                }`}
               >
                 {loading ? (
                   <>

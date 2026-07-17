@@ -10,6 +10,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { supportsMultiResolution } from '../services/gemini/shared';
+import { UI_LABEL, uiOption } from '../utils/uiClasses';
 
 export type OutputSize = '1K' | '2K' | '4K';
 export type AspectRatio = '1:1' | '16:9' | '9:16';
@@ -54,10 +55,10 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
     <div className={`flex flex-col gap-6 w-full max-w-2xl mx-auto ${className}`}>
       <div className="flex flex-col sm:flex-row flex-wrap gap-6">
         <div className="flex flex-col gap-3 flex-1 min-w-0">
-          <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
+          <label className={UI_LABEL}>
             {t('common.output_size')}
             {!supportsMultiRes && (
-              <span className="ml-2 text-xs font-normal normal-case text-gray-500">
+              <span className="ml-2 text-xs font-normal text-gray-500">
                 ({t('common.gemini2_only_1k')})
               </span>
             )}
@@ -71,11 +72,7 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
                   type="button"
                   onClick={() => !disabled && onOutputSizeChange(size)}
                   disabled={disabled}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
-                      : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-cyan-500/50'
-                  } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                  className={uiOption(isActive)}
                 >
                   {t(SIZE_KEY[size])}
                 </button>
@@ -85,9 +82,7 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
         </div>
 
         <div className="flex flex-col gap-3 flex-1 min-w-0">
-          <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
-            {t('common.aspect_ratio')}
-          </label>
+          <label className={UI_LABEL}>{t('common.aspect_ratio')}</label>
           <div className="flex flex-wrap justify-center gap-2">
             {ASPECT_RATIOS.map((ratio) => {
               const isActive = aspectRatio === ratio;
@@ -97,11 +92,7 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
                   type="button"
                   onClick={() => !disabled && onAspectRatioChange(ratio)}
                   disabled={disabled}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
-                      : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-cyan-500/50'
-                  } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                  className={uiOption(isActive)}
                 >
                   {t(RATIO_KEY[ratio])}
                 </button>

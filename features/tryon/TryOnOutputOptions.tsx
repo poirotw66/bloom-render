@@ -16,6 +16,7 @@ import {
   type TryOnOutputSize,
   type TryOnAspectRatio,
 } from './types';
+import { UI_LABEL, uiOption } from '../../utils/uiClasses';
 
 interface TryOnOutputOptionsProps {
   outputSize: TryOnOutputSize;
@@ -40,10 +41,10 @@ const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
   return (
     <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
+        <label className={UI_LABEL}>
           {t('tryon.label.output_size')}
           {!supportsMultiRes && (
-            <span className="ml-2 text-xs font-normal normal-case text-gray-500">
+            <span className="ml-2 text-xs font-normal text-gray-500">
               ({t('tryon.gemini2_only_1k')})
             </span>
           )}
@@ -57,11 +58,7 @@ const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
                 type="button"
                 onClick={() => !disabled && onOutputSizeChange(size)}
                 disabled={disabled}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
-                    : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-cyan-500/50'
-                } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                className={uiOption(isActive)}
               >
                 {t(`tryon.size.${size}`)}
               </button>
@@ -71,9 +68,7 @@ const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
       </div>
 
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">
-          {t('tryon.label.aspect_ratio')}
-        </label>
+        <label className={UI_LABEL}>{t('tryon.label.aspect_ratio')}</label>
         <div className="flex flex-wrap justify-center gap-2">
           {TRYON_ASPECT_RATIOS.map((ratio) => {
             const isActive = aspectRatio === ratio;
@@ -83,11 +78,7 @@ const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
                 type="button"
                 onClick={() => !disabled && onAspectRatioChange(ratio)}
                 disabled={disabled}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
-                    : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-cyan-500/50'
-                } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                className={uiOption(isActive)}
               >
                 {t(`tryon.ratio.${ratio.replace(':', '_')}`)}
               </button>

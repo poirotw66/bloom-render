@@ -9,6 +9,7 @@ import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { TRYON_BACKGROUNDS, TRYON_STYLES } from '../../constants/tryOn';
 import type { TryOnBackgroundId, TryOnStyleId } from '../../constants/tryOn';
+import { UI_LABEL } from '../../utils/uiClasses';
 
 interface TryOnOptionSelectorsProps {
   background: TryOnBackgroundId;
@@ -35,7 +36,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
       {/* Background Selector */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+          <label className={`${UI_LABEL} mb-0 flex items-center gap-2`}>
             <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
             {t('tryon.label.background')}
           </label>
@@ -88,7 +89,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
       {/* Style & Mood Selector */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+          <label className={`${UI_LABEL} mb-0 flex items-center gap-2`}>
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             {t('tryon.label.style')}
           </label>
