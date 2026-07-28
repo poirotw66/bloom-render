@@ -18,6 +18,7 @@ import AdjustmentPanel from '../../components/AdjustmentPanel';
 import CropPanel from '../../components/CropPanel';
 import { UndoIcon, RedoIcon, EyeIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
+import SavedPromptsBar from '../../components/SavedPromptsBar';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { logger } from '../../utils/logger';
@@ -427,6 +428,13 @@ const EditorPage: React.FC = () => {
                   {t('main.btn_generate')}
                 </button>
               </form>
+              <SavedPromptsBar
+                scope="retouch"
+                value={prompt}
+                onApply={setPrompt}
+                disabled={isLoading || !editHotspot}
+                className="w-full"
+              />
             </div>
           )}
           {activeTab === 'crop' && (

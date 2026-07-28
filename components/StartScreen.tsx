@@ -20,6 +20,7 @@ import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import BloomFlowerLoader from './BloomFlowerLoader';
 import { ErrorDisplay } from './ErrorDisplay';
+import SavedPromptsBar from './SavedPromptsBar';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -309,6 +310,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               aria-label={t('start.prompt_placeholder')}
               className={`w-full h-40 md:h-44 bg-gray-900/50 border border-gray-600 rounded-xl p-5 text-gray-100 placeholder-gray-500 focus:outline-none focus-visible:ring-2 resize-none transition-colors duration-200 text-base ${s.inputFocus}`}
               disabled={isGenerating}
+            />
+
+            <SavedPromptsBar
+              scope="generate"
+              value={generationPrompt}
+              onApply={setGenerationPrompt}
+              disabled={isGenerating}
+              className="w-full -mt-2"
             />
 
             <div className="w-full flex flex-col md:flex-row gap-6">

@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import SavedPromptsBar from './SavedPromptsBar';
 
 interface AdjustmentPanelProps {
   onApplyAdjustment: (prompt: string) => void;
@@ -48,6 +49,11 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({ onApplyAdjustment, is
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomPrompt(e.target.value);
+    setSelectedPresetPrompt(null);
+  };
+
+  const handleApplySavedPrompt = (text: string) => {
+    setCustomPrompt(text);
     setSelectedPresetPrompt(null);
   };
 
@@ -112,6 +118,13 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({ onApplyAdjustment, is
         }`}
         disabled={isLoading}
         aria-label={t('panel.adjust.placeholder')}
+      />
+
+      <SavedPromptsBar
+        scope="adjust"
+        value={customPrompt}
+        onApply={handleApplySavedPrompt}
+        disabled={isLoading}
       />
 
       {activePrompt && (
