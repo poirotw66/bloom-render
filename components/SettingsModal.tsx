@@ -3,15 +3,85 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useSettings, type ModelType } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme, type ThemeType } from '../contexts/ThemeContext';
+import { useDialog } from '../hooks/useDialog';
+import { ChevronDownIcon, XMarkIcon } from './icons';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+/** Theme-derived class snippets, so markup below stays readable. */
+const themeStyles = {
+  bloom: {
+    dialog: 'bg-gray-800 border border-fuchsia-500/30',
+    section: 'border-fuchsia-500/20 bg-gray-900/40',
+    divider: 'border-fuchsia-500/20',
+    heading: 'text-white',
+    sectionTitle: 'text-white',
+    chevron: 'text-gray-200',
+    iconBtn: 'text-gray-400 hover:text-white focus-visible:ring-fuchsia-500',
+    choiceActive: 'border-fuchsia-400 text-white focus-visible:ring-fuchsia-400',
+    choiceIdle:
+      'border-gray-700 text-gray-200 hover:border-fuchsia-300/60 hover:text-white focus-visible:ring-fuchsia-400',
+    selectedTag: 'text-cyan-300',
+    label: 'text-gray-300',
+    hint: 'text-gray-500',
+    field:
+      'bg-gray-900 border-gray-600 text-white placeholder-gray-500 focus-visible:ring-fuchsia-500',
+    checkbox: 'text-fuchsia-600 bg-gray-900 border-gray-600 focus-visible:ring-fuchsia-500',
+    confirm: 'bg-fuchsia-600 hover:bg-fuchsia-500 text-white focus-visible:ring-fuchsia-400',
+  },
+  night: {
+    dialog: 'bg-gray-800 border border-gray-700',
+    section: 'border-gray-700 bg-gray-900/40',
+    divider: 'border-gray-700',
+    heading: 'text-white',
+    sectionTitle: 'text-white',
+    chevron: 'text-gray-200',
+    iconBtn: 'text-gray-400 hover:text-white focus-visible:ring-blue-500',
+    choiceActive: 'border-cyan-400 text-white focus-visible:ring-cyan-400',
+    choiceIdle:
+      'border-gray-700 text-gray-200 hover:border-cyan-300/60 hover:text-white focus-visible:ring-cyan-400',
+    selectedTag: 'text-cyan-300',
+    label: 'text-gray-300',
+    hint: 'text-gray-500',
+    field:
+      'bg-gray-900 border-gray-600 text-white placeholder-gray-500 focus-visible:ring-blue-500',
+    checkbox: 'text-blue-600 bg-gray-900 border-gray-600 focus-visible:ring-blue-500',
+    confirm: 'bg-blue-600 hover:bg-blue-500 text-white focus-visible:ring-blue-400',
+  },
+  newyear: {
+    dialog: 'bg-red-900/90 border border-red-700/50',
+    section: 'border-red-700/60 bg-red-900/30',
+    divider: 'border-red-700/50',
+    heading: 'text-red-50',
+    sectionTitle: 'text-red-50',
+    chevron: 'text-yellow-200',
+    iconBtn: 'text-red-400 hover:text-red-100 focus-visible:ring-red-500',
+    choiceActive: 'border-yellow-400/80 text-yellow-200 focus-visible:ring-yellow-400',
+    choiceIdle:
+      'border-red-700/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200 focus-visible:ring-yellow-400',
+    selectedTag: 'text-yellow-300',
+    label: 'text-red-200',
+    hint: 'text-red-300',
+    field:
+      'bg-red-900/50 border-red-700/50 text-red-50 placeholder-red-300 focus-visible:ring-red-500',
+    checkbox: 'text-red-600 bg-red-900/50 border-red-700 focus-visible:ring-red-500',
+    confirm: 'bg-red-600 hover:bg-red-500 text-white focus-visible:ring-red-400',
+  },
+} as const satisfies Record<ThemeType, Record<string, string>>;
+
+const FIELD_BASE =
+  'w-full border rounded-lg p-3 focus:outline-none focus-visible:ring-2 transition-colors';
+const CHOICE_BASE =
+  'rounded-lg border px-3 py-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-black cursor-pointer';
+
+type SectionKey = 'theme' | 'language' | 'model' | 'compression';
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const {
@@ -28,316 +98,181 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   } = useSettings();
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, onClose);
+  const baseId = useId();
 
-  const [openSections, setOpenSections] = useState({
+  const [openSections, setOpenSections] = useState<Record<SectionKey, boolean>>({
     theme: true,
     language: false,
     model: false,
     compression: false,
   });
+  const [showApiKey, setShowApiKey] = useState(false);
 
-  const toggleSection = (key: keyof typeof openSections) => {
+  const toggleSection = (key: SectionKey) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   if (!isOpen) return null;
 
+  const s = themeStyles[theme];
+
+  const renderSection = (key: SectionKey, titleKey: string, body: React.ReactNode) => {
+    const panelId = `${baseId}-${key}-panel`;
+    const buttonId = `${baseId}-${key}-button`;
+
+    return (
+      <div className={`border rounded-xl ${s.section}`}>
+        <button
+          type="button"
+          id={buttonId}
+          onClick={() => toggleSection(key)}
+          aria-expanded={openSections[key]}
+          aria-controls={panelId}
+          className="w-full flex items-center justify-between px-4 py-3 text-left cursor-pointer rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/60"
+        >
+          <span className={`text-sm font-semibold ${s.sectionTitle}`}>{t(titleKey)}</span>
+          <ChevronDownIcon
+            className={`h-5 w-5 transition-transform duration-200 ${s.chevron} ${
+              openSections[key] ? 'rotate-180' : 'rotate-0'
+            }`}
+          />
+        </button>
+        <div id={panelId} role="region" aria-labelledby={buttonId} hidden={!openSections[key]}>
+          {openSections[key] && body}
+        </div>
+      </div>
+    );
+  };
+
+  const choiceClass = (active: boolean) =>
+    `${CHOICE_BASE} ${active ? s.choiceActive : s.choiceIdle}`;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <div
-        className={`rounded-xl p-6 w-full max-w-md md:max-w-lg shadow-2xl relative max-h-[90vh] overflow-y-auto ${
-          theme === 'newyear'
-            ? 'bg-red-900/90 border border-red-700/50'
-            : theme === 'bloom'
-              ? 'bg-gray-800 border border-fuchsia-500/30'
-              : 'bg-gray-800 border border-gray-700'
-        }`}
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${baseId}-title`}
+        className={`rounded-xl p-6 w-full max-w-md md:max-w-lg shadow-2xl relative max-h-[90vh] overflow-y-auto focus:outline-none ${s.dialog}`}
       >
         <button
+          type="button"
           onClick={onClose}
-          className={`absolute top-4 right-4 transition-colors ${
-            theme === 'newyear'
-              ? 'text-red-400 hover:text-red-100'
-              : theme === 'bloom'
-                ? 'text-gray-400 hover:text-white'
-                : 'text-gray-400 hover:text-white'
-          }`}
+          aria-label={t('settings.close')}
+          title={t('settings.close')}
+          className={`absolute top-4 right-4 p-1 rounded-lg cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <XMarkIcon className="h-6 w-6" />
         </button>
 
-        <h2
-          className={`text-xl font-bold mb-6 ${
-            theme === 'newyear' ? 'text-red-50' : theme === 'bloom' ? 'text-white' : 'text-white'
-          }`}
-        >
+        <h2 id={`${baseId}-title`} className={`text-xl font-bold mb-6 ${s.heading}`}>
           {t('settings.title')}
         </h2>
 
         <div className="space-y-4">
-          <div
-            className={`border rounded-xl ${
-              theme === 'newyear'
-                ? 'border-red-700/60 bg-red-900/30'
-                : theme === 'bloom'
-                  ? 'border-fuchsia-500/20 bg-gray-900/40'
-                  : 'border-gray-700 bg-gray-900/40'
-            }`}
-          >
-            <button
-              onClick={() => toggleSection('theme')}
-              className="w-full flex items-center justify-between px-4 py-3 text-left"
-            >
-              <span
-                className={`text-sm font-semibold ${
-                  theme === 'newyear' ? 'text-red-50' : 'text-white'
-                }`}
-              >
-                {t('settings.theme')}
-              </span>
-              <svg
-                className={`h-5 w-5 transition-transform ${openSections.theme ? 'rotate-180' : 'rotate-0'} ${
-                  theme === 'newyear' ? 'text-yellow-200' : 'text-gray-200'
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
+          {renderSection(
+            'theme',
+            'settings.theme',
+            <div className="px-4 pb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {(
+                  [
+                    { id: 'bloom', label: t('theme.bloom') },
+                    { id: 'night', label: t('theme.night') },
+                    { id: 'newyear', label: t('theme.newyear') },
+                  ] as const
+                ).map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setTheme(option.id)}
+                    aria-pressed={option.id === theme}
+                    className={`w-full text-left ${choiceClass(option.id === theme)} ${
+                      option.id === 'night' ? 'bg-black/40' : 'bg-white/5'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium">{option.label}</span>
+                      {option.id === theme && (
+                        <span className={`text-xs uppercase tracking-wide ${s.selectedTag}`}>
+                          {t('common.selected')}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className={`mt-4 pt-4 border-t flex items-start gap-3 ${s.divider}`}>
+                <input
+                  type="checkbox"
+                  id="enable-background-motion"
+                  checked={enableBackgroundMotion}
+                  onChange={(e) => setEnableBackgroundMotion(e.target.checked)}
+                  className={`mt-1 w-4 h-4 rounded cursor-pointer focus:outline-none focus-visible:ring-2 ${s.checkbox}`}
                 />
-              </svg>
-            </button>
-            {openSections.theme && (
-              <div className="px-4 pb-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {(
-                    [
-                      { id: 'bloom', label: t('theme.bloom') },
-                      { id: 'night', label: t('theme.night') },
-                      { id: 'newyear', label: t('theme.newyear') },
-                    ] as const
-                  ).map((option) => (
-                    <button
-                      key={option.id}
-                      onClick={() => setTheme(option.id)}
-                      className={`w-full rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-black ${
-                        option.id === theme
-                          ? theme === 'newyear'
-                            ? 'border-yellow-400/80 text-yellow-200 focus:ring-yellow-400'
-                            : theme === 'bloom'
-                              ? 'border-fuchsia-400 text-white focus:ring-fuchsia-400'
-                              : 'border-cyan-400 text-white focus:ring-cyan-400'
-                          : theme === 'newyear'
-                            ? 'border-red-700/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200'
-                            : theme === 'bloom'
-                              ? 'border-gray-700 text-gray-200 hover:border-fuchsia-300/60 hover:text-white'
-                              : 'border-gray-700 text-gray-200 hover:border-cyan-300/60 hover:text-white'
-                      } ${option.id === 'night' ? 'bg-black/40' : 'bg-white/5'}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">{option.label}</span>
-                        {option.id === theme && (
-                          <span
-                            className={`text-xs uppercase tracking-wide ${
-                              theme === 'newyear' ? 'text-yellow-300' : 'text-cyan-300'
-                            }`}
-                          >
-                            {t('common.selected')}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  ))}
+                <div className="flex-1">
+                  <label
+                    htmlFor="enable-background-motion"
+                    className={`block text-sm font-medium mb-1 cursor-pointer ${s.label}`}
+                  >
+                    {t('settings.motion.enable')}
+                  </label>
+                  <p className={`text-xs ${s.hint}`}>{t('settings.motion.enable_desc')}</p>
                 </div>
-                <div
-                  className={`mt-4 pt-4 border-t flex items-start gap-3 ${
-                    theme === 'newyear'
-                      ? 'border-red-700/50'
-                      : theme === 'bloom'
-                        ? 'border-fuchsia-500/20'
-                        : 'border-gray-700'
-                  }`}
+              </div>
+            </div>,
+          )}
+
+          {renderSection(
+            'language',
+            'settings.language',
+            <div className="px-4 pb-4">
+              <div className="flex gap-3">
+                {(
+                  [
+                    { id: 'en', label: t('settings.language.en') },
+                    { id: 'zh-TW', label: t('settings.language.zh') },
+                  ] as const
+                ).map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setLanguage(option.id)}
+                    aria-pressed={language === option.id}
+                    className={`flex-1 text-sm font-medium ${choiceClass(language === option.id)}`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>,
+          )}
+
+          {renderSection(
+            'model',
+            'settings.model',
+            <div className="px-4 pb-4 space-y-4">
+              <div>
+                <label
+                  htmlFor={`${baseId}-model`}
+                  className={`block text-sm font-medium mb-2 ${s.label}`}
                 >
-                  <input
-                    type="checkbox"
-                    id="enable-background-motion"
-                    checked={enableBackgroundMotion}
-                    onChange={(e) => setEnableBackgroundMotion(e.target.checked)}
-                    className={`mt-1 w-4 h-4 rounded focus:ring-2 ${
-                      theme === 'newyear'
-                        ? 'text-red-600 bg-red-900/50 border-red-700 focus:ring-red-500'
-                        : theme === 'bloom'
-                          ? 'text-fuchsia-600 bg-gray-900 border-gray-600 focus:ring-fuchsia-500'
-                          : 'text-blue-600 bg-gray-900 border-gray-600 focus:ring-blue-500'
-                    }`}
-                  />
-                  <div className="flex-1">
-                    <label
-                      htmlFor="enable-background-motion"
-                      className={`block text-sm font-medium mb-1 ${
-                        theme === 'newyear' ? 'text-red-200' : 'text-gray-300'
-                      }`}
-                    >
-                      {t('settings.motion.enable')}
-                    </label>
-                    <p
-                      className={`text-xs ${
-                        theme === 'newyear' ? 'text-red-300' : 'text-gray-500'
-                      }`}
-                    >
-                      {t('settings.motion.enable_desc')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div
-            className={`border rounded-xl ${
-              theme === 'newyear'
-                ? 'border-red-700/60 bg-red-900/30'
-                : theme === 'bloom'
-                  ? 'border-fuchsia-500/20 bg-gray-900/40'
-                  : 'border-gray-700 bg-gray-900/40'
-            }`}
-          >
-            <button
-              onClick={() => toggleSection('language')}
-              className="w-full flex items-center justify-between px-4 py-3 text-left"
-            >
-              <span
-                className={`text-sm font-semibold ${
-                  theme === 'newyear' ? 'text-red-50' : 'text-white'
-                }`}
-              >
-                {t('settings.language')}
-              </span>
-              <svg
-                className={`h-5 w-5 transition-transform ${openSections.language ? 'rotate-180' : 'rotate-0'} ${
-                  theme === 'newyear' ? 'text-yellow-200' : 'text-gray-200'
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {openSections.language && (
-              <div className="px-4 pb-4">
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setLanguage('en')}
-                    className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-black ${
-                      language === 'en'
-                        ? theme === 'newyear'
-                          ? 'border-yellow-400/80 text-yellow-200 focus:ring-yellow-400'
-                          : theme === 'bloom'
-                            ? 'border-fuchsia-400 text-white focus:ring-fuchsia-400'
-                            : 'border-cyan-400 text-white focus:ring-cyan-400'
-                        : theme === 'newyear'
-                          ? 'border-red-700/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200'
-                          : theme === 'bloom'
-                            ? 'border-gray-700 text-gray-200 hover:border-fuchsia-300/60 hover:text-white'
-                            : 'border-gray-700 text-gray-200 hover:border-cyan-300/60 hover:text-white'
-                    }`}
-                  >
-                    {t('settings.language.en')}
-                  </button>
-                  <button
-                    onClick={() => setLanguage('zh-TW')}
-                    className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-black ${
-                      language === 'zh-TW'
-                        ? theme === 'newyear'
-                          ? 'border-yellow-400/80 text-yellow-200 focus:ring-yellow-400'
-                          : theme === 'bloom'
-                            ? 'border-fuchsia-400 text-white focus:ring-fuchsia-400'
-                            : 'border-cyan-400 text-white focus:ring-cyan-400'
-                        : theme === 'newyear'
-                          ? 'border-red-700/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200'
-                          : theme === 'bloom'
-                            ? 'border-gray-700 text-gray-200 hover:border-fuchsia-300/60 hover:text-white'
-                            : 'border-gray-700 text-gray-200 hover:border-cyan-300/60 hover:text-white'
-                    }`}
-                  >
-                    {t('settings.language.zh')}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div
-            className={`border rounded-xl ${
-              theme === 'newyear'
-                ? 'border-red-700/60 bg-red-900/30'
-                : theme === 'bloom'
-                  ? 'border-fuchsia-500/20 bg-gray-900/40'
-                  : 'border-gray-700 bg-gray-900/40'
-            }`}
-          >
-            <button
-              onClick={() => toggleSection('model')}
-              className="w-full flex items-center justify-between px-4 py-3 text-left"
-            >
-              <span
-                className={`text-sm font-semibold ${
-                  theme === 'newyear' ? 'text-red-50' : 'text-white'
-                }`}
-              >
-                {t('settings.model')}
-              </span>
-              <svg
-                className={`h-5 w-5 transition-transform ${openSections.model ? 'rotate-180' : 'rotate-0'} ${
-                  theme === 'newyear' ? 'text-yellow-200' : 'text-gray-200'
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {openSections.model && (
-              <div className="px-4 pb-4 space-y-4">
+                  {t('settings.model')}
+                </label>
                 <select
+                  id={`${baseId}-model`}
                   value={model}
                   onChange={(e) => setModel(e.target.value as ModelType)}
-                  className={`w-full border rounded-lg p-3 focus:ring-2 focus:outline-none ${
-                    theme === 'newyear'
-                      ? 'bg-red-900/50 border-red-700/50 text-red-50 focus:ring-red-500'
-                      : theme === 'bloom'
-                        ? 'bg-gray-900 border-gray-600 text-white focus:ring-fuchsia-500'
-                        : 'bg-gray-900 border-gray-600 text-white focus:ring-blue-500'
-                  }`}
+                  className={`${FIELD_BASE} cursor-pointer ${s.field}`}
                 >
                   <option value="gemini-2.5-flash-image">{t('settings.model.flash')}</option>
                   <option value="gemini-3.1-flash-image-preview">
@@ -345,176 +280,105 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   </option>
                   <option value="gemini-3-pro-image-preview">{t('settings.model.pro')}</option>
                 </select>
+              </div>
 
-                <div>
-                  <label
-                    className={`block text-sm font-medium mb-2 ${
-                      theme === 'newyear' ? 'text-red-200' : 'text-gray-300'
-                    }`}
-                  >
-                    {t('settings.api_key')}
-                  </label>
+              <div>
+                <label
+                  htmlFor={`${baseId}-api-key`}
+                  className={`block text-sm font-medium mb-2 ${s.label}`}
+                >
+                  {t('settings.api_key')}
+                </label>
+                <div className="relative">
                   <input
-                    type="password"
+                    id={`${baseId}-api-key`}
+                    type={showApiKey ? 'text' : 'password'}
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     placeholder={t('settings.api_key_placeholder')}
-                    className={`w-full border rounded-lg p-3 focus:ring-2 focus:outline-none ${
-                      theme === 'newyear'
-                        ? 'bg-red-900/50 border-red-700/50 text-red-50 placeholder-red-300 focus:ring-red-500'
-                        : theme === 'bloom'
-                          ? 'bg-gray-900 border-gray-600 text-white placeholder-gray-500 focus:ring-fuchsia-500'
-                          : 'bg-gray-900 border-gray-600 text-white placeholder-gray-500 focus:ring-blue-500'
-                    }`}
+                    autoComplete="off"
+                    spellCheck={false}
+                    className={`${FIELD_BASE} pr-20 ${s.field}`}
                   />
-                  <p
-                    className={`text-xs mt-2 ${
-                      theme === 'newyear' ? 'text-red-300' : 'text-gray-500'
-                    }`}
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKey((prev) => !prev)}
+                    aria-pressed={showApiKey}
+                    className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-xs font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
                   >
-                    {t('settings.api_key_desc')}
+                    {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
+                  </button>
+                </div>
+                <p className={`text-xs mt-2 ${s.hint}`}>{t('settings.api_key_desc')}</p>
+              </div>
+            </div>,
+          )}
+
+          {renderSection(
+            'compression',
+            'settings.compression',
+            <div className="px-4 pb-4 space-y-4">
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="enable-compression"
+                  checked={enableImageCompression}
+                  onChange={(e) => setEnableImageCompression(e.target.checked)}
+                  className={`mt-1 w-4 h-4 rounded cursor-pointer focus:outline-none focus-visible:ring-2 ${s.checkbox}`}
+                />
+                <div className="flex-1">
+                  <label
+                    htmlFor="enable-compression"
+                    className={`block text-sm font-medium mb-1 cursor-pointer ${s.label}`}
+                  >
+                    {t('settings.compression.enable')}
+                  </label>
+                  <p className={`text-xs ${s.hint}`}>{t('settings.compression.enable_desc')}</p>
+                </div>
+              </div>
+
+              {enableImageCompression && (
+                <div>
+                  <label
+                    htmlFor={`${baseId}-threshold`}
+                    className={`block text-sm font-medium mb-2 ${s.label}`}
+                  >
+                    {t('settings.compression.threshold')}
+                  </label>
+                  <input
+                    id={`${baseId}-threshold`}
+                    type="number"
+                    min="1"
+                    max="50"
+                    step="0.5"
+                    value={compressionThresholdMB}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      if (!isNaN(value) && value > 0) {
+                        setCompressionThresholdMB(value);
+                      }
+                    }}
+                    className={`${FIELD_BASE} ${s.field}`}
+                  />
+                  <p className={`text-xs mt-2 ${s.hint}`}>
+                    {t('settings.compression.threshold_desc')}
                   </p>
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div
-            className={`border rounded-xl ${
-              theme === 'newyear'
-                ? 'border-red-700/60 bg-red-900/30'
-                : theme === 'bloom'
-                  ? 'border-fuchsia-500/20 bg-gray-900/40'
-                  : 'border-gray-700 bg-gray-900/40'
-            }`}
-          >
-            <button
-              onClick={() => toggleSection('compression')}
-              className="w-full flex items-center justify-between px-4 py-3 text-left"
-            >
-              <span
-                className={`text-sm font-semibold ${
-                  theme === 'newyear' ? 'text-red-50' : 'text-white'
-                }`}
-              >
-                {t('settings.compression')}
-              </span>
-              <svg
-                className={`h-5 w-5 transition-transform ${openSections.compression ? 'rotate-180' : 'rotate-0'} ${
-                  theme === 'newyear' ? 'text-yellow-200' : 'text-gray-200'
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {openSections.compression && (
-              <div className="px-4 pb-4 space-y-4">
-                <div className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    id="enable-compression"
-                    checked={enableImageCompression}
-                    onChange={(e) => setEnableImageCompression(e.target.checked)}
-                    className={`mt-1 w-4 h-4 rounded focus:ring-2 ${
-                      theme === 'newyear'
-                        ? 'text-red-600 bg-red-900/50 border-red-700 focus:ring-red-500'
-                        : theme === 'bloom'
-                          ? 'text-blue-600 bg-gray-900 border-gray-600 focus:ring-fuchsia-500'
-                          : 'text-blue-600 bg-gray-900 border-gray-600 focus:ring-blue-500'
-                    }`}
-                  />
-                  <div className="flex-1">
-                    <label
-                      htmlFor="enable-compression"
-                      className={`block text-sm font-medium mb-1 ${
-                        theme === 'newyear' ? 'text-red-200' : 'text-gray-300'
-                      }`}
-                    >
-                      {t('settings.compression.enable')}
-                    </label>
-                    <p
-                      className={`text-xs ${
-                        theme === 'newyear' ? 'text-red-300' : 'text-gray-500'
-                      }`}
-                    >
-                      {t('settings.compression.enable_desc')}
-                    </p>
-                  </div>
-                </div>
-
-                {enableImageCompression && (
-                  <div>
-                    <label
-                      className={`block text-sm font-medium mb-2 ${
-                        theme === 'newyear' ? 'text-red-200' : 'text-gray-300'
-                      }`}
-                    >
-                      {t('settings.compression.threshold')}
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      step="0.5"
-                      value={compressionThresholdMB}
-                      onChange={(e) => {
-                        const value = parseFloat(e.target.value);
-                        if (!isNaN(value) && value > 0) {
-                          setCompressionThresholdMB(value);
-                        }
-                      }}
-                      className={`w-full border rounded-lg p-3 focus:ring-2 focus:outline-none ${
-                        theme === 'newyear'
-                          ? 'bg-red-900/50 border-red-700/50 text-red-50 focus:ring-red-500'
-                          : theme === 'bloom'
-                            ? 'bg-gray-900 border-gray-600 text-white focus:ring-fuchsia-500'
-                            : 'bg-gray-900 border-gray-600 text-white focus:ring-blue-500'
-                      }`}
-                    />
-                    <p
-                      className={`text-xs mt-2 ${
-                        theme === 'newyear' ? 'text-red-300' : 'text-gray-500'
-                      }`}
-                    >
-                      {t('settings.compression.threshold_desc')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+              )}
+            </div>,
+          )}
         </div>
 
-        <div className="mt-8 flex justify-end gap-3">
+        {/* Settings persist as soon as they change, so a single dismiss action is
+            honest here — a "Cancel" button that discarded nothing was misleading. */}
+        <div className="mt-8 flex items-center justify-between gap-3">
+          <p className={`text-xs ${s.hint}`}>{t('settings.autosave_hint')}</p>
           <button
+            type="button"
             onClick={onClose}
-            className={`px-4 py-2 rounded-lg transition-colors font-medium ${
-              theme === 'newyear'
-                ? 'bg-red-800/50 hover:bg-red-700/50 text-red-100'
-                : 'bg-gray-700 hover:bg-gray-600 text-white'
-            }`}
+            className={`px-4 py-2 rounded-lg transition-colors font-medium cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${s.confirm}`}
           >
-            {t('settings.cancel')}
-          </button>
-          <button
-            onClick={onClose}
-            className={`px-4 py-2 rounded-lg transition-colors font-medium ${
-              theme === 'newyear'
-                ? 'bg-red-600 hover:bg-red-500 text-white'
-                : theme === 'bloom'
-                  ? 'bg-fuchsia-600 hover:bg-fuchsia-500 text-white'
-                  : 'bg-blue-600 hover:bg-blue-500 text-white'
-            }`}
-          >
-            {t('settings.save')}
+            {t('settings.done')}
           </button>
         </div>
       </div>

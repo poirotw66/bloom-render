@@ -221,7 +221,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
         <button
           type="button"
           onClick={onDownload}
-          className="inline-flex items-center gap-2 bg-gradient-to-br from-emerald-600 to-emerald-500 text-white font-bold py-3 px-5 rounded-xl transition-colors duration-200 shadow-md shadow-emerald-500/20 hover:from-emerald-500 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          className="inline-flex items-center gap-2 bg-gradient-to-br from-emerald-600 to-emerald-500 text-white font-bold py-3 px-5 rounded-xl transition-colors duration-200 shadow-md shadow-emerald-500/20 hover:from-emerald-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
           <DownloadIcon className="w-5 h-5" />
           {t('travel.download')}
@@ -229,7 +229,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
         <button
           type="button"
           onClick={onAgain}
-          className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
           <RefreshIcon className="w-5 h-5" />
           {t('travel.again')}
@@ -237,7 +237,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
         <button
           type="button"
           onClick={() => onEditInEditor(result)}
-          className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-5 rounded-xl transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-5 rounded-xl transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
           <EditIcon className="w-5 h-5" />
           {t('travel.edit_in_editor')}

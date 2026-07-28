@@ -53,9 +53,14 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen text-gray-100 flex flex-col">
+      <a href="#main-content" className="skip-link">
+        {t('a11y.skip_to_content')}
+      </a>
       <Header onImageSelected={handleImageUpload} />
       <main
-        className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 ${isEditRoute ? 'items-start' : 'items-center'}`}
+        id="main-content"
+        tabIndex={-1}
+        className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none ${isEditRoute ? 'items-start' : 'items-center'}`}
       >
         {uploadError && !isEditRoute && (
           <div className="w-full max-w-2xl mb-4">

@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useDialog } from '../hooks/useDialog';
 import { useHistory, type HistoryItem } from '../hooks/useHistory';
 import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
@@ -64,20 +65,10 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
   const { t } = useLanguage();
   const { theme } = useTheme();
   const { history, removeFromHistory, clearHistory } = useHistory();
+  const panelRef = useDialog<HTMLElement>(isOpen, onClose);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeType, setActiveType] = useState<HistoryFilterType>('all');
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -150,12 +141,14 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
       />
 
       <aside
-        className={`absolute right-0 top-0 h-full w-full max-w-lg border-l shadow-2xl ${surface} animate-fade-in`}
+        ref={panelRef}
+        tabIndex={-1}
+        className={`absolute right-0 top-0 h-full w-full max-w-lg border-l shadow-2xl flex flex-col focus:outline-none ${surface} animate-slide-in-right`}
         role="dialog"
         aria-modal="true"
         aria-label={t('history.title')}
       >
-        <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4">
+        <div className="shrink-0 p-5 border-b border-white/10 flex items-start justify-between gap-4">
           <div className="space-y-1">
             <h2 className={`text-xl font-extrabold ${accent}`}>{t('history.title')}</h2>
             <p className="text-sm text-gray-300">{t('history.subtitle')}</p>
@@ -172,16 +165,17 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
           </button>
         </div>
 
-        <div className="p-5 border-b border-white/10 space-y-4">
+        <div className="shrink-0 p-5 border-b border-white/10 space-y-4">
           <input
             type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder={t('history.search_placeholder')}
+            aria-label={t('history.search_placeholder')}
             className={UI_INPUT}
           />
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t('history.filter_all')}>
             {HISTORY_TYPES.map((type) => {
               const label = type === 'all' ? t('history.filter_all') : t(`history.type.${type}`);
               const isActive = activeType === type;
@@ -191,6 +185,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
                   key={type}
                   type="button"
                   onClick={() => setActiveType(type)}
+                  aria-pressed={isActive}
                   className={isActive ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
                 >
                   {label}
@@ -229,24 +224,26 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
               className="text-xs text-gray-200 hover:text-white transition-colors underline underline-offset-4"
               onClick={onClose}
             >
-              {t('history.title')}
+              {t('history.view_all')}
             </Link>
           </div>
         </div>
 
-        <div className="p-5 overflow-auto h-[calc(100vh-220px)]">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5">
           {history.length === 0 ? (
             <div className="py-16 text-center text-gray-300">{t('history.empty')}</div>
           ) : filteredHistory.length === 0 ? (
             <div className="py-16 text-center text-gray-300">{t('history.no_results')}</div>
           ) : (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredHistory.map((item, index) => (
                 <div key={item.id} className={UI_CARD_SOFT}>
                   <div className="aspect-square bg-gray-950 flex items-center justify-center">
                     <img
                       src={item.result}
                       alt={`${t(`history.type.${item.type}`)} ${index + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>

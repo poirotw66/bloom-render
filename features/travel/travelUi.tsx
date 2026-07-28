@@ -10,7 +10,7 @@ export const TRAVEL_PANEL =
   'rounded-2xl border border-sky-500/15 bg-gradient-to-b from-slate-900/70 via-slate-950/80 to-black/60 shadow-xl shadow-sky-950/40 backdrop-blur-xl';
 
 export const TRAVEL_CHIP =
-  'px-3 py-2 rounded-xl text-xs font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
+  'px-3 py-2 rounded-xl text-xs font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
 
 export const TRAVEL_CHIP_ACTIVE =
   'bg-sky-600 text-white border-sky-400/60 shadow-md shadow-sky-600/25';

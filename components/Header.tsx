@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import React, { useState, useMemo } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { CogIcon, ListBulletIcon } from './icons';
@@ -34,7 +34,6 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const currentTab: StartTab = useMemo(() => {
     const path = location.pathname;
@@ -98,37 +97,41 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
           </Link>
 
           <div className="w-full order-3 md:order-2 md:flex-1 md:min-w-[260px] md:flex md:justify-center">
-            <StartTabNav currentTab={currentTab} navigate={navigate} theme={theme} />
+            <StartTabNav currentTab={currentTab} />
           </div>
 
           <div className="flex items-center gap-2 order-2 md:order-3 shrink-0">
             <button
               type="button"
               onClick={() => setIsHistoryOpen(true)}
-              className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-white/10 ${
+              className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 hover:bg-white/10 ${
                 theme === 'newyear'
-                  ? 'text-red-200 hover:text-red-50 focus:ring-red-500'
+                  ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'text-gray-300 hover:text-white focus:ring-fuchsia-500'
-                    : 'text-slate-300 hover:text-white focus:ring-blue-500'
+                    ? 'text-gray-300 hover:text-white focus-visible:ring-fuchsia-500'
+                    : 'text-slate-300 hover:text-white focus-visible:ring-blue-500'
               }`}
               aria-label={t('history.title')}
               title={t('history.title')}
+              aria-haspopup="dialog"
+              aria-expanded={isHistoryOpen}
             >
               <ListBulletIcon className="w-5 h-5" />
             </button>
             <button
               type="button"
               onClick={() => setIsSettingsOpen(true)}
-              className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-white/10 ${
+              className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 hover:bg-white/10 ${
                 theme === 'newyear'
-                  ? 'text-red-200 hover:text-red-50 focus:ring-red-500'
+                  ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'text-gray-300 hover:text-white focus:ring-fuchsia-500'
-                    : 'text-slate-300 hover:text-white focus:ring-blue-500'
+                    ? 'text-gray-300 hover:text-white focus-visible:ring-fuchsia-500'
+                    : 'text-slate-300 hover:text-white focus-visible:ring-blue-500'
               }`}
               aria-label={t('settings.title')}
               title={t('settings.title')}
+              aria-haspopup="dialog"
+              aria-expanded={isSettingsOpen}
             >
               <CogIcon className="w-5 h-5" />
             </button>
