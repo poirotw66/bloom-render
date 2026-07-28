@@ -321,7 +321,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                             value={customOutfitText}
                             onChange={(e) => setCustomOutfitText(e.target.value)}
                             placeholder={t('travel.outfit_custom_placeholder')}
-                            className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
                           />
                         </div>
                       )}
@@ -336,7 +336,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         <select
                           value={pose}
                           onChange={(e) => setPose(e.target.value as TravelPose)}
-                          className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                          className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
                         >
                           {TRAVEL_POSE_OPTIONS.map((p) => (
                             <option key={p.id} value={p.id}>
@@ -351,7 +351,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                               value={customPoseText}
                               onChange={(e) => setCustomPoseText(e.target.value)}
                               placeholder={t('travel.pose_custom_placeholder')}
-                              className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                              className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
                             />
                           </div>
                         )}
@@ -363,7 +363,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         <select
                           value={framing}
                           onChange={(e) => setFraming(e.target.value as TravelFraming)}
-                          className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                          className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-500"
                         >
                           {TRAVEL_FRAMING_OPTIONS.map((f) => (
                             <option key={f.id} value={f.id}>

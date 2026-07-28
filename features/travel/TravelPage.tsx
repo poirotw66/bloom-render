@@ -73,7 +73,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
               <button
                 type="button"
                 onClick={tr.handleBatchDownload}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               >
                 <DownloadIcon className="w-5 h-5" />
                 {t('history.batch_download')} ({tr.results.length})
@@ -81,7 +81,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
               <button
                 type="button"
                 onClick={tr.clearResult}
-                className="px-6 py-3 bg-slate-700/80 border border-slate-600 text-white rounded-xl font-bold hover:bg-slate-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                className="px-6 py-3 bg-slate-700/80 border border-slate-600 text-white rounded-xl font-bold hover:bg-slate-600 transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               >
                 {t('travel.again')}
               </button>

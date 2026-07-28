@@ -6,9 +6,13 @@
 import { describe, expect, it } from 'vitest';
 import {
   UI_BTN_GENERATE,
+  UI_BTN_PRIMARY,
   UI_BTN_SUCCESS,
+  UI_CHIP_ACTIVE,
   UI_FILE_PICKER,
+  UI_INPUT,
   UI_OPTION_ACTIVE,
+  UI_OPTION_INACTIVE,
   UI_SELECT,
   getPageSurface,
   getTitleAccent,
@@ -25,7 +29,7 @@ describe('uiClasses', () => {
   it('keeps shared success button focus and hover classes', () => {
     expect(UI_BTN_SUCCESS).toContain('bg-green-600');
     expect(UI_BTN_SUCCESS).toContain('hover:bg-green-500');
-    expect(UI_BTN_SUCCESS).toContain('focus:ring-green-500');
+    expect(UI_BTN_SUCCESS).toContain('focus-visible:ring-green-500');
   });
 
   it('returns theme-specific title accents', () => {
@@ -36,9 +40,23 @@ describe('uiClasses', () => {
 
   it('shares select and option chip focus styles', () => {
     expect(UI_SELECT).toContain('rounded-xl');
-    expect(UI_SELECT).toContain('focus:ring-blue-500');
+    expect(UI_SELECT).toContain('focus-visible:ring-blue-500');
     expect(uiOption(true)).toBe(UI_OPTION_ACTIVE);
     expect(uiOption(false)).toContain('bg-gray-800');
+  });
+
+  it('shows focus rings only for keyboard focus', () => {
+    for (const token of [
+      UI_BTN_PRIMARY,
+      UI_BTN_SUCCESS,
+      UI_CHIP_ACTIVE,
+      UI_INPUT,
+      UI_OPTION_ACTIVE,
+      UI_OPTION_INACTIVE,
+    ]) {
+      expect(token).toContain('focus-visible:ring');
+      expect(token).not.toMatch(/(^|\s)focus:ring/);
+    }
   });
 
   it('shares upload and generate CTA styles', () => {

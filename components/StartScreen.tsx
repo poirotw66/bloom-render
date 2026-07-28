@@ -38,6 +38,10 @@ import {
 
 type StartTab = 'upload' | 'generate';
 
+/** Shared shape for the aspect-ratio / image-count segmented controls. */
+const OPTION_BTN =
+  'px-5 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 disabled:cursor-not-allowed disabled:opacity-50';
+
 interface StartScreenProps {
   tab: StartTab;
   onImageSelected: (file: File) => void;
@@ -53,11 +57,11 @@ const themeStyles = {
     borderCard: 'border-fuchsia-500/20',
     btn: 'from-fuchsia-600 via-pink-500 to-rose-500 shadow-fuchsia-500/25 focus-within:ring-fuchsia-400',
     btnSecondary: 'from-fuchsia-600 to-pink-500 border-fuchsia-500/50',
-    inputFocus: 'focus:ring-fuchsia-500 focus:border-fuchsia-500/50',
+    inputFocus: 'focus-visible:ring-fuchsia-500 focus:border-fuchsia-500/50',
     cardIcon: 'from-fuchsia-500/30 to-pink-500/30 border-fuchsia-400/30',
     cardIconText: 'text-fuchsia-300',
     generateBtn:
-      'from-fuchsia-600 to-pink-500 shadow-fuchsia-500/20 hover:shadow-fuchsia-500/40 focus:ring-fuchsia-500',
+      'from-fuchsia-600 to-pink-500 shadow-fuchsia-500/20 hover:shadow-fuchsia-500/40 focus-visible:ring-fuchsia-500',
     titleGradient: 'from-amber-300 via-pink-400 to-fuchsia-400',
   },
   night: {
@@ -67,11 +71,11 @@ const themeStyles = {
     borderCard: 'border-slate-600/50',
     btn: 'from-blue-600 to-cyan-500 shadow-blue-500/25 focus-within:ring-blue-400',
     btnSecondary: 'from-blue-600 to-cyan-500 border-blue-500/50',
-    inputFocus: 'focus:ring-blue-500 focus:border-blue-500/50',
+    inputFocus: 'focus-visible:ring-blue-500 focus:border-blue-500/50',
     cardIcon: 'from-blue-500/30 to-cyan-500/30 border-blue-400/30',
     cardIconText: 'text-cyan-300',
     generateBtn:
-      'from-blue-600 to-blue-500 shadow-blue-500/20 hover:shadow-blue-500/40 focus:ring-blue-500',
+      'from-blue-600 to-blue-500 shadow-blue-500/20 hover:shadow-blue-500/40 focus-visible:ring-blue-500',
     titleGradient: 'from-slate-200 via-blue-300 to-cyan-300',
   },
   newyear: {
@@ -81,11 +85,11 @@ const themeStyles = {
     borderCard: 'border-red-700/50',
     btn: 'from-red-600 to-amber-500 shadow-red-500/25 focus-within:ring-red-400',
     btnSecondary: 'from-red-600 to-amber-500 border-red-500/50',
-    inputFocus: 'focus:ring-red-500 focus:border-red-500/50',
+    inputFocus: 'focus-visible:ring-red-500 focus:border-red-500/50',
     cardIcon: 'from-red-500/30 to-amber-500/30 border-red-400/30',
     cardIconText: 'text-amber-300',
     generateBtn:
-      'from-red-600 to-red-500 shadow-red-500/20 hover:shadow-red-500/40 focus:ring-red-500',
+      'from-red-600 to-red-500 shadow-red-500/20 hover:shadow-red-500/40 focus-visible:ring-red-500',
     titleGradient: 'from-red-200 via-amber-300 to-yellow-400',
   },
 } as const satisfies Record<ThemeType, Record<string, string>>;
@@ -244,7 +248,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               </button>
             </div>
             <div
-              className={`grid gap-4 w-full ${generatedImages.length >= 2 ? 'grid-cols-2' : 'grid-cols-1'}`}
+              className={`grid gap-4 w-full ${generatedImages.length >= 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}
             >
               {generatedImages.map((url, idx) => (
                 <article
@@ -298,53 +302,77 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-8 md:p-10 rounded-2xl border backdrop-blur-sm shadow-lg ${s.borderCard}`}
           >
             <textarea
+              id="generate-prompt"
               value={generationPrompt}
               onChange={(e) => setGenerationPrompt(e.target.value)}
               placeholder={t('start.prompt_placeholder')}
-              className={`w-full h-40 md:h-44 bg-gray-900/50 border border-gray-600 rounded-xl p-5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:outline-none resize-none transition-colors duration-200 text-base ${s.inputFocus}`}
+              aria-label={t('start.prompt_placeholder')}
+              className={`w-full h-40 md:h-44 bg-gray-900/50 border border-gray-600 rounded-xl p-5 text-gray-100 placeholder-gray-500 focus:outline-none focus-visible:ring-2 resize-none transition-colors duration-200 text-base ${s.inputFocus}`}
               disabled={isGenerating}
             />
 
             <div className="w-full flex flex-col md:flex-row gap-6">
               <div className="flex-grow">
-                <label className="block text-left text-sm font-medium text-gray-300 mb-3">
+                <span
+                  id="aspect-ratio-label"
+                  className="block text-left text-sm font-medium text-gray-300 mb-3"
+                >
                   {t('start.aspect_ratio')}
-                </label>
-                <div className="flex flex-wrap gap-3">
+                </span>
+                <div
+                  className="flex flex-wrap gap-3"
+                  role="group"
+                  aria-labelledby="aspect-ratio-label"
+                >
                   {(['1:1', '16:9', '9:16', '4:3', '3:4'] as const).map((ratio) => (
                     <button
                       key={ratio}
+                      type="button"
                       onClick={() => setAspectRatio(ratio)}
                       disabled={isGenerating}
-                      className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+                      aria-pressed={aspectRatio === ratio}
+                      className={`${OPTION_BTN} ${
                         aspectRatio === ratio
                           ? `border bg-gradient-to-r ${s.btnSecondary} text-white`
                           : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700'
-                      } disabled:cursor-not-allowed disabled:opacity-50`}
+                      }`}
                     >
                       {ratio}
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="w-full md:w-40">
-                <label className="block text-left text-sm font-medium text-gray-300 mb-3">
+              <div className="w-full md:w-auto">
+                <span
+                  id="image-count-label"
+                  className="block text-left text-sm font-medium text-gray-300 mb-3"
+                >
                   {t('start.image_count')}
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="4"
-                  value={numberOfImages}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value);
-                    if (!isNaN(val)) {
-                      setNumberOfImages(Math.max(1, Math.min(4, val)));
-                    }
-                  }}
-                  disabled={isGenerating}
-                  className={`w-full bg-gray-900/50 border border-gray-600 rounded-lg p-3 text-gray-100 focus:ring-2 focus:outline-none text-center text-base ${theme === 'newyear' ? 'focus:ring-red-500' : theme === 'bloom' ? 'focus:ring-fuchsia-500' : 'focus:ring-blue-500'}`}
-                />
+                </span>
+                {/* A segmented control instead of a number field: the range is 1-4,
+                    so there is nothing to type and no invalid state to recover from. */}
+                <div
+                  className="flex flex-wrap gap-3"
+                  role="group"
+                  aria-labelledby="image-count-label"
+                >
+                  {[1, 2, 3, 4].map((count) => (
+                    <button
+                      key={count}
+                      type="button"
+                      onClick={() => setNumberOfImages(count)}
+                      disabled={isGenerating}
+                      aria-pressed={numberOfImages === count}
+                      className={`${OPTION_BTN} min-w-[3rem] ${
+                        numberOfImages === count
+                          ? `border bg-gradient-to-r ${s.btnSecondary} text-white`
+                          : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700'
+                      }`}
+                    >
+                      {count}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -355,9 +383,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             )}
 
             <button
+              type="button"
               onClick={handleGenerateClick}
               disabled={isGenerating || !generationPrompt.trim()}
-              className={`w-full mt-2 bg-gradient-to-br text-white font-bold py-5 px-8 rounded-xl text-base transition-all duration-200 ease-in-out shadow-lg hover:-translate-y-px active:scale-95 active:shadow-inner disabled:from-gray-700 disabled:to-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${s.generateBtn}`}
+              aria-busy={isGenerating}
+              className={`w-full mt-2 bg-gradient-to-br text-white font-bold py-5 px-8 rounded-xl text-base transition-all duration-200 ease-in-out shadow-lg hover:-translate-y-px active:scale-95 active:shadow-inner disabled:from-gray-700 disabled:to-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${s.generateBtn}`}
             >
               {isGenerating ? (
                 <>

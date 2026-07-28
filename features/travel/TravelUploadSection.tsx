@@ -106,7 +106,7 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => removeFile(idx)}
-                    className="absolute top-1 right-1 w-7 h-7 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 cursor-pointer focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="absolute top-1 right-1 w-7 h-7 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 cursor-pointer focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                     aria-label={t('travel.change_photo')}
                   >
                     <XMarkIcon className="w-4 h-4" />
@@ -152,10 +152,10 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                 type="button"
                 onClick={onGenerate}
                 disabled={loading || files.length === 0}
-                className={`inline-flex items-center justify-center gap-3 px-8 py-3.5 text-white font-bold rounded-xl shadow-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-40 disabled:cursor-not-allowed ${
+                className={`inline-flex items-center justify-center gap-3 px-8 py-3.5 text-white font-bold rounded-xl shadow-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:opacity-40 disabled:cursor-not-allowed ${
                   isGroupMode
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-indigo-600/20 focus:ring-indigo-400'
-                    : 'bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 shadow-sky-600/20 focus:ring-sky-400'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-indigo-600/20 focus-visible:ring-indigo-400'
+                    : 'bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 shadow-sky-600/20 focus-visible:ring-sky-400'
                 }`}
               >
                 <TravelIcon className="w-5 h-5 motion-safe:animate-pulse" />

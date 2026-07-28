@@ -177,7 +177,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
       <button
         onClick={handleSurpriseMe}
         disabled={disabled}
-        className="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl font-bold shadow-lg shadow-violet-500/25 transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-fuchsia-400/50"
+        className="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl font-bold shadow-lg shadow-violet-500/25 transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/50"
       >
         <GiftIcon className="w-6 h-6 shrink-0" />
         <div>
@@ -370,7 +370,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                     onChange={(e) => setCustomSceneText(e.target.value)}
                     placeholder={t('travel.custom_placeholder')}
                     disabled={disabled}
-                    className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-2.5 text-gray-100 placeholder-gray-500 focus-visible:ring-2 focus-visible:ring-amber-500 focus:outline-none"
                   />
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">
@@ -492,7 +492,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   onChange={(e) => setCustomOutfitText(e.target.value)}
                   placeholder={t('travel.outfit_custom_placeholder')}
                   disabled={disabled}
-                  className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:ring-1 focus:ring-green-500"
+                  className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
                 />
               </div>
             )}
@@ -519,7 +519,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   onChange={(e) => setOutfitColor(e.target.value)}
                   placeholder={t('travel.label.outfit_color_custom')}
                   disabled={disabled}
-                  className="flex-1 min-w-[100px] h-8 bg-gray-800/50 border border-gray-700 rounded-full px-3 text-[10px] text-gray-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="flex-1 min-w-[100px] h-8 bg-gray-800/50 border border-gray-700 rounded-full px-3 text-[10px] text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-500"
                 />
               </div>
             </div>
@@ -571,7 +571,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   onChange={(e) => setCustomPoseText(e.target.value)}
                   placeholder={t('travel.pose_custom_placeholder')}
                   disabled={disabled}
-                  className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                  className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
                 />
               </div>
             )}

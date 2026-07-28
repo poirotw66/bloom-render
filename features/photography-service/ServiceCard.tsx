@@ -19,7 +19,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ item, onClick }) => {
   return (
     <button
       type="button"
-      className={`group ${UI_CARD} p-6 flex flex-col gap-4 text-left hover:bg-gray-700/40 hover:border-blue-500/50 transition-all duration-300 hover:shadow-blue-500/10 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900`}
+      className={`group ${UI_CARD} p-6 flex flex-col gap-4 text-left hover:bg-gray-700/40 hover:border-blue-500/50 transition-all duration-300 hover:shadow-blue-500/10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900`}
       onClick={() => onClick(item)}
       aria-label={t(item.actionLabelKey)}
     >

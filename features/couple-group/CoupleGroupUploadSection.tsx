@@ -132,8 +132,8 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                 }
                 className={`${UI_BTN} px-8 py-3.5 font-black text-white shadow-lg ${
                   mode === 'couple'
-                    ? 'bg-pink-600 hover:bg-pink-500 focus:ring-pink-500 shadow-pink-600/20'
-                    : 'bg-purple-600 hover:bg-purple-500 focus:ring-purple-500 shadow-purple-600/20'
+                    ? 'bg-pink-600 hover:bg-pink-500 focus-visible:ring-pink-500 shadow-pink-600/20'
+                    : 'bg-purple-600 hover:bg-purple-500 focus-visible:ring-purple-500 shadow-purple-600/20'
                 }`}
               >
                 {loading ? (

@@ -88,7 +88,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 onClick={(e) => handleMarkerClick(e, scene.id)}
                 onMouseEnter={() => setHoveredId(scene.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="relative flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-full"
+                className="relative flex items-center justify-center cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-full"
                 style={{
                   width: '40px',
                   height: '40px',
