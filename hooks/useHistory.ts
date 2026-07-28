@@ -2,85 +2,139 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Hook for managing generation history.
+ * Generation history, backed by IndexedDB (see utils/historyDb.ts).
+ *
+ * Both the header's HistoryPanel and the full HistoryPage can be mounted at
+ * the same time, so this is a small external store (React's
+ * useSyncExternalStore) rather than per-component state: a delete in one
+ * place is reflected in the other immediately, and both read the same
+ * in-memory list instead of racing separate loads.
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
+import {
+  MAX_HISTORY_ITEMS,
+  clearHistoryItems,
+  deleteHistoryItems,
+  generateHistoryId,
+  getAllHistoryItems,
+  migrateLegacyHistoryIfNeeded,
+  putHistoryItem,
+  sortHistoryItems,
+  splitOverflow,
+  type HistoryItem,
+} from '../utils/historyDb';
 import { logger } from '../utils/logger';
 
-export interface HistoryItem {
-  id: string;
-  type: string;
-  result: string;
-  timestamp: number;
-  options?: Record<string, unknown>;
+export type { HistoryItem };
+
+let history: HistoryItem[] = [];
+let initPromise: Promise<void> | null = null;
+const listeners = new Set<() => void>();
+
+function notify(): void {
+  for (const listener of listeners) listener();
 }
 
-const HISTORY_STORAGE_KEY = 'pixshop_generation_history';
-const MAX_HISTORY_ITEMS = 50;
+function setHistory(next: HistoryItem[]): void {
+  history = next;
+  notify();
+}
+
+function ensureInitialized(): Promise<void> {
+  if (!initPromise) {
+    initPromise = (async () => {
+      try {
+        await migrateLegacyHistoryIfNeeded();
+        setHistory(await getAllHistoryItems());
+      } catch (err) {
+        logger.error('Failed to load history from IndexedDB:', err);
+      }
+    })();
+  }
+  return initPromise;
+}
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+function getSnapshot(): HistoryItem[] {
+  return history;
+}
+
+async function addToHistory(
+  type: string,
+  result: string,
+  options?: Record<string, unknown>,
+): Promise<string> {
+  await ensureInitialized();
+
+  const item: HistoryItem = {
+    id: generateHistoryId(type),
+    type,
+    result,
+    timestamp: Date.now(),
+    options,
+  };
+  const previous = history;
+  setHistory(sortHistoryItems([item, ...previous]));
+
+  try {
+    await putHistoryItem(item);
+    const { keep, overflow } = splitOverflow(history, MAX_HISTORY_ITEMS);
+    if (overflow.length > 0) {
+      setHistory(keep);
+      await deleteHistoryItems(overflow.map((i) => i.id));
+    }
+  } catch (err) {
+    logger.error('Failed to save history item:', err);
+    // Roll back the optimistic add; the result wasn't actually persisted.
+    setHistory(previous);
+  }
+
+  return item.id;
+}
+
+async function removeFromHistory(id: string): Promise<void> {
+  const previous = history;
+  setHistory(previous.filter((item) => item.id !== id));
+
+  try {
+    await deleteHistoryItems([id]);
+  } catch (err) {
+    logger.error('Failed to delete history item:', err);
+    setHistory(previous);
+  }
+}
+
+async function clearHistory(): Promise<void> {
+  const previous = history;
+  setHistory([]);
+
+  try {
+    await clearHistoryItems();
+  } catch (err) {
+    logger.error('Failed to clear history:', err);
+    setHistory(previous);
+  }
+}
 
 export function useHistory() {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-
-  // Load history from localStorage on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as HistoryItem[];
-        setHistory(parsed);
-      }
-    } catch (err) {
-      logger.error('Failed to load history:', err);
-    }
+    void ensureInitialized();
   }, []);
 
-  // Save history to localStorage whenever it changes
-  useEffect(() => {
-    try {
-      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
-    } catch (err) {
-      logger.error('Failed to save history:', err);
-    }
-  }, [history]);
-
-  const addToHistory = useCallback(
-    (type: string, result: string, options?: Record<string, unknown>) => {
-      const item: HistoryItem = {
-        id: `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        type,
-        result,
-        timestamp: Date.now(),
-        options,
-      };
-
-      setHistory((prev) => {
-        const updated = [item, ...prev].slice(0, MAX_HISTORY_ITEMS);
-        return updated;
-      });
-
-      return item.id;
-    },
-    [],
-  );
-
-  const removeFromHistory = useCallback((id: string) => {
-    setHistory((prev) => prev.filter((item) => item.id !== id));
-  }, []);
-
-  const clearHistory = useCallback(() => {
-    setHistory([]);
-  }, []);
+  const historyState = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
   const getHistoryByType = useCallback(
-    (type: string) => {
-      return history.filter((item) => item.type === type);
-    },
-    [history],
+    (type: string) => historyState.filter((item) => item.type === type),
+    [historyState],
   );
 
   return {
-    history,
+    history: historyState,
     addToHistory,
     removeFromHistory,
     clearHistory,

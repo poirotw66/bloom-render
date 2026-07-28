@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import SavedPromptsBar from './SavedPromptsBar';
 
 interface FilterPanelProps {
   onApplyFilter: (prompt: string) => void;
@@ -50,6 +51,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilter, isLoading }) =
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomPrompt(e.target.value);
+    setSelectedPresetPrompt(null);
+  };
+
+  const handleApplySavedPrompt = (text: string) => {
+    setCustomPrompt(text);
     setSelectedPresetPrompt(null);
   };
 
@@ -114,6 +120,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilter, isLoading }) =
         }`}
         disabled={isLoading}
         aria-label={t('panel.filter.placeholder')}
+      />
+
+      <SavedPromptsBar
+        scope="filter"
+        value={customPrompt}
+        onApply={handleApplySavedPrompt}
+        disabled={isLoading}
       />
 
       {activePrompt && (
