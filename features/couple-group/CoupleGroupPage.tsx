@@ -15,6 +15,7 @@ import CoupleGroupUploadSection from './CoupleGroupUploadSection';
 import CoupleGroupResult from './CoupleGroupResult';
 import { useCoupleGroup } from './useCoupleGroup';
 import QuantitySelector from '../../components/QuantitySelector';
+import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import OutputSizeRatioSelector from '../../components/OutputSizeRatioSelector';
 import {
   UI_BTN_SECONDARY,
@@ -48,6 +49,14 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
 
         {coupleGroup.results && coupleGroup.results.length > 0 ? (
           <section className="w-full flex flex-col gap-6">
+            <GenerationFailureNotice
+              failures={coupleGroup.failures}
+              requestedCount={coupleGroup.requestedCount}
+              succeededCount={coupleGroup.succeededCount}
+              isRetrying={coupleGroup.isRetrying}
+              onRetry={coupleGroup.handleRetryFailed}
+              context="couple_group"
+            />
             <div className="flex flex-wrap items-center justify-center gap-3">
               {hasMultipleResults && (
                 <button

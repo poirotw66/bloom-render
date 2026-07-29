@@ -43,3 +43,67 @@ export function getFulfilledResults<T>(settled: PromiseSettledResult<T>[]): T[] 
     .filter((result): result is PromiseFulfilledResult<T> => result.status === 'fulfilled')
     .map((result) => result.value);
 }
+
+/** A single generation that failed, tagged with the slot it was generating for. */
+export interface GenerationFailure {
+  /** Index within the original requested batch, so a retry can re-run just this slot. */
+  index: number;
+  reason: unknown;
+}
+
+export interface SettledPartition<T> {
+  results: T[];
+  failures: GenerationFailure[];
+}
+
+/**
+ * Split allSettled output into results and failures, keeping each failure's
+ * original batch index.
+ *
+ * `indices` maps position in `settled` back to the requested slot: on the first
+ * run that's 0..n-1, but a retry only re-runs the previously failed slots, so it
+ * passes those indices instead.
+ */
+export function partitionSettled<T>(
+  settled: PromiseSettledResult<T>[],
+  indices: number[],
+): SettledPartition<T> {
+  const results: T[] = [];
+  const failures: GenerationFailure[] = [];
+
+  settled.forEach((outcome, position) => {
+    const index = indices[position] ?? position;
+    if (outcome.status === 'fulfilled') {
+      results.push(outcome.value);
+    } else {
+      failures.push({ index, reason: outcome.reason });
+    }
+  });
+
+  return { results, failures };
+}
+
+/** Run one task per requested slot, reporting per-slot failures instead of dropping them. */
+export async function runIndexedTasks<T>(
+  indices: number[],
+  task: (index: number) => Promise<T>,
+): Promise<SettledPartition<T>> {
+  const settled = await Promise.allSettled(indices.map((index) => task(index)));
+  return partitionSettled(settled, indices);
+}
+
+/**
+ * Group failures by their translated-message key so the UI can say
+ * "2 blocked by the safety filter" rather than listing the same reason twice.
+ */
+export function groupFailureReasons(
+  failures: GenerationFailure[],
+  toKey: (reason: unknown) => string,
+): Array<{ key: string; count: number }> {
+  const counts = new Map<string, number>();
+  for (const failure of failures) {
+    const key = toKey(failure.reason);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return [...counts.entries()].map(([key, count]) => ({ key, count }));
+}

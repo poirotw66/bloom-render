@@ -15,6 +15,7 @@ import TravelUploadSection from './TravelUploadSection';
 import TravelResult from './TravelResult';
 import TravelMapContainer from './TravelMapContainer';
 import QuantitySelector from '../../components/QuantitySelector';
+import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import { TRAVEL_PANEL, TravelToolbar } from './travelUi';
 
 interface TravelPageProps {
@@ -69,6 +70,14 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
 
         {tr.results && tr.results.length > 0 ? (
           <div className="w-full flex flex-col gap-6 motion-safe:animate-fade-in">
+            <GenerationFailureNotice
+              failures={tr.failures}
+              requestedCount={tr.requestedCount}
+              succeededCount={tr.succeededCount}
+              isRetrying={tr.isRetrying}
+              onRetry={tr.handleRetryFailed}
+              context="travel"
+            />
             <div className="flex flex-wrap items-center justify-center gap-3">
               <button
                 type="button"

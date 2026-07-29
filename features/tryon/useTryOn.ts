@@ -17,7 +17,7 @@ import {
 } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { getFulfilledResults } from '../../utils/generationHelpers';
+import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   TRYON_BACKGROUNDS,
   TRYON_STYLES,
@@ -39,6 +39,7 @@ export function useTryOn() {
   const { t } = useLanguage();
   const settings = useSettings();
   const { addToHistory } = useHistory();
+  const run = useGenerationFailures();
 
   const [personFile, setPersonFile] = useState<File | null>(null);
   const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
@@ -145,6 +146,33 @@ export function useTryOn() {
     [addClothing],
   );
 
+  const generateOne = useCallback(
+    (person: File, clothing: File[], variationIndex: number, total: number) => {
+      const backgroundOption = TRYON_BACKGROUNDS.find((b) => b.id === background);
+      const styleOption = TRYON_STYLES.find((s) => s.id === style);
+
+      return generateVirtualTryOn(person, clothing, {
+        settings: { apiKey: settings.apiKey, model: settings.model },
+        variationIndex: total > 1 ? variationIndex : undefined,
+        backgroundHint: backgroundOption?.promptHint,
+        styleHint: styleOption?.promptHint,
+        outputSize,
+        aspectRatio,
+      }).then((dataUrl) => {
+        addToHistory('tryon', dataUrl, {
+          background,
+          style,
+          clothingCount: clothing.length,
+          outputSize,
+          aspectRatio,
+          variationIndex,
+        });
+        return dataUrl;
+      });
+    },
+    [background, style, outputSize, aspectRatio, settings.apiKey, settings.model, addToHistory],
+  );
+
   const handleGenerate = useCallback(async () => {
     if (!personFile) {
       setError(t('tryon.error_no_person'));
@@ -164,49 +192,25 @@ export function useTryOn() {
     setResult(null);
     setResults([]);
     setProgress(0);
+    run.reset();
 
     const total = quantity;
     const generated: string[] = [];
 
-    const backgroundOption = TRYON_BACKGROUNDS.find((b) => b.id === background);
-    const styleOption = TRYON_STYLES.find((s) => s.id === style);
-
     try {
-      // Run all generations in parallel (concurrent API calls)
       let completedCount = 0;
-      const promises = Array.from({ length: total }, (_, i) =>
-        generateVirtualTryOn(personFile, clothingFiles, {
-          settings: { apiKey: settings.apiKey, model: settings.model },
-          variationIndex: total > 1 ? i : undefined,
-          backgroundHint: backgroundOption?.promptHint,
-          styleHint: styleOption?.promptHint,
-          outputSize,
-          aspectRatio,
-        }).then((dataUrl) => {
+      const { results, failures } = await run.runBatch(total, (i) =>
+        generateOne(personFile, clothingFiles, i, total).then((dataUrl) => {
           completedCount += 1;
           setProgress(Math.round((completedCount / total) * 90));
-          addToHistory('tryon', dataUrl, {
-            background,
-            style,
-            clothingCount: clothingFiles.length,
-            outputSize,
-            aspectRatio,
-            variationIndex: i,
-          });
           return dataUrl;
         }),
       );
-
-      const settled = await Promise.allSettled(promises);
-      const fulfilled = getFulfilledResults(settled);
-      generated.push(...fulfilled);
+      generated.push(...results);
 
       setProgress(100);
       if (generated.length === 0) {
-        const firstRejection = settled.find(
-          (s): s is PromiseRejectedResult => s.status === 'rejected',
-        );
-        const reason = firstRejection?.reason;
+        const reason = failures[0]?.reason;
         logger.error('Try-on generation failed (all requests failed). First reason:', reason);
         if (reason instanceof Error && isI18nErrorKey(reason.message)) {
           throw reason;
@@ -216,7 +220,9 @@ export function useTryOn() {
         }
         throw createI18nError('error.all_generations_failed');
       }
-      if (generated.length === 1) {
+      // Always use the list form when some slots failed, so the partial-result
+      // notice and its retry button have somewhere to live.
+      if (generated.length === 1 && total === 1) {
         setResult(generated[0]);
       } else {
         setResults(generated);
@@ -232,18 +238,24 @@ export function useTryOn() {
       setLoading(false);
       setProgress(0);
     }
-  }, [
-    personFile,
-    clothingFiles,
-    quantity,
-    background,
-    style,
-    outputSize,
-    aspectRatio,
-    settings,
-    t,
-    addToHistory,
-  ]);
+  }, [personFile, clothingFiles, quantity, t, run, generateOne]);
+
+  const handleRetryFailed = useCallback(async () => {
+    if (!personFile) return;
+
+    try {
+      const { results: recovered } = await run.retryFailed((i) =>
+        generateOne(personFile, clothingFiles, i, quantity),
+      );
+      if (recovered.length === 0) return;
+
+      setResults((prev) => [...prev, ...recovered]);
+      setResult(null);
+    } catch (err) {
+      setError(formatApiErrorMessage(err, t, 'tryon'));
+      logger.error('Try-on retry error:', err);
+    }
+  }, [personFile, clothingFiles, quantity, run, generateOne, t]);
 
   const clearResult = useCallback(() => {
     setResult(null);
@@ -251,7 +263,8 @@ export function useTryOn() {
     setPersonFile(null);
     setClothingFiles([]);
     setError(null);
-  }, []);
+    run.reset();
+  }, [run]);
 
   const handleBatchDownload = useCallback(async () => {
     const list = results.length > 0 ? results : result ? [result] : [];
@@ -296,6 +309,11 @@ export function useTryOn() {
     handleGenerate,
     clearResult,
     handleBatchDownload,
+    failures: run.failures,
+    requestedCount: run.requestedCount,
+    succeededCount: run.succeededCount,
+    isRetrying: run.isRetrying,
+    handleRetryFailed,
     canGenerate,
     hasResults,
     minClothing: MIN_CLOTHING_IMAGES,

@@ -13,6 +13,7 @@ import PortraitForm from './PortraitForm';
 import PortraitUploadSection from './PortraitUploadSection';
 import PortraitResult from './PortraitResult';
 import QuantitySelector from '../../components/QuantitySelector';
+import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import {
   UI_BTN_SECONDARY,
   UI_BTN_SUCCESS,
@@ -48,6 +49,14 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
 
         {portrait.portraitResults && portrait.portraitResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
+            <GenerationFailureNotice
+              failures={portrait.failures}
+              requestedCount={portrait.requestedCount}
+              succeededCount={portrait.succeededCount}
+              isRetrying={portrait.isRetrying}
+              onRetry={portrait.handleRetryFailed}
+              context="portrait"
+            />
             <div className="flex items-center justify-center gap-4">
               <button
                 type="button"

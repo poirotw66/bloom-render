@@ -12,7 +12,8 @@ import { formatApiErrorMessage, supportsMultiResolution } from '../../services/g
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
+import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { DEFAULT_PORTRAIT_TYPE, DEFAULT_PORTRAIT_SPEC } from '../../constants/portrait';
 import type { PortraitType, OutputSpec } from '../../types';
 
@@ -21,6 +22,7 @@ export function usePortrait() {
   const settings = useSettings();
   const [searchParams] = useSearchParams();
   const { addToHistory } = useHistory();
+  const run = useGenerationFailures();
 
   const [portraitFile, setPortraitFile] = useState<File | null>(null);
   const [portraitResult, setPortraitResult] = useState<string | null>(null);
@@ -73,6 +75,29 @@ export function usePortrait() {
     e.target.value = '';
   }, []);
 
+  const generateOne = useCallback(
+    (file: File, variationIndex: number) =>
+      generateProfessionalPortrait(file, {
+        portraitType,
+        outputSpec: portraitOutputSpec,
+        imageSize,
+        settings: { apiKey: settings.apiKey, model: settings.model },
+        variationIndex,
+      })
+        .then((url) => {
+          addToHistory('portrait', url, {
+            portraitType,
+            outputSpec: portraitOutputSpec,
+          });
+          return url;
+        })
+        .catch((err) => {
+          logger.error(`Portrait generation error for item ${variationIndex + 1}:`, err);
+          throw err;
+        }),
+    [portraitType, portraitOutputSpec, imageSize, settings.apiKey, settings.model, addToHistory],
+  );
+
   const handlePortraitGenerate = useCallback(async () => {
     if (!portraitFile) {
       setPortraitError(t('portrait.error_no_image'));
@@ -83,44 +108,22 @@ export function usePortrait() {
     setProgress(0);
     setPortraitResult(null);
     setPortraitResults([]);
+    run.reset();
+
+    const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const stopProgress = startRandomProgressTicker(setProgress);
+      const { results } = await run.runBatch(quantity, (index) => generateOne(portraitFile, index));
 
-      // Generate all images in parallel with variations
-      const generationPromises = Array.from({ length: quantity }, (_, i) =>
-        generateProfessionalPortrait(portraitFile, {
-          portraitType,
-          outputSpec: portraitOutputSpec,
-          imageSize,
-          settings: { apiKey: settings.apiKey, model: settings.model },
-          variationIndex: i,
-        })
-          .then((url) => {
-            // Add to history
-            addToHistory('portrait', url, {
-              portraitType,
-              outputSpec: portraitOutputSpec,
-            });
-            return url;
-          })
-          .catch((err) => {
-            logger.error(`Portrait generation error for item ${i + 1}:`, err);
-            throw err;
-          }),
-      );
-
-      const settledResults = await Promise.allSettled(generationPromises);
-      const results = getFulfilledResults(settledResults);
-
-      stopProgress();
       setProgress(100);
 
       if (results.length === 0) {
         throw new Error('error.all_generations_failed');
       }
 
-      if (results.length === 1) {
+      // Always use the list form when some slots failed, so the partial-result
+      // notice and its retry button have somewhere to live.
+      if (results.length === 1 && quantity === 1) {
         setPortraitResult(results[0]);
       } else {
         setPortraitResults(results);
@@ -129,20 +132,28 @@ export function usePortrait() {
       setPortraitError(formatApiErrorMessage(err, t, 'portrait'));
       logger.error('Portrait generation error:', err);
     } finally {
+      stopProgress();
       setPortraitLoading(false);
       setProgress(0);
     }
-  }, [
-    portraitFile,
-    portraitType,
-    portraitOutputSpec,
-    imageSize,
-    settings.apiKey,
-    settings.model,
-    t,
-    addToHistory,
-    quantity,
-  ]);
+  }, [portraitFile, t, quantity, run, generateOne]);
+
+  const handleRetryFailed = useCallback(async () => {
+    if (!portraitFile) return;
+
+    try {
+      const { results: recovered } = await run.retryFailed((index) =>
+        generateOne(portraitFile, index),
+      );
+      if (recovered.length === 0) return;
+
+      setPortraitResults((prev) => [...prev, ...recovered]);
+      setPortraitResult(null);
+    } catch (err) {
+      setPortraitError(formatApiErrorMessage(err, t, 'portrait'));
+      logger.error('Portrait retry error:', err);
+    }
+  }, [portraitFile, run, generateOne, t]);
 
   const handlePortraitDownload = useCallback(() => {
     if (!portraitResult) return;
@@ -155,7 +166,8 @@ export function usePortrait() {
   const clearPortraitResult = useCallback(() => {
     setPortraitResult(null);
     setPortraitResults([]);
-  }, []);
+    run.reset();
+  }, [run]);
 
   const handlePortraitBatchDownload = useCallback(async () => {
     if (portraitResults.length === 0) return;
@@ -213,6 +225,11 @@ export function usePortrait() {
     handlePortraitDownload,
     handlePortraitBatchDownload,
     clearPortraitResult,
+    failures: run.failures,
+    requestedCount: run.requestedCount,
+    succeededCount: run.succeededCount,
+    isRetrying: run.isRetrying,
+    handleRetryFailed,
     isDraggingOver,
     handleDragOver,
     handleDragLeave,
