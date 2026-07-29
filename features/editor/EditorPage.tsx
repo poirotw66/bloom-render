@@ -19,6 +19,7 @@ import CropPanel from '../../components/CropPanel';
 import { UndoIcon, RedoIcon, EyeIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
+import CompareSlider from '../../components/CompareSlider';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { logger } from '../../utils/logger';
@@ -93,6 +94,14 @@ const EditorPage: React.FC = () => {
 
   const canUndo = historyIndex > 0;
   const canRedo = historyIndex < history.length - 1;
+
+  // Crop renders its own single-image surface, and undoing back to the original
+  // leaves nothing to compare against — drop out of compare mode in both cases.
+  useEffect(() => {
+    if (activeTab === 'crop' || !canUndo) {
+      setIsComparing(false);
+    }
+  }, [activeTab, canUndo]);
 
   const addImageToHistory = useCallback(
     (newImageFile: File) => {
@@ -313,28 +322,35 @@ const EditorPage: React.FC = () => {
       );
     }
 
-    const imageDisplay = (
-      <div className="relative">
-        {/* Base image is the original, always at the bottom */}
-        {originalImageUrl && (
-          <img
-            key={originalImageUrl}
-            src={originalImageUrl}
-            alt="Original image"
-            className="w-full h-auto object-contain max-h-[60vh] rounded-xl pointer-events-none"
-          />
-        )}
-        {/* The current image is an overlay that fades in/out for comparison */}
-        <img
-          ref={imgRef}
-          key={currentImageUrl ?? 'none'}
-          src={currentImageUrl ?? undefined}
-          alt="Current edited image"
-          onClick={handleImageClick}
-          className={`absolute top-0 left-0 w-full h-auto object-contain max-h-[60vh] rounded-xl transition-opacity duration-200 ease-in-out ${isComparing ? 'opacity-0' : 'opacity-100'} ${activeTab === 'retouch' ? 'cursor-crosshair' : 'cursor-default'}`}
+    const imageDisplay =
+      isComparing && originalImageUrl && currentImageUrl ? (
+        <CompareSlider
+          originalUrl={originalImageUrl}
+          currentUrl={currentImageUrl}
+          imageClassName="max-w-full max-h-[60vh] w-auto h-auto rounded-xl"
         />
-      </div>
-    );
+      ) : (
+        <div className="relative">
+          {/* Base image is the original, always at the bottom */}
+          {originalImageUrl && (
+            <img
+              key={originalImageUrl}
+              src={originalImageUrl}
+              alt="Original image"
+              className="w-full h-auto object-contain max-h-[60vh] rounded-xl pointer-events-none"
+            />
+          )}
+          {/* The current image sits on top; the original only shows through in compare mode */}
+          <img
+            ref={imgRef}
+            key={currentImageUrl ?? 'none'}
+            src={currentImageUrl ?? undefined}
+            alt="Current edited image"
+            onClick={handleImageClick}
+            className={`absolute top-0 left-0 w-full h-auto object-contain max-h-[60vh] rounded-xl ${activeTab === 'retouch' ? 'cursor-crosshair' : 'cursor-default'}`}
+          />
+        </div>
+      );
 
     // For ReactCrop, we need a single image element. We'll use the current one.
     const cropImageElement = (
@@ -371,7 +387,7 @@ const EditorPage: React.FC = () => {
             imageDisplay
           )}
 
-          {displayHotspot && !isLoading && activeTab === 'retouch' && (
+          {displayHotspot && !isLoading && !isComparing && activeTab === 'retouch' && (
             <div
               className="absolute rounded-full w-6 h-6 bg-blue-500/50 border-2 border-white pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
               style={{ left: `${displayHotspot.x}px`, top: `${displayHotspot.y}px` }}
@@ -380,6 +396,8 @@ const EditorPage: React.FC = () => {
             </div>
           )}
         </div>
+
+        {isComparing && <p className="text-sm text-gray-400">{t('main.compare_hint')}</p>}
 
         <div
           className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${editorTheme.tabContainer}`}
@@ -475,18 +493,19 @@ const EditorPage: React.FC = () => {
 
           <div className="h-6 w-px bg-gray-600 mx-1 hidden sm:block"></div>
 
-          {canUndo && (
+          {canUndo && activeTab !== 'crop' && (
             <button
-              onMouseDown={() => setIsComparing(true)}
-              onMouseUp={() => setIsComparing(false)}
-              onMouseLeave={() => setIsComparing(false)}
-              onTouchStart={() => setIsComparing(true)}
-              onTouchEnd={() => setIsComparing(false)}
-              className="flex items-center justify-center text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
-              aria-label="Press and hold to see original image"
+              type="button"
+              onClick={() => setIsComparing((prev) => !prev)}
+              aria-pressed={isComparing}
+              className={`flex items-center justify-center text-center border font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out active:scale-95 text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${
+                isComparing
+                  ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500'
+                  : 'bg-white/10 border-white/20 text-gray-200 hover:bg-white/20 hover:border-white/30'
+              }`}
             >
               <EyeIcon className="w-5 h-5 mr-2" />
-              {t('main.btn_compare')}
+              {isComparing ? t('main.compare_exit') : t('main.btn_compare')}
             </button>
           )}
 
