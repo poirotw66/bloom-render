@@ -15,6 +15,7 @@ import IdPhotoForm from './IdPhotoForm';
 import IdPhotoUploadSection from './IdPhotoUploadSection';
 import IdPhotoResult from './IdPhotoResult';
 import QuantitySelector from '../../components/QuantitySelector';
+import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import {
   UI_BTN_GHOST,
   UI_BTN_SECONDARY,
@@ -66,6 +67,14 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
 
         {id.idPhotoResults && id.idPhotoResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
+            <GenerationFailureNotice
+              failures={id.failures}
+              requestedCount={id.requestedCount}
+              succeededCount={id.succeededCount}
+              isRetrying={id.isRetrying}
+              onRetry={id.handleRetryFailed}
+              context="idphoto"
+            />
             <div className="flex items-center justify-center gap-4">
               <button
                 type="button"

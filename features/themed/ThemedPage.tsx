@@ -14,6 +14,7 @@ import ThemedUploadSection from './ThemedUploadSection';
 import ThemedResult from './ThemedResult';
 import QuantitySelector from '../../components/QuantitySelector';
 import OutputSizeRatioSelector from '../../components/OutputSizeRatioSelector';
+import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import {
   UI_BTN_SECONDARY,
   UI_BTN_SUCCESS,
@@ -54,6 +55,14 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
 
         {themed.themedResults && themed.themedResults.length > 0 ? (
           <section className="w-full flex flex-col gap-6">
+            <GenerationFailureNotice
+              failures={themed.failures}
+              requestedCount={themed.requestedCount}
+              succeededCount={themed.succeededCount}
+              isRetrying={themed.isRetrying}
+              onRetry={themed.handleRetryFailed}
+              context="themed"
+            />
             <div className="flex flex-wrap items-center justify-center gap-3">
               {hasMultipleResults && (
                 <button

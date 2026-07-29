@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import * as React from 'react';
 import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/geminiService';
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
@@ -13,7 +13,8 @@ import { useHistory } from '../../hooks/useHistory';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
+import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   TRAVEL_SCENE_ID_RANDOM,
   pickRandomTravelScene,
@@ -72,6 +73,12 @@ export function useTravel() {
   const { t } = useLanguage();
   const settings = useSettings();
   const { addToHistory } = useHistory();
+  const run = useGenerationFailures();
+
+  // A retry must reuse the exact generator the original run resolved: the same
+  // scene reference file and the same rolled values for 'random' weather/time,
+  // otherwise recovered images wouldn't match the ones beside them.
+  const retryGeneratorRef = useRef<((index: number) => Promise<string>) | null>(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [isGroupMode, setIsGroupMode] = useState(false);
@@ -312,8 +319,10 @@ export function useTravel() {
     setResult(null);
     setResults([]);
 
+    run.reset();
+    const stopProgress = startRandomProgressTicker(setProgress);
+
     try {
-      const stopProgress = startRandomProgressTicker(setProgress);
       // Enhance the prompt with dynamic variations and selected style/weather/time/vibe
       const stylePrompt = TRAVEL_STYLES.find((s) => s.id === style)?.prompt || '';
 
@@ -355,8 +364,7 @@ export function useTravel() {
         isGroup: isGroupMode || files.length > 1,
       });
 
-      // Generate all images in parallel with variations
-      const generationPromises = Array.from({ length: quantity }, (_, i) => {
+      const generateOne = (i: number) => {
         // Generate a unique prompt variation for each image
         const variedPrompt = generateDynamicTravelPrompt(scenePrompt, {
           style: stylePrompt,
@@ -400,16 +408,15 @@ export function useTravel() {
             logger.error(`Travel generation error for item ${i + 1}:`, err);
             throw err;
           });
-      });
+      };
 
-      const settledResults = await Promise.allSettled(generationPromises);
-      const generatedResults = getFulfilledResults(settledResults);
+      retryGeneratorRef.current = generateOne;
+      const { results: generatedResults } = await run.runBatch(quantity, generateOne);
 
-      stopProgress();
       setProgress(100);
 
       logger.debug(
-        `Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${settledResults.length - generatedResults.length}`,
+        `Travel generation completed: requested ${quantity}, succeeded ${generatedResults.length}, failed ${quantity - generatedResults.length}`,
       );
 
       if (generatedResults.length === 0) {
@@ -444,10 +451,12 @@ export function useTravel() {
       setError(formatApiErrorMessage(err, t, 'travel'));
       logger.error('Travel generation error:', err);
     } finally {
+      stopProgress();
       setLoading(false);
       setProgress(0);
     }
   }, [
+    run,
     files,
     isGroupMode,
     selectedSceneId,
@@ -534,7 +543,25 @@ export function useTravel() {
     setResultSceneNameKey(null);
     setResultSceneCustomLabel(null);
     setResultMetadata(null);
-  }, []);
+    retryGeneratorRef.current = null;
+    run.reset();
+  }, [run]);
+
+  const handleRetryFailed = useCallback(async () => {
+    const generateOne = retryGeneratorRef.current;
+    if (!generateOne) return;
+
+    try {
+      const { results: recovered } = await run.retryFailed(generateOne);
+      if (recovered.length === 0) return;
+
+      setResults((prev) => [...prev, ...recovered]);
+      setResult(null);
+    } catch (err) {
+      setError(formatApiErrorMessage(err, t, 'travel'));
+      logger.error('Travel retry error:', err);
+    }
+  }, [run, t]);
 
   const setFilesFromDrop = useCallback(
     (incoming: File[]) => {
@@ -634,6 +661,11 @@ export function useTravel() {
     handleSurpriseMe,
     handleDownload,
     handleBatchDownload,
+    failures: run.failures,
+    requestedCount: run.requestedCount,
+    succeededCount: run.succeededCount,
+    isRetrying: run.isRetrying,
+    handleRetryFailed,
     clearResult,
     setFilesFromDrop,
     handleDragOver,

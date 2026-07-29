@@ -10,6 +10,7 @@ import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import ProgressIndicator from '../../components/ProgressIndicator';
+import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import TryOnOptionSelectors from './TryOnOptionSelectors';
 import TryOnOutputOptions from './TryOnOutputOptions';
 import TryOnUploadSection from './TryOnUploadSection';
@@ -55,6 +56,14 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
 
         {resultList.length > 0 ? (
           <section className="w-full flex flex-col gap-6">
+            <GenerationFailureNotice
+              failures={tryOn.failures}
+              requestedCount={tryOn.requestedCount}
+              succeededCount={tryOn.succeededCount}
+              isRetrying={tryOn.isRetrying}
+              onRetry={tryOn.handleRetryFailed}
+              context="tryon"
+            />
             <div className="flex flex-wrap items-center justify-center gap-3">
               {hasMultipleResults && (
                 <button

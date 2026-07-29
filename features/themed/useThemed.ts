@@ -12,7 +12,8 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
+import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { DEFAULT_THEMED_TYPE } from '../../constants/themed';
 import type { ThemedType } from '../../types';
 
@@ -21,6 +22,7 @@ export function useThemed() {
   const settings = useSettings();
   const [searchParams] = useSearchParams();
   const { addToHistory } = useHistory();
+  const run = useGenerationFailures();
 
   const [themedFile, setThemedFile] = useState<File | null>(null);
   const [themedResult, setThemedResult] = useState<string | null>(null);
@@ -63,6 +65,26 @@ export function useThemed() {
     e.target.value = '';
   }, []);
 
+  const generateOne = useCallback(
+    (file: File, variationIndex: number) =>
+      generateThemedPhoto(file, {
+        themeType,
+        settings: { apiKey: settings.apiKey, model: settings.model },
+        variationIndex,
+        outputSize,
+        aspectRatio,
+      })
+        .then((url) => {
+          addToHistory('themed', url, { themeType });
+          return url;
+        })
+        .catch((err) => {
+          logger.error(`Themed generation error for item ${variationIndex + 1}:`, err);
+          throw err;
+        }),
+    [themeType, settings.apiKey, settings.model, outputSize, aspectRatio, addToHistory],
+  );
+
   const handleThemedGenerate = useCallback(async () => {
     if (!themedFile) {
       setThemedError(t('themed.error_no_image'));
@@ -73,41 +95,22 @@ export function useThemed() {
     setProgress(0);
     setThemedResult(null);
     setThemedResults([]);
+    run.reset();
+
+    const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const stopProgress = startRandomProgressTicker(setProgress);
+      const { results } = await run.runBatch(quantity, (index) => generateOne(themedFile, index));
 
-      // Generate all images in parallel with variations
-      const generationPromises = Array.from({ length: quantity }, (_, i) =>
-        generateThemedPhoto(themedFile, {
-          themeType,
-          settings: { apiKey: settings.apiKey, model: settings.model },
-          variationIndex: i,
-          outputSize,
-          aspectRatio,
-        })
-          .then((url) => {
-            // Add to history
-            addToHistory('themed', url, { themeType });
-            return url;
-          })
-          .catch((err) => {
-            logger.error(`Themed generation error for item ${i + 1}:`, err);
-            throw err;
-          }),
-      );
-
-      const settledResults = await Promise.allSettled(generationPromises);
-      const results = getFulfilledResults(settledResults);
-
-      stopProgress();
       setProgress(100);
 
       if (results.length === 0) {
         throw new Error('error.all_generations_failed');
       }
 
-      if (results.length === 1) {
+      // Always use the list form when some slots failed, so the partial-result
+      // notice and its retry button have somewhere to live.
+      if (results.length === 1 && quantity === 1) {
         setThemedResult(results[0]);
       } else {
         setThemedResults(results);
@@ -116,20 +119,28 @@ export function useThemed() {
       setThemedError(formatApiErrorMessage(err, t, 'themed'));
       logger.error('Themed generation error:', err);
     } finally {
+      stopProgress();
       setThemedLoading(false);
       setProgress(0);
     }
-  }, [
-    themedFile,
-    themeType,
-    settings.apiKey,
-    settings.model,
-    t,
-    addToHistory,
-    quantity,
-    outputSize,
-    aspectRatio,
-  ]);
+  }, [themedFile, t, quantity, run, generateOne]);
+
+  const handleRetryFailed = useCallback(async () => {
+    if (!themedFile) return;
+
+    try {
+      const { results: recovered } = await run.retryFailed((index) =>
+        generateOne(themedFile, index),
+      );
+      if (recovered.length === 0) return;
+
+      setThemedResults((prev) => [...prev, ...recovered]);
+      setThemedResult(null);
+    } catch (err) {
+      setThemedError(formatApiErrorMessage(err, t, 'themed'));
+      logger.error('Themed retry error:', err);
+    }
+  }, [themedFile, run, generateOne, t]);
 
   const handleThemedDownload = useCallback(() => {
     if (!themedResult) return;
@@ -142,7 +153,8 @@ export function useThemed() {
   const clearThemedResult = useCallback(() => {
     setThemedResult(null);
     setThemedResults([]);
-  }, []);
+    run.reset();
+  }, [run]);
 
   const handleThemedBatchDownload = useCallback(async () => {
     if (themedResults.length === 0) return;
@@ -195,6 +207,11 @@ export function useThemed() {
     handleThemedDownload,
     handleThemedBatchDownload,
     clearThemedResult,
+    failures: run.failures,
+    requestedCount: run.requestedCount,
+    succeededCount: run.succeededCount,
+    isRetrying: run.isRetrying,
+    handleRetryFailed,
     isDraggingOver,
     handleDragOver,
     handleDragLeave,

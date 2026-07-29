@@ -12,7 +12,8 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
+import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   DEFAULT_ID_TYPE,
   DEFAULT_RETOUCH_LEVEL,
@@ -31,6 +32,7 @@ export function useIdPhoto() {
   const settings = useSettings();
   const [searchParams] = useSearchParams();
   const { addToHistory } = useHistory();
+  const run = useGenerationFailures();
 
   const [idPhotoFile, setIdPhotoFile] = useState<File | null>(null);
   const [idPhotoResult, setIdPhotoResult] = useState<string | null>(null);
@@ -93,6 +95,50 @@ export function useIdPhoto() {
     e.target.value = '';
   }, []);
 
+  const generateOne = useCallback(
+    (file: File, variationIndex: number) =>
+      generateIdPhoto(file, {
+        retouchLevel: idPhotoRetouchLevel,
+        idType: idPhotoType,
+        outputSpec: idPhotoOutputSpec,
+        clothingOption: idPhotoClothingOption,
+        clothingCustomText:
+          idPhotoClothingOption === 'custom'
+            ? idPhotoClothingCustomText.trim() || undefined
+            : undefined,
+        clothingReferenceImage:
+          idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile
+            ? idPhotoClothingReferenceFile
+            : undefined,
+        settings: { apiKey: settings.apiKey, model: settings.model },
+        variationIndex,
+      })
+        .then((url) => {
+          addToHistory('idphoto', url, {
+            retouchLevel: idPhotoRetouchLevel,
+            idType: idPhotoType,
+            outputSpec: idPhotoOutputSpec,
+            clothingOption: idPhotoClothingOption,
+          });
+          return url;
+        })
+        .catch((err) => {
+          logger.error(`ID photo generation error for item ${variationIndex + 1}:`, err);
+          throw err;
+        }),
+    [
+      idPhotoRetouchLevel,
+      idPhotoType,
+      idPhotoOutputSpec,
+      idPhotoClothingOption,
+      idPhotoClothingCustomText,
+      idPhotoClothingReferenceFile,
+      settings.apiKey,
+      settings.model,
+      addToHistory,
+    ],
+  );
+
   const handleIdPhotoGenerate = useCallback(async () => {
     if (!idPhotoFile) {
       setIdPhotoError(t('start.error_no_image_idphoto'));
@@ -111,55 +157,22 @@ export function useIdPhoto() {
     setProgress(0);
     setIdPhotoResult(null);
     setIdPhotoResults([]);
+    run.reset();
+
+    const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const stopProgress = startRandomProgressTicker(setProgress);
+      const { results } = await run.runBatch(quantity, (index) => generateOne(idPhotoFile, index));
 
-      // Generate all images in parallel with variations
-      const generationPromises = Array.from({ length: quantity }, (_, i) =>
-        generateIdPhoto(idPhotoFile, {
-          retouchLevel: idPhotoRetouchLevel,
-          idType: idPhotoType,
-          outputSpec: idPhotoOutputSpec,
-          clothingOption: idPhotoClothingOption,
-          clothingCustomText:
-            idPhotoClothingOption === 'custom'
-              ? idPhotoClothingCustomText.trim() || undefined
-              : undefined,
-          clothingReferenceImage:
-            idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile
-              ? idPhotoClothingReferenceFile
-              : undefined,
-          settings: { apiKey: settings.apiKey, model: settings.model },
-          variationIndex: i, // Use index to create different variations
-        })
-          .then((url) => {
-            // Add to history
-            addToHistory('idphoto', url, {
-              retouchLevel: idPhotoRetouchLevel,
-              idType: idPhotoType,
-              outputSpec: idPhotoOutputSpec,
-              clothingOption: idPhotoClothingOption,
-            });
-            return url;
-          })
-          .catch((err) => {
-            logger.error(`ID photo generation error for item ${i + 1}:`, err);
-            throw err;
-          }),
-      );
-
-      const settledResults = await Promise.allSettled(generationPromises);
-      const results = getFulfilledResults(settledResults);
-
-      stopProgress();
       setProgress(100);
 
       if (results.length === 0) {
         throw new Error('error.all_generations_failed');
       }
 
-      if (results.length === 1) {
+      // Always use the list form when some slots failed, so the partial-result
+      // notice and its retry button have somewhere to live.
+      if (results.length === 1 && quantity === 1) {
         setIdPhotoResult(results[0]);
       } else {
         setIdPhotoResults(results);
@@ -168,23 +181,37 @@ export function useIdPhoto() {
       setIdPhotoError(formatApiErrorMessage(err, t, 'idphoto'));
       logger.error('ID photo generation error:', err);
     } finally {
+      stopProgress();
       setIdPhotoLoading(false);
       setProgress(0);
     }
   }, [
     idPhotoFile,
-    idPhotoRetouchLevel,
-    idPhotoType,
-    idPhotoOutputSpec,
     idPhotoClothingOption,
     idPhotoClothingCustomText,
     idPhotoClothingReferenceFile,
-    settings.apiKey,
-    settings.model,
     t,
-    addToHistory,
     quantity,
+    run,
+    generateOne,
   ]);
+
+  const handleRetryFailed = useCallback(async () => {
+    if (!idPhotoFile) return;
+
+    try {
+      const { results: recovered } = await run.retryFailed((index) =>
+        generateOne(idPhotoFile, index),
+      );
+      if (recovered.length === 0) return;
+
+      setIdPhotoResults((prev) => [...prev, ...recovered]);
+      setIdPhotoResult(null);
+    } catch (err) {
+      setIdPhotoError(formatApiErrorMessage(err, t, 'idphoto'));
+      logger.error('ID photo retry error:', err);
+    }
+  }, [idPhotoFile, run, generateOne, t]);
 
   const handleIdPhotoDownload = useCallback(() => {
     if (!idPhotoResult) return;
@@ -197,7 +224,8 @@ export function useIdPhoto() {
   const clearIdPhotoResult = useCallback(() => {
     setIdPhotoResult(null);
     setIdPhotoResults([]);
-  }, []);
+    run.reset();
+  }, [run]);
 
   const handleIdPhotoBatchDownload = useCallback(async () => {
     if (idPhotoResults.length === 0) return;
@@ -261,6 +289,11 @@ export function useIdPhoto() {
     handleIdPhotoGenerate,
     handleIdPhotoDownload,
     handleIdPhotoBatchDownload,
+    failures: run.failures,
+    requestedCount: run.requestedCount,
+    succeededCount: run.succeededCount,
+    isRetrying: run.isRetrying,
+    handleRetryFailed,
     clearIdPhotoResult,
     isDraggingOver,
     handleDragOver,

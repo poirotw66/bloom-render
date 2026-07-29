@@ -21,7 +21,8 @@ import {
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { logger } from '../../utils/logger';
-import { getFulfilledResults, startRandomProgressTicker } from '../../utils/generationHelpers';
+import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import type { CoupleStyle, GroupStyle } from '../../types';
 import {
@@ -35,6 +36,7 @@ export function useCoupleGroup() {
   const { t } = useLanguage();
   const settings = useSettings();
   const { addToHistory } = useHistory();
+  const run = useGenerationFailures();
   const [searchParams] = useSearchParams();
 
   // Mode: couple (2 files) or group (3-6 files)
@@ -187,6 +189,92 @@ export function useCoupleGroup() {
   );
 
   // Generate handler
+  /**
+   * Encodes the uploaded files and resolves the model/prompt config once, then
+   * hands back a per-slot generator. Both the initial run and a retry reuse
+   * this so a retry doesn't re-encode every upload per failed slot.
+   */
+  const buildGenerator = useCallback(async (): Promise<(index: number) => Promise<string>> => {
+    // Find the style configuration
+    const styleConfig =
+      mode === 'couple'
+        ? COUPLE_STYLES.find((s) => s.id === style)
+        : GROUP_STYLES.find((s) => s.id === style);
+
+    if (!styleConfig) {
+      throw new Error('error.invalid_style');
+    }
+
+    // Use a unified generation function for couple/group photos
+    // We'll create a new service function or reuse existing ones with custom prompts
+    const fileCount = files.length;
+    const isGroup = fileCount > 1;
+
+    // Create base prompt with variation support using unified prompt system
+    const createPrompt = (variationIndex: number) => {
+      return generateCoupleGroupPrompt({
+        styleHint: styleConfig.promptHint,
+        fileCount,
+        mode,
+        variationIndex: quantity > 1 ? variationIndex : undefined,
+      });
+    };
+
+    // Prepare file parts (same for all variations)
+    const fileParts: Array<{ inlineData?: { mimeType: string; data: string } }> = [];
+    for (const file of files) {
+      fileParts.push(await fileToPartAuto(file));
+    }
+
+    const ai = getClient(settings);
+    const model = getModel(settings);
+    const supportsMultiRes = supportsMultiResolution(model);
+    const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? outputSize : '1K';
+    const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
+      aspectRatio,
+    };
+    if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
+
+    logger.debug('Starting couple/group photo generation', {
+      mode,
+      style,
+      fileCount,
+      outputSize: effectiveSize,
+      aspectRatio,
+    });
+
+    return async (i: number) => {
+      const variedPrompt = createPrompt(i);
+      const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [
+        ...fileParts,
+        { text: variedPrompt },
+      ];
+
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: { parts },
+          config: {
+            responseModalities: ['TEXT', 'IMAGE'],
+            imageConfig,
+          },
+        });
+        const url = handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
+        addToHistory(mode, url, {
+          style,
+          fileCount,
+          aspectRatio,
+          outputSize: effectiveSize,
+          variationIndex: i,
+        });
+        return url;
+      } catch (err) {
+        logger.error(`Couple/group generation error for item ${i + 1}:`, err);
+        throw err;
+      }
+    };
+  }, [mode, files, style, settings, quantity, outputSize, aspectRatio, addToHistory]);
+
   const handleGenerate = useCallback(async () => {
     // Validation
     if (mode === 'couple' && files.length !== 2) {
@@ -203,98 +291,23 @@ export function useCoupleGroup() {
     setProgress(0);
     setResult(null);
     setResults([]);
+    run.reset();
+
+    const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const stopProgress = startRandomProgressTicker(setProgress);
-      // Find the style configuration
-      const styleConfig =
-        mode === 'couple'
-          ? COUPLE_STYLES.find((s) => s.id === style)
-          : GROUP_STYLES.find((s) => s.id === style);
+      const generateOne = await buildGenerator();
+      const { results: generatedResults } = await run.runBatch(quantity, generateOne);
 
-      if (!styleConfig) {
-        throw new Error('error.invalid_style');
-      }
-
-      // Use a unified generation function for couple/group photos
-      // We'll create a new service function or reuse existing ones with custom prompts
-      const fileCount = files.length;
-      const isGroup = fileCount > 1;
-
-      // Create base prompt with variation support using unified prompt system
-      const createPrompt = (variationIndex: number) => {
-        return generateCoupleGroupPrompt({
-          styleHint: styleConfig.promptHint,
-          fileCount,
-          mode,
-          variationIndex: quantity > 1 ? variationIndex : undefined,
-        });
-      };
-
-      // Prepare file parts (same for all variations)
-      const fileParts: Array<{ inlineData?: { mimeType: string; data: string } }> = [];
-      for (const file of files) {
-        fileParts.push(await fileToPartAuto(file));
-      }
-
-      const ai = getClient(settings);
-      const model = getModel(settings);
-      const supportsMultiRes = supportsMultiResolution(model);
-      const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? outputSize : '1K';
-      const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
-        aspectRatio,
-      };
-      if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
-
-      logger.debug('Starting couple/group photo generation', {
-        mode,
-        style,
-        fileCount,
-        outputSize: effectiveSize,
-        aspectRatio,
-      });
-
-      // Generate all images in parallel with variations
-      const generationPromises = Array.from({ length: quantity }, async (_, i) => {
-        const variedPrompt = createPrompt(i);
-        const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> =
-          [...fileParts, { text: variedPrompt }];
-
-        try {
-          const response = await ai.models.generateContent({
-            model,
-            contents: { parts },
-            config: {
-              responseModalities: ['TEXT', 'IMAGE'],
-              imageConfig,
-            },
-          });
-          const url = handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
-          addToHistory(mode, url, {
-            style,
-            fileCount,
-            aspectRatio,
-            outputSize: effectiveSize,
-            variationIndex: i,
-          });
-          return url;
-        } catch (err) {
-          logger.error(`Couple/group generation error for item ${i + 1}:`, err);
-          throw err;
-        }
-      });
-
-      const settledResults = await Promise.allSettled(generationPromises);
-      const generatedResults = getFulfilledResults(settledResults);
-
-      stopProgress();
       setProgress(100);
 
       if (generatedResults.length === 0) {
         throw new Error('error.all_generations_failed');
       }
 
-      if (generatedResults.length === 1) {
+      // Always use the list form when some slots failed, so the partial-result
+      // notice and its retry button have somewhere to live.
+      if (generatedResults.length === 1 && quantity === 1) {
         setResult(generatedResults[0]);
       } else {
         setResults(generatedResults);
@@ -303,10 +316,25 @@ export function useCoupleGroup() {
       setError(formatApiErrorMessage(err, t, 'couple_group'));
       logger.error('Couple/group generation error:', err);
     } finally {
+      stopProgress();
       setLoading(false);
       setProgress(0);
     }
-  }, [mode, files, style, settings, t, quantity, outputSize, aspectRatio, addToHistory]);
+  }, [mode, files, t, quantity, run, buildGenerator]);
+
+  const handleRetryFailed = useCallback(async () => {
+    try {
+      const generateOne = await buildGenerator();
+      const { results: recovered } = await run.retryFailed(generateOne);
+      if (recovered.length === 0) return;
+
+      setResults((prev) => [...prev, ...recovered]);
+      setResult(null);
+    } catch (err) {
+      setError(formatApiErrorMessage(err, t, 'couple_group'));
+      logger.error('Couple/group retry error:', err);
+    }
+  }, [run, buildGenerator, t]);
 
   // Clear result
   const clearResult = useCallback(() => {
@@ -314,7 +342,8 @@ export function useCoupleGroup() {
     setResults([]);
     setFiles([]);
     setError(null);
-  }, []);
+    run.reset();
+  }, [run]);
 
   const handleBatchDownload = useCallback(async () => {
     if (results.length === 0) return;
@@ -349,6 +378,11 @@ export function useCoupleGroup() {
     removeFile,
     handleGenerate,
     handleBatchDownload,
+    failures: run.failures,
+    requestedCount: run.requestedCount,
+    succeededCount: run.succeededCount,
+    isRetrying: run.isRetrying,
+    handleRetryFailed,
     handleDragOver,
     handleDragLeave,
     handleDrop,
