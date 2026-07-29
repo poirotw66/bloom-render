@@ -176,6 +176,8 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
                   <img
                     src={item.result}
                     alt={`${t(`history.type.${item.type}`)} ${index + 1}`}
+                    loading="lazy"
+                    decoding="async"
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
