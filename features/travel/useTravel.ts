@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import * as React from 'react';
 import { generateTravelPhoto, generateOptimizedPrompt } from '../../services/geminiService';
 import { generateDynamicTravelPrompt } from '../../utils/travelPromptGenerator';
@@ -133,7 +133,11 @@ export function useTravel() {
   const [resultSceneNameKey, setResultSceneNameKey] = useState<string | null>(null);
   const [resultSceneCustomLabel, setResultSceneCustomLabel] = useState<string | null>(null);
 
-  const travelScenes = sceneCatalog?.all ?? [];
+  // Memoised because this feeds the dependency arrays of resolveScenePrompt,
+  // handleGenerate and handleSurpriseMe. As a bare `?? []` it was a fresh array
+  // on every render, so those callbacks were rebuilt every render and their
+  // dependency lists never actually gated anything.
+  const travelScenes = useMemo(() => sceneCatalog?.all ?? [], [sceneCatalog]);
 
   useEffect(() => {
     let cancelled = false;
@@ -471,7 +475,9 @@ export function useTravel() {
     vibe,
     outfit,
     outfitColor,
+    customOutfitText,
     pose,
+    customPoseText,
     relationship,
     framing,
     clearBackground,

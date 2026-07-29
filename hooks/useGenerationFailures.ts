@@ -11,7 +11,7 @@
  * billed, so the loss needs to be visible and recoverable.
  */
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   runIndexedTasks,
   type GenerationFailure,
@@ -108,5 +108,11 @@ export function useGenerationFailures(): UseGenerationFailuresResult {
     setState(EMPTY_STATE);
   }, []);
 
-  return { ...state, runBatch, retryFailed, reset };
+  // Memoised: consumers put this object in their useCallback dependency arrays,
+  // so a fresh identity every render would rebuild their callbacks every render
+  // and stop those dependency lists from gating anything.
+  return useMemo(
+    () => ({ ...state, runBatch, retryFailed, reset }),
+    [state, runBatch, retryFailed, reset],
+  );
 }
