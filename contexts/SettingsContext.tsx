@@ -4,11 +4,9 @@
  */
 
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from 'react';
+import { DEFAULT_MODEL, type ModelType, resolveStoredModel } from '../constants/models';
 
-export type ModelType =
-  | 'gemini-2.5-flash-image'
-  | 'gemini-3-pro-image-preview'
-  | 'gemini-3.1-flash-image-preview';
+export type { ModelType } from '../constants/models';
 
 interface SettingsContextType {
   apiKey: string;
@@ -33,7 +31,7 @@ const STORAGE_KEY_BACKGROUND_MOTION = 'pixshop_background_motion';
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [apiKey, setApiKeyState] = useState<string>('');
-  const [model, setModelState] = useState<ModelType>('gemini-2.5-flash-image');
+  const [model, setModelState] = useState<ModelType>(DEFAULT_MODEL);
   const [enableImageCompression, setEnableImageCompressionState] = useState<boolean>(true);
   const [compressionThresholdMB, setCompressionThresholdMBState] = useState<number>(5);
   const [enableBackgroundMotion, setEnableBackgroundMotionState] = useState<boolean>(false);
@@ -46,14 +44,14 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const storedBackgroundMotion = localStorage.getItem(STORAGE_KEY_BACKGROUND_MOTION);
 
     if (storedKey) setApiKeyState(storedKey);
-    const validModels: ModelType[] = [
-      'gemini-2.5-flash-image',
-      'gemini-3-pro-image-preview',
-      'gemini-3.1-flash-image-preview',
-    ];
-    if (storedModel && validModels.includes(storedModel as ModelType)) {
-      setModelState(storedModel as ModelType);
+
+    const resolvedModel = resolveStoredModel(storedModel);
+    setModelState(resolvedModel);
+    // Persist migration when an old / unknown model id was stored.
+    if (storedModel !== resolvedModel) {
+      localStorage.setItem(STORAGE_KEY_MODEL, resolvedModel);
     }
+
     if (storedCompressionEnabled !== null) {
       setEnableImageCompressionState(storedCompressionEnabled === 'true');
     }
