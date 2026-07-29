@@ -270,7 +270,7 @@ export function useTryOn() {
     const list = results.length > 0 ? results : result ? [result] : [];
     if (list.length === 0) return;
     await downloadBatchWithZipFallback({
-      dataUrls: list,
+      sources: list,
       itemFileName: (index) => `try-on-${index + 1}.png`,
       zipFileName: `try-on-${Date.now()}.zip`,
     });

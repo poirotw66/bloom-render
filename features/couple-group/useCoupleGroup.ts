@@ -349,7 +349,7 @@ export function useCoupleGroup() {
     if (results.length === 0) return;
 
     await downloadBatchWithZipFallback({
-      dataUrls: results,
+      sources: results,
       itemFileName: (index) => `couple-group-${mode}-${index + 1}.png`,
       zipFileName: `couple-group-${Date.now()}.zip`,
     });

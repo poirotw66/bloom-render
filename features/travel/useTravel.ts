@@ -537,7 +537,7 @@ export function useTravel() {
     if (results.length === 0) return;
 
     await downloadBatchWithZipFallback({
-      dataUrls: results,
+      sources: results,
       itemFileName: (index) => `travel-photo-${index + 1}.png`,
       zipFileName: `travel-photos-${Date.now()}.zip`,
     });

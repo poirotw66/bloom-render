@@ -160,7 +160,7 @@ export function useThemed() {
     if (themedResults.length === 0) return;
 
     await downloadBatchWithZipFallback({
-      dataUrls: themedResults,
+      sources: themedResults,
       itemFileName: (index) => `themed-${index + 1}.png`,
       zipFileName: `themed-${Date.now()}.zip`,
     });

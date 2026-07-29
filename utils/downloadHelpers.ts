@@ -5,48 +5,68 @@
  * Shared helpers for downloading generated images.
  */
 
+/**
+ * An image to download: either a `data:` URL (fresh generation results) or a
+ * Blob (history entries, which are stored as Blobs).
+ */
+export type DownloadSource = string | Blob;
+
 interface BatchDownloadOptions {
-  dataUrls: string[];
+  sources: DownloadSource[];
   itemFileName: (index: number) => string;
   zipFileName: string;
 }
 
+function triggerDownload(href: string, fileName: string): void {
+  const link = document.createElement('a');
+  link.href = href;
+  link.download = fileName;
+  link.click();
+}
+
 function fallbackDownloadSequentially(
-  dataUrls: string[],
+  sources: DownloadSource[],
   itemFileName: (index: number) => string,
 ): void {
-  dataUrls.forEach((dataUrl, index) => {
+  sources.forEach((source, index) => {
     setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = itemFileName(index);
-      link.click();
+      if (typeof source === 'string') {
+        triggerDownload(source, itemFileName(index));
+        return;
+      }
+      const url = URL.createObjectURL(source);
+      triggerDownload(url, itemFileName(index));
+      // The click starts the download synchronously, but revoking immediately
+      // can race it in some browsers, so give it a moment.
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, index * 100);
   });
 }
 
 /**
- * Download data URLs as a ZIP. If ZIP creation fails, fallback to sequential single downloads.
+ * Download the given images as a ZIP. If ZIP creation fails, fall back to
+ * sequential single downloads.
  */
 export async function downloadBatchWithZipFallback(options: BatchDownloadOptions): Promise<void> {
-  const { dataUrls, itemFileName, zipFileName } = options;
-  if (dataUrls.length === 0) return;
+  const { sources, itemFileName, zipFileName } = options;
+  if (sources.length === 0) return;
 
   try {
     const JSZip = await import('jszip');
     const zip = new JSZip.default();
-    dataUrls.forEach((dataUrl, index) => {
-      const base64 = dataUrl.split(',')[1];
-      zip.file(itemFileName(index), base64, { base64: true });
+    sources.forEach((source, index) => {
+      if (typeof source === 'string') {
+        zip.file(itemFileName(index), source.split(',')[1], { base64: true });
+      } else {
+        zip.file(itemFileName(index), source);
+      }
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(content);
-    link.download = zipFileName;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    const url = URL.createObjectURL(content);
+    triggerDownload(url, zipFileName);
+    URL.revokeObjectURL(url);
   } catch {
-    fallbackDownloadSequentially(dataUrls, itemFileName);
+    fallbackDownloadSequentially(sources, itemFileName);
   }
 }

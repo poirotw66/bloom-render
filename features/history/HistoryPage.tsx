@@ -7,7 +7,6 @@ import React, { useMemo, useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHistory, type HistoryItem } from '../../hooks/useHistory';
-import { dataURLtoFile } from '../../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
   UI_BTN_PRIMARY,
@@ -80,21 +79,23 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
 
   const handleDownloadOne = (item: HistoryItem, index: number): void => {
     const link = document.createElement('a');
-    link.href = item.result;
+    link.href = item.url;
     link.download = `${item.type}-${index + 1}.png`;
     link.click();
   };
 
   const handleDownloadFiltered = async (): Promise<void> => {
     await downloadBatchWithZipFallback({
-      dataUrls: filteredHistory.map((item) => item.result),
+      sources: filteredHistory.map((item) => item.blob),
       itemFileName: (index) => `${filteredHistory[index].type}-${index + 1}.png`,
       zipFileName: `history-${Date.now()}.zip`,
     });
   };
 
   const handleEdit = (item: HistoryItem, index: number): void => {
-    onImageSelected(dataURLtoFile(item.result, `${item.type}-${index + 1}.png`));
+    onImageSelected(
+      new File([item.blob], `${item.type}-${index + 1}.png`, { type: item.blob.type }),
+    );
   };
 
   const handleRemove = (itemId: string): void => {
@@ -174,7 +175,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
               <article key={item.id} className={UI_CARD_SOFT}>
                 <div className="aspect-square bg-gray-950 flex items-center justify-center">
                   <img
-                    src={item.result}
+                    src={item.url}
                     alt={`${t(`history.type.${item.type}`)} ${index + 1}`}
                     loading="lazy"
                     decoding="async"

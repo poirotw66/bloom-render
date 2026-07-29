@@ -231,7 +231,7 @@ export function useIdPhoto() {
     if (idPhotoResults.length === 0) return;
 
     await downloadBatchWithZipFallback({
-      dataUrls: idPhotoResults,
+      sources: idPhotoResults,
       itemFileName: (index) => `id-photo-${index + 1}.png`,
       zipFileName: `id-photos-${Date.now()}.zip`,
     });
