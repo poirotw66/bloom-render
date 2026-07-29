@@ -163,7 +163,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
   const handleDownloadAllZip = async () => {
     await downloadBatchWithZipFallback({
-      dataUrls: generatedImages,
+      sources: generatedImages,
       itemFileName: (i) => `generated-${i + 1}.png`,
       zipFileName: `generated-images-${Date.now()}.zip`,
     });

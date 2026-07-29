@@ -9,7 +9,6 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDialog } from '../hooks/useDialog';
 import { useHistory, type HistoryItem } from '../hooks/useHistory';
-import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import { DownloadIcon, EditIcon, XMarkIcon } from './icons';
 import { ROUTES } from '../constants/routes';
@@ -111,20 +110,22 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
 
   const handleEdit = (item: HistoryItem, index: number) => {
     if (!onImageSelected) return;
-    onImageSelected(dataURLtoFile(item.result, `${item.type}-${index + 1}.png`));
+    onImageSelected(
+      new File([item.blob], `${item.type}-${index + 1}.png`, { type: item.blob.type }),
+    );
     onClose();
   };
 
   const handleDownloadOne = (item: HistoryItem, index: number) => {
     const link = document.createElement('a');
-    link.href = item.result;
+    link.href = item.url;
     link.download = `${item.type}-${index + 1}.png`;
     link.click();
   };
 
   const handleDownloadFiltered = async (): Promise<void> => {
     await downloadBatchWithZipFallback({
-      dataUrls: filteredHistory.map((item) => item.result),
+      sources: filteredHistory.map((item) => item.blob),
       itemFileName: (index) => `${filteredHistory[index].type}-${index + 1}.png`,
       zipFileName: `history-${Date.now()}.zip`,
     });
@@ -240,7 +241,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
                 <div key={item.id} className={UI_CARD_SOFT}>
                   <div className="aspect-square bg-gray-950 flex items-center justify-center">
                     <img
-                      src={item.result}
+                      src={item.url}
                       alt={`${t(`history.type.${item.type}`)} ${index + 1}`}
                       loading="lazy"
                       decoding="async"

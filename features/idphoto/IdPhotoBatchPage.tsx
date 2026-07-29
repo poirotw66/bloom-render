@@ -144,7 +144,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
 
   const handleBatchDownload = useCallback(async () => {
     await downloadBatchWithZipFallback({
-      dataUrls: batch.results.map((item) => item.result),
+      sources: batch.results.map((item) => item.result),
       itemFileName: (index) => `id-photo-${index + 1}.png`,
       zipFileName: `id-photos-batch-${Date.now()}.zip`,
     });

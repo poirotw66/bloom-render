@@ -173,7 +173,7 @@ export function usePortrait() {
     if (portraitResults.length === 0) return;
 
     await downloadBatchWithZipFallback({
-      dataUrls: portraitResults,
+      sources: portraitResults,
       itemFileName: (index) => `portrait-${index + 1}.png`,
       zipFileName: `portraits-${Date.now()}.zip`,
     });
