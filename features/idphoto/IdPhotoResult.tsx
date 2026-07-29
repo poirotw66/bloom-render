@@ -6,6 +6,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { MODEL_LABEL_KEYS } from '../../constants/models';
 import GenericResult from '../../components/GenericResult';
 import {
   ID_PHOTO_TYPES,
@@ -70,12 +71,7 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
         },
         {
           labelKey: 'settings.model',
-          value:
-            settings.model === 'gemini-3-pro-image-preview'
-              ? t('settings.model.pro')
-              : settings.model === 'gemini-3.1-flash-image-preview'
-                ? t('settings.model.flash31')
-                : t('settings.model.flash'),
+          value: t(MODEL_LABEL_KEYS[settings.model]),
         },
       ]}
     />

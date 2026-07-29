@@ -1032,7 +1032,7 @@ export const zhTWMessages: Record<string, string> = {
 
   'settings.title': '設定',
   'settings.model': '模型',
-  'settings.model.flash': 'Gemini Flash 2.5',
+  'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
   'settings.model.flash31': 'Gemini 3.1 Flash',
   'settings.model.pro': 'Gemini 3 Pro',
   'settings.theme': '主題',

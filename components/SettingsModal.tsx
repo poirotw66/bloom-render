@@ -4,7 +4,8 @@
  */
 
 import React, { useId, useState } from 'react';
-import { useSettings, type ModelType } from '../contexts/SettingsContext';
+import { useSettings } from '../contexts/SettingsContext';
+import { MODEL_LABEL_KEYS, SUPPORTED_MODELS, type ModelType } from '../constants/models';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, type ThemeType } from '../contexts/ThemeContext';
 import { useDialog } from '../hooks/useDialog';
@@ -274,11 +275,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   onChange={(e) => setModel(e.target.value as ModelType)}
                   className={`${FIELD_BASE} cursor-pointer ${s.field}`}
                 >
-                  <option value="gemini-2.5-flash-image">{t('settings.model.flash')}</option>
-                  <option value="gemini-3.1-flash-image-preview">
-                    {t('settings.model.flash31')}
-                  </option>
-                  <option value="gemini-3-pro-image-preview">{t('settings.model.pro')}</option>
+                  {SUPPORTED_MODELS.map((modelId) => (
+                    <option key={modelId} value={modelId}>
+                      {t(MODEL_LABEL_KEYS[modelId])}
+                    </option>
+                  ))}
                 </select>
               </div>
 

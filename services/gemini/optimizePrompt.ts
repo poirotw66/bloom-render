@@ -6,7 +6,7 @@
  */
 
 import { logger } from '../../utils/logger';
-import { fileToPartAuto, getClient, type ServiceSettings } from './shared';
+import { fileToPartAuto, getClient, getModel, type ServiceSettings } from './shared';
 
 /**
  * Uses Gemini (text mode) to optimize a user's short prompt into a detailed image generation prompt.
@@ -18,7 +18,7 @@ export const generateOptimizedPrompt = async (
 ): Promise<string> => {
   logger.debug('Optimizing prompt for:', userText, referenceImage ? '(with image)' : '(text only)');
   const ai = getClient(settings);
-  const modelName = settings?.model || 'gemini-2.5-flash-image';
+  const modelName = getModel(settings);
 
   const instructions = `You are an expert prompt engineer for AI image generation.
 Task: Create a detailed, high-quality image generation prompt based on the user's input.

@@ -1101,7 +1101,7 @@ export const enMessages: Record<string, string> = {
 
   'settings.title': 'Settings',
   'settings.model': 'Model',
-  'settings.model.flash': 'Gemini Flash 2.5',
+  'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
   'settings.model.flash31': 'Gemini 3.1 Flash',
   'settings.model.pro': 'Gemini 3 Pro',
   'settings.theme': 'Theme',
