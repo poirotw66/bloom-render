@@ -937,6 +937,8 @@ export const zhTWMessages: Record<string, string> = {
   'main.btn_download': '下載圖片',
 
   'main.error_title': '發生錯誤',
+  'main.error_dismiss': '關閉錯誤訊息',
+  'main.unsaved_confirm': '你有尚未儲存的編輯，離開此頁將會捨棄。確定要離開嗎？',
   'main.error_try_again': '重試',
   'main.error_no_image_edit': '未載入圖片。',
   'main.error_no_prompt_edit': '請輸入編輯描述。',
