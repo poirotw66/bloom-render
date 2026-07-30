@@ -8,6 +8,7 @@
 import React, { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
 import { ROUTES } from '../constants/routes';
 
 export type StartTab =
@@ -135,6 +136,12 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
               to={path}
               ref={isActive ? activeRef : undefined}
               aria-current={isActive ? 'page' : undefined}
+              onClick={(event) => {
+                // The editor holds its undo stack in memory; leaving discards it.
+                if (!confirmDiscardUnsavedWork(t('main.unsaved_confirm'))) {
+                  event.preventDefault();
+                }
+              }}
               className={`
                 px-4 py-3 min-h-[44px] rounded-lg text-sm sm:text-base font-semibold
                 inline-flex items-center whitespace-nowrap

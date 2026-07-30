@@ -1004,6 +1004,9 @@ export const enMessages: Record<string, string> = {
   'main.btn_download': 'Download Image',
 
   'main.error_title': 'An Error Occurred',
+  'main.error_dismiss': 'Dismiss error',
+  'main.unsaved_confirm':
+    'You have unsaved edits. Leaving this page will discard them. Leave anyway?',
   'main.error_try_again': 'Try Again',
   'main.error_no_image_edit': 'No image loaded to edit.',
   'main.error_no_prompt_edit': 'Please enter a description for your edit.',

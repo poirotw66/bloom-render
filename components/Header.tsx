@@ -10,6 +10,7 @@ import { CogIcon, ListBulletIcon } from './icons';
 import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
 import { publicAssetUrl as asset } from '../utils/publicAsset';
+import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
 import { ROUTES } from '../constants/routes';
 import HistoryPanel from './HistoryPanel';
 
@@ -66,6 +67,11 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
             to={ROUTES.HOME}
             className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity duration-200 order-1 shrink-0"
             aria-label={t('app.title')}
+            onClick={(event) => {
+              if (!confirmDiscardUnsavedWork(t('main.unsaved_confirm'))) {
+                event.preventDefault();
+              }
+            }}
           >
             <span className="flex shrink-0 w-9 h-9 rounded-xl overflow-hidden bg-white/5 ring-1 ring-white/10">
               <LogoIcon className="w-full h-full object-contain" />

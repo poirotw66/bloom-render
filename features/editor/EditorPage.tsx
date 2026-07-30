@@ -16,10 +16,11 @@ import Spinner from '../../components/Spinner';
 import FilterPanel from '../../components/FilterPanel';
 import AdjustmentPanel from '../../components/AdjustmentPanel';
 import CropPanel from '../../components/CropPanel';
-import { UndoIcon, RedoIcon, EyeIcon } from '../../components/icons';
+import { UndoIcon, RedoIcon, EyeIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
 import CompareSlider from '../../components/CompareSlider';
+import { confirmDiscardUnsavedWork, useUnsavedWork } from '../../hooks/useUnsavedWork';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { logger } from '../../utils/logger';
@@ -94,6 +95,10 @@ const EditorPage: React.FC = () => {
 
   const canUndo = historyIndex > 0;
   const canRedo = historyIndex < history.length - 1;
+
+  // Every entry past the original cost an API call, and the stack only lives in
+  // this component, so warn before anything would unmount or reload the page.
+  useUnsavedWork(canUndo);
 
   // Crop renders its own single-image surface, and undoing back to the original
   // leaves nothing to compare against — drop out of compare mode in both cases.
@@ -279,8 +284,9 @@ const EditorPage: React.FC = () => {
   }, [history.length]);
 
   const handleUploadNew = useCallback(() => {
+    if (!confirmDiscardUnsavedWork(t('main.unsaved_confirm'))) return;
     navigate(ROUTES.HOME);
-  }, [navigate]);
+  }, [navigate, t]);
 
   const handleImageClick = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
@@ -307,20 +313,25 @@ const EditorPage: React.FC = () => {
   );
 
   const renderEditor = () => {
-    if (error) {
-      return (
-        <div className="text-center animate-fade-in bg-red-500/10 border border-red-500/20 p-8 rounded-lg max-w-2xl mx-auto flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-bold text-red-300">{t('main.error_title')}</h2>
-          <ErrorDisplay message={error} className="text-md" />
-          <button
-            onClick={() => setError(null)}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg text-md transition-colors"
-          >
-            {t('main.error_try_again')}
-          </button>
+    // No role="alert" on the wrapper: ErrorDisplay already carries one, and
+    // nesting them makes screen readers announce the message twice.
+    const errorBanner = error ? (
+      <div className="w-full animate-fade-in bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-start justify-between gap-4">
+        <div className="min-w-0 text-left">
+          <p className="font-bold text-red-300">{t('main.error_title')}</p>
+          <ErrorDisplay message={error} className="mt-1" />
         </div>
-      );
-    }
+        <button
+          type="button"
+          onClick={() => setError(null)}
+          aria-label={t('main.error_dismiss')}
+          title={t('main.error_dismiss')}
+          className="shrink-0 p-1.5 rounded-lg text-red-200 hover:text-white hover:bg-red-500/20 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+        >
+          <XMarkIcon className="w-5 h-5" />
+        </button>
+      </div>
+    ) : null;
 
     const imageDisplay =
       isComparing && originalImageUrl && currentImageUrl ? (
@@ -365,6 +376,8 @@ const EditorPage: React.FC = () => {
 
     return (
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-6 animate-fade-in">
+        {errorBanner}
+
         <div className="relative w-full shadow-2xl rounded-xl overflow-hidden bg-black/20">
           {isLoading && (
             <div className="absolute inset-0 bg-black/70 z-30 flex flex-col items-center justify-center gap-4 animate-fade-in">
