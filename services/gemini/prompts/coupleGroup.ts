@@ -5,7 +5,7 @@
  * Couple/Group photo prompt generation.
  */
 
-import { buildPrompt, IDENTITY_PRESERVATION } from './base';
+import { buildPrompt } from './base';
 import {
   getVariation,
   COUPLE_GROUP_LIGHTING_VARIATIONS,

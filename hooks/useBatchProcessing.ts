@@ -6,7 +6,6 @@
  */
 
 import { useState, useCallback } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
 import { useHistory } from './useHistory';
 
 export interface BatchProcessingOptions<TFile = File, TOptions = unknown> {
@@ -26,7 +25,6 @@ export interface BatchProcessingOptions<TFile = File, TOptions = unknown> {
 }
 
 export function useBatchProcessing<TFile = File, TOptions = unknown>() {
-  const { t } = useLanguage();
   const { addToHistory } = useHistory();
 
   const [isProcessing, setIsProcessing] = useState(false);

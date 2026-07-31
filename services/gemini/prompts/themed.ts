@@ -5,8 +5,7 @@
  * Themed photoshoot prompt generation.
  */
 
-import type { ThemedType } from '../../../types';
-import { buildPrompt, IDENTITY_PRESERVATION } from './base';
+import { buildPrompt } from './base';
 import {
   getVariation,
   COMPOSITION_VARIATIONS,

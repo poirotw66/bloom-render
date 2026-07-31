@@ -5,7 +5,6 @@
  * ID Photo prompt generation.
  */
 
-import type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption } from '../../../types';
 import {
   buildPrompt,
   IDENTITY_PRESERVATION,
