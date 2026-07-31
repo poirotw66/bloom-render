@@ -46,6 +46,7 @@ Output: Return ONLY the final adjusted image. Do not return text.`;
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: model,
     contents: { parts: [originalImagePart, textPart] },
+    config: { abortSignal: settings?.abortSignal },
   });
   logger.debug('Received response from model for adjustment', response);
 

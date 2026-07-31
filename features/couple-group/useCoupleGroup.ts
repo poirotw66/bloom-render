@@ -21,10 +21,9 @@ import {
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { logger } from '../../utils/logger';
-import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
-import type { CoupleStyle, GroupStyle } from '../../types';
 import {
   COUPLE_STYLES,
   GROUP_STYLES,
@@ -194,7 +193,9 @@ export function useCoupleGroup() {
    * hands back a per-slot generator. Both the initial run and a retry reuse
    * this so a retry doesn't re-encode every upload per failed slot.
    */
-  const buildGenerator = useCallback(async (): Promise<(index: number) => Promise<string>> => {
+  const buildGenerator = useCallback(async (): Promise<
+    (index: number, signal: AbortSignal) => Promise<string>
+  > => {
     // Find the style configuration
     const styleConfig =
       mode === 'couple'
@@ -208,7 +209,6 @@ export function useCoupleGroup() {
     // Use a unified generation function for couple/group photos
     // We'll create a new service function or reuse existing ones with custom prompts
     const fileCount = files.length;
-    const isGroup = fileCount > 1;
 
     // Create base prompt with variation support using unified prompt system
     const createPrompt = (variationIndex: number) => {
@@ -269,7 +269,8 @@ export function useCoupleGroup() {
         });
         return url;
       } catch (err) {
-        logger.error(`Couple/group generation error for item ${i + 1}:`, err);
+        if (!isAbortError(err))
+          logger.error(`Couple/group generation error for item ${i + 1}:`, err);
         throw err;
       }
     };
@@ -297,7 +298,10 @@ export function useCoupleGroup() {
 
     try {
       const generateOne = await buildGenerator();
-      const { results: generatedResults } = await run.runBatch(quantity, generateOne);
+      const { results: generatedResults, cancelled } = await run.runBatch(quantity, generateOne);
+
+      // The user asked to stop: fall back to the form, no error, no partial notice.
+      if (cancelled) return;
 
       setProgress(100);
 
@@ -382,6 +386,8 @@ export function useCoupleGroup() {
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
+    isRunning: run.isRunning,
+    cancelGeneration: run.cancel,
     handleRetryFailed,
     handleDragOver,
     handleDragLeave,

@@ -12,7 +12,7 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { DEFAULT_THEMED_TYPE } from '../../constants/themed';
 import type { ThemedType } from '../../types';
@@ -66,10 +66,10 @@ export function useThemed() {
   }, []);
 
   const generateOne = useCallback(
-    (file: File, variationIndex: number) =>
+    (file: File, variationIndex: number, signal: AbortSignal) =>
       generateThemedPhoto(file, {
         themeType,
-        settings: { apiKey: settings.apiKey, model: settings.model },
+        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
         variationIndex,
         outputSize,
         aspectRatio,
@@ -79,7 +79,8 @@ export function useThemed() {
           return url;
         })
         .catch((err) => {
-          logger.error(`Themed generation error for item ${variationIndex + 1}:`, err);
+          if (!isAbortError(err))
+            logger.error(`Themed generation error for item ${variationIndex + 1}:`, err);
           throw err;
         }),
     [themeType, settings.apiKey, settings.model, outputSize, aspectRatio, addToHistory],
@@ -100,7 +101,12 @@ export function useThemed() {
     const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const { results } = await run.runBatch(quantity, (index) => generateOne(themedFile, index));
+      const { results, cancelled } = await run.runBatch(quantity, (index, signal) =>
+        generateOne(themedFile, index, signal),
+      );
+
+      // The user asked to stop: fall back to the form, no error, no partial notice.
+      if (cancelled) return;
 
       setProgress(100);
 
@@ -129,8 +135,8 @@ export function useThemed() {
     if (!themedFile) return;
 
     try {
-      const { results: recovered } = await run.retryFailed((index) =>
-        generateOne(themedFile, index),
+      const { results: recovered } = await run.retryFailed((index, signal) =>
+        generateOne(themedFile, index, signal),
       );
       if (recovered.length === 0) return;
 
@@ -211,6 +217,8 @@ export function useThemed() {
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
+    isRunning: run.isRunning,
+    cancelGeneration: run.cancel,
     handleRetryFailed,
     isDraggingOver,
     handleDragOver,

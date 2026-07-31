@@ -120,7 +120,11 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
             onEditInEditor={() => handleEditInEditor(id.idPhotoResult!)}
           />
         ) : id.idPhotoLoading ? (
-          <ProgressIndicator progress={id.progress} statusMessages={['start.idphoto_generating']} />
+          <ProgressIndicator
+            progress={id.progress}
+            statusMessages={['start.idphoto_generating']}
+            onCancel={id.cancelGeneration}
+          />
         ) : (
           <>
             <IdPhotoForm

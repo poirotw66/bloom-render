@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   getFulfilledResults,
+  isAbortError,
   groupFailureReasons,
   partitionSettled,
   runIndexedTasks,
@@ -80,6 +81,25 @@ describe('generationHelpers', () => {
       });
 
       expect(seen).toEqual([2, 5]);
+    });
+  });
+
+  describe('isAbortError', () => {
+    it('recognises a DOM AbortError', () => {
+      expect(isAbortError(new DOMException('aborted', 'AbortError'))).toBe(true);
+    });
+
+    it("recognises the SDK's wrapped abort error", () => {
+      // What @google/genai actually throws when the signal fires.
+      expect(
+        isAbortError(new Error('exception AbortError: signal is aborted without reason')),
+      ).toBe(true);
+    });
+
+    it('does not treat ordinary failures as cancellation', () => {
+      expect(isAbortError(new Error('Request was blocked by the safety filter'))).toBe(false);
+      expect(isAbortError('quota exceeded')).toBe(false);
+      expect(isAbortError(undefined)).toBe(false);
     });
   });
 

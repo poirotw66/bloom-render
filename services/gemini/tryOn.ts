@@ -79,6 +79,7 @@ export const generateVirtualTryOn = async (
     model,
     contents: { parts },
     config: {
+      abortSignal: serviceSettings?.abortSignal,
       responseModalities: ['TEXT', 'IMAGE'],
       imageConfig,
     },

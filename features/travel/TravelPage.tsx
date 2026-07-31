@@ -126,7 +126,11 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
             onEditInEditor={handleEditInEditor}
           />
         ) : tr.loading ? (
-          <ProgressIndicator progress={tr.progress} statusMessages={['travel.generating']} />
+          <ProgressIndicator
+            progress={tr.progress}
+            statusMessages={['travel.generating']}
+            onCancel={tr.cancelGeneration}
+          />
         ) : (
           <div className="w-full flex flex-col gap-6">
             <TravelToolbar

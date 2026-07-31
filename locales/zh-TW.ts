@@ -10,6 +10,8 @@ export const zhTWMessages: Record<string, string> = {
   'theme.night': '深夜',
   'theme.newyear': '新年',
   'a11y.skip_to_content': '跳至主要內容',
+  'generation.cancel': '取消生成',
+  'generation.cancel_hint': '停止等待結果。已送出的請求仍可能計費。',
   'generation.partial_title': '已生成 {done} / {total} 張',
   'generation.retry_failed': '重試失敗的 {count} 張',
   'generation.retrying': '重試中…',

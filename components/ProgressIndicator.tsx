@@ -8,11 +8,14 @@
 import React from 'react';
 import BloomFlowerLoader from './BloomFlowerLoader';
 import { useLanguage } from '../contexts/LanguageContext';
+import { UI_BTN_GHOST } from '../utils/uiClasses';
 
 interface ProgressIndicatorProps {
   progress?: number;
   statusMessages?: string[];
   currentStatusIndex?: number;
+  /** Shows a cancel button. Omit for flows that can't be aborted. */
+  onCancel?: () => void;
   className?: string;
 }
 
@@ -20,6 +23,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   progress,
   statusMessages,
   currentStatusIndex = 0,
+  onCancel,
   className = '',
 }) => {
   const { t } = useLanguage();
@@ -49,6 +53,17 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
               />
             </div>
           )}
+        </div>
+      )}
+      {onCancel && (
+        <div className="flex flex-col items-center gap-1.5">
+          <button type="button" onClick={onCancel} className={`${UI_BTN_GHOST} text-sm`}>
+            {t('generation.cancel')}
+          </button>
+          {/* Aborting is client-side only, so be straight about the billing. */}
+          <p className="text-xs text-gray-500 text-center max-w-xs">
+            {t('generation.cancel_hint')}
+          </p>
         </div>
       )}
     </div>

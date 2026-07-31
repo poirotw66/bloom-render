@@ -13,7 +13,7 @@ import { useHistory } from '../../hooks/useHistory';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   TRAVEL_SCENE_ID_RANDOM,
@@ -78,7 +78,9 @@ export function useTravel() {
   // A retry must reuse the exact generator the original run resolved: the same
   // scene reference file and the same rolled values for 'random' weather/time,
   // otherwise recovered images wouldn't match the ones beside them.
-  const retryGeneratorRef = useRef<((index: number) => Promise<string>) | null>(null);
+  const retryGeneratorRef = useRef<
+    ((index: number, signal: AbortSignal) => Promise<string>) | null
+  >(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [isGroupMode, setIsGroupMode] = useState(false);
@@ -249,7 +251,7 @@ export function useTravel() {
             referenceFileName(picked.id, picked.referenceImagePath),
             mimeTypeForImagePath(picked.referenceImagePath),
           );
-        } catch (e) {
+        } catch {
           sceneReferenceImage = undefined;
         }
       } else {
@@ -305,7 +307,7 @@ export function useTravel() {
             referenceFileName(scene.id, scene.referenceImagePath),
             mimeTypeForImagePath(scene.referenceImagePath),
           );
-        } catch (e) {
+        } catch {
           logger.debug(
             `Note: No valid reference image found at ${scene.referenceImagePath}, falling back to text prompt.`,
           );
@@ -352,23 +354,7 @@ export function useTravel() {
       const outfitPrompt = TRAVEL_OUTFIT_OPTIONS.find((o) => o.id === outfit)?.prompt || '';
       const posePrompt = TRAVEL_POSE_OPTIONS.find((p) => p.id === pose)?.prompt || '';
 
-      const finalPrompt = generateDynamicTravelPrompt(scenePrompt, {
-        style: stylePrompt,
-        weather: weatherPrompt,
-        time: timePrompt,
-        vibe: vibePrompt,
-        outfit: outfitPrompt,
-        customOutfitText: outfit === 'custom' ? customOutfitText : undefined,
-        outfitColor: outfitColor,
-        pose: posePrompt,
-        customPoseText: pose === 'custom' ? customPoseText : undefined,
-        relationship: TRAVEL_RELATIONSHIP_OPTIONS.find((r) => r.id === relationship)?.prompt || '',
-        framing: TRAVEL_FRAMING_OPTIONS.find((f) => f.id === framing)?.prompt || '',
-        clearBackground: clearBackground,
-        isGroup: isGroupMode || files.length > 1,
-      });
-
-      const generateOne = (i: number) => {
+      const generateOne = (i: number, signal: AbortSignal) => {
         // Generate a unique prompt variation for each image
         const variedPrompt = generateDynamicTravelPrompt(scenePrompt, {
           style: stylePrompt,
@@ -393,7 +379,7 @@ export function useTravel() {
           aspectRatio,
           imageSize,
           sceneReferenceImage,
-          settings: { apiKey: settings.apiKey, model: settings.model },
+          settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
         })
           .then((url) => {
             addToHistory('travel', url, {
@@ -409,13 +395,16 @@ export function useTravel() {
             return url;
           })
           .catch((err) => {
-            logger.error(`Travel generation error for item ${i + 1}:`, err);
+            if (!isAbortError(err)) logger.error(`Travel generation error for item ${i + 1}:`, err);
             throw err;
           });
       };
 
       retryGeneratorRef.current = generateOne;
-      const { results: generatedResults } = await run.runBatch(quantity, generateOne);
+      const { results: generatedResults, cancelled } = await run.runBatch(quantity, generateOne);
+
+      // The user asked to stop: fall back to the form, no error, no partial notice.
+      if (cancelled) return;
 
       setProgress(100);
 
@@ -671,6 +660,8 @@ export function useTravel() {
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
+    isRunning: run.isRunning,
+    cancelGeneration: run.cancel,
     handleRetryFailed,
     clearResult,
     setFilesFromDrop,

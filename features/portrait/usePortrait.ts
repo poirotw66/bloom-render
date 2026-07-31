@@ -12,7 +12,7 @@ import { formatApiErrorMessage, supportsMultiResolution } from '../../services/g
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { DEFAULT_PORTRAIT_TYPE, DEFAULT_PORTRAIT_SPEC } from '../../constants/portrait';
 import type { PortraitType, OutputSpec } from '../../types';
@@ -76,12 +76,12 @@ export function usePortrait() {
   }, []);
 
   const generateOne = useCallback(
-    (file: File, variationIndex: number) =>
+    (file: File, variationIndex: number, signal: AbortSignal) =>
       generateProfessionalPortrait(file, {
         portraitType,
         outputSpec: portraitOutputSpec,
         imageSize,
-        settings: { apiKey: settings.apiKey, model: settings.model },
+        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
         variationIndex,
       })
         .then((url) => {
@@ -92,7 +92,8 @@ export function usePortrait() {
           return url;
         })
         .catch((err) => {
-          logger.error(`Portrait generation error for item ${variationIndex + 1}:`, err);
+          if (!isAbortError(err))
+            logger.error(`Portrait generation error for item ${variationIndex + 1}:`, err);
           throw err;
         }),
     [portraitType, portraitOutputSpec, imageSize, settings.apiKey, settings.model, addToHistory],
@@ -113,7 +114,12 @@ export function usePortrait() {
     const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const { results } = await run.runBatch(quantity, (index) => generateOne(portraitFile, index));
+      const { results, cancelled } = await run.runBatch(quantity, (index, signal) =>
+        generateOne(portraitFile, index, signal),
+      );
+
+      // The user asked to stop: fall back to the form, no error, no partial notice.
+      if (cancelled) return;
 
       setProgress(100);
 
@@ -142,8 +148,8 @@ export function usePortrait() {
     if (!portraitFile) return;
 
     try {
-      const { results: recovered } = await run.retryFailed((index) =>
-        generateOne(portraitFile, index),
+      const { results: recovered } = await run.retryFailed((index, signal) =>
+        generateOne(portraitFile, index, signal),
       );
       if (recovered.length === 0) return;
 
@@ -229,6 +235,8 @@ export function usePortrait() {
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
+    isRunning: run.isRunning,
+    cancelGeneration: run.cancel,
     handleRetryFailed,
     isDraggingOver,
     handleDragOver,

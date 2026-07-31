@@ -115,6 +115,7 @@ export const generateIdPhoto = async (
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
     contents: { parts },
+    config: { abortSignal: serviceSettings?.abortSignal },
   });
   logger.debug('Received response from model for ID photo', response);
   return handleApiResponse(response, 'id-photo');

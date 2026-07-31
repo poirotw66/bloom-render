@@ -84,7 +84,6 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
                     link.download = `couple-group-${coupleGroup.mode}-${idx + 1}.png`;
                     link.click();
                   }}
-                  onAgain={coupleGroup.clearResult}
                   onEditInEditor={() => {
                     onImageSelected(dataURLtoFile(result, `couple-group-${idx + 1}.png`));
                   }}
@@ -104,7 +103,6 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
               link.download = `couple-group-${coupleGroup.mode}-${Date.now()}.png`;
               link.click();
             }}
-            onAgain={coupleGroup.clearResult}
             onEditInEditor={() => {
               if (!coupleGroup.result) return;
               onImageSelected(dataURLtoFile(coupleGroup.result, `couple-group-${Date.now()}.png`));
@@ -114,6 +112,7 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
           <ProgressIndicator
             progress={coupleGroup.progress}
             statusMessages={['couple_group.generating']}
+            onCancel={coupleGroup.cancelGeneration}
           />
         ) : (
           <div className="w-full max-w-2xl mx-auto bg-gray-800/30 border border-gray-700/50 rounded-2xl p-6 md:p-8 flex flex-col gap-6">

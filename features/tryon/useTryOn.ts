@@ -147,12 +147,18 @@ export function useTryOn() {
   );
 
   const generateOne = useCallback(
-    (person: File, clothing: File[], variationIndex: number, total: number) => {
+    (
+      person: File,
+      clothing: File[],
+      variationIndex: number,
+      total: number,
+      signal: AbortSignal,
+    ) => {
       const backgroundOption = TRYON_BACKGROUNDS.find((b) => b.id === background);
       const styleOption = TRYON_STYLES.find((s) => s.id === style);
 
       return generateVirtualTryOn(person, clothing, {
-        settings: { apiKey: settings.apiKey, model: settings.model },
+        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
         variationIndex: total > 1 ? variationIndex : undefined,
         backgroundHint: backgroundOption?.promptHint,
         styleHint: styleOption?.promptHint,
@@ -199,13 +205,14 @@ export function useTryOn() {
 
     try {
       let completedCount = 0;
-      const { results, failures } = await run.runBatch(total, (i) =>
-        generateOne(personFile, clothingFiles, i, total).then((dataUrl) => {
+      const { results, failures, cancelled } = await run.runBatch(total, (i, signal) =>
+        generateOne(personFile, clothingFiles, i, total, signal).then((dataUrl) => {
           completedCount += 1;
           setProgress(Math.round((completedCount / total) * 90));
           return dataUrl;
         }),
       );
+      if (cancelled) return;
       generated.push(...results);
 
       setProgress(100);
@@ -244,8 +251,8 @@ export function useTryOn() {
     if (!personFile) return;
 
     try {
-      const { results: recovered } = await run.retryFailed((i) =>
-        generateOne(personFile, clothingFiles, i, quantity),
+      const { results: recovered } = await run.retryFailed((i, signal) =>
+        generateOne(personFile, clothingFiles, i, quantity, signal),
       );
       if (recovered.length === 0) return;
 
@@ -313,6 +320,8 @@ export function useTryOn() {
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
+    isRunning: run.isRunning,
+    cancelGeneration: run.cancel,
     handleRetryFailed,
     canGenerate,
     hasResults,
