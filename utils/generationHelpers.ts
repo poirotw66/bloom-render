@@ -44,6 +44,15 @@ export function getFulfilledResults<T>(settled: PromiseSettledResult<T>[]): T[] 
     .map((result) => result.value);
 }
 
+/**
+ * True for a rejection caused by cancelling the run. The SDK wraps the DOM
+ * AbortError in its own Error, so the name check alone isn't enough.
+ */
+export function isAbortError(reason: unknown): boolean {
+  if (reason instanceof DOMException && reason.name === 'AbortError') return true;
+  return reason instanceof Error && /abort/i.test(reason.message);
+}
+
 /** A single generation that failed, tagged with the slot it was generating for. */
 export interface GenerationFailure {
   /** Index within the original requested batch, so a retry can re-run just this slot. */

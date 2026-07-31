@@ -19,6 +19,12 @@ export {
 export interface ServiceSettings {
   apiKey?: string;
   model?: string;
+  /**
+   * Cancels the client's wait for the response. Note the SDK's caveat: this is
+   * client-side only, so the request is not stopped server-side and usage is
+   * still billed. It frees the user from waiting, not from the charge.
+   */
+  abortSignal?: AbortSignal;
 }
 
 export enum ApiErrorType {

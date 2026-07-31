@@ -5,14 +5,12 @@
  * Professional portrait prompt generation.
  */
 
-import type { PortraitType, OutputSpec } from '../../../types';
-import { buildPrompt, IDENTITY_PRESERVATION, QUALITY_REQUIREMENTS } from './base';
+import { buildPrompt } from './base';
 import {
   getVariation,
   LIGHTING_VARIATIONS,
   ANGLE_VARIATIONS,
   EXPRESSION_VARIATIONS,
-  buildVariationNote,
 } from './variations';
 
 export interface PortraitPromptOptions {
@@ -57,17 +55,11 @@ export function generatePortraitPrompt(options: PortraitPromptOptions): string {
   let lightingVar = 'Perfect studio lighting';
   let angleVar = '';
   let expressionVar = '';
-  let variationNote = '';
 
   if (variationIndex !== undefined) {
     lightingVar = getVariation(LIGHTING_VARIATIONS, variationIndex);
     angleVar = getVariation(ANGLE_VARIATIONS, variationIndex);
     expressionVar = getVariation(EXPRESSION_VARIATIONS, variationIndex);
-    variationNote = buildVariationNote({
-      lighting: lightingVar,
-      angle: angleVar,
-      expression: expressionVar,
-    });
   }
 
   positiveParts.push(

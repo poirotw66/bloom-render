@@ -10,6 +10,9 @@ export const enMessages: Record<string, string> = {
   'theme.night': 'Night',
   'theme.newyear': 'New Year',
   'a11y.skip_to_content': 'Skip to main content',
+  'generation.cancel': 'Cancel',
+  'generation.cancel_hint':
+    'Stops waiting for the result. Requests already sent may still be billed.',
   'generation.partial_title': 'Generated {done} of {total} images',
   'generation.retry_failed': 'Retry {count} failed',
   'generation.retrying': 'Retrying...',
@@ -327,7 +330,6 @@ export const enMessages: Record<string, string> = {
     'Please enter a description and/or upload a reference image.',
   'idphoto.model_recommendation':
     'Recommend using Gemini 3 Pro for better identity consistency. Switch in Settings.',
-  'idphoto.mode_single': 'Single',
 
   'start.tab_portrait': 'Professional Portrait',
   'portrait.label.type': 'Portrait Style',
@@ -456,11 +458,6 @@ export const enMessages: Record<string, string> = {
   'travel.generate_btn': 'Generate Travel Photo',
   'travel.generating': 'Generating travel photo...',
   'travel.result_scene_label': 'Scene:',
-  'travel.scene.random': 'Random Location',
-  'travel.scene.group.international': 'International',
-  'travel.scene.group.taiwan': 'Taiwan',
-  'travel.label.aspect': 'Aspect Ratio',
-  'travel.label.size': 'Image Size',
 
   'travel.weather.random': 'Random',
   'travel.weather.sunny': 'Sunny',

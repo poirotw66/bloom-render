@@ -35,6 +35,7 @@ export const generateImageFromText = async (
       model: model,
       contents: { parts: [{ text: prompt }] },
       config: {
+        abortSignal: settings?.abortSignal,
         responseModalities: ['TEXT', 'IMAGE'],
         imageConfig: {
           aspectRatio: aspectRatio,

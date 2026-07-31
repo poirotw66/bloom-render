@@ -159,7 +159,3 @@ export function generateDynamicTravelPrompt(
     ${style},
     high-end fashion aesthetic, masterpiece photography, meticulous facial details, sharp focus on pupils, realistic skin texture with subsurface scattering, 8k resolution, professionally color graded`;
 }
-
-function getRandomElement<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
-}

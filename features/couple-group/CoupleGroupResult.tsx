@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { DownloadIcon, RefreshIcon, EditIcon } from '../../components/icons';
+import { DownloadIcon, EditIcon } from '../../components/icons';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import { COUPLE_STYLES, GROUP_STYLES } from '../../constants/coupleGroup';
 
@@ -16,7 +16,6 @@ interface CoupleGroupResultProps {
   mode: CoupleGroupMode;
   style: CoupleGroupStyle;
   onDownload: () => void;
-  onAgain: () => void;
   onEditInEditor: () => void;
 }
 
@@ -25,7 +24,6 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
   mode,
   style,
   onDownload,
-  onAgain,
   onEditInEditor,
 }) => {
   const { t } = useLanguage();

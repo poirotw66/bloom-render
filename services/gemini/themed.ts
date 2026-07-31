@@ -86,6 +86,7 @@ export const generateThemedPhoto = async (
     model,
     contents: { parts },
     config: {
+      abortSignal: serviceSettings?.abortSignal,
       responseModalities: ['TEXT', 'IMAGE'],
       imageConfig,
     },

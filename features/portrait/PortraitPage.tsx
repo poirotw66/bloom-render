@@ -105,6 +105,7 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
           <ProgressIndicator
             progress={portrait.progress}
             statusMessages={['portrait.generating']}
+            onCancel={portrait.cancelGeneration}
           />
         ) : (
           <>

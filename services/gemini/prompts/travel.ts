@@ -6,7 +6,7 @@
  */
 
 import { TRAVEL_POSITIVE_TEMPLATE, TRAVEL_NEGATIVE } from '../../../constants/travel';
-import { buildPrompt, IDENTITY_PRESERVATION, QUALITY_REQUIREMENTS } from './base';
+import { buildPrompt } from './base';
 import {
   getVariation,
   TRAVEL_LIGHTING_CONDITIONS,

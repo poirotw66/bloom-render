@@ -12,7 +12,7 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { startRandomProgressTicker } from '../../utils/generationHelpers';
+import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   DEFAULT_ID_TYPE,
@@ -96,7 +96,7 @@ export function useIdPhoto() {
   }, []);
 
   const generateOne = useCallback(
-    (file: File, variationIndex: number) =>
+    (file: File, variationIndex: number, signal: AbortSignal) =>
       generateIdPhoto(file, {
         retouchLevel: idPhotoRetouchLevel,
         idType: idPhotoType,
@@ -110,7 +110,7 @@ export function useIdPhoto() {
           idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile
             ? idPhotoClothingReferenceFile
             : undefined,
-        settings: { apiKey: settings.apiKey, model: settings.model },
+        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
         variationIndex,
       })
         .then((url) => {
@@ -123,7 +123,8 @@ export function useIdPhoto() {
           return url;
         })
         .catch((err) => {
-          logger.error(`ID photo generation error for item ${variationIndex + 1}:`, err);
+          if (!isAbortError(err))
+            logger.error(`ID photo generation error for item ${variationIndex + 1}:`, err);
           throw err;
         }),
     [
@@ -162,7 +163,12 @@ export function useIdPhoto() {
     const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const { results } = await run.runBatch(quantity, (index) => generateOne(idPhotoFile, index));
+      const { results, cancelled } = await run.runBatch(quantity, (index, signal) =>
+        generateOne(idPhotoFile, index, signal),
+      );
+
+      // The user asked to stop: fall back to the form, no error, no partial notice.
+      if (cancelled) return;
 
       setProgress(100);
 
@@ -200,8 +206,8 @@ export function useIdPhoto() {
     if (!idPhotoFile) return;
 
     try {
-      const { results: recovered } = await run.retryFailed((index) =>
-        generateOne(idPhotoFile, index),
+      const { results: recovered } = await run.retryFailed((index, signal) =>
+        generateOne(idPhotoFile, index, signal),
       );
       if (recovered.length === 0) return;
 
@@ -293,6 +299,8 @@ export function useIdPhoto() {
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
+    isRunning: run.isRunning,
+    cancelGeneration: run.cancel,
     handleRetryFailed,
     clearIdPhotoResult,
     isDraggingOver,

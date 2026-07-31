@@ -102,7 +102,11 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
             </div>
           </section>
         ) : tryOn.loading ? (
-          <ProgressIndicator progress={tryOn.progress} statusMessages={['tryon.generating']} />
+          <ProgressIndicator
+            progress={tryOn.progress}
+            statusMessages={['tryon.generating']}
+            onCancel={tryOn.cancelGeneration}
+          />
         ) : (
           <div className="w-full max-w-2xl mx-auto bg-gray-800/30 border border-gray-700/50 rounded-2xl p-6 md:p-8 flex flex-col gap-6">
             <TryOnOptionSelectors
