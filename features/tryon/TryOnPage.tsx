@@ -9,6 +9,7 @@ import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import TryOnOptionSelectors from './TryOnOptionSelectors';
@@ -138,6 +139,8 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
             />
           </div>
         )}
+
+        {resultList.length === 0 && !tryOn.loading && <ExampleShowcase feature="tryon" />}
       </div>
     </div>
   );

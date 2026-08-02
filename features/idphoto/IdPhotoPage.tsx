@@ -10,6 +10,7 @@ import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { useIdPhoto } from './useIdPhoto';
 import IdPhotoForm from './IdPhotoForm';
@@ -170,6 +171,8 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
             />
           </>
         )}
+
+        {isEmptyState && <ExampleShowcase feature="idphoto" />}
       </div>
     </div>
   );

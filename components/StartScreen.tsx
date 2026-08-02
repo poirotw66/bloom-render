@@ -22,6 +22,8 @@ import BloomFlowerLoader from './BloomFlowerLoader';
 import { ErrorDisplay } from './ErrorDisplay';
 import SavedPromptsBar from './SavedPromptsBar';
 import ApiKeyNotice from './ApiKeyNotice';
+import ExampleShowcase from './ExampleShowcase';
+import HomeGallery from './HomeGallery';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -211,8 +213,15 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
         <ApiKeyNotice />
 
+        {/* Results first. Landing straight on an empty upload box asks the
+            visitor to commit a photo before seeing a single thing the models
+            can do; the gallery answers that question up front and doubles as
+            navigation into each feature. */}
+        {tab === 'upload' && <HomeGallery className="mt-4" />}
+
         {tab === 'upload' ? (
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
+            <h2 className="text-lg font-bold text-gray-200">{t('gallery.start_editing')}</h2>
             <div
               className={`p-12 border-2 border-dashed rounded-2xl bg-gray-800/30 w-full max-w-2xl flex flex-col items-center justify-center gap-4 transition-colors duration-200 ${s.border}`}
             >
@@ -412,6 +421,12 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               )}
             </button>
           </div>
+        )}
+
+        {tab === 'upload' && <ExampleShowcase feature="editor" />}
+
+        {tab === 'generate' && generatedImages.length === 0 && !isGenerating && (
+          <ExampleShowcase feature="generate" />
         )}
 
         {tab === 'upload' && (

@@ -8,6 +8,7 @@ import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { usePortrait } from './usePortrait';
 import PortraitForm from './PortraitForm';
@@ -33,6 +34,12 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
   const portrait = usePortrait();
+
+  /** Nothing generated yet: the form is showing, so there is room for examples. */
+  const isEmptyState =
+    !portrait.portraitResult &&
+    (!portrait.portraitResults || portrait.portraitResults.length === 0) &&
+    !portrait.portraitLoading;
 
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
@@ -141,6 +148,8 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
             />
           </>
         )}
+
+        {isEmptyState && <ExampleShowcase feature="portrait" />}
       </div>
     </div>
   );

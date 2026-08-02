@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { DownloadIcon } from '../../components/icons';
 import { useTravel } from './useTravel';
@@ -28,6 +29,9 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
   const _navigate = useNavigate();
   const tr = useTravel();
   const [viewMode, setViewMode] = React.useState<'list' | 'map'>('map');
+
+  /** Nothing generated yet: the form is showing, so there is room for examples. */
+  const isEmptyState = !tr.result && (!tr.results || tr.results.length === 0) && !tr.loading;
 
   const sceneLabel = React.useMemo(() => {
     if (tr.selectedSceneId === 'custom') return t('travel.custom_btn');
@@ -295,6 +299,8 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
             </div>
           </div>
         )}
+
+        {isEmptyState && <ExampleShowcase feature="travel" />}
       </div>
     </div>
   );
