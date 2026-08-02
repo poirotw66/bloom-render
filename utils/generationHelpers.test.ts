@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  allFailedError,
   getFulfilledResults,
   isAbortError,
   groupFailureReasons,
@@ -58,6 +59,38 @@ describe('generationHelpers', () => {
       ];
 
       expect(partitionSettled(settled, [0, 1]).failures).toEqual([]);
+    });
+  });
+
+  describe('allFailedError', () => {
+    it('passes the first rejection through so the real cause survives', () => {
+      // The regression this guards: flattening every whole-batch failure to
+      // 'all generations failed' told a user with no API key to "try again",
+      // when the reason was already sitting in the rejection.
+      const missingKey = new Error('error.api_key_missing');
+
+      expect(
+        allFailedError([
+          { index: 0, reason: missingKey },
+          { index: 1, reason: missingKey },
+        ]),
+      ).toBe(missingKey);
+    });
+
+    it('keeps the reason when only a later slot was retried', () => {
+      const quota = new Error('error.quota_exceeded');
+
+      expect(allFailedError([{ index: 2, reason: quota }]).message).toBe('error.quota_exceeded');
+    });
+
+    it('falls back to the generic message for a non-Error rejection', () => {
+      expect(allFailedError([{ index: 0, reason: 'nope' }]).message).toBe(
+        'error.all_generations_failed',
+      );
+    });
+
+    it('falls back to the generic message when there are no failures', () => {
+      expect(allFailedError([]).message).toBe('error.all_generations_failed');
     });
   });
 

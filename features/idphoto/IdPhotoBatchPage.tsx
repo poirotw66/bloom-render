@@ -10,6 +10,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useBatchProcessing } from '../../hooks/useBatchProcessing';
 import { generateIdPhoto } from '../../services/geminiService';
+import ApiKeyNotice from '../../components/ApiKeyNotice';
 import BatchUploadSection from '../../components/BatchUploadSection';
 import BatchProgress from '../../components/BatchProgress';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
@@ -157,6 +158,8 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
           {t('start.title_part1')} <span className="text-emerald-400">{t('batch.title')}</span>
         </h1>
         <p className={UI_SUBTITLE}>{t('batch.upload_hint', { min: 1, max: 10 })}</p>
+
+        <ApiKeyNotice />
 
         {batch.isProcessing ? (
           <BatchProgress

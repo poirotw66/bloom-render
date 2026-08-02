@@ -13,6 +13,11 @@ import { publicAssetUrl as asset } from '../utils/publicAsset';
 import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
 import { ROUTES } from '../constants/routes';
 import HistoryPanel from './HistoryPanel';
+import {
+  closeSettingsPanel,
+  openSettingsPanel,
+  useSettingsPanelOpen,
+} from '../utils/settingsPanel';
 
 /** BloomRender logo for header (product branding) */
 const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -32,7 +37,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  // Shared store rather than local state: the API-key notice on feature pages
+  // opens this dialog too.
+  const isSettingsOpen = useSettingsPanelOpen();
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const location = useLocation();
 
@@ -126,7 +133,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
             </button>
             <button
               type="button"
-              onClick={() => setIsSettingsOpen(true)}
+              onClick={openSettingsPanel}
               className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 hover:bg-white/10 ${
                 theme === 'newyear'
                   ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
@@ -144,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
           </div>
         </div>
       </header>
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettingsPanel} />
       <HistoryPanel
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}

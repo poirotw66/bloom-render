@@ -21,7 +21,11 @@ import {
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { logger } from '../../utils/logger';
-import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
+import {
+  allFailedError,
+  isAbortError,
+  startRandomProgressTicker,
+} from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import {
@@ -298,7 +302,11 @@ export function useCoupleGroup() {
 
     try {
       const generateOne = await buildGenerator();
-      const { results: generatedResults, cancelled } = await run.runBatch(quantity, generateOne);
+      const {
+        results: generatedResults,
+        failures,
+        cancelled,
+      } = await run.runBatch(quantity, generateOne);
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
       if (cancelled) return;
@@ -306,7 +314,7 @@ export function useCoupleGroup() {
       setProgress(100);
 
       if (generatedResults.length === 0) {
-        throw new Error('error.all_generations_failed');
+        throw allFailedError(failures);
       }
 
       // Always use the list form when some slots failed, so the partial-result
