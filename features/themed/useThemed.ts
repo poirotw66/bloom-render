@@ -12,7 +12,11 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
+import {
+  allFailedError,
+  isAbortError,
+  startRandomProgressTicker,
+} from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { DEFAULT_THEMED_TYPE } from '../../constants/themed';
 import type { ThemedType } from '../../types';
@@ -101,7 +105,7 @@ export function useThemed() {
     const stopProgress = startRandomProgressTicker(setProgress);
 
     try {
-      const { results, cancelled } = await run.runBatch(quantity, (index, signal) =>
+      const { results, failures, cancelled } = await run.runBatch(quantity, (index, signal) =>
         generateOne(themedFile, index, signal),
       );
 
@@ -111,7 +115,7 @@ export function useThemed() {
       setProgress(100);
 
       if (results.length === 0) {
-        throw new Error('error.all_generations_failed');
+        throw allFailedError(failures);
       }
 
       // Always use the list form when some slots failed, so the partial-result

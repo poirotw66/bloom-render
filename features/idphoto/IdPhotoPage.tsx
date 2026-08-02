@@ -9,6 +9,7 @@ import { dataURLtoFile } from '../../utils/fileUtils';
 import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import ApiKeyNotice from '../../components/ApiKeyNotice';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { useIdPhoto } from './useIdPhoto';
 import IdPhotoForm from './IdPhotoForm';
@@ -37,6 +38,12 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
   const navigate = useNavigate();
   const id = useIdPhoto();
 
+  /** Nothing generated yet: the form is showing, so there is room for examples. */
+  const isEmptyState =
+    !id.idPhotoResult &&
+    (!id.idPhotoResults || id.idPhotoResults.length === 0) &&
+    !id.idPhotoLoading;
+
   const handleEditInEditor = (result: string, index?: number) => {
     if (!result) return;
     const filename = index !== undefined ? `id-photo-${index + 1}.png` : 'id-photo-export.png';
@@ -51,19 +58,19 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
         </h1>
         <p className={UI_SUBTITLE}>{t('idphoto.subtitle')}</p>
 
-        {!id.idPhotoResult &&
-          (!id.idPhotoResults || id.idPhotoResults.length === 0) &&
-          !id.idPhotoLoading && (
-            <div className="w-full flex justify-center">
-              <button
-                type="button"
-                onClick={() => navigate(ROUTES.ID_PHOTO_BATCH)}
-                className={UI_BTN_GHOST}
-              >
-                {t('batch.title')}
-              </button>
-            </div>
-          )}
+        <ApiKeyNotice />
+
+        {isEmptyState && (
+          <div className="w-full flex justify-center">
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.ID_PHOTO_BATCH)}
+              className={UI_BTN_GHOST}
+            >
+              {t('batch.title')}
+            </button>
+          </div>
+        )}
 
         {id.idPhotoResults && id.idPhotoResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">

@@ -8,6 +8,7 @@
 import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
+import ApiKeyNotice from '../../components/ApiKeyNotice';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import CoupleGroupModeTabs from './CoupleGroupModeTabs';
 import CoupleGroupStyleSelector from './CoupleGroupStyleSelector';
@@ -46,6 +47,8 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
           <p className={UI_SUBTITLE}>{t('couple_group.subtitle')}</p>
           <CoupleGroupModeTabs mode={coupleGroup.mode} onChange={coupleGroup.setMode} />
         </header>
+
+        <ApiKeyNotice />
 
         {coupleGroup.results && coupleGroup.results.length > 0 ? (
           <section className="w-full flex flex-col gap-6">

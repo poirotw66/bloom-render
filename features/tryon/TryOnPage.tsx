@@ -8,7 +8,7 @@
 import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useSettings } from '../../contexts/SettingsContext';
+import ApiKeyNotice from '../../components/ApiKeyNotice';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import TryOnOptionSelectors from './TryOnOptionSelectors';
@@ -30,9 +30,7 @@ interface TryOnPageProps {
 
 const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
-  const settings = useSettings();
   const tryOn = useTryOn();
-  const hasApiKey = Boolean(settings.apiKey?.trim());
 
   const resultList = tryOn.results.length > 0 ? tryOn.results : tryOn.result ? [tryOn.result] : [];
   const hasMultipleResults = resultList.length > 1;
@@ -47,12 +45,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
           <p className={UI_SUBTITLE}>{t('tryon.subtitle')}</p>
         </header>
 
-        {!hasApiKey && (
-          <div className="w-full max-w-xl mx-auto rounded-xl bg-amber-500/20 border border-amber-500/50 px-4 py-3 text-left">
-            <p className="text-amber-200 text-sm font-medium">⚙️ {t('tryon.api_key_required')}</p>
-            <p className="text-amber-200/80 text-xs mt-1">{t('tryon.api_key_hint')}</p>
-          </div>
-        )}
+        <ApiKeyNotice />
 
         {resultList.length > 0 ? (
           <section className="w-full flex flex-col gap-6">

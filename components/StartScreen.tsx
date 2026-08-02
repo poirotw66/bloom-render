@@ -21,6 +21,7 @@ import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import BloomFlowerLoader from './BloomFlowerLoader';
 import { ErrorDisplay } from './ErrorDisplay';
 import SavedPromptsBar from './SavedPromptsBar';
+import ApiKeyNotice from './ApiKeyNotice';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -207,6 +208,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           {t('app.slogan')}
         </p>
         <p className={UI_SUBTITLE}>{t('start.subtitle')}</p>
+
+        <ApiKeyNotice />
 
         {tab === 'upload' ? (
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">

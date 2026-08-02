@@ -403,8 +403,6 @@ export const enMessages: Record<string, string> = {
   'tryon.error_no_clothing': 'Please upload at least one clothing photo.',
   'tryon.error_too_many_clothing': 'Maximum 5 clothing photos allowed.',
   'tryon.error_generation_failed': 'Failed to generate try-on. Please try again.',
-  'tryon.api_key_required': 'API key required to use Try-On.',
-  'tryon.api_key_hint': 'Set your API key in Settings (gear icon in the header).',
   'tryon.quantity_hint': 'Generate 1–4 outfit style variations to choose from.',
   'tryon.batch_download': 'Download All',
   'tryon.choose_style_hint': 'Choose your favorite style to download or edit in the editor.',
@@ -1016,6 +1014,11 @@ export const enMessages: Record<string, string> = {
   'main.error_no_crop': 'Please select an area to crop.',
   'main.error_failed_crop': 'Could not process the crop.',
 
+  'apikey.notice_title': 'Add an API key to generate your own',
+  'apikey.notice_hint':
+    'Browse the examples below without one. To run the model yourself, paste a Google AI Studio key into Settings — it stays in your browser and is never sent anywhere but Google.',
+  'apikey.open_settings': 'Open settings',
+  'apikey.get_key': 'Get an API key',
   'error.api_key_missing': 'API key not found. Please check your settings.',
   'error.blocked': 'Request was blocked. Please try again or modify your request.',
   'error.safety_filter':

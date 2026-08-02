@@ -10,13 +10,10 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
 import { generateVirtualTryOn } from '../../services/geminiService';
-import {
-  createI18nError,
-  formatApiErrorMessage,
-  isI18nErrorKey,
-} from '../../services/gemini/shared';
+import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import { allFailedError } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   TRYON_BACKGROUNDS,
@@ -217,15 +214,7 @@ export function useTryOn() {
 
       setProgress(100);
       if (generated.length === 0) {
-        const reason = failures[0]?.reason;
-        logger.error('Try-on generation failed (all requests failed). First reason:', reason);
-        if (reason instanceof Error && isI18nErrorKey(reason.message)) {
-          throw reason;
-        }
-        if (reason instanceof Error) {
-          throw reason;
-        }
-        throw createI18nError('error.all_generations_failed');
+        throw allFailedError(failures);
       }
       // Always use the list form when some slots failed, so the partial-result
       // notice and its retry button have somewhere to live.

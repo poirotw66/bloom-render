@@ -102,6 +102,21 @@ export async function runIndexedTasks<T>(
 }
 
 /**
+ * The error to report when every slot in a batch failed.
+ *
+ * A whole batch failing almost always has one cause — no API key, a blocked
+ * prompt, a quota wall — and that cause is already sitting in the first
+ * rejection. Flattening it to "all generations failed" throws away the only
+ * part the user can act on, so pass the real reason through and keep the
+ * generic message for when there is genuinely nothing better to say.
+ */
+export function allFailedError(failures: GenerationFailure[]): Error {
+  const reason = failures[0]?.reason;
+  if (reason instanceof Error) return reason;
+  return new Error('error.all_generations_failed');
+}
+
+/**
  * Group failures by their translated-message key so the UI can say
  * "2 blocked by the safety filter" rather than listing the same reason twice.
  */

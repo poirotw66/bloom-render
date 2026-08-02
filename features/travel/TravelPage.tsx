@@ -7,6 +7,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
+import ApiKeyNotice from '../../components/ApiKeyNotice';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { DownloadIcon } from '../../components/icons';
 import { useTravel } from './useTravel';
@@ -67,6 +68,8 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
             {t('travel.subtitle')}
           </p>
         </header>
+
+        <ApiKeyNotice />
 
         {tr.results && tr.results.length > 0 ? (
           <div className="w-full flex flex-col gap-6 motion-safe:animate-fade-in">

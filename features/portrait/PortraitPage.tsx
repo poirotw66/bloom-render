@@ -7,6 +7,7 @@ import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import ApiKeyNotice from '../../components/ApiKeyNotice';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { usePortrait } from './usePortrait';
 import PortraitForm from './PortraitForm';
@@ -46,6 +47,8 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
           <span className={getTitleAccent(theme)}>{t('portrait.title')}</span>
         </h1>
         <p className={UI_SUBTITLE}>{t('portrait.subtitle')}</p>
+
+        <ApiKeyNotice />
 
         {portrait.portraitResults && portrait.portraitResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">

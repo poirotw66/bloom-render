@@ -382,8 +382,6 @@ export const zhTWMessages: Record<string, string> = {
   'tryon.error_no_clothing': '請至少上傳一張服裝照片。',
   'tryon.error_too_many_clothing': '最多可上傳 5 張服裝照片。',
   'tryon.error_generation_failed': '試衣生成失敗，請重試。',
-  'tryon.api_key_required': '使用試衣功能前請先設定 API 金鑰。',
-  'tryon.api_key_hint': '請於上方工具列點擊齒輪進入「設定」輸入 API 金鑰。',
   'tryon.quantity_hint': '可生成 1～4 張不同穿搭風格供選擇。',
   'tryon.batch_download': '全部下載',
   'tryon.choose_style_hint': '選擇喜歡的風格下載或進入編輯器。',
@@ -953,6 +951,11 @@ export const zhTWMessages: Record<string, string> = {
   'main.error_no_crop': '請選擇裁切區域。',
   'main.error_failed_crop': '無法執行裁切。',
 
+  'apikey.notice_title': '想自己生成？請先填入 API 金鑰',
+  'apikey.notice_hint':
+    '沒有金鑰也可以瀏覽下方範例。若要實際執行模型，請到「設定」貼上 Google AI Studio 金鑰；金鑰只存在你的瀏覽器，除了 Google 之外不會送到任何地方。',
+  'apikey.open_settings': '開啟設定',
+  'apikey.get_key': '取得 API 金鑰',
   'error.api_key_missing': '找不到 API 金鑰。請檢查您的設定。',
   'error.blocked': '請求被阻擋。請重試或修改您的請求。',
   'error.safety_filter': '內容被安全設定過濾。請嘗試其他方式。',

@@ -13,7 +13,11 @@ import { useHistory } from '../../hooks/useHistory';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
-import { isAbortError, startRandomProgressTicker } from '../../utils/generationHelpers';
+import {
+  allFailedError,
+  isAbortError,
+  startRandomProgressTicker,
+} from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import {
   TRAVEL_SCENE_ID_RANDOM,
@@ -401,7 +405,11 @@ export function useTravel() {
       };
 
       retryGeneratorRef.current = generateOne;
-      const { results: generatedResults, cancelled } = await run.runBatch(quantity, generateOne);
+      const {
+        results: generatedResults,
+        failures,
+        cancelled,
+      } = await run.runBatch(quantity, generateOne);
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
       if (cancelled) return;
@@ -413,7 +421,7 @@ export function useTravel() {
       );
 
       if (generatedResults.length === 0) {
-        throw new Error('error.all_generations_failed');
+        throw allFailedError(failures);
       }
 
       // Always use results array if quantity > 1, even if only one succeeded
