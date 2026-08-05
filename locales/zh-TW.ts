@@ -58,6 +58,10 @@ export const zhTWMessages: Record<string, string> = {
     '增強光線、模糊背景或改變氛圍。無需複雜工具即可獲得工作室品質的結果。',
   'start.error_no_prompt': '請輸入圖片描述。',
   'start.error_gen_failed': '生成圖片失敗。',
+  'start.reference_image_label': '參考圖片（可選）',
+  'start.reference_image_hint': '用於風格、構圖或氛圍參考，不會原樣複製。',
+  'start.reference_image_btn': '上傳參考圖',
+  'start.reference_image_remove': '移除',
 
   'idphoto.title': '證件照工作室',
   'idphoto.subtitle': '一鍵生成專業證件照，尺寸、服裝與美化一次完成。',

@@ -64,6 +64,10 @@ export const enMessages: Record<string, string> = {
     'Enhance lighting, blur backgrounds, or change the mood. Get studio-quality results without complex tools.',
   'start.error_no_prompt': 'Please enter a description for the image.',
   'start.error_gen_failed': 'Failed to generate image.',
+  'start.reference_image_label': 'Reference image (optional)',
+  'start.reference_image_hint': 'Guides style, composition, or mood — not copied exactly.',
+  'start.reference_image_btn': 'Upload reference',
+  'start.reference_image_remove': 'Remove',
 
   'idphoto.title': 'ID Photo Studio',
   'idphoto.subtitle':
