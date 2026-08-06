@@ -56,7 +56,9 @@ function convertDir(dir, qualityArgs) {
     bytesBefore += before;
     bytesAfter += after;
     converted += 1;
-    console.log(`${name} -> ${base}.webp (${(before / 1024).toFixed(1)} KiB -> ${(after / 1024).toFixed(1)} KiB)`);
+    console.log(
+      `${name} -> ${base}.webp (${(before / 1024).toFixed(1)} KiB -> ${(after / 1024).toFixed(1)} KiB)`,
+    );
   }
   return { converted, bytesBefore, bytesAfter };
 }

@@ -1,5 +1,7 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+// `defineConfig` from 'vitest/config' (not plain 'vite') so the `test` field
+// below type-checks — vitest augments Vite's UserConfig type for it.
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -37,6 +39,14 @@ export default defineConfig(({ mode }) => {
       // Do not drop `console` entirely — logger.warn/error rely on it in production.
       // Dev-only noise uses utils/logger (debug/info are no-ops when import.meta.env.DEV is false).
       drop: isProduction ? ['debugger'] : [],
+    },
+    test: {
+      // Default stays 'node': jsdom's Blob is missing arrayBuffer()/text(),
+      // which utils/historyDb.test.ts relies on, and its File size handling
+      // differs enough to break utils/imageValidation.test.ts. Hook tests that
+      // need a DOM opt in per-file with a `// @vitest-environment jsdom`
+      // docblock instead of forcing jsdom on every suite.
+      setupFiles: ['./test-setup.ts'],
     },
   };
 });

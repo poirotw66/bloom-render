@@ -1,0 +1,48 @@
+name: CI
+
+# Runs on every pull request, and is called by the deploy workflow so nothing
+# reaches GitHub Pages without passing the same gate.
+#
+# `npm run build` alone does not check types: Vite strips them with esbuild and
+# never type-checks, so a reference to an undefined identifier builds and ships
+# clean and only fails in the browser. That is how eight undefined handlers on
+# the editor page reached main. `tsc --noEmit` is the step that catches it.
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  checks:
+    name: Types, lint, format, tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Typecheck first: it gives the clearest message for the largest class of
+      # breakage, and there is no point linting code that does not compile.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      # husky + lint-staged already format on commit, but only on the machine
+      # that ran it — this covers commits made anywhere else.
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

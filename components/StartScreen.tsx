@@ -18,12 +18,18 @@ import { formatApiErrorMessage } from '../services/gemini/shared';
 import { logger } from '../utils/logger';
 import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
+import { allFailedError } from '../utils/generationHelpers';
+import { useGenerationFailures } from '../hooks/useGenerationFailures';
+import { SUPPORTED_MODELS, MODEL_LABEL_KEYS } from '../constants/models';
+import type { ModelType } from '../constants/models';
 import BloomFlowerLoader from './BloomFlowerLoader';
 import { ErrorDisplay } from './ErrorDisplay';
 import SavedPromptsBar from './SavedPromptsBar';
 import ApiKeyNotice from './ApiKeyNotice';
 import ExampleShowcase from './ExampleShowcase';
 import HomeGallery from './HomeGallery';
+import GenerationFailureNotice from './GenerationFailureNotice';
+import ProgressIndicator from './ProgressIndicator';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -41,6 +47,15 @@ import {
   UI_TITLE,
   getPageSurface,
 } from '../utils/uiClasses';
+
+/** One model's outcome in a side-by-side comparison run. */
+interface CompareSlotResult {
+  model: ModelType;
+  url: string;
+  /** Wall-clock ms around the API call only; see start.compare_timing_caveat. */
+  elapsedMs: number;
+  slotIndex: number;
+}
 
 type StartTab = 'upload' | 'generate';
 
@@ -125,6 +140,33 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     return () => URL.revokeObjectURL(url);
   }, [referenceFile]);
 
+  // Comparison is a separate, opt-in run rather than a mode baked into
+  // handleGenerateClick: a visitor who never touches the toggle must keep
+  // paying for exactly one API call, byte-for-byte the same as before this
+  // feature existed.
+  const [compareEnabled, setCompareEnabled] = useState(false);
+  const [compareModel, setCompareModel] = useState<ModelType | null>(null);
+  const [compareResults, setCompareResults] = useState<CompareSlotResult[]>([]);
+  const [compareRunModels, setCompareRunModels] = useState<ModelType[]>([]);
+  const compareRun = useGenerationFailures();
+
+  // Excludes the primary model so the two slots can never collide, which
+  // would make partitionSettled's model-based bookkeeping ambiguous.
+  const otherModels = SUPPORTED_MODELS.filter((m) => m !== settings.model);
+  // SUPPORTED_MODELS is typed as an array, not a tuple, so `otherModels[0]` is
+  // typed ModelType even when the list is empty. Cut the whole feature in that
+  // case rather than let an undefined model id reach MODEL_LABEL_KEYS and
+  // render a blank card with nothing to compare against.
+  const canCompare = otherModels.length > 0;
+  const effectiveCompareModel: ModelType =
+    compareModel && otherModels.includes(compareModel) ? compareModel : otherModels[0];
+
+  // Only one of the two flows can occupy the button at a time, but flipping
+  // the toggle mid-request must not silently swap which flow "isGenerating"
+  // is guarding — so anything that can start a new run checks both.
+  const anyRunning = isGenerating || compareRun.isRunning;
+  const busy = compareEnabled ? compareRun.isRunning : isGenerating;
+
   const pickUploadFile = (file: File) => {
     void applyValidatedImageFile(file, t, onImageSelected, setError);
   };
@@ -177,6 +219,83 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const runCompareSlot = (model: ModelType, slotIndex: number, signal: AbortSignal) => {
+    const start = performance.now();
+    return generateImageFromText(generationPrompt, aspectRatio, 1, {
+      apiKey: settings.apiKey,
+      model,
+      abortSignal: signal,
+    }).then(
+      (urls): CompareSlotResult => ({
+        model,
+        url: urls[0],
+        elapsedMs: performance.now() - start,
+        slotIndex,
+      }),
+    );
+  };
+
+  const handleCompareGenerateClick = async () => {
+    if (!generationPrompt.trim()) {
+      setError(t('start.error_no_prompt'));
+      return;
+    }
+
+    const modelsToRun: ModelType[] = [settings.model, effectiveCompareModel];
+    setCompareRunModels(modelsToRun);
+    setError(null);
+    setCompareResults([]);
+
+    try {
+      const { results, failures, cancelled } = await compareRun.runBatch(2, (index, signal) =>
+        runCompareSlot(modelsToRun[index], index, signal),
+      );
+      if (cancelled) return;
+
+      // Both models failing almost always shares one cause (bad key, blocked
+      // prompt); fall back to the same single-error banner the plain flow
+      // uses instead of a comparison grid with nothing successful to show.
+      if (results.length === 0) {
+        throw allFailedError(failures);
+      }
+      setCompareResults(results);
+    } catch (err) {
+      setError(formatApiErrorMessage(err, t, 'generation'));
+      logger.error('Model comparison generation failed:', err);
+    }
+  };
+
+  const handleCompareRetryFailed = async () => {
+    try {
+      const { results: recovered, cancelled } = await compareRun.retryFailed((index, signal) =>
+        runCompareSlot(compareRunModels[index], index, signal),
+      );
+      if (cancelled || recovered.length === 0) return;
+      setCompareResults((prev) => [...prev, ...recovered]);
+    } catch (err) {
+      setError(formatApiErrorMessage(err, t, 'generation'));
+      logger.error('Model comparison retry failed:', err);
+    }
+  };
+
+  const handleCompareReset = () => {
+    setCompareResults([]);
+    setCompareRunModels([]);
+    compareRun.reset();
+  };
+
+  const handleCompareSelect = (url: string, slotIndex: number) => {
+    const newFile = dataURLtoFile(url, `generated-compare-${Date.now()}-${slotIndex}.png`);
+    onImageSelected(newFile);
+  };
+
+  const handleCompareDownload = (url: string, model: ModelType) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `generated-${model}-${Date.now()}.png`;
+    link.click();
   };
 
   const handleSelectGenerated = (url: string, index: number) => {
@@ -337,6 +456,112 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               ))}
             </div>
           </div>
+        ) : compareEnabled && (compareRun.isRunning || compareResults.length > 0) ? (
+          <div
+            className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-6 rounded-2xl border backdrop-blur-sm shadow-lg ${s.borderCard}`}
+          >
+            <h3 className="text-xl font-bold text-white">{t('start.compare_results_title')}</h3>
+
+            {compareRun.isRunning ? (
+              <ProgressIndicator
+                statusMessages={['start.compare_generating']}
+                onCancel={compareRun.cancel}
+              />
+            ) : (
+              <>
+                <GenerationFailureNotice
+                  failures={compareRun.failures}
+                  requestedCount={compareRun.requestedCount}
+                  succeededCount={compareRun.succeededCount}
+                  isRetrying={compareRun.isRetrying}
+                  onRetry={handleCompareRetryFailed}
+                  context="generation"
+                  className="w-full"
+                />
+
+                <p className="text-xs text-gray-400 -mt-2">{t('start.compare_timing_caveat')}</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                  {compareRunModels.map((model, slotIndex) => {
+                    const result = compareResults.find((r) => r.slotIndex === slotIndex);
+                    const failure = compareRun.failures.find((f) => f.index === slotIndex);
+                    return (
+                      <article
+                        key={slotIndex}
+                        className={`flex flex-col rounded-xl overflow-hidden border transition-colors duration-200 shadow-lg bg-gray-900 ${
+                          theme === 'newyear'
+                            ? 'border-red-900/40'
+                            : theme === 'bloom'
+                              ? 'border-fuchsia-900/40'
+                              : 'border-slate-700'
+                        }`}
+                      >
+                        <div className="p-3 flex items-center justify-between gap-2 border-b border-gray-700/50">
+                          <span className="text-sm font-bold text-gray-100 truncate">
+                            {t(MODEL_LABEL_KEYS[model])}
+                          </span>
+                          {result && (
+                            <span className="text-xs text-gray-400 shrink-0">
+                              {t('start.compare_elapsed', {
+                                seconds: (result.elapsedMs / 1000).toFixed(1),
+                              })}
+                            </span>
+                          )}
+                        </div>
+                        {result ? (
+                          <>
+                            <div className="aspect-square flex items-center justify-center bg-gray-950 p-3">
+                              <img
+                                src={result.url}
+                                className="max-w-full max-h-full w-auto h-auto object-contain"
+                                alt={t('start.compare_result_alt', {
+                                  model: t(MODEL_LABEL_KEYS[model]),
+                                  prompt: generationPrompt,
+                                })}
+                              />
+                            </div>
+                            <div className="p-3 flex flex-wrap items-center justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleCompareSelect(result.url, slotIndex)}
+                                className={UI_BTN_PRIMARY}
+                                aria-label={`${t('start.edit_this')} — ${t(MODEL_LABEL_KEYS[model])}`}
+                              >
+                                <EditIcon className="w-4 h-4" />
+                                {t('start.edit_this')}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleCompareDownload(result.url, model)}
+                                className={UI_BTN_SECONDARY}
+                                aria-label={`${t('start.download_image')} — ${t(MODEL_LABEL_KEYS[model])}`}
+                              >
+                                <DownloadIcon className="w-4 h-4" />
+                                {t('start.download_image')}
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex-1 flex items-center justify-center p-6 min-h-[10rem]">
+                            {failure && (
+                              <ErrorDisplay
+                                message={formatApiErrorMessage(failure.reason, t, 'generation')}
+                                className="text-center"
+                              />
+                            )}
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+
+                <button type="button" onClick={handleCompareReset} className={UI_BTN_GHOST}>
+                  {t('start.generate_new')}
+                </button>
+              </>
+            )}
+          </div>
         ) : (
           <div
             className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-8 md:p-10 rounded-2xl border backdrop-blur-sm shadow-lg ${s.borderCard}`}
@@ -348,14 +573,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               placeholder={t('start.prompt_placeholder')}
               aria-label={t('start.prompt_placeholder')}
               className={`w-full h-40 md:h-44 bg-gray-900/50 border border-gray-600 rounded-xl p-5 text-gray-100 placeholder-gray-500 focus:outline-none focus-visible:ring-2 resize-none transition-colors duration-200 text-base ${s.inputFocus}`}
-              disabled={isGenerating}
+              disabled={busy}
             />
 
             <SavedPromptsBar
               scope="generate"
               value={generationPrompt}
               onApply={setGenerationPrompt}
-              disabled={isGenerating}
+              disabled={busy}
               className="w-full -mt-2"
             />
 
@@ -416,7 +641,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                       key={ratio}
                       type="button"
                       onClick={() => setAspectRatio(ratio)}
-                      disabled={isGenerating}
+                      disabled={busy}
                       aria-pressed={aspectRatio === ratio}
                       className={`${OPTION_BTN} ${
                         aspectRatio === ratio
@@ -429,60 +654,121 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                   ))}
                 </div>
               </div>
-              <div className="w-full md:w-auto">
-                <span
-                  id="image-count-label"
-                  className="block text-left text-sm font-medium text-gray-300 mb-3"
-                >
-                  {t('start.image_count')}
-                </span>
-                {/* A segmented control instead of a number field: the range is 1-4,
-                    so there is nothing to type and no invalid state to recover from. */}
-                <div
-                  className="flex flex-wrap gap-3"
-                  role="group"
-                  aria-labelledby="image-count-label"
-                >
-                  {[1, 2, 3, 4].map((count) => (
-                    <button
-                      key={count}
-                      type="button"
-                      onClick={() => setNumberOfImages(count)}
-                      disabled={isGenerating}
-                      aria-pressed={numberOfImages === count}
-                      className={`${OPTION_BTN} min-w-[3rem] ${
-                        numberOfImages === count
-                          ? `border bg-gradient-to-r ${s.btnSecondary} text-white`
-                          : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700'
-                      }`}
+              {!compareEnabled && (
+                <div className="w-full md:w-auto">
+                  <span
+                    id="image-count-label"
+                    className="block text-left text-sm font-medium text-gray-300 mb-3"
+                  >
+                    {t('start.image_count')}
+                  </span>
+                  {/* A segmented control instead of a number field: the range is 1-4,
+                      so there is nothing to type and no invalid state to recover from. */}
+                  <div
+                    className="flex flex-wrap gap-3"
+                    role="group"
+                    aria-labelledby="image-count-label"
+                  >
+                    {[1, 2, 3, 4].map((count) => (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => setNumberOfImages(count)}
+                        disabled={busy}
+                        aria-pressed={numberOfImages === count}
+                        className={`${OPTION_BTN} min-w-[3rem] ${
+                          numberOfImages === count
+                            ? `border bg-gradient-to-r ${s.btnSecondary} text-white`
+                            : 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700'
+                        }`}
+                      >
+                        {count}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Opt-in and off by default: a visitor who just wants one image
+                must never silently pay for two API calls. */}
+            {canCompare && (
+              <div
+                className={`w-full rounded-xl border bg-gray-900/30 p-4 text-left ${s.borderCard}`}
+              >
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="compare-models-toggle"
+                    checked={compareEnabled}
+                    onChange={(e) => setCompareEnabled(e.target.checked)}
+                    disabled={anyRunning}
+                    className={`mt-1 w-4 h-4 rounded cursor-pointer bg-gray-800 border-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 disabled:cursor-not-allowed disabled:opacity-50 ${s.inputFocus}`}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <label
+                      htmlFor="compare-models-toggle"
+                      className="block text-sm font-bold text-gray-200 cursor-pointer"
                     >
-                      {count}
-                    </button>
-                  ))}
+                      {t('start.compare_toggle_label')}
+                    </label>
+                    <p className="text-xs text-gray-400 mt-1">{t('start.compare_cost_note')}</p>
+
+                    {compareEnabled && (
+                      <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                        <span className="text-gray-400">{t('start.compare_comparing_label')}</span>
+                        <span className="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 font-medium">
+                          {t(MODEL_LABEL_KEYS[settings.model])}
+                        </span>
+                        <span className="text-gray-500" aria-hidden="true">
+                          {t('start.compare_vs')}
+                        </span>
+                        <label htmlFor="compare-second-model" className="sr-only">
+                          {t('start.compare_second_model_label')}
+                        </label>
+                        <select
+                          id="compare-second-model"
+                          value={effectiveCompareModel}
+                          onChange={(e) => setCompareModel(e.target.value as ModelType)}
+                          disabled={anyRunning}
+                          className={`bg-gray-900/50 border border-gray-600 rounded-lg px-3 py-1.5 text-gray-100 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${s.inputFocus}`}
+                        >
+                          {otherModels.map((m) => (
+                            <option key={m} value={m}>
+                              {t(MODEL_LABEL_KEYS[m])}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {error && <ErrorDisplay message={error} className="mt-2" />}
 
-            {settings.model === 'gemini-3-pro-image' && (
+            {(settings.model === 'gemini-3-pro-image' ||
+              (compareEnabled && effectiveCompareModel === 'gemini-3-pro-image')) && (
               <p className="text-xs text-gray-300">{t('start.generate_pro_slow_hint')}</p>
             )}
 
             <button
               type="button"
-              onClick={handleGenerateClick}
-              disabled={isGenerating || !generationPrompt.trim()}
-              aria-busy={isGenerating}
+              onClick={compareEnabled ? handleCompareGenerateClick : handleGenerateClick}
+              disabled={anyRunning || !generationPrompt.trim()}
+              aria-busy={busy}
               className={`w-full mt-2 bg-gradient-to-br text-white font-bold py-5 px-8 rounded-xl text-base transition-all duration-200 ease-in-out shadow-lg hover:-translate-y-px active:scale-95 active:shadow-inner disabled:from-gray-700 disabled:to-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${s.generateBtn}`}
             >
-              {isGenerating ? (
+              {busy ? (
                 <>
-                  <BloomFlowerLoader size={24} className="shrink-0" /> {t('start.generating')}
+                  <BloomFlowerLoader size={24} className="shrink-0" />{' '}
+                  {compareEnabled ? t('start.compare_generating') : t('start.generating')}
                 </>
               ) : (
                 <>
-                  <MagicWandIcon className="w-6 h-6" /> {t('start.generate_button')}
+                  <MagicWandIcon className="w-6 h-6" />{' '}
+                  {compareEnabled ? t('start.compare_generate_button') : t('start.generate_button')}
                 </>
               )}
             </button>
@@ -491,9 +777,12 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
         {tab === 'upload' && <ExampleShowcase feature="editor" />}
 
-        {tab === 'generate' && generatedImages.length === 0 && !isGenerating && (
-          <ExampleShowcase feature="generate" />
-        )}
+        {tab === 'generate' &&
+          generatedImages.length === 0 &&
+          !isGenerating &&
+          !(compareEnabled && (compareRun.isRunning || compareResults.length > 0)) && (
+            <ExampleShowcase feature="generate" />
+          )}
 
         {tab === 'upload' && (
           <div className="mt-16 w-full animate-fade-in">
