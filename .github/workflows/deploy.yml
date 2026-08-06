@@ -16,8 +16,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Gate the deploy on the same checks pull requests run. Without this, a push
+  # straight to main would deploy code that never had its types checked.
+  ci:
+    uses: ./.github/workflows/ci.yml
+
   build:
     runs-on: ubuntu-latest
+    needs: ci
     steps:
       - name: Checkout
         uses: actions/checkout@v4
