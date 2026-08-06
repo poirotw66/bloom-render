@@ -77,6 +77,10 @@ export const enMessages: Record<string, string> = {
     'Timing is wall-clock per request, not a benchmark — network conditions vary run to run.',
   'start.compare_elapsed': 'Generated in {seconds}s',
   'start.compare_result_alt': '{model} result for: {prompt}',
+  'start.reference_image_label': 'Reference image (optional)',
+  'start.reference_image_hint': 'Guides style, composition, or mood — not copied exactly.',
+  'start.reference_image_btn': 'Upload reference',
+  'start.reference_image_remove': 'Remove',
 
   'idphoto.title': 'ID Photo Studio',
   'idphoto.subtitle':

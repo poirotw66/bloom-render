@@ -71,6 +71,10 @@ export const zhTWMessages: Record<string, string> = {
     '時間為每次請求的實際耗時，並非效能基準測試——每次執行的網路狀況都不同。',
   'start.compare_elapsed': '耗時 {seconds} 秒',
   'start.compare_result_alt': '{model} 的生成結果：{prompt}',
+  'start.reference_image_label': '參考圖片（可選）',
+  'start.reference_image_hint': '用於風格、構圖或氛圍參考，不會原樣複製。',
+  'start.reference_image_btn': '上傳參考圖',
+  'start.reference_image_remove': '移除',
 
   'idphoto.title': '證件照工作室',
   'idphoto.subtitle': '一鍵生成專業證件照，尺寸、服裝與美化一次完成。',

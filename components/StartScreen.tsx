@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   UploadIcon,
   MagicWandIcon,
@@ -40,6 +40,8 @@ import {
   UI_BTN_PRIMARY,
   UI_BTN_SECONDARY,
   UI_BTN_SUCCESS,
+  UI_FILE_PICKER,
+  UI_LABEL_HINT,
   UI_PAGE,
   UI_SUBTITLE,
   UI_TITLE,
@@ -125,6 +127,18 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [referenceFile, setReferenceFile] = useState<File | null>(null);
+  const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!referenceFile) {
+      setReferenceUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(referenceFile);
+    setReferenceUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [referenceFile]);
 
   // Comparison is a separate, opt-in run rather than a mode baked into
   // handleGenerateClick: a visitor who never touches the toggle must keep
@@ -163,6 +177,13 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     }
   };
 
+  const handleReferenceFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    void applyValidatedImageFile(file, t, setReferenceFile, setError);
+  };
+
   const handleGenerateClick = async () => {
     if (!generationPrompt.trim()) {
       setError(t('start.error_no_prompt'));
@@ -174,10 +195,16 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     setGeneratedImages([]);
 
     try {
-      const urls = await generateImageFromText(generationPrompt, aspectRatio, numberOfImages, {
-        apiKey: settings.apiKey,
-        model: settings.model,
-      });
+      const urls = await generateImageFromText(
+        generationPrompt,
+        aspectRatio,
+        numberOfImages,
+        {
+          apiKey: settings.apiKey,
+          model: settings.model,
+        },
+        referenceFile,
+      );
       if (urls.length === 1) {
         // If only one image, proceed directly to editing
         const newFile = dataURLtoFile(urls[0], `generated-${Date.now()}.png`);
@@ -556,6 +583,45 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               disabled={busy}
               className="w-full -mt-2"
             />
+
+            <div className="w-full text-left">
+              <span className={UI_LABEL_HINT}>{t('start.reference_image_label')}</span>
+              <p className="text-xs text-gray-500 mb-2">{t('start.reference_image_hint')}</p>
+              {referenceFile ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
+                    {referenceUrl && (
+                      <img
+                        src={referenceUrl}
+                        alt={t('start.reference_image_label')}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setReferenceFile(null)}
+                    disabled={isGenerating}
+                    className="text-sm text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                  >
+                    {t('start.reference_image_remove')}
+                  </button>
+                </div>
+              ) : (
+                <label htmlFor="generate-reference-upload" className={UI_FILE_PICKER}>
+                  <input
+                    id="generate-reference-upload"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    disabled={isGenerating}
+                    onChange={handleReferenceFileChange}
+                  />
+                  <UploadIcon className="w-4 h-4" />
+                  {t('start.reference_image_btn')}
+                </label>
+              )}
+            </div>
 
             <div className="w-full flex flex-col md:flex-row gap-6">
               <div className="flex-grow">
