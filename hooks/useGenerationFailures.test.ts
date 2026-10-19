@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Shared by all six generation flows plus model comparison: a regression here
  * breaks every one of them at once. See the header comment on

@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * The home page's proof of work: a wall of real output, each tile linking to
  * the feature that made it.

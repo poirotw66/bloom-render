@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { createContext, useState, useContext, ReactNode, useCallback, useMemo } from 'react';

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Covers the two behaviours that have actually broken in this hook, not the
  * whole surface: a stale-closure regression that silently dropped the user's

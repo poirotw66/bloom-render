@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Lazy-loaded travel scene catalog (split from constants/travel.ts for smaller Travel route chunk).
  */

@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Root-level Error Boundary to prevent full app crash on uncaught errors.
  * Renders a fallback UI with reload option.

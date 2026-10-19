@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Theme-based Tailwind class helpers. Use these instead of inline theme ternaries.
  */

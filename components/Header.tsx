@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 import React, { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';

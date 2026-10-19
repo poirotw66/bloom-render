@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Shared behaviour for modal dialogs and side panels: Escape to close,
  * focus trap, focus restore on close, and background scroll lock.

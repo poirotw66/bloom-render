@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Reports partially-failed multi-image generations and offers to re-run only
  * the failed slots. Rendered above the results grid on every generate page.

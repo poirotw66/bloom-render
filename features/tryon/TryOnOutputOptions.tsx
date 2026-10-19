@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Output size and aspect ratio selectors for try-on.
  * Gemini 3: 1K / 2K / 4K; Gemini 2: 1K only. Both: 1:1, 16:9, 9:16.

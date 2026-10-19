@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Hook for AI virtual try-on: person + clothing images -> person wearing clothing.
  */
@@ -12,6 +12,7 @@ import { useHistory } from '../../hooks/useHistory';
 import { generateVirtualTryOn } from '../../services/geminiService';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { allFailedError } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
@@ -162,14 +163,18 @@ export function useTryOn() {
         outputSize,
         aspectRatio,
       }).then((dataUrl) => {
-        addToHistory('tryon', dataUrl, {
-          background,
-          style,
-          clothingCount: clothing.length,
-          outputSize,
-          aspectRatio,
-          variationIndex,
-        });
+        addToHistory(
+          'tryon',
+          dataUrl,
+          buildHistoryOptions('tryon', settings, {
+            background,
+            style,
+            clothingCount: clothing.length,
+            outputSize,
+            aspectRatio,
+            variationIndex,
+          }),
+        );
         return dataUrl;
       });
     },

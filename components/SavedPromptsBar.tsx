@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Reusable "saved prompts" row for text-prompt inputs (generate, retouch,
  * adjust, filter). Renders saved prompts as chips the user can re-apply or

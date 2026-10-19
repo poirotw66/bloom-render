@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * "Here is what this feature produces", shown on a feature page before the
  * visitor has produced anything themselves.

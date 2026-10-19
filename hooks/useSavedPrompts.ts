@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Per-surface list of saved prompts (small strings, so localStorage is fine
  * here — unlike history results, there are no images to run out of quota

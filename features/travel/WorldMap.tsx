@@ -1,12 +1,13 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useState } from 'react';
 import type { TravelScene } from '../../types';
 import type { TravelSceneCategory } from '../../constants/travel';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { sceneThumbPath } from '../../utils/imageAsset';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { FoodBowlIcon } from '../../components/icons';
 
@@ -185,7 +186,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
                     {scene.referenceImagePath && (isHovered || isSelected) && (
                       <div className="w-full aspect-video rounded-md overflow-hidden bg-gray-800 border border-white/10">
                         <img
-                          src={publicAssetUrl(scene.referenceImagePath)}
+                          src={publicAssetUrl(sceneThumbPath(scene.referenceImagePath, 512))}
                           alt={t(scene.nameKey)}
                           className="w-full h-full object-cover"
                           loading="lazy"

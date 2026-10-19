@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * 春山企業 韓式證件照 - 證件類型、修圖等級、輸出規格
  */

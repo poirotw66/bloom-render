@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -10,6 +10,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
@@ -89,10 +90,16 @@ export function usePortrait() {
         variationIndex,
       })
         .then((url) => {
-          addToHistory('portrait', url, {
-            portraitType,
-            outputSpec: portraitOutputSpec,
-          });
+          addToHistory(
+            'portrait',
+            url,
+            buildHistoryOptions('portrait', settings, {
+              portraitType,
+              outputSpec: portraitOutputSpec,
+              imageSize,
+              variationIndex,
+            }),
+          );
           return url;
         })
         .catch((err) => {

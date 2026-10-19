@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Hook for couple/group photo state management and generation logic.
  */
@@ -15,6 +15,7 @@ import { runImageGeneration } from '../../services/gemini/runImageGeneration';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { logger } from '../../utils/logger';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import {
   allFailedError,
   isAbortError,
@@ -245,13 +246,18 @@ export function useCoupleGroup() {
           includeImageConfig: true,
           context: mode === 'couple' ? 'couple' : 'group',
         });
-        addToHistory(mode, url, {
-          style,
-          fileCount,
-          aspectRatio,
-          outputSize: effectiveSize,
-          variationIndex: i,
-        });
+        addToHistory(
+          mode,
+          url,
+          buildHistoryOptions(mode, settings, {
+            style,
+            fileCount,
+            aspectRatio,
+            outputSize: effectiveSize,
+            variationIndex: i,
+            prompt: variedPrompt,
+          }),
+        );
         return url;
       } catch (err) {
         if (!isAbortError(err))

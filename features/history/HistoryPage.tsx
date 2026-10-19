@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useMemo, useState } from 'react';
@@ -29,6 +29,8 @@ interface HistoryPageProps {
 
 const HISTORY_TYPES = [
   'all',
+  'generate',
+  'editor',
   'idphoto',
   'portrait',
   'themed',

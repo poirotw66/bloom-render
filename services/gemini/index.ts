@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Gemini-based image services: edit, filter, adjustment, ID photo, portrait, themed, travel, text-to-image, prompt optimization.
  * Shared helpers in shared.ts; domain logic in separate modules.

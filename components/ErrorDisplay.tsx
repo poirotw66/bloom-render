@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Shared error message display. Use for inline generation/upload errors
  * so styling and optional icon stay consistent and backend error format can be

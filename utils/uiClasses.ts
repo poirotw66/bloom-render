@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Shared UI class tokens for page shells, titles, cards, and buttons.
  * Keep feature accents (travel sky, try-on teal, couple pink) as overrides on top.

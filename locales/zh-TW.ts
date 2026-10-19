@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 export const zhTWMessages: Record<string, string> = {
@@ -1030,6 +1030,8 @@ export const zhTWMessages: Record<string, string> = {
   'history.no_results': '找不到結果',
   'history.search_placeholder': '依類型或選項搜尋...',
   'history.filter_all': '全部',
+  'history.type.generate': '文字生圖',
+  'history.type.editor': '編輯器',
   'history.type.portrait': '形象照',
   'history.type.themed': '主題寫真',
   'history.type.idphoto': '證件照',

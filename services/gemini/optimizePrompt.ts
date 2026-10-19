@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Prompt optimization for image generation.
  * Gemini-only (text output). OpenRouter Images API has no text planning endpoint.
