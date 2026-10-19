@@ -5,8 +5,9 @@
  * Batch upload section component for multiple file uploads.
  */
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { usePasteImage } from '../hooks/usePasteImage';
 import { ErrorDisplay } from './ErrorDisplay';
 import { UI_BTN_GENERATE, UI_BTN_UPLOAD, UI_FILE_PICKER } from '../utils/uiClasses';
 
@@ -46,14 +47,35 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
   className = '',
 }) => {
   const { t } = useLanguage();
+  const zoneRef = useRef<HTMLDivElement>(null);
 
   const canAddMore = files.length < maxFiles;
   const canGenerate = files.length >= minFiles && files.length <= maxFiles && !loading;
 
+  const emitFile = useCallback(
+    (file: File) => {
+      if (!canAddMore) return;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const input = document.createElement('input');
+      input.type = 'file';
+      // DataTransfer.files is read-only on some engines; multiple via change with one file is fine.
+      Object.defineProperty(input, 'files', { value: dt.files });
+      onFileChange({ target: input } as unknown as React.ChangeEvent<HTMLInputElement>);
+    },
+    [canAddMore, onFileChange],
+  );
+
+  usePasteImage(zoneRef, emitFile);
+
   return (
     <div className={`flex flex-col gap-4 w-full max-w-4xl mx-auto ${className}`}>
       <div
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 ${
+        ref={zoneRef}
+        tabIndex={0}
+        role="group"
+        aria-label={t('batch.title')}
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
           isDraggingOver
             ? 'border-blue-400 bg-blue-500/10 scale-[1.02]'
             : files.length > 0

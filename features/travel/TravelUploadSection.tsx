@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { usePasteImage } from '../../hooks/usePasteImage';
 import { TravelIcon, UserIcon, UsersIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import { TRAVEL_PANEL } from './travelUi';
@@ -43,9 +44,22 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
+  const zoneRef = useRef<HTMLDivElement>(null);
 
   const modeActive = 'bg-sky-600 text-white shadow-md shadow-sky-600/25';
   const modeIdle = 'text-slate-500 hover:text-slate-300';
+
+  const emitFile = useCallback(
+    (file: File) => {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const input = document.createElement('input');
+      Object.defineProperty(input, 'files', { value: dt.files });
+      onFileChange({ target: input } as unknown as React.ChangeEvent<HTMLInputElement>);
+    },
+    [onFileChange],
+  );
+  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode });
 
   return (
     <div className={`flex flex-col gap-4 w-full max-w-2xl mx-auto p-4 ${TRAVEL_PANEL}`}>
@@ -79,7 +93,11 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
       </div>
 
       <div
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-200 flex flex-col items-center justify-center gap-6 ${
+        ref={zoneRef}
+        tabIndex={isDemoMode ? undefined : 0}
+        role="group"
+        aria-label={t('travel.upload_hint')}
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-200 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-sky-400 bg-sky-500/10'
             : files.length > 0

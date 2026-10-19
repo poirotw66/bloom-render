@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   UploadIcon,
   MagicWandIcon,
@@ -23,6 +23,7 @@ import { buildHistoryOptions } from '../utils/historyOptions';
 import { useGenerationFailures } from '../hooks/useGenerationFailures';
 import { useHistory } from '../hooks/useHistory';
 import { fileFromSourceUrl, useHistoryReplay } from '../hooks/useHistoryReplay';
+import { usePasteImage } from '../hooks/usePasteImage';
 import ResultActions from './ResultActions';
 import ResultImage from './ResultImage';
 import { SUPPORTED_MODELS, MODEL_LABEL_KEYS } from '../constants/models';
@@ -195,9 +196,17 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const anyRunning = isGenerating || compareRun.isRunning;
   const busy = compareEnabled ? compareRun.isRunning : isGenerating;
 
-  const pickUploadFile = (file: File) => {
-    void applyValidatedImageFile(file, t, onImageSelected, setError);
-  };
+  const pickUploadFile = useCallback(
+    (file: File) => {
+      void applyValidatedImageFile(file, t, onImageSelected, setError);
+    },
+    [onImageSelected, t],
+  );
+
+  const uploadZoneRef = useRef<HTMLDivElement>(null);
+  usePasteImage(uploadZoneRef, pickUploadFile, {
+    enabled: tab === 'upload' && !settings.isDemoMode,
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -426,7 +435,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
             <h2 className="text-lg font-bold text-gray-200">{t('gallery.start_editing')}</h2>
             <div
-              className={`p-12 border-2 border-dashed rounded-2xl bg-gray-800/30 w-full max-w-2xl flex flex-col items-center justify-center gap-4 transition-colors duration-200 ${s.border}`}
+              ref={uploadZoneRef}
+              tabIndex={settings.isDemoMode ? undefined : 0}
+              role="group"
+              aria-label={t('start.upload_drag')}
+              className={`p-12 border-2 border-dashed rounded-2xl bg-gray-800/30 w-full max-w-2xl flex flex-col items-center justify-center gap-4 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${s.border}`}
             >
               {settings.isDemoMode ? (
                 <>

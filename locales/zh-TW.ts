@@ -1026,6 +1026,7 @@ export const zhTWMessages: Record<string, string> = {
   'error.safety_filter': '內容被安全設定過濾。請嘗試其他方式。',
   'error.no_image': 'AI 模型未返回圖片。請重試。',
   'error.network_error': '發生網路錯誤。請檢查連線後重試。',
+  'error.request_timeout': '請求逾時（約 2 分鐘）。請重試，或改用較小的圖片。',
   'error.quota_exceeded': 'API 配額已用盡。請稍後再試。',
   'error.invalid_request': '無效的請求。請檢查輸入後重試。',
   'error.unknown': '發生未知錯誤。請重試。',

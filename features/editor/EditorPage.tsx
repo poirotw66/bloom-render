@@ -22,6 +22,7 @@ import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
 import CompareSlider from '../../components/CompareSlider';
 import { confirmDiscardUnsavedWork, useUnsavedWork } from '../../hooks/useUnsavedWork';
+import { useEditorHistoryShortcuts } from '../../hooks/useEditorHistoryShortcuts';
 import { useHistory as useGenerationHistory } from '../../hooks/useHistory';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { dataURLtoFile } from '../../utils/fileUtils';
@@ -310,6 +311,13 @@ const EditorPage: React.FC = () => {
     setEditHotspot(null);
     setDisplayHotspot(null);
   }, [canRedo]);
+
+  useEditorHistoryShortcuts({
+    canUndo,
+    canRedo,
+    onUndo: handleUndo,
+    onRedo: handleRedo,
+  });
 
   const handleReset = useCallback(() => {
     if (history.length === 0) return;
