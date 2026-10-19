@@ -105,23 +105,28 @@ describe('openRouterImageProvider', () => {
     ).rejects.toThrow('error.openrouter_invalid_key');
   });
 
-  it('maps 429 to OpenRouter rate limit i18n error', async () => {
+  it('maps 429 to OpenRouter rate limit i18n error after retries', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     vi.stubGlobal(
       'fetch',
       vi.fn(
         async () =>
           new Response(JSON.stringify({ error: { message: 'Rate limit' } }), {
             status: 429,
+            headers: { 'Retry-After': '0' },
           }),
       ),
     );
 
-    await expect(
-      openRouterImageProvider.generateImage({
-        prompt: 'test',
-        model: 'google/gemini-2.5-flash-image',
-        apiKey: 'sk-or-test',
-      }),
-    ).rejects.toThrow('error.openrouter_rate_limit');
+    const pending = openRouterImageProvider.generateImage({
+      prompt: 'test',
+      model: 'google/gemini-2.5-flash-image',
+      apiKey: 'sk-or-test',
+    });
+    const assertion = expect(pending).rejects.toThrow('error.openrouter_rate_limit');
+    await vi.runAllTimersAsync();
+    await assertion;
+    vi.useRealTimers();
   });
 });

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: MIT
  *
  * Shared helpers and types for Gemini-based image services.
+ * Intentionally SDK-free so UI imports do not pull `@google/genai` into the
+ * initial bundle (see services/gemini/client.ts for lazy SDK access).
  */
 
-import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
 import { compressImageIfNeeded } from '../../utils/fileUtils';
 import { logger } from '../../utils/logger';
-import { DEFAULT_MODEL } from '../../constants/models';
 import { modelSupportsMultiResolution, type ImageProviderId } from '../imageProviders';
 
 export { DEFAULT_MODEL, MODELS_SUPPORTING_MULTI_RESOLUTION } from '../../constants/models';
@@ -265,53 +265,4 @@ export const fileToPartAuto = async (
 ): Promise<{ inlineData: { mimeType: string; data: string } }> => {
   const compressFn = getCompressionFunction();
   return fileToPart(file, compressFn);
-};
-
-/** Extract image data URL from GenerateContentResponse; throws if blocked or no image. */
-export const handleApiResponse = (response: GenerateContentResponse, context: string): string => {
-  if (response.promptFeedback?.blockReason) {
-    const { blockReason, blockReasonMessage } = response.promptFeedback;
-    logger.error('Request blocked by API', { blockReason, blockReasonMessage, response });
-    throw createI18nError('error.blocked');
-  }
-
-  const parts = response.candidates?.[0]?.content?.parts ?? [];
-  const withInline = parts.filter((p) => p.inlineData);
-  const imagePartFromResponse =
-    context === 'generation' && withInline.length > 0
-      ? withInline[withInline.length - 1]
-      : parts.find((part) => part.inlineData);
-
-  if (imagePartFromResponse?.inlineData) {
-    const { mimeType, data } = imagePartFromResponse.inlineData;
-    logger.debug(`Received image data (${mimeType}) for ${context}`);
-    return `data:${mimeType};base64,${data}`;
-  }
-
-  const finishReason = response.candidates?.[0]?.finishReason;
-  if (finishReason && finishReason !== 'STOP') {
-    logger.error('Image generation stopped unexpectedly', { context, finishReason, response });
-    throw createI18nError('error.safety_filter');
-  }
-
-  const textFeedback = response.text?.trim();
-  logger.error('Model response did not contain an image part', {
-    context,
-    textFeedback,
-    response,
-  });
-  throw createI18nError('error.no_image');
-};
-
-export const getClient = (settings?: ServiceSettings) => {
-  const apiKey = settings?.apiKey || '';
-  const key = typeof apiKey === 'string' ? apiKey.trim() : '';
-  if (!key) {
-    throw createI18nError('error.api_key_missing');
-  }
-  return new GoogleGenAI({ apiKey: key });
-};
-
-export const getModel = (settings?: ServiceSettings) => {
-  return settings?.model || DEFAULT_MODEL;
 };

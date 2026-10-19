@@ -5,9 +5,10 @@
  * Upload section for couple/group photos with multi-file support.
  */
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { usePasteImage } from '../../hooks/usePasteImage';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import type { CoupleGroupMode } from './types';
 import { UI_BTN, UI_FILE_PICKER } from '../../utils/uiClasses';
@@ -43,10 +44,24 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
+  const zoneRef = useRef<HTMLDivElement>(null);
 
   const maxFiles = mode === 'couple' ? 2 : 6;
   const minFiles = mode === 'couple' ? 2 : 3;
   const canAddMore = !isDemoMode && (mode === 'couple' ? files.length < 2 : files.length < 6);
+
+  const emitFile = useCallback(
+    (file: File) => {
+      if (!canAddMore) return;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const input = document.createElement('input');
+      Object.defineProperty(input, 'files', { value: dt.files });
+      onFileChange({ target: input } as unknown as React.ChangeEvent<HTMLInputElement>);
+    },
+    [canAddMore, onFileChange],
+  );
+  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode });
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
@@ -54,7 +69,11 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
         <p className="text-xs text-sky-200/80 text-center">{t('demo.sample_only_hint')}</p>
       )}
       <div
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 ${
+        ref={zoneRef}
+        tabIndex={isDemoMode ? undefined : 0}
+        role="group"
+        aria-label={t(`couple_group.mode.${mode}`)}
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-pink-400 bg-pink-500/10 scale-[1.02]'
             : files.length > 0

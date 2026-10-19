@@ -5,9 +5,10 @@
  * Upload section for AI try-on: one person photo + multiple clothing photos.
  */
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { usePasteImage } from '../../hooks/usePasteImage';
 import QuantitySelector from '../../components/QuantitySelector';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 
@@ -57,6 +58,32 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
   const hasPerson = personPreviewUrl !== null;
   const clothingCount = clothingPreviewUrls.length;
   const canAddClothing = !isDemoMode && clothingCount < maxClothing;
+  const personZoneRef = useRef<HTMLDivElement>(null);
+  const clothingZoneRef = useRef<HTMLDivElement>(null);
+
+  const emitPerson = useCallback(
+    (file: File) => {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const input = document.createElement('input');
+      Object.defineProperty(input, 'files', { value: dt.files });
+      onPersonFileChange({ target: input } as unknown as React.ChangeEvent<HTMLInputElement>);
+    },
+    [onPersonFileChange],
+  );
+  const emitClothing = useCallback(
+    (file: File) => {
+      if (!canAddClothing) return;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const input = document.createElement('input');
+      Object.defineProperty(input, 'files', { value: dt.files });
+      onClothingFileChange({ target: input } as unknown as React.ChangeEvent<HTMLInputElement>);
+    },
+    [canAddClothing, onClothingFileChange],
+  );
+  usePasteImage(personZoneRef, emitPerson, { enabled: !isDemoMode });
+  usePasteImage(clothingZoneRef, emitClothing, { enabled: !isDemoMode && canAddClothing });
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
@@ -65,7 +92,11 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
       )}
       {/* Person photo */}
       <div
-        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${
+        ref={personZoneRef}
+        tabIndex={isDemoMode ? undefined : 0}
+        role="group"
+        aria-label={t('tryon.person_photo')}
+        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-teal-400 bg-teal-500/10'
             : 'border-gray-700/50 bg-gray-800/40'
@@ -142,7 +173,11 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
 
       {/* Clothing photos */}
       <div
-        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${
+        ref={clothingZoneRef}
+        tabIndex={isDemoMode ? undefined : 0}
+        role="group"
+        aria-label={t('tryon.clothing_photos')}
+        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-amber-400/60 bg-amber-500/10'
             : 'border-gray-700/50 bg-gray-800/40'

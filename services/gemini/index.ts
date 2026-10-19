@@ -7,13 +7,8 @@
  */
 
 export type { ServiceSettings } from './shared';
-export {
-  fileToPart,
-  handleApiResponse,
-  getClient,
-  getModel,
-  supportsMultiResolution,
-} from './shared';
+export { fileToPart, supportsMultiResolution } from './shared';
+export { handleApiResponse, getClient, getModel, loadGoogleGenAI } from './client';
 
 export { generateEditedImage } from './edit';
 export { generateFilteredImage } from './filter';

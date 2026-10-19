@@ -7,13 +7,9 @@
  */
 
 import { logger } from '../../utils/logger';
-import {
-  createI18nError,
-  fileToPartAuto,
-  getClient,
-  getModel,
-  type ServiceSettings,
-} from './shared';
+import { getClient, getModel } from './client';
+import { createI18nError, fileToPartAuto, type ServiceSettings } from './shared';
+import { withRetryAndTimeout } from '../retry';
 
 /**
  * Uses Gemini (text mode) to optimize a user's short prompt into a detailed image generation prompt.
@@ -29,7 +25,6 @@ export const generateOptimizedPrompt = async (
   }
 
   logger.debug('Optimizing prompt for:', userText, referenceImage ? '(with image)' : '(text only)');
-  const ai = getClient(settings);
   const modelName = getModel(settings);
 
   const instructions = `You are an expert prompt engineer for AI image generation.
@@ -51,14 +46,21 @@ Requirements:
   parts.push({ text: instructions });
 
   try {
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: { parts },
-    });
+    return await withRetryAndTimeout(
+      async (signal) => {
+        const ai = await getClient(settings);
+        const response = await ai.models.generateContent({
+          model: modelName,
+          contents: { parts },
+          config: { abortSignal: signal },
+        });
 
-    const optimizedText = response.text?.trim();
-    if (!optimizedText) throw new Error('No text returned from optimization');
-    return optimizedText;
+        const optimizedText = response.text?.trim();
+        if (!optimizedText) throw new Error('No text returned from optimization');
+        return optimizedText;
+      },
+      { signal: settings?.abortSignal },
+    );
   } catch (e) {
     if (e instanceof Error && e.message.startsWith('error.')) throw e;
     logger.warn('Prompt optimization failed, executing fallback.', e);

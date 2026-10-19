@@ -1092,6 +1092,8 @@ export const enMessages: Record<string, string> = {
     'Content was filtered by safety settings. Please try a different approach.',
   'error.no_image': 'The AI model did not return an image. Please try again.',
   'error.network_error': 'Network error occurred. Please check your connection and try again.',
+  'error.request_timeout':
+    'The request timed out after 2 minutes. Please try again, or use a smaller image.',
   'error.quota_exceeded': 'API quota exceeded. Please try again later.',
   'error.invalid_request': 'Invalid request. Please check your input and try again.',
   'error.unknown': 'An unknown error occurred. Please try again.',
