@@ -1,19 +1,30 @@
 name: CI
 
-# Runs on every pull request, and is called by the deploy workflow so nothing
-# reaches GitHub Pages without passing the same gate.
+# Quality gate for every pull request and every push to main.
+# Also reusable via workflow_call so deploy.yml can require the same checks
+# before anything reaches GitHub Pages.
 #
 # `npm run build` alone does not check types: Vite strips them with esbuild and
 # never type-checks, so a reference to an undefined identifier builds and ships
-# clean and only fails in the browser. That is how eight undefined handlers on
-# the editor page reached main. `tsc --noEmit` is the step that catches it.
+# clean and only fails in the browser. `tsc --noEmit` is the step that catches it.
 on:
+  push:
+    branches:
+      - main
   pull_request:
   workflow_call:
 
+# Include event_name so a push-triggered run and deploy.yml's workflow_call
+# (same ref, same workflow name) do not cancel each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  checks:
-    name: Types, lint, format, tests, build
+  quality-gate:
+    name: quality-gate
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,16 +39,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Typecheck first: it gives the clearest message for the largest class of
-      # breakage, and there is no point linting code that does not compile.
+      # Typecheck first: clearest signal for the largest class of breakage.
       - name: Typecheck
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Lint
         run: npm run lint
 
-      # husky + lint-staged already format on commit, but only on the machine
-      # that ran it — this covers commits made anywhere else.
+      # husky + lint-staged format on commit, but only on the machine that ran
+      # it — this covers commits made anywhere else.
       - name: Check formatting
         run: npm run format:check
 
@@ -46,3 +56,7 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Deploy workflow sets this for the Pages base path; CI builds with
+          # the default `/` base so PRs exercise a plain production build.
+          GITHUB_PAGES: 'false'
