@@ -79,14 +79,9 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
                 <CoupleGroupResult
                   key={idx}
                   result={result}
+                  originalUrl={coupleGroup.previewUrls[0] ?? null}
                   mode={coupleGroup.mode}
                   style={coupleGroup.style}
-                  onDownload={() => {
-                    const link = document.createElement('a');
-                    link.href = result;
-                    link.download = `couple-group-${coupleGroup.mode}-${idx + 1}.png`;
-                    link.click();
-                  }}
                   onEditInEditor={() => {
                     onImageSelected(dataURLtoFile(result, `couple-group-${idx + 1}.png`));
                   }}
@@ -97,15 +92,9 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
         ) : coupleGroup.result ? (
           <CoupleGroupResult
             result={coupleGroup.result}
+            originalUrl={coupleGroup.previewUrls[0] ?? null}
             mode={coupleGroup.mode}
             style={coupleGroup.style}
-            onDownload={() => {
-              if (!coupleGroup.result) return;
-              const link = document.createElement('a');
-              link.href = coupleGroup.result;
-              link.download = `couple-group-${coupleGroup.mode}-${Date.now()}.png`;
-              link.click();
-            }}
             onEditInEditor={() => {
               if (!coupleGroup.result) return;
               onImageSelected(dataURLtoFile(coupleGroup.result, `couple-group-${Date.now()}.png`));

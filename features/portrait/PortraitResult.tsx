@@ -9,18 +9,18 @@ import GenericResult from '../../components/GenericResult';
 
 interface PortraitResultProps {
   portraitResult: string;
+  originalUrl?: string | null;
   portraitType: string;
   portraitOutputSpec: string;
-  onDownload: () => void;
   onAgain: () => void;
   onEditInEditor: () => void;
 }
 
 const PortraitResult: React.FC<PortraitResultProps> = ({
   portraitResult,
+  originalUrl,
   portraitType,
   portraitOutputSpec,
-  onDownload,
   onAgain,
   onEditInEditor,
 }) => {
@@ -29,9 +29,10 @@ const PortraitResult: React.FC<PortraitResultProps> = ({
   return (
     <GenericResult
       result={portraitResult}
-      onDownload={onDownload}
+      originalUrl={originalUrl}
       onAgain={onAgain}
       onEditInEditor={onEditInEditor}
+      fileBaseName="portrait"
       paramsTitleKey="idphoto.result.params_title"
       params={[
         { labelKey: 'portrait.label.type', value: t(`portrait.type.${portraitType}`) },

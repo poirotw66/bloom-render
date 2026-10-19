@@ -23,22 +23,22 @@ import type {
 
 interface IdPhotoResultProps {
   idPhotoResult: string;
+  originalUrl?: string | null;
   idPhotoType: IdPhotoType;
   idPhotoRetouchLevel: RetouchLevel;
   idPhotoOutputSpec: OutputSpec;
   idPhotoClothingOption: ClothingOption;
-  onDownload: () => void;
   onAgain: () => void;
   onEditInEditor: () => void;
 }
 
 const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
   idPhotoResult,
+  originalUrl,
   idPhotoType,
   idPhotoRetouchLevel,
   idPhotoOutputSpec,
   idPhotoClothingOption,
-  onDownload,
   onAgain,
   onEditInEditor,
 }) => {
@@ -48,9 +48,10 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
   return (
     <GenericResult
       result={idPhotoResult}
-      onDownload={onDownload}
+      originalUrl={originalUrl}
       onAgain={onAgain}
       onEditInEditor={onEditInEditor}
+      fileBaseName="id-photo"
       paramsTitleKey="idphoto.result.params_title"
       params={[
         {

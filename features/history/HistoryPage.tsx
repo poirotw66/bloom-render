@@ -8,11 +8,10 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHistory, type HistoryItem } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
+import HistoryResultCard from '../../components/HistoryResultCard';
 import {
-  UI_BTN_PRIMARY,
   UI_BTN_SECONDARY,
   UI_BTN_SUCCESS,
-  UI_CARD_SOFT,
   UI_CHIP_ACTIVE,
   UI_CHIP_INACTIVE,
   UI_INPUT,
@@ -42,20 +41,6 @@ const HISTORY_TYPES = [
 
 type HistoryFilterType = (typeof HISTORY_TYPES)[number];
 
-function formatRelativeTime(
-  timestamp: number,
-  t: (key: string, vars?: Record<string, string | number>) => string,
-): string {
-  const diffMinutes = Math.floor((Date.now() - timestamp) / 60000);
-  if (diffMinutes < 1) return t('history.just_now');
-  if (diffMinutes < 60) return t('history.minutes_ago', { count: diffMinutes });
-
-  const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) return t('history.hours_ago', { count: diffHours });
-
-  return t('history.days_ago', { count: Math.floor(diffHours / 24) });
-}
-
 function buildHistorySearchText(item: HistoryItem): string {
   return [item.type, ...Object.values(item.options ?? {}).map(String)].join(' ').toLowerCase();
 }
@@ -78,13 +63,6 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
       return matchesType && matchesQuery;
     });
   }, [activeType, history, searchQuery]);
-
-  const handleDownloadOne = (item: HistoryItem, index: number): void => {
-    const link = document.createElement('a');
-    link.href = item.url;
-    link.download = `${item.type}-${index + 1}.png`;
-    link.click();
-  };
 
   const handleDownloadFiltered = async (): Promise<void> => {
     await downloadBatchWithZipFallback({
@@ -174,67 +152,13 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
             {filteredHistory.map((item, index) => (
-              <article key={item.id} className={UI_CARD_SOFT}>
-                <div className="aspect-square bg-gray-950 flex items-center justify-center">
-                  <img
-                    src={item.url}
-                    alt={`${t(`history.type.${item.type}`)} ${index + 1}`}
-                    loading="lazy"
-                    decoding="async"
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-
-                <div className="p-4 space-y-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h2 className="text-lg font-bold text-white">
-                        {t(`history.type.${item.type}`)}
-                      </h2>
-                      <p className="text-sm text-gray-400">
-                        {formatRelativeTime(item.timestamp, t)}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(item.id)}
-                      className="text-sm text-red-300 hover:text-red-200 transition-colors"
-                    >
-                      {t('history.delete')}
-                    </button>
-                  </div>
-
-                  {item.options && Object.keys(item.options).length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {Object.entries(item.options).map(([key, value]) => (
-                        <span
-                          key={key}
-                          className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300"
-                        >
-                          {key}: {String(value)}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(item, index)}
-                      className={UI_BTN_PRIMARY}
-                    >
-                      {t('history.edit')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadOne(item, index)}
-                      className={UI_BTN_SECONDARY}
-                    >
-                      {t('history.download')}
-                    </button>
-                  </div>
-                </div>
-              </article>
+              <HistoryResultCard
+                key={item.id}
+                item={item}
+                index={index}
+                onEdit={handleEdit}
+                onRemove={handleRemove}
+              />
             ))}
           </div>
         )}

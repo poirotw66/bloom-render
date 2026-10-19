@@ -10,6 +10,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import I18nErrorBoundary from './components/I18nErrorBoundary';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -35,7 +36,9 @@ root.render(
         <ThemeProvider>
           <SettingsProvider>
             <LanguageProvider>
-              <AppWithMotionPause />
+              <I18nErrorBoundary>
+                <AppWithMotionPause />
+              </I18nErrorBoundary>
             </LanguageProvider>
           </SettingsProvider>
         </ThemeProvider>

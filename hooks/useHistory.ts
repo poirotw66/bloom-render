@@ -40,11 +40,18 @@ let initPromise: Promise<void> | null = null;
 const listeners = new Set<() => void>();
 
 function withUrl(item: StoredHistoryItem): HistoryItem {
-  return { ...item, url: URL.createObjectURL(item.blob) };
+  return {
+    ...item,
+    url: URL.createObjectURL(item.blob),
+    sourceUrl: item.sourceBlob ? URL.createObjectURL(item.sourceBlob) : undefined,
+  };
 }
 
 function revokeAll(items: HistoryItem[]): void {
-  for (const item of items) URL.revokeObjectURL(item.url);
+  for (const item of items) {
+    URL.revokeObjectURL(item.url);
+    if (item.sourceUrl) URL.revokeObjectURL(item.sourceUrl);
+  }
 }
 
 function notify(): void {
@@ -83,8 +90,20 @@ async function addToHistory(
   type: string,
   result: string,
   options?: Record<string, unknown>,
+  source?: Blob | File | string | null,
 ): Promise<string> {
   await ensureInitialized();
+
+  let sourceBlob: Blob | undefined;
+  if (typeof source === 'string') {
+    try {
+      sourceBlob = dataUrlToBlob(source);
+    } catch {
+      sourceBlob = undefined;
+    }
+  } else if (source) {
+    sourceBlob = source;
+  }
 
   const stored: StoredHistoryItem = {
     id: generateHistoryId(type),
@@ -92,6 +111,7 @@ async function addToHistory(
     blob: dataUrlToBlob(result),
     timestamp: Date.now(),
     options,
+    sourceBlob,
   };
   const item = withUrl(stored);
   const previous = history;
@@ -111,6 +131,7 @@ async function addToHistory(
     // Roll back the optimistic add; the result wasn't actually persisted.
     setHistory(previous);
     URL.revokeObjectURL(item.url);
+    if (item.sourceUrl) URL.revokeObjectURL(item.sourceUrl);
   }
 
   return item.id;
@@ -123,7 +144,10 @@ async function removeFromHistory(id: string): Promise<void> {
 
   try {
     await deleteHistoryItems([id]);
-    if (removed) URL.revokeObjectURL(removed.url);
+    if (removed) {
+      URL.revokeObjectURL(removed.url);
+      if (removed.sourceUrl) URL.revokeObjectURL(removed.sourceUrl);
+    }
   } catch (err) {
     logger.error('Failed to delete history item:', err);
     setHistory(previous);

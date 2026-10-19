@@ -88,14 +88,9 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
                 <PortraitResult
                   key={idx}
                   portraitResult={result}
+                  originalUrl={portrait.portraitPreviewUrl}
                   portraitType={portrait.portraitType}
                   portraitOutputSpec={portrait.portraitOutputSpec}
-                  onDownload={() => {
-                    const link = document.createElement('a');
-                    link.href = result;
-                    link.download = `portrait-${idx + 1}.png`;
-                    link.click();
-                  }}
                   onAgain={portrait.clearPortraitResult}
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
@@ -105,9 +100,9 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
         ) : portrait.portraitResult ? (
           <PortraitResult
             portraitResult={portrait.portraitResult}
+            originalUrl={portrait.portraitPreviewUrl}
             portraitType={portrait.portraitType}
             portraitOutputSpec={portrait.portraitOutputSpec}
-            onDownload={portrait.handlePortraitDownload}
             onAgain={portrait.clearPortraitResult}
             onEditInEditor={() => handleEditInEditor(portrait.portraitResult!)}
           />

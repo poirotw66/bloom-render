@@ -24,11 +24,14 @@ export interface StoredHistoryItem {
   blob: Blob;
   timestamp: number;
   options?: Record<string, unknown>;
+  /** Optional input/before image for compare + generate-again (Wave B+). */
+  sourceBlob?: Blob;
 }
 
 /** A row plus the object URL the UI renders it through. */
 export interface HistoryItem extends StoredHistoryItem {
   url: string;
+  sourceUrl?: string;
 }
 
 /** Shape of rows written before results were stored as Blobs. */
@@ -37,6 +40,7 @@ interface LegacyHistoryRow {
   type: string;
   result?: string;
   blob?: Blob;
+  sourceBlob?: Blob;
   timestamp: number;
   options?: Record<string, unknown>;
 }
@@ -99,15 +103,23 @@ export function normalizeStoredRow(row: LegacyHistoryRow): {
   migrated: boolean;
 } | null {
   const { id, type, timestamp, options } = row;
+  const sourceBlob = row.sourceBlob instanceof Blob ? row.sourceBlob : undefined;
 
   if (row.blob instanceof Blob) {
-    return { item: { id, type, timestamp, options, blob: row.blob }, migrated: false };
+    return { item: { id, type, timestamp, options, blob: row.blob, sourceBlob }, migrated: false };
   }
 
   if (typeof row.result === 'string') {
     try {
       return {
-        item: { id, type, timestamp, options, blob: dataUrlToBlob(row.result) },
+        item: {
+          id,
+          type,
+          timestamp,
+          options,
+          blob: dataUrlToBlob(row.result),
+          sourceBlob,
+        },
         migrated: true,
       };
     } catch {

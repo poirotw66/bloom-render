@@ -12,6 +12,7 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
+import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
   allFailedError,
@@ -48,6 +49,21 @@ export function useThemed() {
       setThemeType(typeParam as ThemedType);
     }
   }, [searchParams]);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'themed') return;
+    const opts = payload.options ?? {};
+    if (typeof opts.themeType === 'string') setThemeType(opts.themeType as ThemedType);
+    if (opts.outputSize === '1K' || opts.outputSize === '2K' || opts.outputSize === '4K') {
+      setOutputSize(opts.outputSize);
+    }
+    if (opts.aspectRatio === '1:1' || opts.aspectRatio === '16:9' || opts.aspectRatio === '9:16') {
+      setAspectRatio(opts.aspectRatio);
+    }
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'themed-source.png').then(setThemedFile);
+    }
+  });
 
   useEffect(() => {
     if (themedFile) {
@@ -89,6 +105,7 @@ export function useThemed() {
               aspectRatio,
               variationIndex,
             }),
+            file,
           );
           return url;
         })

@@ -107,15 +107,10 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                 <TravelResult
                   key={idx}
                   result={result}
+                  originalUrl={tr.previewUrls[0] ?? null}
                   resultSceneNameKey={tr.resultSceneNameKey}
                   resultSceneCustomLabel={tr.resultSceneCustomLabel}
                   resultMetadata={tr.resultMetadata}
-                  onDownload={() => {
-                    const link = document.createElement('a');
-                    link.href = result;
-                    link.download = `travel-photo-${idx + 1}.png`;
-                    link.click();
-                  }}
                   onAgain={tr.clearResult}
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
@@ -125,10 +120,10 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
         ) : tr.result ? (
           <TravelResult
             result={tr.result}
+            originalUrl={tr.previewUrls[0] ?? null}
             resultSceneNameKey={tr.resultSceneNameKey}
             resultSceneCustomLabel={tr.resultSceneCustomLabel}
             resultMetadata={tr.resultMetadata}
-            onDownload={tr.handleDownload}
             onAgain={tr.clearResult}
             onEditInEditor={handleEditInEditor}
           />

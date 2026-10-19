@@ -5,6 +5,8 @@
  * Shared helpers for downloading generated images.
  */
 
+import { exportImageBlob, type ImageExportFormat, withExtension } from './imageExport';
+
 /**
  * An image to download: either a `data:` URL (fresh generation results) or a
  * Blob (history entries, which are stored as Blobs).
@@ -15,6 +17,9 @@ interface BatchDownloadOptions {
   sources: DownloadSource[];
   itemFileName: (index: number) => string;
   zipFileName: string;
+  /** Convert each item before zipping (default keeps original bytes). */
+  format?: ImageExportFormat;
+  quality?: number;
 }
 
 function triggerDownload(href: string, fileName: string): void {
@@ -48,19 +53,24 @@ function fallbackDownloadSequentially(
  * sequential single downloads.
  */
 export async function downloadBatchWithZipFallback(options: BatchDownloadOptions): Promise<void> {
-  const { sources, itemFileName, zipFileName } = options;
+  const { sources, itemFileName, zipFileName, format, quality = 0.92 } = options;
   if (sources.length === 0) return;
 
   try {
     const JSZip = await import('jszip');
     const zip = new JSZip.default();
-    sources.forEach((source, index) => {
-      if (typeof source === 'string') {
-        zip.file(itemFileName(index), source.split(',')[1], { base64: true });
+    for (let index = 0; index < sources.length; index += 1) {
+      const source = sources[index];
+      const name = format ? withExtension(itemFileName(index), format) : itemFileName(index);
+      if (format) {
+        const blob = await exportImageBlob(source, format, quality);
+        zip.file(name, blob);
+      } else if (typeof source === 'string') {
+        zip.file(name, source.split(',')[1], { base64: true });
       } else {
-        zip.file(itemFileName(index), source);
+        zip.file(name, source);
       }
-    });
+    }
 
     const content = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(content);

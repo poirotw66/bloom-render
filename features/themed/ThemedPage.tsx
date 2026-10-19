@@ -85,13 +85,8 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
                 <ThemedResult
                   key={idx}
                   themedResult={result}
+                  originalUrl={themed.themedPreviewUrl}
                   themeType={themed.themeType}
-                  onDownload={() => {
-                    const link = document.createElement('a');
-                    link.href = result;
-                    link.download = `themed-${idx + 1}.png`;
-                    link.click();
-                  }}
                   onAgain={themed.clearThemedResult}
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
@@ -101,8 +96,8 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
         ) : themed.themedResult ? (
           <ThemedResult
             themedResult={themed.themedResult}
+            originalUrl={themed.themedPreviewUrl}
             themeType={themed.themeType}
-            onDownload={themed.handleThemedDownload}
             onAgain={themed.clearThemedResult}
             onEditInEditor={() => handleEditInEditor(themed.themedResult!)}
           />

@@ -12,6 +12,7 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
+import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
   allFailedError,
@@ -68,6 +69,20 @@ export function useIdPhoto() {
       setIdPhotoRetouchLevel(levelParam as RetouchLevel);
     }
   }, [searchParams]);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'idphoto') return;
+    const opts = payload.options ?? {};
+    if (typeof opts.idType === 'string') setIdPhotoType(opts.idType as IdPhotoType);
+    if (typeof opts.retouchLevel === 'string')
+      setIdPhotoRetouchLevel(opts.retouchLevel as RetouchLevel);
+    if (typeof opts.outputSpec === 'string') setIdPhotoOutputSpec(opts.outputSpec as OutputSpec);
+    if (typeof opts.clothingOption === 'string')
+      setIdPhotoClothingOption(opts.clothingOption as ClothingOption);
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'idphoto-source.png').then(setIdPhotoFile);
+    }
+  });
 
   useEffect(() => {
     if (idPhotoFile) {
@@ -129,6 +144,7 @@ export function useIdPhoto() {
               clothingOption: idPhotoClothingOption,
               variationIndex,
             }),
+            file,
           );
           return url;
         })

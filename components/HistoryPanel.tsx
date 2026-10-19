@@ -10,13 +10,11 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useDialog } from '../hooks/useDialog';
 import { useHistory, type HistoryItem } from '../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
-import { DownloadIcon, EditIcon, XMarkIcon } from './icons';
+import HistoryResultCard from './HistoryResultCard';
+import { XMarkIcon } from './icons';
 import { ROUTES } from '../constants/routes';
 import {
-  UI_BTN_PRIMARY,
-  UI_BTN_SECONDARY,
   UI_BTN_SUCCESS,
-  UI_CARD_SOFT,
   UI_CHIP_ACTIVE,
   UI_CHIP_INACTIVE,
   UI_INPUT,
@@ -43,20 +41,6 @@ const HISTORY_TYPES = [
 ] as const;
 
 type HistoryFilterType = (typeof HISTORY_TYPES)[number];
-
-function formatRelativeTime(
-  timestamp: number,
-  t: (key: string, vars?: Record<string, string | number>) => string,
-): string {
-  const diffMinutes = Math.floor((Date.now() - timestamp) / 60000);
-  if (diffMinutes < 1) return t('history.just_now');
-  if (diffMinutes < 60) return t('history.minutes_ago', { count: diffMinutes });
-
-  const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) return t('history.hours_ago', { count: diffHours });
-
-  return t('history.days_ago', { count: Math.floor(diffHours / 24) });
-}
 
 function buildHistorySearchText(item: HistoryItem): string {
   return [item.type, ...Object.values(item.options ?? {}).map(String)].join(' ').toLowerCase();
@@ -116,13 +100,6 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
       new File([item.blob], `${item.type}-${index + 1}.png`, { type: item.blob.type }),
     );
     onClose();
-  };
-
-  const handleDownloadOne = (item: HistoryItem, index: number) => {
-    const link = document.createElement('a');
-    link.href = item.url;
-    link.download = `${item.type}-${index + 1}.png`;
-    link.click();
   };
 
   const handleDownloadFiltered = async (): Promise<void> => {
@@ -240,63 +217,15 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredHistory.map((item, index) => (
-                <div key={item.id} className={UI_CARD_SOFT}>
-                  <div className="aspect-square bg-gray-950 flex items-center justify-center">
-                    <img
-                      src={item.url}
-                      alt={`${t(`history.type.${item.type}`)} ${index + 1}`}
-                      loading="lazy"
-                      decoding="async"
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-
-                  <div className="p-3 space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="text-xs font-bold text-white">
-                          {t(`history.type.${item.type}`)}
-                        </div>
-                        <div className="text-[11px] text-gray-400">
-                          {formatRelativeTime(item.timestamp, t)}
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemove(item.id)}
-                        className="p-1 rounded-lg text-red-200 hover:text-red-100 hover:bg-red-500/10 transition-colors"
-                        aria-label={t('history.delete')}
-                        title={t('history.delete')}
-                      >
-                        <XMarkIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleEdit(item, index)}
-                        disabled={!onImageSelected}
-                        className={`flex-1 text-xs ${onImageSelected ? UI_BTN_PRIMARY : UI_BTN_SECONDARY}`}
-                      >
-                        <span className="inline-flex items-center justify-center gap-1">
-                          <EditIcon className="w-3.5 h-3.5" />
-                          {t('history.edit')}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDownloadOne(item, index)}
-                        className={`flex-1 text-xs ${UI_BTN_SECONDARY}`}
-                      >
-                        <span className="inline-flex items-center justify-center gap-1">
-                          <DownloadIcon className="w-3.5 h-3.5" />
-                          {t('history.download')}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <HistoryResultCard
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  compact
+                  onEdit={onImageSelected ? handleEdit : undefined}
+                  onRemove={handleRemove}
+                  onAfterNavigate={onClose}
+                />
               ))}
             </div>
           )}

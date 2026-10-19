@@ -7,23 +7,25 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { DownloadIcon, EditIcon } from '../../components/icons';
+import { EditIcon } from '../../components/icons';
+import ResultActions from '../../components/ResultActions';
+import ResultImage from '../../components/ResultImage';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import { COUPLE_STYLES, GROUP_STYLES } from '../../constants/coupleGroup';
 
 interface CoupleGroupResultProps {
   result: string;
+  originalUrl?: string | null;
   mode: CoupleGroupMode;
   style: CoupleGroupStyle;
-  onDownload: () => void;
   onEditInEditor: () => void;
 }
 
 const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
   result,
+  originalUrl,
   mode,
   style,
-  onDownload,
   onEditInEditor,
 }) => {
   const { t } = useLanguage();
@@ -35,11 +37,12 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
 
   return (
     <div className="flex flex-col items-center gap-4 w-full animate-fade-in bg-gray-800/40 p-4 rounded-xl border border-gray-700/50 backdrop-blur-sm">
-      <div className="w-full aspect-[3/4] max-h-[400px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-lg">
-        <img
-          src={result}
-          alt={`Generated ${mode === 'couple' ? 'Couple' : 'Group'} ${style} Photo`}
-          className="max-w-full max-h-full w-auto h-auto object-contain"
+      <div className="w-full max-h-[480px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-lg p-2">
+        <ResultImage
+          resultUrl={result}
+          originalUrl={originalUrl}
+          alt={t(`couple_group.mode.${mode}`)}
+          imageClassName="max-w-full max-h-[400px] w-auto h-auto object-contain"
         />
       </div>
 
@@ -63,22 +66,21 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 w-full">
-        <button
-          onClick={onDownload}
-          className="flex items-center justify-center gap-2 w-full py-2.5 bg-pink-600 hover:bg-pink-500 text-white font-semibold rounded-lg transition-all text-sm active:scale-95"
-        >
-          <DownloadIcon className="w-4 h-4" />
-          {t('couple_group.download')}
-        </button>
-        <button
-          onClick={onEditInEditor}
-          className="flex items-center justify-center gap-2 w-full py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all text-sm border border-gray-600 active:scale-95"
-        >
-          <EditIcon className="w-4 h-4" />
-          {t('couple_group.edit')}
-        </button>
-      </div>
+      <ResultActions
+        result={result}
+        originalUrl={originalUrl}
+        fileBaseName={`${mode}-photo`}
+        extraActions={
+          <button
+            type="button"
+            onClick={onEditInEditor}
+            className="flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all text-sm border border-gray-600 active:scale-95"
+          >
+            <EditIcon className="w-4 h-4" />
+            {t('couple_group.edit')}
+          </button>
+        }
+      />
     </div>
   );
 };

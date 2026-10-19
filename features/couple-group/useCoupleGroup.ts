@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
+import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { runImageGeneration } from '../../services/gemini/runImageGeneration';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
@@ -84,6 +85,24 @@ export function useCoupleGroup() {
       setStyle(newMode === 'couple' ? DEFAULT_COUPLE_STYLE : DEFAULT_GROUP_STYLE);
     }
   }, [searchParams]);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'couple' && payload.type !== 'group') return;
+    const opts = payload.options ?? {};
+    setMode(payload.type);
+    if (typeof opts.style === 'string') setStyle(opts.style as CoupleGroupStyle);
+    if (opts.outputSize === '1K' || opts.outputSize === '2K' || opts.outputSize === '4K') {
+      setOutputSize(opts.outputSize);
+    }
+    if (opts.aspectRatio === '1:1' || opts.aspectRatio === '16:9' || opts.aspectRatio === '9:16') {
+      setAspectRatio(opts.aspectRatio);
+    }
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'couple-group-source.png').then((file) =>
+        setFiles([file]),
+      );
+    }
+  });
 
   // Generate preview URLs
   useEffect(() => {
@@ -257,6 +276,7 @@ export function useCoupleGroup() {
             variationIndex: i,
             prompt: variedPrompt,
           }),
+          files[0] ?? null,
         );
         return url;
       } catch (err) {

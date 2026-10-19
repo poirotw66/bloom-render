@@ -168,6 +168,7 @@ const EditorPage: React.FC = () => {
           tab: 'retouch',
           hotspot: editHotspot,
         }),
+        currentImage,
       );
       addImageToHistory(dataURLtoFile(editedImageUrl, `edited-${Date.now()}.png`));
       setPrompt('');
@@ -204,6 +205,7 @@ const EditorPage: React.FC = () => {
             prompt: filterPrompt,
             tab: 'filters',
           }),
+          currentImage,
         );
         addImageToHistory(dataURLtoFile(filteredImageUrl, `filtered-${Date.now()}.png`));
       } catch (err) {
@@ -239,6 +241,7 @@ const EditorPage: React.FC = () => {
             prompt: adjustmentPrompt,
             tab: 'adjust',
           }),
+          currentImage,
         );
         addImageToHistory(dataURLtoFile(adjustedImageUrl, `adjusted-${Date.now()}.png`));
       } catch (err) {

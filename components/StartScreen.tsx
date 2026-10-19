@@ -22,6 +22,9 @@ import { allFailedError } from '../utils/generationHelpers';
 import { buildHistoryOptions } from '../utils/historyOptions';
 import { useGenerationFailures } from '../hooks/useGenerationFailures';
 import { useHistory } from '../hooks/useHistory';
+import { fileFromSourceUrl, useHistoryReplay } from '../hooks/useHistoryReplay';
+import ResultActions from './ResultActions';
+import ResultImage from './ResultImage';
 import { SUPPORTED_MODELS, MODEL_LABEL_KEYS } from '../constants/models';
 import type { ModelType } from '../constants/models';
 import BloomFlowerLoader from './BloomFlowerLoader';
@@ -127,6 +130,25 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const [generationPrompt, setGenerationPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:4' | '4:3' | '16:9' | '9:16'>('1:1');
   const [numberOfImages, setNumberOfImages] = useState<number>(1);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'generate') return;
+    const opts = payload.options ?? {};
+    if (typeof opts.prompt === 'string') setGenerationPrompt(opts.prompt);
+    if (
+      opts.aspectRatio === '1:1' ||
+      opts.aspectRatio === '3:4' ||
+      opts.aspectRatio === '4:3' ||
+      opts.aspectRatio === '16:9' ||
+      opts.aspectRatio === '9:16'
+    ) {
+      setAspectRatio(opts.aspectRatio);
+    }
+    if (typeof opts.numberOfImages === 'number') setNumberOfImages(opts.numberOfImages);
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'generate-reference.png').then(setReferenceFile);
+    }
+  });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
@@ -453,16 +475,22 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                   }`}
                 >
                   <div className="aspect-square flex items-center justify-center bg-gray-950 p-3">
-                    <img
-                      src={url}
-                      className="max-w-full max-h-full w-auto h-auto object-contain"
+                    <ResultImage
+                      resultUrl={url}
+                      originalUrl={referenceUrl}
                       alt={`${t('start.select_image')} ${idx + 1}`}
+                      imageClassName="max-w-full max-h-full w-auto h-auto object-contain"
                     />
                   </div>
-                  <div className="p-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="p-3 flex flex-col gap-3">
                     <span className="text-sm font-medium text-gray-300">
                       {t('start.select_image')} {idx + 1}
                     </span>
+                    <ResultActions
+                      result={url}
+                      originalUrl={referenceUrl}
+                      fileBaseName={`generated-${idx + 1}`}
+                    />
                     <div className="flex flex-wrap items-center gap-2">
                       <button
                         type="button"
