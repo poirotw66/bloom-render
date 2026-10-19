@@ -165,8 +165,8 @@ const TravelForm: React.FC<TravelFormProps> = ({
   showSceneSelector = true,
 }) => {
   const { t } = useLanguage();
-  const { model } = useSettings();
-  const imageSizeOptions = supportsMultiResolution(model)
+  const { effectiveModel, imageProvider } = useSettings();
+  const imageSizeOptions = supportsMultiResolution(effectiveModel)
     ? TRAVEL_IMAGE_SIZES
     : TRAVEL_IMAGE_SIZES.filter((s) => !s.proOnly);
 
@@ -364,6 +364,11 @@ const TravelForm: React.FC<TravelFormProps> = ({
               </button>
               {selectedSceneId === 'custom' && (
                 <div className="space-y-2">
+                  {imageProvider === 'openrouter' && (
+                    <p className="text-xs text-amber-200/90 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
+                      {t('travel.optimize_gemini_only_notice')}
+                    </p>
+                  )}
                   <input
                     type="text"
                     value={customSceneText}

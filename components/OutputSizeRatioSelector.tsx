@@ -47,8 +47,8 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
   className = '',
 }) => {
   const { t } = useLanguage();
-  const { model } = useSettings();
-  const supportsMultiRes = supportsMultiResolution(model);
+  const { effectiveModel } = useSettings();
+  const supportsMultiRes = supportsMultiResolution(effectiveModel);
   const allowedSizes: OutputSize[] = supportsMultiRes ? OUTPUT_SIZES : ['1K'];
 
   return (

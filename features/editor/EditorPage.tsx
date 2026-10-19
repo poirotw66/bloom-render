@@ -151,10 +151,12 @@ const EditorPage: React.FC = () => {
     setError(null);
 
     try {
-      const editedImageUrl = await generateEditedImage(currentImage, prompt, editHotspot, {
-        apiKey: settings.apiKey,
-        model: settings.model,
-      });
+      const editedImageUrl = await generateEditedImage(
+        currentImage,
+        prompt,
+        editHotspot,
+        settings.toServiceSettings(),
+      );
       addImageToHistory(dataURLtoFile(editedImageUrl, `edited-${Date.now()}.png`));
       setPrompt('');
       setEditHotspot(null);
@@ -165,7 +167,7 @@ const EditorPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [addImageToHistory, currentImage, editHotspot, prompt, settings.apiKey, settings.model, t]);
+  }, [addImageToHistory, currentImage, editHotspot, prompt, settings, t]);
 
   const handleApplyFilter = useCallback(
     async (filterPrompt: string) => {
@@ -178,10 +180,11 @@ const EditorPage: React.FC = () => {
       setError(null);
 
       try {
-        const filteredImageUrl = await generateFilteredImage(currentImage, filterPrompt, {
-          apiKey: settings.apiKey,
-          model: settings.model,
-        });
+        const filteredImageUrl = await generateFilteredImage(
+          currentImage,
+          filterPrompt,
+          settings.toServiceSettings(),
+        );
         addImageToHistory(dataURLtoFile(filteredImageUrl, `filtered-${Date.now()}.png`));
       } catch (err) {
         setError(formatApiErrorMessage(err, t, 'filter'));
@@ -190,7 +193,7 @@ const EditorPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [addImageToHistory, currentImage, settings.apiKey, settings.model, t],
+    [addImageToHistory, currentImage, settings, t],
   );
 
   const handleApplyAdjustment = useCallback(
@@ -204,10 +207,11 @@ const EditorPage: React.FC = () => {
       setError(null);
 
       try {
-        const adjustedImageUrl = await generateAdjustedImage(currentImage, adjustmentPrompt, {
-          apiKey: settings.apiKey,
-          model: settings.model,
-        });
+        const adjustedImageUrl = await generateAdjustedImage(
+          currentImage,
+          adjustmentPrompt,
+          settings.toServiceSettings(),
+        );
         addImageToHistory(dataURLtoFile(adjustedImageUrl, `adjusted-${Date.now()}.png`));
       } catch (err) {
         setError(formatApiErrorMessage(err, t, 'adjustment'));
@@ -216,7 +220,7 @@ const EditorPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [addImageToHistory, currentImage, settings.apiKey, settings.model, t],
+    [addImageToHistory, currentImage, settings, t],
   );
 
   const handleApplyCrop = useCallback(() => {

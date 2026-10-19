@@ -155,7 +155,7 @@ export function useTryOn() {
       const styleOption = TRYON_STYLES.find((s) => s.id === style);
 
       return generateVirtualTryOn(person, clothing, {
-        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
+        settings: settings.toServiceSettings(signal),
         variationIndex: total > 1 ? variationIndex : undefined,
         backgroundHint: backgroundOption?.promptHint,
         styleHint: styleOption?.promptHint,
@@ -173,7 +173,7 @@ export function useTryOn() {
         return dataUrl;
       });
     },
-    [background, style, outputSize, aspectRatio, settings.apiKey, settings.model, addToHistory],
+    [background, style, outputSize, aspectRatio, settings, addToHistory],
   );
 
   const handleGenerate = useCallback(async () => {

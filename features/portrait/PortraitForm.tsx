@@ -34,8 +34,8 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
   disabled = false,
 }) => {
   const { t } = useLanguage();
-  const { model } = useSettings();
-  const supportsMultiRes = supportsMultiResolution(model);
+  const { effectiveModel } = useSettings();
+  const supportsMultiRes = supportsMultiResolution(effectiveModel);
 
   return (
     <div className={UI_FORM_CARD}>

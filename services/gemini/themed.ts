@@ -5,18 +5,11 @@
  * Themed photoshoot generation.
  */
 
-import { GenerateContentResponse } from '@google/genai';
 import { logger } from '../../utils/logger';
 import type { ThemedType } from '../../types';
 import { THEMED_TYPES, DEFAULT_THEMED_TYPE } from '../../constants/themed';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  supportsMultiResolution,
-  type ServiceSettings,
-} from './shared';
+import { runImageGeneration } from './runImageGeneration';
+import { supportsMultiResolution, type ServiceSettings } from './shared';
 import { generateThemedPrompt } from './prompts';
 
 export type ImageOutputSize = '1K' | '2K' | '4K';
@@ -25,7 +18,7 @@ export type ImageAspectRatio = '1:1' | '16:9' | '9:16';
 export interface GenerateThemedPhotoOptions {
   themeType?: ThemedType;
   settings?: ServiceSettings;
-  variationIndex?: number; // For generating different variations
+  variationIndex?: number;
   outputSize?: ImageOutputSize;
   aspectRatio?: ImageAspectRatio;
 }
@@ -43,38 +36,20 @@ export const generateThemedPhoto = async (
 
   const isGroup = Array.isArray(originalImage);
   const fileCount = isGroup ? originalImage.length : 1;
+  const images = isGroup ? originalImage : [originalImage];
 
   const theme = THEMED_TYPES.find((t) => t.id === themeType) || THEMED_TYPES[0];
 
-  // Generate prompt using unified prompt system
   const prompt = generateThemedPrompt({
     themeType: theme,
     fileCount,
     variationIndex: options.variationIndex,
   });
 
-  const textPart = { text: prompt };
-  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [];
-
-  if (isGroup) {
-    for (const file of originalImage) {
-      parts.push(await fileToPartAuto(file));
-    }
-  } else {
-    parts.push(await fileToPartAuto(originalImage));
-  }
-  parts.push(textPart);
-
-  const ai = getClient(serviceSettings);
-  const model = getModel(serviceSettings);
+  const model = serviceSettings?.model;
   const supportsMultiRes = supportsMultiResolution(model);
   const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? options.outputSize || '1K' : '1K';
   const aspectRatio = options.aspectRatio || '16:9';
-
-  const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
-    aspectRatio,
-  };
-  if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
   logger.debug('Starting themed photo generation', {
     themeType,
@@ -82,16 +57,14 @@ export const generateThemedPhoto = async (
     outputSize: effectiveSize,
     aspectRatio,
   });
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model,
-    contents: { parts },
-    config: {
-      abortSignal: serviceSettings?.abortSignal,
-      responseModalities: ['TEXT', 'IMAGE'],
-      imageConfig,
-    },
-  });
 
-  logger.debug('Received response from model for themed photo', response);
-  return handleApiResponse(response, 'themed');
+  return runImageGeneration({
+    prompt,
+    images,
+    settings: serviceSettings,
+    aspectRatio,
+    imageSize: supportsMultiRes ? effectiveSize : undefined,
+    includeImageConfig: true,
+    context: 'themed',
+  });
 };

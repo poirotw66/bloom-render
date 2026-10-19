@@ -9,16 +9,20 @@ import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
 import { compressImageIfNeeded } from '../../utils/fileUtils';
 import { logger } from '../../utils/logger';
 import { DEFAULT_MODEL } from '../../constants/models';
+import { modelSupportsMultiResolution, type ImageProviderId } from '../imageProviders';
 
-export {
-  DEFAULT_MODEL,
-  MODELS_SUPPORTING_MULTI_RESOLUTION,
-  supportsMultiResolution,
-} from '../../constants/models';
+export { DEFAULT_MODEL, MODELS_SUPPORTING_MULTI_RESOLUTION } from '../../constants/models';
+
+/** Provider-aware multi-resolution check (Gemini + OpenRouter model ids). */
+export function supportsMultiResolution(model?: string): boolean {
+  return modelSupportsMultiResolution(model);
+}
 
 export interface ServiceSettings {
   apiKey?: string;
   model?: string;
+  /** Defaults to gemini when omitted (backward compatible). */
+  provider?: ImageProviderId;
   /**
    * Cancels the client's wait for the response. Note the SDK's caveat: this is
    * client-side only, so the request is not stopped server-side and usage is
@@ -89,11 +93,18 @@ export const normalizeApiError = (error: unknown, _context: string = 'generation
   if (error instanceof Error) {
     const errorMessage = error.message.toLowerCase();
 
-    // API Key missing
-    if (errorMessage.includes('api key') || errorMessage.includes('api_key')) {
+    // API Key missing / invalid (Gemini or OpenRouter)
+    if (
+      errorMessage.includes('api key') ||
+      errorMessage.includes('api_key') ||
+      errorMessage.includes('unauthorized') ||
+      errorMessage.includes('401')
+    ) {
+      const openRouter =
+        errorMessage.includes('openrouter') || error.message.startsWith('error.openrouter');
       return {
         type: ApiErrorType.API_KEY_MISSING,
-        message: `error.api_key_missing`,
+        message: openRouter ? 'error.openrouter_invalid_key' : 'error.api_key_missing',
         originalError: error,
       };
     }
@@ -129,11 +140,17 @@ export const normalizeApiError = (error: unknown, _context: string = 'generation
       };
     }
 
-    // Quota exceeded
-    if (errorMessage.includes('quota') || errorMessage.includes('rate limit')) {
+    // Quota / rate limit (Gemini or OpenRouter)
+    if (
+      errorMessage.includes('quota') ||
+      errorMessage.includes('rate limit') ||
+      errorMessage.includes('429') ||
+      errorMessage.includes('503')
+    ) {
+      const openRouter = errorMessage.includes('openrouter');
       return {
         type: ApiErrorType.QUOTA_EXCEEDED,
-        message: `error.quota_exceeded`,
+        message: openRouter ? 'error.openrouter_rate_limit' : 'error.quota_exceeded',
         originalError: error,
       };
     }

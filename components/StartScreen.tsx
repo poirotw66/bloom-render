@@ -157,7 +157,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   // typed ModelType even when the list is empty. Cut the whole feature in that
   // case rather than let an undefined model id reach MODEL_LABEL_KEYS and
   // render a blank card with nothing to compare against.
-  const canCompare = otherModels.length > 0;
+  // Model compare is Gemini-only (compares Gemini model ids side-by-side).
+  const canCompare = settings.imageProvider === 'gemini' && otherModels.length > 0;
   const effectiveCompareModel: ModelType =
     compareModel && otherModels.includes(compareModel) ? compareModel : otherModels[0];
 
@@ -199,10 +200,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         generationPrompt,
         aspectRatio,
         numberOfImages,
-        {
-          apiKey: settings.apiKey,
-          model: settings.model,
-        },
+        settings.toServiceSettings(),
         referenceFile,
       );
       if (urls.length === 1) {
@@ -223,7 +221,9 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
   const runCompareSlot = (model: ModelType, slotIndex: number, signal: AbortSignal) => {
     const start = performance.now();
+    // Model compare is Gemini-only (compares Gemini model ids).
     return generateImageFromText(generationPrompt, aspectRatio, 1, {
+      provider: 'gemini',
       apiKey: settings.apiKey,
       model,
       abortSignal: signal,

@@ -5,16 +5,9 @@
  * Text-to-image generation.
  */
 
-import { GenerateContentResponse } from '@google/genai';
 import { logger } from '../../utils/logger';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  supportsMultiResolution,
-  type ServiceSettings,
-} from './shared';
+import { runImageGeneration } from './runImageGeneration';
+import { supportsMultiResolution, type ServiceSettings } from './shared';
 
 /** Builds the text prompt; appends reference guidance when an image is attached. */
 export function buildGeneratePrompt(userPrompt: string, hasReferenceImage: boolean): string {
@@ -44,33 +37,25 @@ export const generateImageFromText = async (
     `Starting text-to-image generation: ${prompt}, Aspect Ratio: ${aspectRatio}, Count: ${numberOfImages}` +
       (hasReference ? ' (with reference image)' : ''),
   );
-  const ai = getClient(settings);
-  const model = getModel(settings);
+
   const textPrompt = buildGeneratePrompt(prompt, hasReference);
-  const referencePart = referenceImage ? await fileToPartAuto(referenceImage) : null;
+  const model = settings?.model;
+  const imageSize = supportsMultiResolution(model) ? ('1K' as const) : undefined;
+  const images = referenceImage ? [referenceImage] : [];
 
-  const promises = Array.from({ length: numberOfImages }).map(async () => {
-    const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [];
-    if (referencePart) parts.push(referencePart);
-    parts.push({ text: textPrompt });
-
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: model,
-      contents: { parts },
-      config: {
-        abortSignal: settings?.abortSignal,
-        responseModalities: ['TEXT', 'IMAGE'],
-        imageConfig: {
-          aspectRatio: aspectRatio,
-          ...(supportsMultiResolution(model) ? { imageSize: '1K' as const } : {}),
-        },
-      },
-    });
-    return handleApiResponse(response, 'generation');
-  });
+  const promises = Array.from({ length: numberOfImages }).map(async () =>
+    runImageGeneration({
+      prompt: textPrompt,
+      images,
+      settings,
+      aspectRatio,
+      imageSize,
+      includeImageConfig: true,
+      context: 'generation',
+    }),
+  );
 
   const results = await Promise.all(promises);
   logger.debug(`Generated ${results.length} images.`);
-
   return results;
 };

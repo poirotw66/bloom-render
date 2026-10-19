@@ -8,7 +8,7 @@
 
 **BloomRender — Let your ideas bloom.**
 
-AI-powered photo editing and generation studio on the Google Gemini API: retouch, filters, ID photos, portraits, travel shots, themed shoots, couple/group photos, and virtual try-on.
+AI-powered photo editing and generation studio with bring-your-own-key **Google Gemini** or **OpenRouter**: retouch, filters, ID photos, portraits, travel shots, themed shoots, couple/group photos, and virtual try-on.
 
 **Live demo:** [https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)
 
@@ -37,7 +37,7 @@ Start-screen tabs, in order: **Upload** → **Text to image** → **Photography 
 - **AI themed shoot** — Theme, size, and aspect ratio from a portrait.
 - **AI couple / group** — 2 portraits (couple) or 3–6 (group) into one composite.
 - **AI virtual try-on** — One person photo + 1–5 garment photos; multi-style results with single or bulk download.
-- **Settings** — Gemini API key, model, language, theme (browser-only).
+- **Settings** — Image provider (Gemini / OpenRouter), matching API key + model, language, theme (browser-only).
 - **i18n** — English and Traditional Chinese.
 - **Themes** — Bloom, Night, New Year.
 - **History** — Browse, filter, and batch-download past generations.
@@ -54,7 +54,7 @@ Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfi
    npm ci
    ```
 
-2. **API key (BYOK)** — Open **Settings** in the app and paste a [Google AI Studio](https://aistudio.google.com/app/apikey) Gemini key. The key stays in the browser (`localStorage`) only. It is never committed, never read from env files, and never baked into the production bundle. See [`.env.example`](./.env.example).
+2. **API key (BYOK)** — Open **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`), and paste the matching key. Keys stay in the browser (`localStorage`) only. They are never committed, never read from env files, and never baked into the production bundle. See [`.env.example`](./.env.example).
 
 3. **Run**
 
@@ -72,11 +72,21 @@ Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfi
 
 ## API keys
 
-| Context              | How                                                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Settings (BYOK)**  | Gear → paste Gemini API key. Stored in `localStorage` for this origin only. Never bundled.                              |
-| **Get a key**        | [Google AI Studio](https://aistudio.google.com/app/apikey)                                                              |
-| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` (or similar) for builds — nothing injects keys into the client. |
+| Context              | How                                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Stored in `localStorage` for this origin only. Never bundled. |
+| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                         |
+| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                               |
+
+### What each provider covers
+
+| Surface                                                                                                     | Provider                                                         |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Text-to-image, editor (retouch / filter / adjust), ID photo, portrait, travel, themed, couple/group, try-on | Selected provider (`services/imageProviders/`)                   |
+| Travel **custom-scene prompt optimization** (text)                                                          | **Gemini-only** — skipped on OpenRouter; your raw prompt is used |
+| Home-screen **model compare**                                                                               | **Gemini-only** (compares Gemini model ids)                      |
+
+Prefer image-capable OpenRouter models (e.g. `google/gemini-2.5-flash-image`). Models without image-reference support may fail on edit / try-on / multi-photo flows.
 
 Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and billing limits on the provider side.
 
@@ -87,7 +97,7 @@ Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and bi
 - **Runtime** — React 19, TypeScript, Vite 6
 - **Routing** — React Router 7
 - **Editing** — react-image-crop
-- **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini API)
+- **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini) + OpenRouter Images API via `services/imageProviders/`
 - **Batch download** — JSZip
 - **Styles** — Tailwind CSS 4 via `@tailwindcss/vite` (build-time; not CDN) + custom CSS
 - **Tooling** — ESLint, Prettier, Vitest, Husky, lint-staged
@@ -123,7 +133,7 @@ Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and bi
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [CONTRIBUTING.md](./CONTRIBUTING.md). This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). Security reports: [SECURITY.md](./SECURITY.md).
 
 ---
 

@@ -127,7 +127,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
             ? idPhotoClothingReferenceFile
             : undefined,
       },
-      settings: { apiKey: settings.apiKey, model: settings.model },
+      settings: settings.toServiceSettings(),
       maxConcurrent: 3,
       historyType: 'idphoto',
     });

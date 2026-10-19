@@ -5,16 +5,9 @@
  * Travel photo generation: same person in selected scene.
  */
 
-import { GenerateContentResponse } from '@google/genai';
 import { logger } from '../../utils/logger';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  supportsMultiResolution,
-  type ServiceSettings,
-} from './shared';
+import { runImageGeneration } from './runImageGeneration';
+import { supportsMultiResolution, type ServiceSettings } from './shared';
 import { generateTravelPrompt } from './prompts';
 
 export interface GenerateTravelPhotoOptions {
@@ -23,7 +16,7 @@ export interface GenerateTravelPhotoOptions {
   aspectRatio?: '1:1' | '16:9' | '9:16';
   imageSize?: '1K' | '2K' | '4K';
   settings?: ServiceSettings;
-  variationIndex?: number; // For generating different variations
+  variationIndex?: number;
 }
 
 /**
@@ -42,8 +35,9 @@ export const generateTravelPhoto = async (
   } = options;
 
   const isGroup = Array.isArray(originalImage);
+  const images = isGroup ? [...originalImage] : [originalImage];
+  if (sceneReferenceImage) images.push(sceneReferenceImage);
 
-  // Generate prompt using unified prompt system
   const prompt = generateTravelPrompt({
     scenePrompt,
     sceneReferenceImage,
@@ -51,17 +45,10 @@ export const generateTravelPhoto = async (
     isGroup,
     variationIndex: options.variationIndex,
   });
-  const textPart = { text: prompt };
 
-  const ai = getClient(serviceSettings);
-  const model = getModel(serviceSettings);
+  const model = serviceSettings?.model;
   const supportsMultiRes = supportsMultiResolution(model);
   const effectiveImageSize: '1K' | '2K' | '4K' = supportsMultiRes ? requestedSize || '1K' : '1K';
-
-  const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
-    aspectRatio: aspectRatio || '1:1',
-  };
-  if (supportsMultiRes) imageConfig.imageSize = effectiveImageSize;
 
   logger.debug('Starting travel photo generation', {
     scenePrompt: scenePrompt.slice(0, 60),
@@ -71,30 +58,13 @@ export const generateTravelPhoto = async (
     imageSize: effectiveImageSize,
   });
 
-  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [];
-
-  if (isGroup) {
-    for (const file of originalImage) {
-      parts.push(await fileToPartAuto(file));
-    }
-  } else {
-    parts.push(await fileToPartAuto(originalImage));
-  }
-
-  if (sceneReferenceImage) {
-    parts.push(await fileToPartAuto(sceneReferenceImage));
-  }
-  parts.push(textPart);
-
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model,
-    contents: { parts },
-    config: {
-      abortSignal: serviceSettings?.abortSignal,
-      responseModalities: ['TEXT', 'IMAGE'],
-      imageConfig,
-    },
+  return runImageGeneration({
+    prompt,
+    images,
+    settings: serviceSettings,
+    aspectRatio: aspectRatio || '1:1',
+    imageSize: supportsMultiRes ? effectiveImageSize : undefined,
+    includeImageConfig: true,
+    context: 'travel',
   });
-  logger.debug('Received response from model for travel photo', response);
-  return handleApiResponse(response, 'travel');
 };

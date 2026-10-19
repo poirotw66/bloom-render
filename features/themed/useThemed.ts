@@ -73,7 +73,7 @@ export function useThemed() {
     (file: File, variationIndex: number, signal: AbortSignal) =>
       generateThemedPhoto(file, {
         themeType,
-        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
+        settings: settings.toServiceSettings(signal),
         variationIndex,
         outputSize,
         aspectRatio,
@@ -87,7 +87,7 @@ export function useThemed() {
             logger.error(`Themed generation error for item ${variationIndex + 1}:`, err);
           throw err;
         }),
-    [themeType, settings.apiKey, settings.model, outputSize, aspectRatio, addToHistory],
+    [themeType, settings, outputSize, aspectRatio, addToHistory],
   );
 
   const handleThemedGenerate = useCallback(async () => {
