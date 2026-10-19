@@ -10,6 +10,7 @@ import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { useIdPhoto } from './useIdPhoto';
@@ -60,6 +61,7 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
         <p className={UI_SUBTITLE}>{t('idphoto.subtitle')}</p>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {isEmptyState && (
           <div className="w-full flex justify-center">

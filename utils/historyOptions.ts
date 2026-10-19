@@ -12,6 +12,12 @@ export type HistorySettingsSlice = {
   model?: string;
 };
 
+/** Demo runs must not land in IndexedDB history. */
+export function shouldPersistHistory(settings: HistorySettingsSlice): boolean {
+  const provider = settings.imageProvider ?? settings.provider;
+  return provider !== 'demo';
+}
+
 /**
  * Merge feature-specific options with provider/model metadata for later
  * "generate again" support. Does not strip unknown keys from `options`.
@@ -29,5 +35,6 @@ export function buildHistoryOptions(
     feature,
     ...(provider !== undefined ? { provider } : {}),
     ...(model !== undefined ? { model } : {}),
+    ...(provider === 'demo' ? { demo: true } : {}),
   };
 }

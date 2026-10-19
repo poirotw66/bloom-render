@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
+import { useDemoSampleFiles } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
 import { runImageGeneration } from '../../services/gemini/runImageGeneration';
@@ -58,6 +59,8 @@ export function useCoupleGroup() {
   const [progress, setProgress] = useState<number>(0);
   const [outputSize, setOutputSize] = useState<'1K' | '2K' | '4K'>('1K');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '16:9' | '9:16'>('16:9');
+
+  useDemoSampleFiles(mode === 'group' ? 'group' : 'couple', setFiles, mode === 'group' ? 3 : 2);
 
   // Read URL parameters on mount
   useEffect(() => {

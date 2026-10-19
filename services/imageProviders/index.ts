@@ -1,7 +1,20 @@
 export type { GenerateImageRequest, ImagePart, ImageProvider, ImageProviderId } from './types';
-export { IMAGE_PROVIDER_IDS, isImageProviderId } from './types';
+export { IMAGE_PROVIDER_IDS, isDemoProvider, isImageProviderId } from './types';
 export { getImageProvider } from './registry';
 export { toProviderI18nError } from './providerErrors';
+export {
+  DEMO_MODEL_ID,
+  DEMO_ASSETS_BY_CONTEXT,
+  demoAssetsForContext,
+  demoAssetsForFeature,
+  type DemoFeatureKey,
+} from './demoCatalog';
+export {
+  demoImageProvider,
+  fetchPublicImageAsDataUrl,
+  fetchPublicImageAsFile,
+  resetDemoVariantCounters,
+} from './demoProvider';
 export {
   DEFAULT_OPENROUTER_MODEL,
   OPENROUTER_IMAGE_MODELS,

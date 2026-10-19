@@ -972,11 +972,22 @@ export const zhTWMessages: Record<string, string> = {
 
   'apikey.notice_title': '想自己生成？請先填入 API 金鑰',
   'apikey.notice_hint':
-    '沒有金鑰也可以瀏覽下方範例。若要實際執行模型，請到「設定」貼上 Google AI Studio 金鑰；金鑰只存在你的瀏覽器，除了 Google 之外不會送到任何地方。',
+    '可先試離線 Demo（內建範例），或到「設定」貼上 Google AI Studio 金鑰；金鑰只存在你的瀏覽器，除了 Google 之外不會送到任何地方。',
   'apikey.notice_hint_openrouter':
-    '沒有金鑰也可以瀏覽下方範例。若要實際執行模型，請到「設定」貼上 OpenRouter 金鑰；金鑰只存在你的瀏覽器。',
+    '可先試離線 Demo（內建範例），或到「設定」貼上 OpenRouter 金鑰；金鑰只存在你的瀏覽器。',
   'apikey.open_settings': '開啟設定',
   'apikey.get_key': '取得 API 金鑰',
+
+  'demo.try_demo': '試試 Demo',
+  'demo.badge': 'Demo',
+  'demo.banner_title': '目前顯示預製範例結果',
+  'demo.banner_hint': '不會使用 API 金鑰，也不會連線到 AI 供應商；結果來自內建範例圖。',
+  'demo.cta_settings': '在設定中加入 Gemini 或 OpenRouter 金鑰，即可用自己的照片生成',
+  'demo.sample_input': '範例',
+  'demo.sample_only_hint':
+    'Demo 模式只使用內建範例照片。若要上傳自己的照片，請到設定加入 API 金鑰。',
+  'demo.loading_sample': '正在載入範例照片…',
+  'demo.open_editor_sample': '以範例照片開啟編輯器',
   'examples.before': '原圖',
   'examples.after': '生成結果',
   'examples.disclaimer': '以下皆為本站實際生成的結果，非素材圖庫。',
@@ -1002,6 +1013,7 @@ export const zhTWMessages: Record<string, string> = {
   'gallery.subtitle': '以下每一張都出自本站。點一張看看它是怎麼做出來的。',
   'gallery.start_editing': '或者，直接上傳自己的照片',
   'error.api_key_missing': '找不到 API 金鑰。請檢查您的設定。',
+  'error.demo_asset_missing': '無法載入 Demo 範例圖片，請重試。',
   'error.openrouter_invalid_key': 'OpenRouter API 金鑰缺失或無效。請到設定貼上有效金鑰。',
   'error.openrouter_rate_limit':
     'OpenRouter 速率限制或過載。請稍候再試，或在設定中更換模型／供應商。',
@@ -1124,8 +1136,13 @@ export const zhTWMessages: Record<string, string> = {
   'settings.provider': '供應商',
   'settings.provider_desc':
     '自備金鑰（BYOK）。Gemini 使用 Google AI Studio 金鑰；OpenRouter 使用 OpenRouter 金鑰。金鑰只存在此瀏覽器。',
+  'settings.provider_desc_demo':
+    '離線 Demo：按下生成即可看到內建範例結果，不需 API 金鑰，也不會連線到 AI。',
   'settings.provider.gemini': 'Google Gemini',
   'settings.provider.openrouter': 'OpenRouter（自備金鑰）',
+  'settings.provider.demo': '線上 Demo（免金鑰）',
+  'settings.demo_note':
+    'Demo 模式會回傳 public/examples 的預製範例。若要用自己的照片生成，請切換到 Gemini 或 OpenRouter 並貼上金鑰。',
   'settings.model': '模型',
   'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
   'settings.model.flash31': 'Gemini 3.1 Flash',

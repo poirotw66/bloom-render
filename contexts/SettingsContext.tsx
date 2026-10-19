@@ -14,7 +14,9 @@ import React, {
 } from 'react';
 import { DEFAULT_MODEL, type ModelType, resolveStoredModel } from '../constants/models';
 import {
+  DEMO_MODEL_ID,
   DEFAULT_OPENROUTER_MODEL,
+  isDemoProvider,
   isImageProviderId,
   resolveStoredOpenRouterModel,
   type ImageProviderId,
@@ -37,10 +39,14 @@ interface SettingsContextType {
   setOpenRouterApiKey: (key: string) => void;
   openRouterModel: OpenRouterModel;
   setOpenRouterModel: (model: OpenRouterModel) => void;
-  /** Key for the currently selected provider. */
+  /** Key for the currently selected provider. Demo uses a placeholder so gates pass. */
   effectiveApiKey: string;
   /** Model id for the currently selected provider. */
   effectiveModel: string;
+  /** True when the offline demo provider is selected (no API key / no AI network). */
+  isDemoMode: boolean;
+  /** Switch to the offline demo provider (Try demo). */
+  enableDemoMode: () => void;
   enableImageCompression: boolean;
   setEnableImageCompression: (enabled: boolean) => void;
   compressionThresholdMB: number;
@@ -115,10 +121,14 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   }, []);
 
-  const setImageProvider = (provider: ImageProviderId) => {
+  const setImageProvider = useCallback((provider: ImageProviderId) => {
     setImageProviderState(provider);
     localStorage.setItem(STORAGE_KEY_PROVIDER, provider);
-  };
+  }, []);
+
+  const enableDemoMode = useCallback(() => {
+    setImageProvider('demo');
+  }, [setImageProvider]);
 
   const setApiKey = (key: string) => {
     setApiKeyState(key);
@@ -155,8 +165,17 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(STORAGE_KEY_BACKGROUND_MOTION, String(enabled));
   };
 
-  const effectiveApiKey = imageProvider === 'openrouter' ? openRouterApiKey : apiKey;
-  const effectiveModel = imageProvider === 'openrouter' ? openRouterModel : model;
+  const isDemoMode = isDemoProvider(imageProvider);
+  const effectiveApiKey = isDemoMode
+    ? 'demo'
+    : imageProvider === 'openrouter'
+      ? openRouterApiKey
+      : apiKey;
+  const effectiveModel = isDemoMode
+    ? DEMO_MODEL_ID
+    : imageProvider === 'openrouter'
+      ? openRouterModel
+      : model;
 
   const toServiceSettings = useCallback(
     (abortSignal?: AbortSignal): ServiceSettings => ({
@@ -182,6 +201,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       setOpenRouterModel,
       effectiveApiKey,
       effectiveModel,
+      isDemoMode,
+      enableDemoMode,
       enableImageCompression,
       setEnableImageCompression,
       compressionThresholdMB,
@@ -192,12 +213,15 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     }),
     [
       imageProvider,
+      setImageProvider,
       apiKey,
       model,
       openRouterApiKey,
       openRouterModel,
       effectiveApiKey,
       effectiveModel,
+      isDemoMode,
+      enableDemoMode,
       enableImageCompression,
       compressionThresholdMB,
       enableBackgroundMotion,

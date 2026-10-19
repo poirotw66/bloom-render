@@ -31,7 +31,9 @@ async function filesToImageParts(files: File[]): Promise<ImagePart[]> {
 }
 
 function resolveProvider(settings?: ServiceSettings): ImageProviderId {
-  return settings?.provider === 'openrouter' ? 'openrouter' : 'gemini';
+  if (settings?.provider === 'openrouter') return 'openrouter';
+  if (settings?.provider === 'demo') return 'demo';
+  return 'gemini';
 }
 
 /**
@@ -67,11 +69,12 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
   return provider.generateImage({
     prompt,
     images: imageParts,
-    model,
-    apiKey,
+    model: providerId === 'demo' ? model || 'demo-samples' : model,
+    apiKey: providerId === 'demo' ? apiKey || 'demo' : apiKey,
     aspectRatio,
     imageSize,
     signal: settings?.abortSignal,
     includeImageConfig,
+    context,
   });
 }

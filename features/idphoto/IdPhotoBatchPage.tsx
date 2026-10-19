@@ -9,8 +9,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useBatchProcessing } from '../../hooks/useBatchProcessing';
+import { useDemoSampleFiles } from '../../hooks/useDemoSampleInput';
 import { generateIdPhoto } from '../../services/geminiService';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import BatchUploadSection from '../../components/BatchUploadSection';
 import BatchProgress from '../../components/BatchProgress';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
@@ -55,6 +57,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   >();
 
   const [files, setFiles] = useState<File[]>([]);
+  useDemoSampleFiles('idphoto', setFiles, 1);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [idPhotoType] = useState<IdPhotoType>(DEFAULT_ID_TYPE);
@@ -160,6 +163,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
         <p className={UI_SUBTITLE}>{t('batch.upload_hint', { min: 1, max: 10 })}</p>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {batch.isProcessing ? (
           <BatchProgress

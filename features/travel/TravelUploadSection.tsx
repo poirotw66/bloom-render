@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import { TravelIcon, UserIcon, UsersIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import { TRAVEL_PANEL } from './travelUi';
@@ -41,12 +42,16 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
   onDrop,
 }) => {
   const { t } = useLanguage();
+  const { isDemoMode } = useSettings();
 
   const modeActive = 'bg-sky-600 text-white shadow-md shadow-sky-600/25';
   const modeIdle = 'text-slate-500 hover:text-slate-300';
 
   return (
     <div className={`flex flex-col gap-4 w-full max-w-2xl mx-auto p-4 ${TRAVEL_PANEL}`}>
+      {isDemoMode && (
+        <p className="text-xs text-sky-200/80 text-center">{t('demo.sample_only_hint')}</p>
+      )}
       <div className="flex justify-center">
         <div
           className="inline-flex p-1 rounded-full border border-slate-700/60 bg-slate-950/80 shadow-inner"
@@ -75,15 +80,15 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
 
       <div
         className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-200 flex flex-col items-center justify-center gap-6 ${
-          isDraggingOver
+          isDraggingOver && !isDemoMode
             ? 'border-sky-400 bg-sky-500/10'
             : files.length > 0
               ? 'border-slate-600 bg-slate-800/30'
               : 'border-slate-700 hover:border-slate-500 bg-slate-800/20'
         }`}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
+        onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
+        onDragLeave={isDemoMode ? undefined : onDragLeave}
+        onDrop={isDemoMode ? (e) => e.preventDefault() : onDrop}
       >
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
@@ -103,21 +108,23 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                   className="group relative w-32 h-32 rounded-xl overflow-hidden border-2 border-slate-600 bg-slate-900 shadow-lg"
                 >
                   <img src={url} alt={`Person ${idx + 1}`} className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removeFile(idx)}
-                    className="absolute top-1 right-1 w-7 h-7 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 cursor-pointer focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                    aria-label={t('travel.change_photo')}
-                  >
-                    <XMarkIcon className="w-4 h-4" />
-                  </button>
+                  {!isDemoMode && (
+                    <button
+                      type="button"
+                      onClick={() => removeFile(idx)}
+                      className="absolute top-1 right-1 w-7 h-7 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 cursor-pointer focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                      aria-label={t('travel.change_photo')}
+                    >
+                      <XMarkIcon className="w-4 h-4" />
+                    </button>
+                  )}
                   <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm py-0.5 text-[10px] text-white text-center font-semibold">
                     #{idx + 1}
                   </div>
                 </div>
               ))}
 
-              {isGroupMode && files.length < 4 && (
+              {!isDemoMode && isGroupMode && files.length < 4 && (
                 <label className="w-32 h-32 rounded-xl border-2 border-dashed border-slate-600 bg-slate-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-sky-500 hover:bg-sky-500/5 transition-colors duration-200 text-slate-500 hover:text-sky-300">
                   <input type="file" className="hidden" accept="image/*" onChange={onFileChange} />
                   <span className="text-2xl font-light">+</span>
@@ -129,13 +136,17 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
             </div>
 
             <p className="text-xs text-slate-500 max-w-sm text-center leading-relaxed">
-              {isGroupMode ? t('travel.group_upload_tip') : t('travel.upload_hint')}
+              {isDemoMode
+                ? t('demo.sample_only_hint')
+                : isGroupMode
+                  ? t('travel.group_upload_tip')
+                  : t('travel.upload_hint')}
             </p>
 
             {error && <ErrorDisplay message={error} />}
 
             <div className="flex flex-wrap items-center justify-center gap-3">
-              {!isGroupMode && (
+              {!isDemoMode && !isGroupMode && (
                 <label className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-slate-300 border border-slate-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors duration-200">
                   <input
                     type="file"

@@ -9,6 +9,7 @@ import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import GenerationFailureNotice from '../../components/GenerationFailureNotice';
@@ -47,6 +48,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
         </header>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {resultList.length > 0 ? (
           <section className="w-full flex flex-col gap-6">

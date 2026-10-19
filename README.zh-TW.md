@@ -12,6 +12,8 @@ AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Googl
 
 **線上 Demo：** [https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)
 
+**線上 Demo／免金鑰：** 開啟網站後點 **試試 Demo**（或在設定選擇 **線上 Demo（免金鑰）**）。各功能可用內建範例照片按生成——不需 API 金鑰，也不會連線到 AI 供應商。結果會標示 **Demo**。要用自己的照片生成時，再到設定加入 Gemini 或 OpenRouter 金鑰。
+
 ### 預覽
 
 | 文字生圖                                     | AI 證件照                               | 圖片編輯器                             |
@@ -60,7 +62,7 @@ AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Googl
    npm ci
    ```
 
-2. **API 金鑰（自備金鑰 / BYOK）** — 於「設定」選擇 **影像供應商**（`Google Gemini` 或 `OpenRouter（自備金鑰）`）並貼上對應金鑰。金鑰只存在此瀏覽器分頁（`sessionStorage`），關閉分頁後即清除；不會寫入 repo、不會從環境變數讀取，也不會打包進正式版。見 [`.env.example`](./.env.example)。
+2. **API 金鑰（自備金鑰 / BYOK）或試試 Demo** — 於「設定」選擇 **影像供應商**（`Google Gemini`、`OpenRouter（自備金鑰）` 或 `線上 Demo（免金鑰）`）。實際生成時貼上對應金鑰。金鑰只存在此瀏覽器分頁（`sessionStorage`），關閉分頁後即清除；不會寫入 repo、不會從環境變數讀取，也不會打包進正式版。也可點 **試試 Demo**，用內建範例免金鑰體驗。見 [`.env.example`](./.env.example)。
 
 3. **啟動**
 

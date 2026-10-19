@@ -8,6 +8,7 @@ import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { usePortrait } from './usePortrait';
@@ -56,6 +57,7 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
         <p className={UI_SUBTITLE}>{t('portrait.subtitle')}</p>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {portrait.portraitResults && portrait.portraitResults.length > 0 ? (
           <div className="w-full flex flex-col gap-6">

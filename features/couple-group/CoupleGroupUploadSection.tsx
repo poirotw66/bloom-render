@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import type { CoupleGroupMode } from './types';
 import { UI_BTN, UI_FILE_PICKER } from '../../utils/uiClasses';
@@ -41,24 +42,28 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
   onDrop,
 }) => {
   const { t } = useLanguage();
+  const { isDemoMode } = useSettings();
 
   const maxFiles = mode === 'couple' ? 2 : 6;
   const minFiles = mode === 'couple' ? 2 : 3;
-  const canAddMore = mode === 'couple' ? files.length < 2 : files.length < 6;
+  const canAddMore = !isDemoMode && (mode === 'couple' ? files.length < 2 : files.length < 6);
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
+      {isDemoMode && (
+        <p className="text-xs text-sky-200/80 text-center">{t('demo.sample_only_hint')}</p>
+      )}
       <div
         className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 ${
-          isDraggingOver
+          isDraggingOver && !isDemoMode
             ? 'border-pink-400 bg-pink-500/10 scale-[1.02]'
             : files.length > 0
               ? 'border-gray-700 bg-gray-800/20'
               : 'border-gray-700 hover:border-gray-600 bg-gray-800/10'
         }`}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
+        onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
+        onDragLeave={isDemoMode ? undefined : onDragLeave}
+        onDrop={isDemoMode ? (e) => e.preventDefault() : onDrop}
       >
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
@@ -73,13 +78,15 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                   className="group relative w-32 h-32 rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-xl transition-transform hover:scale-105"
                 >
                   <img src={url} alt={`Person ${idx + 1}`} className="w-full h-full object-cover" />
-                  <button
-                    onClick={() => onRemoveFile(idx)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                    aria-label={t('couple_group.remove_photo')}
-                  >
-                    ✕
-                  </button>
+                  {!isDemoMode && (
+                    <button
+                      onClick={() => onRemoveFile(idx)}
+                      className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                      aria-label={t('couple_group.remove_photo')}
+                    >
+                      ✕
+                    </button>
+                  )}
                   <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm py-0.5 text-[8px] text-white text-center font-bold">
                     #{idx + 1}
                   </div>
@@ -110,17 +117,19 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
             {error && <ErrorDisplay message={error} />}
 
             <div className="flex items-center gap-4">
-              <label className={UI_FILE_PICKER}>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  multiple
-                  onChange={onFileChange}
-                  aria-label={t('couple_group.change_photo')}
-                />
-                {t('couple_group.change_photo')}
-              </label>
+              {!isDemoMode && (
+                <label className={UI_FILE_PICKER}>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    multiple
+                    onChange={onFileChange}
+                    aria-label={t('couple_group.change_photo')}
+                  />
+                  {t('couple_group.change_photo')}
+                </label>
+              )}
 
               <button
                 type="button"

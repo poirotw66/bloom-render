@@ -121,7 +121,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     compression: false,
   });
   const [showApiKey, setShowApiKey] = useState(false);
-  const isOpenRouter = imageProvider === 'openrouter';
+  const isDemo = imageProvider === 'demo';
+  const isGemini = imageProvider === 'gemini';
 
   const toggleSection = (key: SectionKey) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -290,11 +291,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                 >
                   <option value="gemini">{t('settings.provider.gemini')}</option>
                   <option value="openrouter">{t('settings.provider.openrouter')}</option>
+                  <option value="demo">{t('settings.provider.demo')}</option>
                 </select>
-                <p className={`text-xs mt-2 ${s.hint}`}>{t('settings.provider_desc')}</p>
+                <p className={`text-xs mt-2 ${s.hint}`}>
+                  {isDemo ? t('settings.provider_desc_demo') : t('settings.provider_desc')}
+                </p>
               </div>
 
-              {!isOpenRouter ? (
+              {isDemo ? (
+                <p className={`text-sm ${s.hint}`}>{t('settings.demo_note')}</p>
+              ) : isGemini ? (
                 <>
                   <div>
                     <label

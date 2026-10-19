@@ -8,6 +8,7 @@ import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { useThemed } from './useThemed';
 import ThemedForm from './ThemedForm';
@@ -55,6 +56,7 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
         </header>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {themed.themedResults && themed.themedResults.length > 0 ? (
           <section className="w-full flex flex-col gap-6">

@@ -31,12 +31,14 @@ import BloomFlowerLoader from './BloomFlowerLoader';
 import { ErrorDisplay } from './ErrorDisplay';
 import SavedPromptsBar from './SavedPromptsBar';
 import ApiKeyNotice from './ApiKeyNotice';
+import DemoModeBanner from './DemoModeBanner';
 import ExampleShowcase from './ExampleShowcase';
 import HomeGallery from './HomeGallery';
 import GenerationFailureNotice from './GenerationFailureNotice';
 import ProgressIndicator from './ProgressIndicator';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { demoAssetsForFeature, fetchPublicImageAsFile } from '../services/imageProviders';
 import { useTheme } from '../contexts/ThemeContext';
 import type { ThemeType } from '../contexts/ThemeContext';
 import { applyValidatedImageFile } from '../utils/applyValidatedImageFile';
@@ -412,6 +414,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         <p className={UI_SUBTITLE}>{t('start.subtitle')}</p>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {/* Results first. Landing straight on an empty upload box asks the
             visitor to commit a photo before seeing a single thing the models
@@ -425,23 +428,47 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             <div
               className={`p-12 border-2 border-dashed rounded-2xl bg-gray-800/30 w-full max-w-2xl flex flex-col items-center justify-center gap-4 transition-colors duration-200 ${s.border}`}
             >
-              <label
-                htmlFor="image-upload-start"
-                className={`relative inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-gradient-to-r rounded-full cursor-pointer group hover:opacity-95 transition-all duration-200 shadow-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-800 ${s.btn}`}
-              >
-                <UploadIcon className="w-6 h-6 mr-3 transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-110" />
-                {t('start.upload_button')}
-              </label>
-              <input
-                id="image-upload-start"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileChange}
-                aria-label={t('start.upload_button')}
-              />
-              <p className="text-sm text-gray-300">{t('start.upload_drag')}</p>
-              {error && <ErrorDisplay message={error} className="mt-2 w-full max-w-md" />}
+              {settings.isDemoMode ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const before = demoAssetsForFeature('editor').before;
+                      if (!before) return;
+                      void fetchPublicImageAsFile(before, 'demo-editor-sample.webp').then(
+                        onImageSelected,
+                      );
+                    }}
+                    className={`relative inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-gradient-to-r rounded-full cursor-pointer group hover:opacity-95 transition-all duration-200 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${s.btn}`}
+                  >
+                    <UploadIcon className="w-6 h-6 mr-3" />
+                    {t('demo.open_editor_sample')}
+                  </button>
+                  <p className="text-sm text-sky-200/80 text-center max-w-sm">
+                    {t('demo.sample_only_hint')}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <label
+                    htmlFor="image-upload-start"
+                    className={`relative inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-gradient-to-r rounded-full cursor-pointer group hover:opacity-95 transition-all duration-200 shadow-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-800 ${s.btn}`}
+                  >
+                    <UploadIcon className="w-6 h-6 mr-3 transition-transform duration-300 ease-in-out group-hover:rotate-[360deg] group-hover:scale-110" />
+                    {t('start.upload_button')}
+                  </label>
+                  <input
+                    id="image-upload-start"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    aria-label={t('start.upload_button')}
+                  />
+                  <p className="text-sm text-gray-300">{t('start.upload_drag')}</p>
+                  {error && <ErrorDisplay message={error} className="mt-2 w-full max-w-md" />}
+                </>
+              )}
             </div>
           </div>
         ) : generatedImages.length > 0 ? (

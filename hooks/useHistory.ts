@@ -92,6 +92,11 @@ async function addToHistory(
   options?: Record<string, unknown>,
   source?: Blob | File | string | null,
 ): Promise<string> {
+  // Demo mode uses pre-made samples — keep IndexedDB history for real generations only.
+  if (options?.provider === 'demo' || options?.demo === true) {
+    return `demo-skip-${type}`;
+  }
+
   await ensureInitialized();
 
   let sourceBlob: Blob | undefined;

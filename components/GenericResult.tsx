@@ -7,6 +7,8 @@
 
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
+import DemoModeBanner from './DemoModeBanner';
 import ResultActions from './ResultActions';
 import ResultImage from './ResultImage';
 import { UI_BTN_PRIMARY, UI_BTN_SECONDARY, UI_CARD } from '../utils/uiClasses';
@@ -38,10 +40,17 @@ const GenericResult: React.FC<GenericResultProps> = ({
   className = '',
 }) => {
   const { t } = useLanguage();
+  const { isDemoMode } = useSettings();
 
   return (
     <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto ${className}`}>
+      {isDemoMode && <DemoModeBanner />}
       <div className="relative w-full rounded-xl overflow-hidden shadow-2xl border-2 border-gray-700 p-2 bg-gray-950/40">
+        {isDemoMode && (
+          <div className="absolute top-4 left-4 z-10">
+            <DemoModeBanner compact />
+          </div>
+        )}
         <ResultImage resultUrl={result} originalUrl={originalUrl} />
       </div>
 

@@ -9,6 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
+import { useDemoTryOnSamples } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { generateVirtualTryOn } from '../../services/geminiService';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
@@ -44,6 +45,8 @@ export function useTryOn() {
   const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
   const [clothingFiles, setClothingFiles] = useState<File[]>([]);
   const [clothingPreviewUrls, setClothingPreviewUrls] = useState<string[]>([]);
+
+  useDemoTryOnSamples(setPersonFile, setClothingFiles);
 
   const [result, setResult] = useState<string | null>(null);
   const [results, setResults] = useState<string[]>([]);

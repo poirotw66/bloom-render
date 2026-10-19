@@ -52,6 +52,7 @@ import type {
 import { mimeTypeForImagePath, referenceFileName, sceneRefPath } from '../../utils/imageAsset';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { publicAssetUrl } from '../../utils/publicAsset';
+import { useDemoSampleFiles } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 
 export type TravelSceneIdOrCustom = string;
@@ -89,6 +90,7 @@ export function useTravel() {
   >(null);
 
   const [files, setFiles] = useState<File[]>([]);
+  useDemoSampleFiles('travel', setFiles, 1);
   const [isGroupMode, setIsGroupMode] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [results, setResults] = useState<string[]>([]);

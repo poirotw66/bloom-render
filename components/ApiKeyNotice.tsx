@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  *
  * Tells a visitor without an API key why nothing will generate, before they
- * spend a minute finding out.
+ * spend a minute finding out — and offers offline demo mode.
  */
 
 import React from 'react';
@@ -24,7 +24,8 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
   const { t } = useLanguage();
   const settings = useSettings();
 
-  if (settings.effectiveApiKey.trim()) return null;
+  // Demo mode needs no key; real keys hide the notice.
+  if (settings.isDemoMode || settings.effectiveApiKey.trim()) return null;
 
   const isOpenRouter = settings.imageProvider === 'openrouter';
   const getKeyUrl = isOpenRouter ? OPENROUTER_KEY_CONSOLE_URL : API_KEY_CONSOLE_URL;
@@ -38,6 +39,13 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
         {isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => settings.enableDemoMode()}
+          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-400 text-sky-950 hover:bg-sky-300 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-sky-300"
+        >
+          {t('demo.try_demo')}
+        </button>
         <button
           type="button"
           onClick={openSettingsPanel}

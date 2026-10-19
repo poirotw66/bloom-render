@@ -12,6 +12,7 @@ import { formatApiErrorMessage, supportsMultiResolution } from '../../services/g
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
+import { useDemoSampleInput } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
@@ -42,6 +43,8 @@ export function usePortrait() {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
+
+  useDemoSampleInput('portrait', setPortraitFile);
 
   useEffect(() => {
     if (!supportsMultiResolution(settings.effectiveModel) && imageSize !== '1K') {

@@ -12,6 +12,7 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
+import { useDemoSampleInput } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
@@ -42,6 +43,8 @@ export function useThemed() {
   const [quantity, setQuantity] = useState<number>(1);
   const [outputSize, setOutputSize] = useState<'1K' | '2K' | '4K'>('1K');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '16:9' | '9:16'>('16:9');
+
+  useDemoSampleInput('themed', setThemedFile);
 
   useEffect(() => {
     const typeParam = searchParams.get('type');

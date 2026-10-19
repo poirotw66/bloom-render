@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { buildHistoryOptions } from './historyOptions';
+import { buildHistoryOptions, shouldPersistHistory } from './historyOptions';
 
 describe('buildHistoryOptions', () => {
   it('adds feature, provider, and model without dropping feature options', () => {
@@ -41,5 +41,24 @@ describe('buildHistoryOptions', () => {
       themeType: 'hanbok',
       feature: 'themed',
     });
+  });
+
+  it('tags demo runs so history can skip them', () => {
+    expect(
+      buildHistoryOptions('idphoto', { imageProvider: 'demo', model: 'demo-samples' }),
+    ).toEqual({
+      feature: 'idphoto',
+      provider: 'demo',
+      model: 'demo-samples',
+      demo: true,
+    });
+  });
+});
+
+describe('shouldPersistHistory', () => {
+  it('skips demo provider', () => {
+    expect(shouldPersistHistory({ imageProvider: 'demo' })).toBe(false);
+    expect(shouldPersistHistory({ provider: 'demo' })).toBe(false);
+    expect(shouldPersistHistory({ imageProvider: 'gemini' })).toBe(true);
   });
 });
