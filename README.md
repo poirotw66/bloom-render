@@ -127,7 +127,11 @@ Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and bi
 
 ## Docs
 
-- **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese) — walkthroughs for generate, ID photo, portrait, travel, try-on, and the editor.
+See [docs/README.md](docs/README.md) for the full index. Highlights:
+
+- **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese) — walkthroughs for generate, ID photo, portrait, travel, try-on, and the editor
+- **[Scene image sources](docs/SCENE_IMAGES_SOURCES.md)** / **[status](docs/SCENE_IMAGES_STATUS.md)** — optional travel reference images
+- **[Type layout](docs/TYPES.md)** — where shared vs feature-local TypeScript types live
 
 ---
 

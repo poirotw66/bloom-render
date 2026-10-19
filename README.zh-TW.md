@@ -133,7 +133,11 @@ OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-i
 
 ## 文件
 
-- **[BloomRender 操作手冊](docs/BLOOMRENDER_MANUAL.md)**：圖文教學，含文字生圖、證件照、形象照、旅遊照、虛擬試穿與編輯器流程。
+完整索引見 [docs/README.md](docs/README.md)。重點：
+
+- **[BloomRender 操作手冊](docs/BLOOMRENDER_MANUAL.md)**：圖文教學，含文字生圖、證件照、形象照、旅遊照、虛擬試穿與編輯器流程
+- **[場景圖來源](docs/SCENE_IMAGES_SOURCES.md)**／**[狀態表](docs/SCENE_IMAGES_STATUS.md)**：可選的旅遊場景參考圖
+- **[型別配置](docs/TYPES.md)**：共用與 feature 區域 TypeScript 型別放置說明
 
 ---
 
