@@ -6,7 +6,7 @@
 
 ### 1.1 輸入提示詞（Prompt）
 
-![在 Generate 分頁輸入提示詞](../images/generate_1_prompt.png)
+![在 Generate 分頁輸入提示詞](../images/generate_1_prompt.webp)
 
 - **範例提示詞**:
 
@@ -91,7 +91,7 @@
 
 ### 1.2 瀏覽生成結果
 
-![文字生圖生成結果](../images/generate_2_image.png)
+![文字生圖生成結果](../images/generate_2_image.webp)
 
 - 生成完成後，介面會顯示一組縮圖卡片：
   - 每張圖上可以：
@@ -108,19 +108,19 @@
 ## 2. AI 證件照：從雜亂自拍到正式證件照
 
 這一段示範如何把「背景雜亂、構圖不佳的自拍」，轉成**乾淨、合規格的證件照**。  
-對應圖片檔案：`idphoto_0~6_*.png`。
+對應圖片檔案：`idphoto_0~6_*.webp`。
 
 ### 2.1 準備一張日常的照片
 
 - 單人日常照單人日常照
-  ![單人日常照](../images/idphoto_0_messy_prompt.png)
+  ![單人日常照](../images/idphoto_0_messy_prompt.webp)
 
 - 單人私下邋遢
-  ![單人私下邋遢](../images/idphoto_1_messy_image.png)
+  ![單人私下邋遢](../images/idphoto_1_messy_image.webp)
 
 ### 2.2 私下邋遢照片，填寫規範清楚的表單
 
-![修正後的證件照設定與描述](../images/idphoto_3_gidp_messy_prompt.png)
+![修正後的證件照設定與描述](../images/idphoto_3_gidp_messy_prompt.webp)
 
 - 在 `IdPhotoForm` 中重新設定：
   1. **證件類型**：選擇實際要使用的證件規格。
@@ -134,7 +134,7 @@
 
 ### 2.3 私下邋遢照片，證件照
 
-![私下邋遢照片，證件照](../images/idphoto_2_messy_idp.png)
+![私下邋遢照片，證件照](../images/idphoto_2_messy_idp.webp)
 
 - 使用 **欄位選單** 來指定：
   - 證件類型（例如：台灣身分證、美國簽證、履歷照…）
@@ -144,7 +144,7 @@
 
 ### 2.4 單人日常照
 
-![單人日常照](../images/idphoto_4_gidp_image.png)
+![單人日常照](../images/idphoto_4_gidp_image.webp)
 
 - 送出設定後，系統會產生**構圖正確、背景乾淨**的人像：
   - 背景符合所選顏色（多為白底或單色）。
@@ -153,7 +153,7 @@
 
 ### 2.5 完整 ID Photo 排版輸出
 
-![單人日常照的證件照](../images/idphoto_5_idp.png)
+![單人日常照的證件照](../images/idphoto_5_idp.webp)
 
 - 在 ID Photo 的最終結果頁，你會看到：
   - 多張依規格排版好的證件照（可直接印出）。
@@ -169,11 +169,11 @@
 ## 3. 編輯器微調：最後的修飾
 
 當你已經有一張滿意的 ID Photo 或一般照片，仍可進入主編輯器做最後微調。  
-對應圖片檔案：`edit_1_prompt.png`、`edit_2_image.png`、`idphoto_6_edit.png`。
+對應圖片檔案：`edit_1_prompt.webp`、`edit_2_image.webp`、`idphoto_6_edit.webp`。
 
 ### 3.1 在編輯器輸入微調指令
 
-![在編輯器中輸入修圖指令](../images/edit_1_prompt.png)
+![在編輯器中輸入修圖指令](../images/edit_1_prompt.webp)
 
 - 在主編輯器中，可以
   - 使用「Retouch」功能，可以選中圖片上位子，讓模型重點關注該位子，進行修改，例如：
@@ -185,7 +185,7 @@
 
 ### 3.2 查看微調後的成品
 
-![修圖後的結果](../images/edit_2_image.png)
+![修圖後的結果](../images/edit_2_image.webp)
 
 - 編輯器會顯示修圖前後的差異（可使用「比較原圖」功能）。
 - 建議檢查：
@@ -194,7 +194,7 @@
 
 ### 3.3 將證件照送入編輯器做細節調整 {#photo-editor}
 
-![正式證件照在編輯器中的微調](../images/idphoto_6_edit.png)
+![正式證件照在編輯器中的微調](../images/idphoto_6_edit.webp)
 
 - 將前一節完成的 ID Photo 匯入編輯器後，可以：
   - 略為調整亮度與對比，使列印時更清晰。
@@ -209,7 +209,7 @@
 
 ### 4.1 填寫形象照需求
 
-![形象照需求與提示](../images/portrait_1_prompt.png)
+![形象照需求與提示](../images/portrait_1_prompt.webp)
 
 - 在 **Portrait** 分頁中，你可以：
   - 指定用途（履歷、個人品牌、社群頭像等）。
@@ -220,7 +220,7 @@
 
 ### 4.2 檢查半身預覽
 
-![半身構圖與光線預覽](../images/portrait_2_half.png)
+![半身構圖與光線預覽](../images/portrait_2_half.webp)
 
 - 上傳照後，系統會顯示半身或近半身預覽：
   - 確認臉部是否居中、比例適合履歷或 LinkedIn 等場合。
@@ -228,7 +228,7 @@
 
 ### 4.3 完整形象照成果
 
-![完整形象照結果](../images/portrait_3_full.png)
+![完整形象照結果](../images/portrait_3_full.webp)
 
 - 完成後可看到完整形象照結果：
   - 光線自然、背景乾淨，適合直接放入履歷或個人網站。
@@ -244,7 +244,7 @@
 ### 5.1 選擇旅遊主角與目標感覺
 
 - 男主角
-  ![旅遊照主角與基本風格男主角](../images/idphoto_0_messy_prompt.png)
+  ![旅遊照主角與基本風格男主角](../images/idphoto_0_messy_prompt.webp)
 - 女主角
   為我們的男主角生成一個女性伴侶，prompt如下：
 
@@ -306,7 +306,7 @@
 }
 ```
 
-![旅遊照主角與基本風格女主角](../images/travel_0_girl.png)
+![旅遊照主角與基本風格女主角](../images/travel_0_girl.webp)
 
 ### 5.2 使用地圖與表單設定場景
 
@@ -315,7 +315,7 @@
   - 想要的整體氛圍（寫實／明信片感／膠片風）。
 - 這一步主要是幫助你在心中確立「想呈現的故事」。
 
-![世界／台灣地圖與場景選擇](../images/travel_1_map.png)
+![世界／台灣地圖與場景選擇](../images/travel_1_map.webp)
 
 - 進一步使用地圖 + 表單組合：
   - 在世界地圖或台灣地圖上點選具體地點（城市、景點）。
@@ -324,13 +324,13 @@
     - 時間：白天／黃昏／夜晚。
     - 服裝、姿勢、構圖（例如「半身、遠景、人景比例」）。
 
-![更細節的旅遊條件設定](../images/travel_2_setting.png)
+![更細節的旅遊條件設定](../images/travel_2_setting.webp)
 
 - 表單可進一步微調：
   - 氛圍（放鬆、浪漫、冒險…）。
   - 構圖偏好（人物大比例、多人合照、廣角景觀…）。
 
-![團體／情侶場景設定](../images/travel_4_group_set.png)
+![團體／情侶場景設定](../images/travel_4_group_set.webp)
 
 - 若是多人或情侶旅遊照，可以：
   - 指定人數與彼此關係（情侶、朋友、家庭）。
@@ -338,13 +338,13 @@
 
 ### 5.3 產出單人、情侶與團體旅遊照
 
-![單人或情侶旅遊照結果](../images/travel_3_man.png)
+![單人或情侶旅遊照結果](../images/travel_3_man.webp)
 
 - 單人旅遊照會著重：
   - 人物與背景比例、景點辨識度。
   - 整體顏色與光線與所選天氣／時間一致。
 
-![情侶或小團體旅遊照結果](../images/travel_5_cuple_img.png)
+![情侶或小團體旅遊照結果](../images/travel_5_couple_img.webp)
 
 - 情侶或小團體旅遊照則會強調：
   - 人與人之間的互動感（牽手、對視、一起看風景）。
@@ -359,7 +359,7 @@
 
 ### 6.1 上傳人物與多套服裝
 
-![上傳人物照與多件服裝](../images/tryon_1_set.png)
+![上傳人物照與多件服裝](../images/tryon_1_set.webp)
 
 - 在 Try On 分頁中：
   - 左側上傳一張清晰的全身或半身人物照。
@@ -371,7 +371,7 @@
 
 ### 6.2 瀏覽試穿結果與導出
 
-![試穿結果卡片列表](../images/tryon_2_img.png)
+![試穿結果卡片列表](../images/tryon_2_img.webp)
 
 - 生成完成後，Try On 頁面會以卡片列表顯示不同服裝搭配：
   - 每張卡片代表一套試穿結果，可能包含：
@@ -386,7 +386,7 @@
 
 #### 6.3.1 上傳人物與服裝
 
-![女性人物與服裝範例](../images/tryon_3_girl.png)
+![女性人物與服裝範例](../images/tryon_3_girl.webp)
 
 - 範例中，上半段顯示：
   - **YOUR PHOTO**：一張單人躺在地毯上的照片，作為試穿的基礎人物照。
@@ -395,7 +395,7 @@
 
 #### 6.3.2 產出多套試穿結果
 
-![女性試穿結果（兩種風格）](../images/tryon_4_girl_img.png)
+![女性試穿結果（兩種風格）](../images/tryon_4_girl_img.webp)
 
 - 生成後畫面會顯示標題 **AI Try-On**，並列出多個風格卡片：
   - 頂部有 **Download All** 與 **Try Again** 按鈕，方便一次下載全部或重新生成。

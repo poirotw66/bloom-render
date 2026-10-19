@@ -10,19 +10,17 @@
 
 AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Google Gemini** 或 **OpenRouter**：修圖、濾鏡、證件照、形象照、旅遊照、主題寫真、雙人／團體照與 AI 虛擬試穿等功能。
 
-**線上 Demo：** [https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)
-
-**線上 Demo／免金鑰：** 開啟網站後點 **試試 Demo**（或在設定選擇 **線上 Demo（免金鑰）**）。各功能可用內建範例照片按生成——不需 API 金鑰，也不會連線到 AI 供應商。結果會標示 **Demo**。要用自己的照片生成時，再到設定加入 Gemini 或 OpenRouter 金鑰。
+**試試 Demo，免金鑰：** 開啟[線上網站](https://www.bloss0m.com/bloom-render/)後點 **試試 Demo**（或在設定選擇 **線上 Demo（免金鑰）**）。各功能可用內建範例照片按生成——不需 API 金鑰，也不會連線到 AI 供應商。結果會標示 **Demo**。要用自己的照片生成時，再到設定加入 Gemini 或 OpenRouter 金鑰。
 
 ### 預覽
 
-| 文字生圖                                     | AI 證件照                               | 圖片編輯器                             |
-| -------------------------------------------- | --------------------------------------- | -------------------------------------- |
-| ![文字生圖結果](images/generate_2_image.png) | ![證件照結果](images/idphoto_5_idp.png) | ![編輯器修圖](images/edit_2_image.png) |
+| 文字生圖                                      | AI 證件照                                | 圖片編輯器                              |
+| --------------------------------------------- | ---------------------------------------- | --------------------------------------- |
+| ![文字生圖結果](images/generate_2_image.webp) | ![證件照結果](images/idphoto_5_idp.webp) | ![編輯器修圖](images/edit_2_image.webp) |
 
-| AI 旅遊照                                    | AI 虛擬試穿                                  |
-| -------------------------------------------- | -------------------------------------------- |
-| ![旅遊照結果](images/travel_5_cuple_img.png) | ![虛擬試穿結果](images/tryon_4_girl_img.png) |
+| AI 旅遊照                                      | AI 虛擬試穿                                   |
+| ---------------------------------------------- | --------------------------------------------- |
+| ![旅遊照結果](images/travel_5_couple_img.webp) | ![虛擬試穿結果](images/tryon_4_girl_img.webp) |
 
 ---
 
@@ -109,6 +107,12 @@ OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-i
 - **批次下載**：JSZip
 - **樣式**：Tailwind CSS 4（`@tailwindcss/vite` 建置時編譯，非 CDN）＋自訂 CSS
 - **開發**：ESLint、Prettier、Vitest、Husky、lint-staged
+
+---
+
+## 架構
+
+影像生成統一走 `services/imageProviders/`：共用的 `ImageProvider` 介面（`generateImage`、`validateApiKey`），由 Gemini、OpenRouter 與離線 Demo 實作，透過 `getImageProvider()` 依設定選取。各功能模組呼叫 `runImageGeneration`，依 Settings 解析供應商並回傳 data URL。自備金鑰（BYOK）只存在 `sessionStorage`（僅此分頁；關閉分頁後清除），由 `utils/credentialStorage.ts` 管理——不會長期留在 `localStorage`、環境變數或正式版打包中。
 
 ---
 
