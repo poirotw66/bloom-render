@@ -1,11 +1,12 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Hook for batch processing multiple images.
  */
 
 import { useState, useCallback } from 'react';
+import { buildHistoryOptions } from '../utils/historyOptions';
 import { useHistory } from './useHistory';
 
 export interface BatchProcessingOptions<TFile = File, TOptions = unknown> {
@@ -76,7 +77,16 @@ export function useBatchProcessing<TFile = File, TOptions = unknown>() {
 
           // Add to history if type specified
           if (historyType) {
-            addToHistory(historyType, result, { batchIndex: index });
+            addToHistory(
+              historyType,
+              result,
+              buildHistoryOptions(historyType, settings, {
+                batchIndex: index,
+                ...(typeof apiOptions === 'object' && apiOptions !== null
+                  ? (apiOptions as Record<string, unknown>)
+                  : {}),
+              }),
+            );
           }
 
           onItemComplete?.(file, result, index);

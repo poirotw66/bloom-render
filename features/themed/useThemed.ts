@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -10,6 +10,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
@@ -79,7 +80,16 @@ export function useThemed() {
         aspectRatio,
       })
         .then((url) => {
-          addToHistory('themed', url, { themeType });
+          addToHistory(
+            'themed',
+            url,
+            buildHistoryOptions('themed', settings, {
+              themeType,
+              outputSize,
+              aspectRatio,
+              variationIndex,
+            }),
+          );
           return url;
         })
         .catch((err) => {

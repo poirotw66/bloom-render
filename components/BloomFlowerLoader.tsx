@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * BloomRender loading animation: a flower slowly blooming (petals opening).
  * Used when AI is rendering/generating images.

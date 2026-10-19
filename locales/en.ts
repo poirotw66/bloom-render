@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 export const enMessages: Record<string, string> = {
@@ -1096,6 +1096,8 @@ export const enMessages: Record<string, string> = {
   'history.no_results': 'No results found',
   'history.search_placeholder': 'Search by type or options...',
   'history.filter_all': 'All',
+  'history.type.generate': 'Text to image',
+  'history.type.editor': 'Editor',
   'history.type.portrait': 'Portrait',
   'history.type.themed': 'Themed',
   'history.type.idphoto': 'ID Photo',

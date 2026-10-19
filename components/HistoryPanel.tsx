@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -31,6 +31,8 @@ interface HistoryPanelProps {
 
 const HISTORY_TYPES = [
   'all',
+  'generate',
+  'editor',
   'idphoto',
   'portrait',
   'themed',

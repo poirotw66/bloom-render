@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -10,6 +10,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
@@ -118,12 +119,17 @@ export function useIdPhoto() {
         variationIndex,
       })
         .then((url) => {
-          addToHistory('idphoto', url, {
-            retouchLevel: idPhotoRetouchLevel,
-            idType: idPhotoType,
-            outputSpec: idPhotoOutputSpec,
-            clothingOption: idPhotoClothingOption,
-          });
+          addToHistory(
+            'idphoto',
+            url,
+            buildHistoryOptions('idphoto', settings, {
+              retouchLevel: idPhotoRetouchLevel,
+              idType: idPhotoType,
+              outputSpec: idPhotoOutputSpec,
+              clothingOption: idPhotoClothingOption,
+              variationIndex,
+            }),
+          );
           return url;
         })
         .catch((err) => {

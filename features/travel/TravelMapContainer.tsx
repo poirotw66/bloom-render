@@ -1,10 +1,11 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { sceneThumbPath } from '../../utils/imageAsset';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { TravelSceneCategory } from '../../constants/travel';
 import type { TravelScene } from '../../types';
@@ -476,7 +477,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         className={`w-full sm:w-32 aspect-square rounded-lg overflow-hidden border ${borderCls} shadow-lg flex-shrink-0 bg-gray-900`}
                       >
                         <img
-                          src={publicAssetUrl(scene.referenceImagePath)}
+                          src={publicAssetUrl(sceneThumbPath(scene.referenceImagePath, 256))}
                           alt={name}
                           className="w-full h-full object-cover"
                           loading="lazy"

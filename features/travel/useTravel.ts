@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
@@ -49,7 +49,8 @@ import type {
   TravelRelationship,
   TravelFraming,
 } from '../../constants/travel';
-import { mimeTypeForImagePath, referenceFileName } from '../../utils/imageAsset';
+import { mimeTypeForImagePath, referenceFileName, sceneRefPath } from '../../utils/imageAsset';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import { publicAssetUrl } from '../../utils/publicAsset';
 
 export type TravelSceneIdOrCustom = string;
@@ -250,10 +251,11 @@ export function useTravel() {
 
       if (useReferenceImage && picked.referenceImagePath) {
         try {
+          const refPath = sceneRefPath(picked.referenceImagePath);
           sceneReferenceImage = await urlToFile(
-            picked.referenceImagePath,
-            referenceFileName(picked.id, picked.referenceImagePath),
-            mimeTypeForImagePath(picked.referenceImagePath),
+            refPath,
+            referenceFileName(picked.id, refPath),
+            mimeTypeForImagePath(refPath),
           );
         } catch {
           sceneReferenceImage = undefined;
@@ -307,15 +309,16 @@ export function useTravel() {
       if (customSceneReferenceFile) {
         sceneReferenceImage = customSceneReferenceFile;
       } else if (useReferenceImage && scene?.referenceImagePath) {
+        const refPath = sceneRefPath(scene.referenceImagePath);
         try {
           sceneReferenceImage = await urlToFile(
-            scene.referenceImagePath,
-            referenceFileName(scene.id, scene.referenceImagePath),
-            mimeTypeForImagePath(scene.referenceImagePath),
+            refPath,
+            referenceFileName(scene.id, refPath),
+            mimeTypeForImagePath(refPath),
           );
         } catch {
           logger.debug(
-            `Note: No valid reference image found at ${scene.referenceImagePath}, falling back to text prompt.`,
+            `Note: No valid reference image found at ${refPath}, falling back to text prompt.`,
           );
           sceneReferenceImage = undefined;
         }
@@ -388,16 +391,21 @@ export function useTravel() {
           settings: settings.toServiceSettings(signal),
         })
           .then((url) => {
-            addToHistory('travel', url, {
-              sceneId: selectedSceneId,
-              style,
-              aspectRatio,
-              imageSize,
-              isGroup: isGroupMode || files.length > 1,
-              weather: effectiveWeather,
-              time: effectiveTime,
-              variationIndex: i,
-            });
+            addToHistory(
+              'travel',
+              url,
+              buildHistoryOptions('travel', settings, {
+                sceneId: selectedSceneId,
+                style,
+                aspectRatio,
+                imageSize,
+                isGroup: isGroupMode || files.length > 1,
+                weather: effectiveWeather,
+                time: effectiveTime,
+                variationIndex: i,
+                prompt: variedPrompt,
+              }),
+            );
             return url;
           })
           .catch((err) => {

@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Central type definitions for the application.
  * ID photo and domain types are defined here; constants remain in constants/idPhoto.ts.

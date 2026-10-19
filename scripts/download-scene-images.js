@@ -2,6 +2,9 @@
  * Download missing travel scene reference images from Wikimedia Commons.
  * Run from project root: node scripts/download-scene-images.js
  * Images are saved to public/images/scenes/ with correct filenames.
+ *
+ * After downloading, run: node scripts/prepare-scene-images.mjs
+ * to build thumbs/ + ref/ assets and drop oversized originals from git.
  */
 
 import fs from 'fs';
@@ -224,7 +227,9 @@ async function main() {
   let fail = 0;
   for (const { file, query, queryZh } of MISSING_IMAGES) {
     const filepath = path.join(SCENES_DIR, file);
-    if (fs.existsSync(filepath)) {
+    const base = file.replace(/\.(webp|jpe?g|png)$/i, '');
+    const preparedRef = path.join(SCENES_DIR, 'ref', `${base}.webp`);
+    if (fs.existsSync(filepath) || fs.existsSync(preparedRef)) {
       console.log(`[skip] ${file} (already exists)`);
       skip++;
       continue;

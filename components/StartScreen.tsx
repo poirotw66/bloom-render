@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useEffect, useState } from 'react';
@@ -19,7 +19,9 @@ import { logger } from '../utils/logger';
 import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import { allFailedError } from '../utils/generationHelpers';
+import { buildHistoryOptions } from '../utils/historyOptions';
 import { useGenerationFailures } from '../hooks/useGenerationFailures';
+import { useHistory } from '../hooks/useHistory';
 import { SUPPORTED_MODELS, MODEL_LABEL_KEYS } from '../constants/models';
 import type { ModelType } from '../constants/models';
 import BloomFlowerLoader from './BloomFlowerLoader';
@@ -119,6 +121,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const { t } = useLanguage();
   const settings = useSettings();
   const { theme } = useTheme();
+  const { addToHistory } = useHistory();
   const s = themeStyles[theme];
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [generationPrompt, setGenerationPrompt] = useState('');
@@ -203,6 +206,19 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         settings.toServiceSettings(),
         referenceFile,
       );
+      for (const [index, url] of urls.entries()) {
+        void addToHistory(
+          'generate',
+          url,
+          buildHistoryOptions('generate', settings, {
+            prompt: generationPrompt,
+            aspectRatio,
+            numberOfImages,
+            variationIndex: index,
+            hasReference: Boolean(referenceFile),
+          }),
+        );
+      }
       if (urls.length === 1) {
         // If only one image, proceed directly to editing
         const newFile = dataURLtoFile(urls[0], `generated-${Date.now()}.png`);
@@ -227,14 +243,30 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
       apiKey: settings.apiKey,
       model,
       abortSignal: signal,
-    }).then(
-      (urls): CompareSlotResult => ({
+    }).then((urls): CompareSlotResult => {
+      const url = urls[0];
+      void addToHistory(
+        'generate',
+        url,
+        buildHistoryOptions(
+          'generate',
+          { imageProvider: 'gemini', model },
+          {
+            prompt: generationPrompt,
+            aspectRatio,
+            numberOfImages: 1,
+            compare: true,
+            slotIndex,
+          },
+        ),
+      );
+      return {
         model,
-        url: urls[0],
+        url,
         elapsedMs: performance.now() - start,
         slotIndex,
-      }),
-    );
+      };
+    });
   };
 
   const handleCompareGenerateClick = async () => {

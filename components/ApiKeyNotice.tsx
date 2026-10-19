@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Tells a visitor without an API key why nothing will generate, before they
  * spend a minute finding out.

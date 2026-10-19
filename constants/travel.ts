@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Travel photo: positive/negative templates and scene presets.
  * {SCENE} in the positive template is replaced by the scene prompt.

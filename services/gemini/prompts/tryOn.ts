@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Virtual try-on prompt: fashion catalog style – aspirational, makes people want to buy.
  */

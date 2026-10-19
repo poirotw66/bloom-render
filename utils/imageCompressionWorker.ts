@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Web Worker for image compression using OffscreenCanvas.
  * Runs compression in background thread to avoid blocking UI.

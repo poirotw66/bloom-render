@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import { compressImage, CompressionOptions } from './imageCompressionWorker';
@@ -25,30 +25,58 @@ export function dataURLtoFile(dataurl: string, filename: string): File {
   return new File([u8arr], filename, { type: mime });
 }
 
+const DEFAULT_MAX_EDGE = 2048;
+
 /**
- * Intelligently compress image if it exceeds size threshold.
- * Uses Web Worker to avoid blocking UI.
- * @param file Original image file
- * @param options Compression options
- * @param sizeThresholdMB Only compress if file size exceeds this threshold (in MB)
- * @returns Compressed File if compression was applied, original File otherwise
+ * True when the image's long edge exceeds `maxEdge`. Falls back to `false`
+ * when the runtime cannot decode dimensions (tests / missing APIs) so callers
+ * can still apply a byte-size threshold.
+ */
+export async function imageExceedsMaxEdge(
+  file: File,
+  maxEdge: number = DEFAULT_MAX_EDGE,
+): Promise<boolean> {
+  if (typeof createImageBitmap !== 'function') return false;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const exceeds = Math.max(bitmap.width, bitmap.height) > maxEdge;
+    bitmap.close();
+    return exceeds;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Downscale / compress before API upload when the long edge exceeds the max
+ * dimension (default 2048) **or** the file exceeds the byte-size threshold.
+ * Uses a Web Worker so the UI stays responsive.
  */
 export async function compressImageIfNeeded(
   file: File,
   options: CompressionOptions = {},
   sizeThresholdMB: number = 5,
 ): Promise<File> {
+  const maxWidth = options.maxWidth ?? DEFAULT_MAX_EDGE;
+  const maxHeight = options.maxHeight ?? DEFAULT_MAX_EDGE;
+  const maxEdge = Math.max(maxWidth, maxHeight);
   const sizeThresholdBytes = sizeThresholdMB * 1024 * 1024;
+  const oversizeBytes = file.size > sizeThresholdBytes;
+  const oversizePixels = await imageExceedsMaxEdge(file, maxEdge);
 
-  // Only compress if file exceeds threshold
-  if (file.size <= sizeThresholdBytes) {
+  if (!oversizeBytes && !oversizePixels) {
     return file;
   }
 
   try {
-    const compressed = await compressImage(file, options);
+    const compressed = await compressImage(file, {
+      maxWidth,
+      maxHeight,
+      quality: options.quality ?? 0.85,
+      mimeType: options.mimeType,
+    });
     logger.debug(
-      `Image compressed: ${(file.size / 1024 / 1024).toFixed(2)}MB -> ${(compressed.size / 1024 / 1024).toFixed(2)}MB`,
+      `Image prepared for upload: ${(file.size / 1024 / 1024).toFixed(2)}MB -> ${(compressed.size / 1024 / 1024).toFixed(2)}MB`,
     );
     return compressed;
   } catch (error) {

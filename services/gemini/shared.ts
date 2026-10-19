@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  *
  * Shared helpers and types for Gemini-based image services.
  */
@@ -242,6 +242,8 @@ export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
 
   return async (file: File) => {
     try {
+      // Always downscale when the long edge exceeds 2048; the byte threshold
+      // only covers already-small-dimension but heavy files.
       return await compressImageIfNeeded(
         file,
         { maxWidth: 2048, maxHeight: 2048, quality: 0.85 },

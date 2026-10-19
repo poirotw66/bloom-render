@@ -1,6 +1,6 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
@@ -21,8 +21,10 @@ import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
 import CompareSlider from '../../components/CompareSlider';
 import { confirmDiscardUnsavedWork, useUnsavedWork } from '../../hooks/useUnsavedWork';
+import { useHistory as useGenerationHistory } from '../../hooks/useHistory';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { dataURLtoFile } from '../../utils/fileUtils';
+import { buildHistoryOptions } from '../../utils/historyOptions';
 import { logger } from '../../utils/logger';
 import { getEditorThemeClasses } from '../../utils/themeUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -49,6 +51,7 @@ const EditorPage: React.FC = () => {
   const { t } = useLanguage();
   const settings = useSettings();
   const { theme } = useTheme();
+  const { addToHistory: addToGenerationHistory } = useGenerationHistory();
   const editorTheme = getEditorThemeClasses(theme);
   const [history, setHistory] = useState<File[]>(() => (initialFile ? [initialFile] : []));
   const [historyIndex, setHistoryIndex] = useState<number>(() => (initialFile ? 0 : -1));
@@ -157,6 +160,15 @@ const EditorPage: React.FC = () => {
         editHotspot,
         settings.toServiceSettings(),
       );
+      void addToGenerationHistory(
+        'editor',
+        editedImageUrl,
+        buildHistoryOptions('editor', settings, {
+          prompt,
+          tab: 'retouch',
+          hotspot: editHotspot,
+        }),
+      );
       addImageToHistory(dataURLtoFile(editedImageUrl, `edited-${Date.now()}.png`));
       setPrompt('');
       setEditHotspot(null);
@@ -167,7 +179,7 @@ const EditorPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [addImageToHistory, currentImage, editHotspot, prompt, settings, t]);
+  }, [addImageToHistory, addToGenerationHistory, currentImage, editHotspot, prompt, settings, t]);
 
   const handleApplyFilter = useCallback(
     async (filterPrompt: string) => {
@@ -185,6 +197,14 @@ const EditorPage: React.FC = () => {
           filterPrompt,
           settings.toServiceSettings(),
         );
+        void addToGenerationHistory(
+          'editor',
+          filteredImageUrl,
+          buildHistoryOptions('editor', settings, {
+            prompt: filterPrompt,
+            tab: 'filters',
+          }),
+        );
         addImageToHistory(dataURLtoFile(filteredImageUrl, `filtered-${Date.now()}.png`));
       } catch (err) {
         setError(formatApiErrorMessage(err, t, 'filter'));
@@ -193,7 +213,7 @@ const EditorPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [addImageToHistory, currentImage, settings, t],
+    [addImageToHistory, addToGenerationHistory, currentImage, settings, t],
   );
 
   const handleApplyAdjustment = useCallback(
@@ -212,6 +232,14 @@ const EditorPage: React.FC = () => {
           adjustmentPrompt,
           settings.toServiceSettings(),
         );
+        void addToGenerationHistory(
+          'editor',
+          adjustedImageUrl,
+          buildHistoryOptions('editor', settings, {
+            prompt: adjustmentPrompt,
+            tab: 'adjust',
+          }),
+        );
         addImageToHistory(dataURLtoFile(adjustedImageUrl, `adjusted-${Date.now()}.png`));
       } catch (err) {
         setError(formatApiErrorMessage(err, t, 'adjustment'));
@@ -220,7 +248,7 @@ const EditorPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [addImageToHistory, currentImage, settings, t],
+    [addImageToHistory, addToGenerationHistory, currentImage, settings, t],
   );
 
   const handleApplyCrop = useCallback(() => {
