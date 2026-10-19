@@ -33,6 +33,19 @@ import type {
   OutputSpec,
   ClothingOption,
 } from '../../constants/idPhoto';
+import {
+  DEFAULT_ID_PHOTO_SIZE_ID,
+  getIdPhotoSizePreset,
+  isIdPhotoSizeId,
+  presetPixelSize,
+  type IdPhotoSizeId,
+} from '../../constants/idPhotoSizes';
+import { cropIdPhotoToSize } from '../../utils/idPhotoCrop';
+import {
+  exportIdPhotoPrintSheetJpg,
+  exportIdPhotoPrintSheetPdf,
+  triggerBlobDownload,
+} from '../../utils/idPhotoPrintSheet';
 
 export function useIdPhoto() {
   const { t } = useLanguage();
@@ -51,6 +64,7 @@ export function useIdPhoto() {
   const [idPhotoRetouchLevel, setIdPhotoRetouchLevel] =
     useState<RetouchLevel>(DEFAULT_RETOUCH_LEVEL);
   const [idPhotoOutputSpec, setIdPhotoOutputSpec] = useState<OutputSpec>(DEFAULT_OUTPUT_SPEC);
+  const [idPhotoSizeId, setIdPhotoSizeId] = useState<IdPhotoSizeId>(DEFAULT_ID_PHOTO_SIZE_ID);
   const [idPhotoClothingOption, setIdPhotoClothingOption] =
     useState<ClothingOption>(DEFAULT_CLOTHING_OPTION);
   const [idPhotoClothingCustomText, setIdPhotoClothingCustomText] = useState('');
@@ -80,6 +94,9 @@ export function useIdPhoto() {
     if (typeof opts.retouchLevel === 'string')
       setIdPhotoRetouchLevel(opts.retouchLevel as RetouchLevel);
     if (typeof opts.outputSpec === 'string') setIdPhotoOutputSpec(opts.outputSpec as OutputSpec);
+    if (typeof opts.printSize === 'string' && isIdPhotoSizeId(opts.printSize)) {
+      setIdPhotoSizeId(opts.printSize);
+    }
     if (typeof opts.clothingOption === 'string')
       setIdPhotoClothingOption(opts.clothingOption as ClothingOption);
     if (payload.sourceUrl) {
@@ -119,8 +136,10 @@ export function useIdPhoto() {
   }, []);
 
   const generateOne = useCallback(
-    (file: File, variationIndex: number, signal: AbortSignal) =>
-      generateIdPhoto(file, {
+    (file: File, variationIndex: number, signal: AbortSignal) => {
+      const sizePreset = getIdPhotoSizePreset(idPhotoSizeId);
+      const pixels = presetPixelSize(sizePreset);
+      return generateIdPhoto(file, {
         retouchLevel: idPhotoRetouchLevel,
         idType: idPhotoType,
         outputSpec: idPhotoOutputSpec,
@@ -136,30 +155,36 @@ export function useIdPhoto() {
         settings: settings.toServiceSettings(signal),
         variationIndex,
       })
-        .then((url) => {
+        .then(async (url) => {
+          if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
+          // Crop to the selected physical size at 300 DPI (demo assets included).
+          const cropped = await cropIdPhotoToSize(url, pixels.width, pixels.height);
           addToHistory(
             'idphoto',
-            url,
+            cropped,
             buildHistoryOptions('idphoto', settings, {
               retouchLevel: idPhotoRetouchLevel,
               idType: idPhotoType,
               outputSpec: idPhotoOutputSpec,
+              printSize: idPhotoSizeId,
               clothingOption: idPhotoClothingOption,
               variationIndex,
             }),
             file,
           );
-          return url;
+          return cropped;
         })
         .catch((err) => {
           if (!isAbortError(err))
             logger.error(`ID photo generation error for item ${variationIndex + 1}:`, err);
           throw err;
-        }),
+        });
+    },
     [
       idPhotoRetouchLevel,
       idPhotoType,
       idPhotoOutputSpec,
+      idPhotoSizeId,
       idPhotoClothingOption,
       idPhotoClothingCustomText,
       idPhotoClothingReferenceFile,
@@ -271,6 +296,28 @@ export function useIdPhoto() {
     });
   }, [idPhotoResults]);
 
+  const handleDownloadPrintSheetJpg = useCallback(
+    async (source?: string | null) => {
+      const photo = source ?? idPhotoResult;
+      if (!photo) return;
+      const preset = getIdPhotoSizePreset(idPhotoSizeId);
+      const blob = await exportIdPhotoPrintSheetJpg(photo, preset);
+      triggerBlobDownload(blob, `id-photo-4x6-${idPhotoSizeId}-${Date.now()}.jpg`);
+    },
+    [idPhotoResult, idPhotoSizeId],
+  );
+
+  const handleDownloadPrintSheetPdf = useCallback(
+    async (source?: string | null) => {
+      const photo = source ?? idPhotoResult;
+      if (!photo) return;
+      const preset = getIdPhotoSizePreset(idPhotoSizeId);
+      const blob = await exportIdPhotoPrintSheetPdf(photo, preset);
+      triggerBlobDownload(blob, `id-photo-4x6-${idPhotoSizeId}-${Date.now()}.pdf`);
+    },
+    [idPhotoResult, idPhotoSizeId],
+  );
+
   const setFileFromDrop = useCallback((file: File) => {
     setIdPhotoFile(file);
     setIdPhotoResult(null);
@@ -309,6 +356,8 @@ export function useIdPhoto() {
     setIdPhotoRetouchLevel,
     idPhotoOutputSpec,
     setIdPhotoOutputSpec,
+    idPhotoSizeId,
+    setIdPhotoSizeId,
     idPhotoClothingOption,
     setIdPhotoClothingOption,
     idPhotoClothingCustomText,
@@ -323,6 +372,8 @@ export function useIdPhoto() {
     handleIdPhotoGenerate,
     handleIdPhotoDownload,
     handleIdPhotoBatchDownload,
+    handleDownloadPrintSheetJpg,
+    handleDownloadPrintSheetPdf,
     failures: run.failures,
     requestedCount: run.requestedCount,
     succeededCount: run.succeededCount,
