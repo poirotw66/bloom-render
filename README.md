@@ -1,129 +1,132 @@
 # BloomRender
 
+[English](./README.md) | [繁體中文](./README.zh-TW.md)
+
+[![CI](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml/badge.svg)](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Live demo](https://img.shields.io/badge/demo-bloss0m.com-e23d2f)](https://www.bloss0m.com/bloom-render/)
+
 **BloomRender — Let your ideas bloom.**
 
-AI 驅動的專業照片編輯與生成工作室，以 Google Gemini API 提供修圖、濾鏡、證件照、形象照、旅遊照、主題寫真、雙人／團體照與 AI 虛擬試穿等功能。
+AI-powered photo editing and generation studio on the Google Gemini API: retouch, filters, ID photos, portraits, travel shots, themed shoots, couple/group photos, and virtual try-on.
 
-### 預覽
+**Live demo:** [https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)
 
-| 文字生圖                                     | AI 證件照                               | 圖片編輯器                             |
-| -------------------------------------------- | --------------------------------------- | -------------------------------------- |
-| ![文字生圖結果](images/generate_2_image.png) | ![證件照結果](images/idphoto_5_idp.png) | ![編輯器修圖](images/edit_2_image.png) |
+### Preview
 
-| AI 旅遊照                                    | AI 虛擬試穿                                  |
-| -------------------------------------------- | -------------------------------------------- |
-| ![旅遊照結果](images/travel_5_cuple_img.png) | ![虛擬試穿結果](images/tryon_4_girl_img.png) |
+| Text to image                                        | AI ID photo                                  | Image editor                               |
+| ---------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
+| ![Text to image result](images/generate_2_image.png) | ![ID photo result](images/idphoto_5_idp.png) | ![Editor retouch](images/edit_2_image.png) |
 
----
-
-## 功能概覽
-
-入口頁以分頁切換，順序為：**上傳圖片** → **文字生圖** → **攝影服務** → **證件照** → **形象照** → **旅遊照** → **主題寫真** → **雙人／團體照** → **虛擬試穿**。
-
-- **上傳圖片**：拖放或選擇檔案後進入編輯器。
-- **文字生圖**：輸入描述、選擇長寬比（1:1、4:3、3:4、16:9、9:16）與張數（1～4），由 AI 生成圖片；多張結果可單張下載或**全部下載為 ZIP**，亦可選一張送入編輯器。
-- **圖片編輯器**
-  - **修圖**：點選畫面位置並輸入描述，進行局部編輯。
-  - **濾鏡**：套用風格濾鏡（如 Synthwave、Anime、Lomo 等）或自訂描述。
-  - **調整**：整體調整（模糊背景、增強細節、光線等）或自訂描述。
-  - **裁切**：自由裁切或證件規格（2 吋大頭／半身、1 吋等）。
-  - 支援復原、重做、與原圖比較、重置、下載。
-- **AI 證件照**：選擇證件類型、修圖等級、輸出規格、服裝（可自訂描述與參考圖），上傳肖像後生成證件照；支援單張與批次 ZIP 下載。
-- **AI 形象照**：選擇類型與輸出規格，上傳肖像後生成專業形象照。
-- **AI 旅遊照**：世界地圖／台灣地圖選景，搭配天氣、時間、服裝、構圖等選項，上傳肖像後生成旅遊照；單人、情侶或團體皆可。
-- **AI 主題寫真**：選擇主題類型、輸出尺寸與長寬比，上傳肖像後生成主題寫真。
-- **AI 雙人／團體照**：上傳 2 張（雙人）或 3～6 張（團體），選擇風格後生成合照。
-- **AI 虛擬試穿**：上傳一張人物照與 1～5 張服裝照，可產出多種風格試穿圖，支援單張下載與全部下載。
-- **攝影服務**：導向各 AI 生成功能的入口頁。
-- **設定**：Google GenAI API 金鑰、模型（Gemini 2.5 Flash / Gemini 3 Pro）、語言、主題。
-- **多語系**：英文、繁體中文。
-- **主題**：繁花（Bloom，櫻花系背景）、深夜（Night）、新年（New Year）。
-- **生成歷史**：可檢視、篩選與批次下載過往生成結果。
+| AI travel photo                                       | AI virtual try-on                             |
+| ----------------------------------------------------- | --------------------------------------------- |
+| ![Travel photo result](images/travel_5_cuple_img.png) | ![Try-on result](images/tryon_4_girl_img.png) |
 
 ---
 
-## 文件
+## Features
 
-- **[BloomRender 操作手冊](docs/BLOOMRENDER_MANUAL.md)**：圖文教學，含文字生圖、證件照、形象照、旅遊照、虛擬試穿與編輯器流程。
+Start-screen tabs, in order: **Upload** → **Text to image** → **Photography service** → **ID photo** → **Portrait** → **Travel** → **Themed** → **Couple / group** → **Try-on**.
 
----
-
-## 技術與依賴
-
-- **Runtime**：React 19、TypeScript、Vite 6
-- **路由**：React Router 7
-- **編輯**：react-image-crop
-- **AI**：[@google/genai](https://www.npmjs.com/package/@google/genai)（Gemini API）
-- **批次下載**：JSZip（多張結果打包為 ZIP）
-- **樣式**：Tailwind CSS（CDN）、自訂 CSS
-- **開發**：ESLint、Prettier、Vitest、Husky、lint-staged
-
----
-
-## 環境需求
-
-- **Node.js** 20+（建議與 CI 一致）
-- **npm**（依賴 `package-lock.json` 時請用 `npm ci`）
+- **Upload** — Drop or pick a file and open the editor.
+- **Text to image** — Describe a scene, pick aspect ratio (1:1, 4:3, 3:4, 16:9, 9:16) and count (1–4); download singles or a ZIP, or send one result to the editor.
+- **Image editor** — Point-and-prompt retouch, style filters, global adjustments, free/ID-spec crop; undo, redo, compare, reset, download.
+- **AI ID photo** — Document type, retouch level, output size, clothing (text or reference); single and batch ZIP download.
+- **AI portrait** — Professional headshots from a portrait upload.
+- **AI travel photo** — World / Taiwan map scene picks with weather, time, outfit, and framing; solo, couple, or group.
+- **AI themed shoot** — Theme, size, and aspect ratio from a portrait.
+- **AI couple / group** — 2 portraits (couple) or 3–6 (group) into one composite.
+- **AI virtual try-on** — One person photo + 1–5 garment photos; multi-style results with single or bulk download.
+- **Settings** — Gemini API key, model, language, theme (browser-only).
+- **i18n** — English and Traditional Chinese.
+- **Themes** — Bloom, Night, New Year.
+- **History** — Browse, filter, and batch-download past generations.
 
 ---
 
-## 本地執行
+## Quick start
 
-1. **安裝依賴**
+Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfile).
+
+1. **Install**
 
    ```bash
-   npm install
+   npm ci
    ```
 
-2. **設定 API 金鑰**  
-   於應用內「設定」輸入 Google GenAI API 金鑰（僅儲存於本地瀏覽器）。
+2. **API key (BYOK)** — Open **Settings** in the app and paste a [Google AI Studio](https://aistudio.google.com/app/apikey) Gemini key. The key stays in the browser (`localStorage`) only. It is never committed, never read from env files, and never baked into the production bundle. See [`.env.example`](./.env.example).
 
-3. **啟動開發伺服器**
+3. **Run**
 
    ```bash
    npm run dev
    ```
 
-   依終端顯示網址開啟（預設為 http://localhost:3002）。
+   Open the URL shown in the terminal (default [http://localhost:3002](http://localhost:3002)).
 
-4. **（選用）靜態圖片**
-   - **地圖**：Travel 功能的世界／台灣地圖背景需 `public/images/world-map.webp`、`public/images/taiwan-map.webp`，請自行放入（見 `public/images/README.md`）。若手邊為 PNG，可執行 `node scripts/convert-public-images-to-webp.mjs` 轉檔。
-   - **旅遊場景參考圖**：專案不將 `public/images/scenes/` 內大圖提交至 Git。若要使用場景參考圖，請依 [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md) 下載並放入 `public/images/scenes/`；未放置時仍可以文字描述生成。
-
----
-
-## 可用指令
-
-| 指令                   | 說明                                                |
-| ---------------------- | --------------------------------------------------- |
-| `npm run dev`          | 啟動開發伺服器（port 3002）                         |
-| `npm run build`        | 建置正式版至 `dist/`，並產生 `404.html` 供 SPA 部署 |
-| `npm run preview`      | 預覽建置結果                                        |
-| `npm run lint`         | 執行 ESLint                                         |
-| `npm run test`         | 執行 Vitest 單元測試                                |
-| `npm run test:watch`   | Vitest 監聽模式                                     |
-| `npm run format`       | 使用 Prettier 格式化專案                            |
-| `npm run format:check` | 檢查格式（不寫入）                                  |
-
-提交前會經 **Husky** 執行 **lint-staged**（Prettier + ESLint --fix）。
+4. **Optional static assets**
+   - Maps for Travel: `public/images/world-map.webp`, `public/images/taiwan-map.webp` (see `public/images/README.md`). Convert PNG → WebP with `node scripts/convert-public-images-to-webp.mjs` if needed.
+   - Scene reference images under `public/images/scenes/` are optional; follow [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md). Text-only generation still works without them.
 
 ---
 
-## 部署
+## API keys
 
-- **建置**：將 `dist/` 目錄內容部署至靜態託管即可。
-- **GitHub Pages**：建置時請設定 `GITHUB_PAGES=true`，使 `base` 為 `/bloom-render/`。  
-  可參考 [.github/workflows/deploy.yml](.github/workflows/deploy.yml)：push 至 `main` 或手動觸發後會建置並部署至 GitHub Pages。
+| Context              | How                                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Settings (BYOK)**  | Gear → paste Gemini API key. Stored in `localStorage` for this origin only. Never bundled.                              |
+| **Get a key**        | [Google AI Studio](https://aistudio.google.com/app/apikey)                                                              |
+| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` (or similar) for builds — nothing injects keys into the client. |
+
+Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and billing limits on the provider side.
 
 ---
 
-## 授權
+## Tech stack
 
-本專案採用 **創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際版**（CC BY-NC-SA 4.0）授權。  
-完整條款請見 [LICENSE.txt](LICENSE.txt)。
+- **Runtime** — React 19, TypeScript, Vite 6
+- **Routing** — React Router 7
+- **Editing** — react-image-crop
+- **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini API)
+- **Batch download** — JSZip
+- **Styles** — Tailwind CSS 4 via `@tailwindcss/vite` (build-time; not CDN) + custom CSS
+- **Tooling** — ESLint, Prettier, Vitest, Husky, lint-staged
 
-- **姓名標示**：使用時須標示適當署名並提供授權條款連結。
-- **非商業性**：不得將本作品用於商業目的。
-- **相同方式分享**：改作或衍生作品須以相同授權方式散布。
+---
 
-**商業使用**：如需商業授權，請聯繫作者。詳見 [LICENSE.txt](LICENSE.txt) 當中的「商業授權」一節。
+## Scripts
+
+| Command                           | Description                                                |
+| --------------------------------- | ---------------------------------------------------------- |
+| `npm run dev`                     | Dev server (port 3002)                                     |
+| `npm run build`                   | Production build to `dist/` (+ `404.html` for SPA hosting) |
+| `npm run preview`                 | Preview the production build                               |
+| `npm run typecheck`               | `tsc --noEmit`                                             |
+| `npm run lint`                    | ESLint                                                     |
+| `npm test`                        | Vitest                                                     |
+| `npm run format` / `format:check` | Prettier write / check                                     |
+
+---
+
+## Deploy
+
+- Ship the `dist/` folder to any static host.
+- **GitHub Pages**: set `GITHUB_PAGES=true` so `base` is `/bloom-render/`. See [.github/workflows/deploy.yml](.github/workflows/deploy.yml) (runs on `main` only, after the CI quality gate).
+
+---
+
+## Docs
+
+- **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese) — walkthroughs for generate, ID photo, portrait, travel, try-on, and the editor.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+---
+
+## License
+
+[MIT](./LICENSE) © 2026 poirotw66
