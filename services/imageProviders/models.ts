@@ -4,6 +4,7 @@ import {
   SUPPORTED_MODELS,
   type ModelType,
 } from '../../constants/models';
+import { DEMO_MODEL_ID } from './demoCatalog';
 import type { ImageProviderId } from './types';
 
 export const OPENROUTER_IMAGE_MODELS = [
@@ -43,11 +44,15 @@ export function resolveStoredOpenRouterModel(stored: string | null): OpenRouterM
 }
 
 export function modelsForProvider(provider: ImageProviderId): readonly string[] {
-  return provider === 'openrouter' ? OPENROUTER_IMAGE_MODELS : SUPPORTED_MODELS;
+  if (provider === 'openrouter') return OPENROUTER_IMAGE_MODELS;
+  if (provider === 'demo') return [DEMO_MODEL_ID];
+  return SUPPORTED_MODELS;
 }
 
 export function defaultModelForProvider(provider: ImageProviderId): string {
-  return provider === 'openrouter' ? DEFAULT_OPENROUTER_MODEL : DEFAULT_MODEL;
+  if (provider === 'openrouter') return DEFAULT_OPENROUTER_MODEL;
+  if (provider === 'demo') return DEMO_MODEL_ID;
+  return DEFAULT_MODEL;
 }
 
 /**

@@ -12,6 +12,7 @@ import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
+import { useDemoSampleInput } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
@@ -62,6 +63,8 @@ export function useIdPhoto() {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
+
+  useDemoSampleInput('idphoto', setIdPhotoFile);
 
   useEffect(() => {
     const levelParam = searchParams.get('level');

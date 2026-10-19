@@ -1035,11 +1035,22 @@ export const enMessages: Record<string, string> = {
 
   'apikey.notice_title': 'Add an API key to generate your own',
   'apikey.notice_hint':
-    'Browse the examples below without one. To run the model yourself, paste a Google AI Studio key into Settings — it stays in your browser and is never sent anywhere but Google.',
+    'Try the offline demo with bundled samples, or paste a Google AI Studio key into Settings — it stays in your browser and is never sent anywhere but Google.',
   'apikey.notice_hint_openrouter':
-    'Browse the examples below without one. To run the model yourself, paste an OpenRouter key into Settings — it stays in your browser only.',
+    'Try the offline demo with bundled samples, or paste an OpenRouter key into Settings — it stays in your browser only.',
   'apikey.open_settings': 'Open settings',
   'apikey.get_key': 'Get an API key',
+
+  'demo.try_demo': 'Try demo',
+  'demo.badge': 'Demo',
+  'demo.banner_title': 'Showing a pre-made sample result',
+  'demo.banner_hint': 'No API key or AI network call is used. Outputs come from bundled examples.',
+  'demo.cta_settings': 'Add your own Gemini or OpenRouter key to generate with your photos',
+  'demo.sample_input': 'Sample',
+  'demo.sample_only_hint':
+    'Demo mode uses bundled sample photos only. Add an API key in Settings to upload your own.',
+  'demo.loading_sample': 'Loading sample photo…',
+  'demo.open_editor_sample': 'Open editor with sample photo',
   'examples.before': 'Before',
   'examples.after': 'After',
   'examples.disclaimer': 'Real output from this app, not stock photos.',
@@ -1066,6 +1077,7 @@ export const enMessages: Record<string, string> = {
   'gallery.subtitle': 'Every image below came out of this app. Pick one to see how it was made.',
   'gallery.start_editing': 'Or start with your own photo',
   'error.api_key_missing': 'API key not found. Please check your settings.',
+  'error.demo_asset_missing': 'Demo sample image could not be loaded. Please try again.',
   'error.openrouter_invalid_key':
     'OpenRouter API key is missing or invalid. Check Settings and paste a valid key.',
   'error.openrouter_rate_limit':
@@ -1191,8 +1203,13 @@ export const enMessages: Record<string, string> = {
   'settings.provider': 'Provider',
   'settings.provider_desc':
     'Bring-your-own-key. Gemini uses Google AI Studio keys; OpenRouter uses OpenRouter keys. Keys stay in this browser only.',
+  'settings.provider_desc_demo':
+    'Offline demo: press Generate to see bundled sample results. No API key or AI network call.',
   'settings.provider.gemini': 'Google Gemini',
   'settings.provider.openrouter': 'OpenRouter (BYOK)',
+  'settings.provider.demo': 'Live demo (no key)',
+  'settings.demo_note':
+    'Demo mode returns pre-made examples from public/examples. Switch to Gemini or OpenRouter and paste a key to generate with your own photos.',
   'settings.model': 'Model',
   'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
   'settings.model.flash31': 'Gemini 3.1 Flash',

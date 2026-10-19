@@ -9,6 +9,7 @@ import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import CoupleGroupModeTabs from './CoupleGroupModeTabs';
 import CoupleGroupStyleSelector from './CoupleGroupStyleSelector';
@@ -49,6 +50,7 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
         </header>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {coupleGroup.results && coupleGroup.results.length > 0 ? (
           <section className="w-full flex flex-col gap-6">

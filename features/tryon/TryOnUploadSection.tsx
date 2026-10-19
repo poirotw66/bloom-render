@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import QuantitySelector from '../../components/QuantitySelector';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 
@@ -52,20 +53,26 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
   onDropClothing,
 }) => {
   const { t } = useLanguage();
+  const { isDemoMode } = useSettings();
   const hasPerson = personPreviewUrl !== null;
   const clothingCount = clothingPreviewUrls.length;
-  const canAddClothing = clothingCount < maxClothing;
+  const canAddClothing = !isDemoMode && clothingCount < maxClothing;
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
+      {isDemoMode && (
+        <p className="text-xs text-sky-200/80 text-center">{t('demo.sample_only_hint')}</p>
+      )}
       {/* Person photo */}
       <div
         className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${
-          isDraggingOver ? 'border-teal-400 bg-teal-500/10' : 'border-gray-700/50 bg-gray-800/40'
+          isDraggingOver && !isDemoMode
+            ? 'border-teal-400 bg-teal-500/10'
+            : 'border-gray-700/50 bg-gray-800/40'
         } ${hasPerson ? 'border-teal-500/30' : ''}`}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDropPerson}
+        onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
+        onDragLeave={isDemoMode ? undefined : onDragLeave}
+        onDrop={isDemoMode ? (e) => e.preventDefault() : onDropPerson}
       >
         <div className="flex items-center gap-2 mb-4">
           <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold">
@@ -83,17 +90,26 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 alt="Person"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                <span className="text-[10px] text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">
-                  {t('tryon.change_person')}
+              {!isDemoMode && (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                    <span className="text-[10px] text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">
+                      {t('tryon.change_person')}
+                    </span>
+                  </div>
+                  <input
+                    type="file"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    accept="image/*"
+                    onChange={onPersonFileChange}
+                  />
+                </>
+              )}
+              {isDemoMode && (
+                <span className="absolute top-2 left-2 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+                  {t('demo.sample_input')}
                 </span>
-              </div>
-              <input
-                type="file"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                accept="image/*"
-                onChange={onPersonFileChange}
-              />
+              )}
             </div>
             <p className="text-[10px] text-teal-500/80 font-medium">✨ {t('common.selected')}</p>
           </div>
@@ -127,13 +143,13 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
       {/* Clothing photos */}
       <div
         className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 ${
-          isDraggingOver
+          isDraggingOver && !isDemoMode
             ? 'border-amber-400/60 bg-amber-500/10'
             : 'border-gray-700/50 bg-gray-800/40'
         } ${clothingCount > 0 ? 'border-amber-500/30' : ''}`}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDropClothing}
+        onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
+        onDragLeave={isDemoMode ? undefined : onDragLeave}
+        onDrop={isDemoMode ? (e) => e.preventDefault() : onDropClothing}
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -162,14 +178,16 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 alt={`Clothing ${idx + 1}`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              <button
-                type="button"
-                onClick={() => onRemoveClothing(idx)}
-                className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 scale-75 group-hover:scale-100"
-                aria-label={t('tryon.remove_clothing')}
-              >
-                ✕
-              </button>
+              {!isDemoMode && (
+                <button
+                  type="button"
+                  onClick={() => onRemoveClothing(idx)}
+                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 scale-75 group-hover:scale-100"
+                  aria-label={t('tryon.remove_clothing')}
+                >
+                  ✕
+                </button>
+              )}
               <div className="absolute bottom-1 right-1 bg-black/60 px-1.5 rounded-md text-[8px] text-white/80 font-bold">
                 #{idx + 1}
               </div>

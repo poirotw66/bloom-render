@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { DownloadIcon } from '../../components/icons';
@@ -74,6 +75,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
         </header>
 
         <ApiKeyNotice />
+        <DemoModeBanner />
 
         {tr.results && tr.results.length > 0 ? (
           <div className="w-full flex flex-col gap-6 motion-safe:animate-fade-in">

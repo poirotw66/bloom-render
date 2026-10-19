@@ -12,6 +12,8 @@ AI-powered photo editing and generation studio with bring-your-own-key **Google 
 
 **Live demo:** [https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)
 
+**Live demo / no key needed:** Open the site and tap **Try demo** (or choose **Live demo (no key)** in Settings). You can press Generate on each feature with bundled sample photos — no API key and no call to an AI provider. Results are clearly marked **Demo**. Add a Gemini or OpenRouter key in Settings when you want to generate with your own photos.
+
 ### Preview
 
 | Text to image                                        | AI ID photo                                  | Image editor                               |
@@ -54,7 +56,7 @@ Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfi
    npm ci
    ```
 
-2. **API key (BYOK)** — Open **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`), and paste the matching key. Keys stay in the browser tab (`sessionStorage`) only and are cleared when the tab closes. They are never committed, never read from env files, and never baked into the production bundle. See [`.env.example`](./.env.example).
+2. **API key (BYOK) or Try demo** — Open **Settings**, choose **Image provider** (`Google Gemini`, `OpenRouter (BYOK)`, or `Live demo (no key)`). For real generation, paste the matching key. Keys stay in the browser tab (`sessionStorage`) only and are cleared when the tab closes. They are never committed, never read from env files, and never baked into the production bundle. Or tap **Try demo** to explore with bundled samples without a key. See [`.env.example`](./.env.example).
 
 3. **Run**
 

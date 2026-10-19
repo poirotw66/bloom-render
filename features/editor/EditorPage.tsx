@@ -16,6 +16,7 @@ import Spinner from '../../components/Spinner';
 import FilterPanel from '../../components/FilterPanel';
 import AdjustmentPanel from '../../components/AdjustmentPanel';
 import CropPanel from '../../components/CropPanel';
+import DemoModeBanner from '../../components/DemoModeBanner';
 import { UndoIcon, RedoIcon, EyeIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
@@ -411,9 +412,15 @@ const EditorPage: React.FC = () => {
 
     return (
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-6 animate-fade-in">
+        {settings.isDemoMode && <DemoModeBanner />}
         {errorBanner}
 
         <div className="relative w-full shadow-2xl rounded-xl overflow-hidden bg-black/20">
+          {settings.isDemoMode && (
+            <div className="absolute top-3 left-3 z-20">
+              <DemoModeBanner compact />
+            </div>
+          )}
           {isLoading && (
             <div className="absolute inset-0 bg-black/70 z-30 flex flex-col items-center justify-center gap-4 animate-fade-in">
               <Spinner />
