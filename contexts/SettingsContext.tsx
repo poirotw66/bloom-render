@@ -21,6 +21,7 @@ import {
   type OpenRouterModel,
 } from '../services/imageProviders';
 import type { ServiceSettings } from '../services/gemini/shared';
+import { migrateAllApiKeysFromLocalStorage, writeApiKey } from '../utils/credentialStorage';
 
 export type { ModelType } from '../constants/models';
 export type { ImageProviderId, OpenRouterModel };
@@ -52,10 +53,8 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-const STORAGE_KEY_API_KEY = 'pixshop_api_key';
 const STORAGE_KEY_MODEL = 'pixshop_model';
 const STORAGE_KEY_PROVIDER = 'pixshop_image_provider';
-const STORAGE_KEY_OPENROUTER_API_KEY = 'pixshop_openrouter_api_key';
 const STORAGE_KEY_OPENROUTER_MODEL = 'pixshop_openrouter_model';
 const STORAGE_KEY_COMPRESSION_ENABLED = 'pixshop_compression_enabled';
 const STORAGE_KEY_COMPRESSION_THRESHOLD = 'pixshop_compression_threshold';
@@ -73,17 +72,18 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [enableBackgroundMotion, setEnableBackgroundMotionState] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedKey = localStorage.getItem(STORAGE_KEY_API_KEY);
+    // Secrets: sessionStorage (+ one-time localStorage → sessionStorage migration).
+    const migrated = migrateAllApiKeysFromLocalStorage();
+    if (migrated.gemini) setApiKeyState(migrated.gemini);
+    if (migrated.openrouter) setOpenRouterApiKeyState(migrated.openrouter);
+
+    // Non-secret prefs stay in localStorage.
     const storedModel = localStorage.getItem(STORAGE_KEY_MODEL);
     const storedProvider = localStorage.getItem(STORAGE_KEY_PROVIDER);
-    const storedOpenRouterKey = localStorage.getItem(STORAGE_KEY_OPENROUTER_API_KEY);
     const storedOpenRouterModel = localStorage.getItem(STORAGE_KEY_OPENROUTER_MODEL);
     const storedCompressionEnabled = localStorage.getItem(STORAGE_KEY_COMPRESSION_ENABLED);
     const storedCompressionThreshold = localStorage.getItem(STORAGE_KEY_COMPRESSION_THRESHOLD);
     const storedBackgroundMotion = localStorage.getItem(STORAGE_KEY_BACKGROUND_MOTION);
-
-    if (storedKey) setApiKeyState(storedKey);
-    if (storedOpenRouterKey) setOpenRouterApiKeyState(storedOpenRouterKey);
 
     if (storedProvider && isImageProviderId(storedProvider)) {
       setImageProviderState(storedProvider);
@@ -122,7 +122,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const setApiKey = (key: string) => {
     setApiKeyState(key);
-    localStorage.setItem(STORAGE_KEY_API_KEY, key);
+    writeApiKey('gemini', key);
   };
 
   const setModel = (m: ModelType) => {
@@ -132,7 +132,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const setOpenRouterApiKey = (key: string) => {
     setOpenRouterApiKeyState(key);
-    localStorage.setItem(STORAGE_KEY_OPENROUTER_API_KEY, key);
+    writeApiKey('openrouter', key);
   };
 
   const setOpenRouterModel = (m: OpenRouterModel) => {

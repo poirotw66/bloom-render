@@ -60,7 +60,7 @@ AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Googl
    npm ci
    ```
 
-2. **API 金鑰（自備金鑰 / BYOK）** — 於「設定」選擇 **影像供應商**（`Google Gemini` 或 `OpenRouter（自備金鑰）`）並貼上對應金鑰。金鑰只存在瀏覽器（`localStorage`），不會寫入 repo、不會從環境變數讀取，也不會打包進正式版。見 [`.env.example`](./.env.example)。
+2. **API 金鑰（自備金鑰 / BYOK）** — 於「設定」選擇 **影像供應商**（`Google Gemini` 或 `OpenRouter（自備金鑰）`）並貼上對應金鑰。金鑰只存在此瀏覽器分頁（`sessionStorage`），關閉分頁後即清除；不會寫入 repo、不會從環境變數讀取，也不會打包進正式版。見 [`.env.example`](./.env.example)。
 
 3. **啟動**
 
@@ -78,11 +78,11 @@ AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Googl
 
 ## API 金鑰
 
-| 情境                    | 作法                                                                                                                                  |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **設定（BYOK）**        | 齒輪 → **影像供應商**：`Google Gemini` 或 `OpenRouter（自備金鑰）`。貼上對應金鑰並選擇模型。僅存於此站點的 `localStorage`，永不打包。 |
-| **取得金鑰**            | Gemini：[Google AI Studio](https://aistudio.google.com/app/apikey)。OpenRouter：[openrouter.ai/keys](https://openrouter.ai/keys)。    |
-| **環境變數／CI／Pages** | 不使用任何 API 金鑰環境變數。建置時請勿設定 `GEMINI_API_KEY`／`OPENROUTER_*` — 前端不會注入金鑰。                                     |
+| 情境                    | 作法                                                                                                                                                      |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **設定（BYOK）**        | 齒輪 → **影像供應商**：`Google Gemini` 或 `OpenRouter（自備金鑰）`。貼上對應金鑰並選擇模型。金鑰存於 `sessionStorage`（僅此分頁，關閉後清除），永不打包。 |
+| **取得金鑰**            | Gemini：[Google AI Studio](https://aistudio.google.com/app/apikey)。OpenRouter：[openrouter.ai/keys](https://openrouter.ai/keys)。                        |
+| **環境變數／CI／Pages** | 不使用任何 API 金鑰環境變數。建置時請勿設定 `GEMINI_API_KEY`／`OPENROUTER_*` — 前端不會注入金鑰。                                                         |
 
 ### 各供應商涵蓋範圍
 

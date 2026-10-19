@@ -9,7 +9,7 @@ npm ci
 npm test
 ```
 
-In **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`) and paste the matching key. Keys stay in the browser (`localStorage`) and are never committed or bundled. Do not put API keys in `.env` files or CI secrets for this app.
+In **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`) and paste the matching key. Keys stay in the browser tab (`sessionStorage`, cleared when the tab closes) and are never committed or bundled. Do not put API keys in `.env` files or CI secrets for this app.
 
 Useful checks before opening a PR:
 

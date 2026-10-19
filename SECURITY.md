@@ -11,7 +11,7 @@ Do **not** open a public issue for unpatched vulnerabilities.
 This project is a **bring-your-own-key (BYOK)** browser app:
 
 - Production / GitHub Pages builds **never** embed API keys in the client bundle.
-- In Settings, users choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`) and paste the matching key. Keys are stored in the browser (`localStorage`) for this origin only and are never bundled.
+- In Settings, users choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`) and paste the matching key. Keys are stored in `sessionStorage` for the current browser tab only (cleared when the tab closes) and are never bundled. Non-secret prefs (provider, model, theme, …) stay in `localStorage`.
 - There is **no** API-key environment-variable injection for production builds. See [`.env.example`](./.env.example).
 - Travel **custom-scene prompt optimization** is Gemini-only (text endpoint). Image generation/editing for all studio features can use Gemini or OpenRouter via the ImageProvider layer.
 

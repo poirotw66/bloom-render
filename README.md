@@ -54,7 +54,7 @@ Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfi
    npm ci
    ```
 
-2. **API key (BYOK)** — Open **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`), and paste the matching key. Keys stay in the browser (`localStorage`) only. They are never committed, never read from env files, and never baked into the production bundle. See [`.env.example`](./.env.example).
+2. **API key (BYOK)** — Open **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`), and paste the matching key. Keys stay in the browser tab (`sessionStorage`) only and are cleared when the tab closes. They are never committed, never read from env files, and never baked into the production bundle. See [`.env.example`](./.env.example).
 
 3. **Run**
 
@@ -72,11 +72,11 @@ Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfi
 
 ## API keys
 
-| Context              | How                                                                                                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Stored in `localStorage` for this origin only. Never bundled. |
-| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                         |
-| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                               |
+| Context              | How                                                                                                                                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Keys live in `sessionStorage` for this tab only (cleared when the tab closes). Never bundled. |
+| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                                                         |
+| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                                                               |
 
 ### What each provider covers
 

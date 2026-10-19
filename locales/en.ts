@@ -1184,7 +1184,7 @@ export const enMessages: Record<string, string> = {
   'settings.openrouter.api_key': 'OpenRouter API Key',
   'settings.openrouter.api_key_placeholder': 'Enter your OpenRouter API Key',
   'settings.openrouter.api_key_desc':
-    'Stored locally in your browser only. Never bundled or sent to our servers.',
+    'Kept only for this browser tab session and cleared when the tab is closed. Never bundled or sent to our servers.',
   'settings.openrouter.gemini_only_note':
     'Note: Travel custom-scene prompt optimization is Gemini-only and is skipped on OpenRouter (your raw prompt is used). Model compare on the home screen is also Gemini-only.',
   'settings.theme': 'Theme',
@@ -1196,7 +1196,8 @@ export const enMessages: Record<string, string> = {
   'settings.language.zh': 'Traditional Chinese',
   'settings.api_key': 'API Key',
   'settings.api_key_placeholder': 'Enter your Google GenAI API Key',
-  'settings.api_key_desc': 'Your key is stored locally in your browser.',
+  'settings.api_key_desc':
+    'Kept only for this browser tab session and cleared when the tab is closed. Never bundled.',
   'settings.api_key_show': 'Show',
   'settings.api_key_hide': 'Hide',
   'settings.autosave_hint': 'Changes are saved automatically.',
