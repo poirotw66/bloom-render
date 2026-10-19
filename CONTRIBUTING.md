@@ -9,7 +9,7 @@ npm ci
 npm test
 ```
 
-Paste a Google Gemini API key in the in-app **Settings** panel. Keys stay in the browser (`localStorage`) and are never committed or bundled. Do not put API keys in `.env` files or CI secrets for this app.
+In **Settings**, choose **Image provider** (`Google Gemini` or `OpenRouter (BYOK)`) and paste the matching key. Keys stay in the browser tab (`sessionStorage`, cleared when the tab closes) and are never committed or bundled. Do not put API keys in `.env` files or CI secrets for this app.
 
 Useful checks before opening a PR:
 
@@ -27,21 +27,25 @@ Full gate (mirrors CI):
 npm ci && npm run typecheck && npm run lint && npm run format:check && npm test && npm run build
 ```
 
+When you change UI copy, add the same key to both `locales/en.ts` and `locales/zh-TW.ts` (`locales/parity.test.ts` enforces this).
+
 ## Scope
 
 **Welcome**
 
 - Photo studio UX and generation quality (edit, generate, ID photo, portrait, travel, themed, couple/group, try-on)
+- Image provider work under `services/imageProviders/` (Gemini + OpenRouter)
 - Docs, i18n, tests, and CI hygiene
 - Accessibility and performance improvements that keep visuals intact
 
-**Not in scope for drive-by PRs right now**
+**Keep in mind**
 
-- License changes (already MIT)
-- New image providers (e.g. OpenRouter) — planned for a later wave behind a provider abstraction
-- Community templates / code of conduct — later wave
+- Travel custom-scene **prompt optimization** and home-screen **model compare** are Gemini-only
+- Do not commit secrets, `.env`, or `.env.local`
 
-Please keep PRs focused. Do not commit secrets, `.env`, or `.env.local`.
+## Code of Conduct
+
+This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold it.
 
 ## License
 

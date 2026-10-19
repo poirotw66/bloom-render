@@ -5,7 +5,6 @@
  * Professional portrait (corporate /形象照) generation.
  */
 
-import { GenerateContentResponse } from '@google/genai';
 import { logger } from '../../utils/logger';
 import type { PortraitType, OutputSpec } from '../../types';
 import {
@@ -14,14 +13,8 @@ import {
   DEFAULT_PORTRAIT_TYPE,
   DEFAULT_PORTRAIT_SPEC,
 } from '../../constants/portrait';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  supportsMultiResolution,
-  type ServiceSettings,
-} from './shared';
+import { runImageGeneration } from './runImageGeneration';
+import { supportsMultiResolution, type ServiceSettings } from './shared';
 import { generatePortraitPrompt } from './prompts';
 
 export interface GeneratePortraitOptions {
@@ -47,11 +40,11 @@ export const generateProfessionalPortrait = async (
 
   const isGroup = Array.isArray(originalImage);
   const fileCount = isGroup ? originalImage.length : 1;
+  const images = isGroup ? originalImage : [originalImage];
 
   const style = PORTRAIT_TYPES.find((t) => t.id === portraitType) || PORTRAIT_TYPES[0];
   const spec = PORTRAIT_OUTPUT_SPECS.find((s) => s.id === outputSpec) || PORTRAIT_OUTPUT_SPECS[0];
 
-  // Generate prompt using unified prompt system
   const prompt = generatePortraitPrompt({
     portraitType: style,
     outputSpec: spec,
@@ -59,27 +52,11 @@ export const generateProfessionalPortrait = async (
     variationIndex: options.variationIndex,
   });
 
-  const textPart = { text: prompt };
-  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [];
-
-  if (isGroup) {
-    for (const file of originalImage) {
-      parts.push(await fileToPartAuto(file));
-    }
-  } else {
-    parts.push(await fileToPartAuto(originalImage));
-  }
-  parts.push(textPart);
-
-  const ai = getClient(serviceSettings);
-  const model = getModel(serviceSettings);
+  const model = serviceSettings?.model;
   const supportsMultiRes = supportsMultiResolution(model);
   const effectiveImageSize: '1K' | '2K' | '4K' = supportsMultiRes
     ? requestedImageSize || '1K'
     : '1K';
-
-  const imageConfig: { imageSize?: '1K' | '2K' | '4K' } = {};
-  if (supportsMultiRes) imageConfig.imageSize = effectiveImageSize;
 
   logger.debug('Starting portrait generation', {
     portraitType,
@@ -88,16 +65,12 @@ export const generateProfessionalPortrait = async (
     imageSize: effectiveImageSize,
   });
 
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model,
-    contents: { parts },
-    config: {
-      abortSignal: serviceSettings?.abortSignal,
-      responseModalities: ['TEXT', 'IMAGE'],
-      imageConfig,
-    },
+  return runImageGeneration({
+    prompt,
+    images,
+    settings: serviceSettings,
+    imageSize: supportsMultiRes ? effectiveImageSize : undefined,
+    includeImageConfig: true,
+    context: 'portrait',
   });
-
-  logger.debug('Received response from model for professional portrait', response);
-  return handleApiResponse(response, 'portrait');
 };

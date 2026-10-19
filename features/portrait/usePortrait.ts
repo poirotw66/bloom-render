@@ -42,10 +42,10 @@ export function usePortrait() {
   const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
-    if (!supportsMultiResolution(settings.model) && imageSize !== '1K') {
+    if (!supportsMultiResolution(settings.effectiveModel) && imageSize !== '1K') {
       setImageSize('1K');
     }
-  }, [settings.model, imageSize]);
+  }, [settings.effectiveModel, imageSize]);
 
   useEffect(() => {
     const typeParam = searchParams.get('type');
@@ -85,7 +85,7 @@ export function usePortrait() {
         portraitType,
         outputSpec: portraitOutputSpec,
         imageSize,
-        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
+        settings: settings.toServiceSettings(signal),
         variationIndex,
       })
         .then((url) => {
@@ -100,7 +100,7 @@ export function usePortrait() {
             logger.error(`Portrait generation error for item ${variationIndex + 1}:`, err);
           throw err;
         }),
-    [portraitType, portraitOutputSpec, imageSize, settings.apiKey, settings.model, addToHistory],
+    [portraitType, portraitOutputSpec, imageSize, settings, addToHistory],
   );
 
   const handlePortraitGenerate = useCallback(async () => {

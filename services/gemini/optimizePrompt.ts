@@ -3,19 +3,31 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Prompt optimization for image generation.
+ * Gemini-only (text output). OpenRouter Images API has no text planning endpoint.
  */
 
 import { logger } from '../../utils/logger';
-import { fileToPartAuto, getClient, getModel, type ServiceSettings } from './shared';
+import {
+  createI18nError,
+  fileToPartAuto,
+  getClient,
+  getModel,
+  type ServiceSettings,
+} from './shared';
 
 /**
  * Uses Gemini (text mode) to optimize a user's short prompt into a detailed image generation prompt.
+ * Throws `error.optimize_prompt_gemini_only` when the selected provider is OpenRouter.
  */
 export const generateOptimizedPrompt = async (
   userText: string,
   referenceImage?: File,
   settings?: ServiceSettings,
 ): Promise<string> => {
+  if (settings?.provider === 'openrouter') {
+    throw createI18nError('error.optimize_prompt_gemini_only');
+  }
+
   logger.debug('Optimizing prompt for:', userText, referenceImage ? '(with image)' : '(text only)');
   const ai = getClient(settings);
   const modelName = getModel(settings);
@@ -48,6 +60,7 @@ Requirements:
     if (!optimizedText) throw new Error('No text returned from optimization');
     return optimizedText;
   } catch (e) {
+    if (e instanceof Error && e.message.startsWith('error.')) throw e;
     logger.warn('Prompt optimization failed, executing fallback.', e);
     return userText;
   }

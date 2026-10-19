@@ -6,6 +6,12 @@
 import React, { useId, useState } from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 import { MODEL_LABEL_KEYS, SUPPORTED_MODELS, type ModelType } from '../constants/models';
+import {
+  OPENROUTER_IMAGE_MODELS,
+  OPENROUTER_MODEL_LABEL_KEYS,
+  type ImageProviderId,
+  type OpenRouterModel,
+} from '../services/imageProviders';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, type ThemeType } from '../contexts/ThemeContext';
 import { useDialog } from '../hooks/useDialog';
@@ -86,10 +92,16 @@ type SectionKey = 'theme' | 'language' | 'model' | 'compression';
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const {
+    imageProvider,
+    setImageProvider,
     apiKey,
     setApiKey,
     model,
     setModel,
+    openRouterApiKey,
+    setOpenRouterApiKey,
+    openRouterModel,
+    setOpenRouterModel,
     enableImageCompression,
     setEnableImageCompression,
     compressionThresholdMB,
@@ -105,10 +117,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [openSections, setOpenSections] = useState<Record<SectionKey, boolean>>({
     theme: true,
     language: false,
-    model: false,
+    model: true,
     compression: false,
   });
   const [showApiKey, setShowApiKey] = useState(false);
+  const isOpenRouter = imageProvider === 'openrouter';
 
   const toggleSection = (key: SectionKey) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -260,58 +273,138 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
           {renderSection(
             'model',
-            'settings.model',
+            'settings.provider_section',
             <div className="px-4 pb-4 space-y-4">
               <div>
                 <label
-                  htmlFor={`${baseId}-model`}
+                  htmlFor={`${baseId}-provider`}
                   className={`block text-sm font-medium mb-2 ${s.label}`}
                 >
-                  {t('settings.model')}
+                  {t('settings.provider')}
                 </label>
                 <select
-                  id={`${baseId}-model`}
-                  value={model}
-                  onChange={(e) => setModel(e.target.value as ModelType)}
+                  id={`${baseId}-provider`}
+                  value={imageProvider}
+                  onChange={(e) => setImageProvider(e.target.value as ImageProviderId)}
                   className={`${FIELD_BASE} cursor-pointer ${s.field}`}
                 >
-                  {SUPPORTED_MODELS.map((modelId) => (
-                    <option key={modelId} value={modelId}>
-                      {t(MODEL_LABEL_KEYS[modelId])}
-                    </option>
-                  ))}
+                  <option value="gemini">{t('settings.provider.gemini')}</option>
+                  <option value="openrouter">{t('settings.provider.openrouter')}</option>
                 </select>
+                <p className={`text-xs mt-2 ${s.hint}`}>{t('settings.provider_desc')}</p>
               </div>
 
-              <div>
-                <label
-                  htmlFor={`${baseId}-api-key`}
-                  className={`block text-sm font-medium mb-2 ${s.label}`}
-                >
-                  {t('settings.api_key')}
-                </label>
-                <div className="relative">
-                  <input
-                    id={`${baseId}-api-key`}
-                    type={showApiKey ? 'text' : 'password'}
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={t('settings.api_key_placeholder')}
-                    autoComplete="off"
-                    spellCheck={false}
-                    className={`${FIELD_BASE} pr-20 ${s.field}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowApiKey((prev) => !prev)}
-                    aria-pressed={showApiKey}
-                    className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-xs font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
-                  >
-                    {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
-                  </button>
-                </div>
-                <p className={`text-xs mt-2 ${s.hint}`}>{t('settings.api_key_desc')}</p>
-              </div>
+              {!isOpenRouter ? (
+                <>
+                  <div>
+                    <label
+                      htmlFor={`${baseId}-model`}
+                      className={`block text-sm font-medium mb-2 ${s.label}`}
+                    >
+                      {t('settings.model')}
+                    </label>
+                    <select
+                      id={`${baseId}-model`}
+                      value={model}
+                      onChange={(e) => setModel(e.target.value as ModelType)}
+                      className={`${FIELD_BASE} cursor-pointer ${s.field}`}
+                    >
+                      {SUPPORTED_MODELS.map((modelId) => (
+                        <option key={modelId} value={modelId}>
+                          {t(MODEL_LABEL_KEYS[modelId])}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`${baseId}-api-key`}
+                      className={`block text-sm font-medium mb-2 ${s.label}`}
+                    >
+                      {t('settings.api_key')}
+                    </label>
+                    <div className="relative">
+                      <input
+                        id={`${baseId}-api-key`}
+                        type={showApiKey ? 'text' : 'password'}
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        placeholder={t('settings.api_key_placeholder')}
+                        autoComplete="off"
+                        spellCheck={false}
+                        className={`${FIELD_BASE} pr-20 ${s.field}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey((prev) => !prev)}
+                        aria-pressed={showApiKey}
+                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-xs font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
+                      >
+                        {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
+                      </button>
+                    </div>
+                    <p className={`text-xs mt-2 ${s.hint}`}>{t('settings.api_key_desc')}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label
+                      htmlFor={`${baseId}-or-model`}
+                      className={`block text-sm font-medium mb-2 ${s.label}`}
+                    >
+                      {t('settings.openrouter.model')}
+                    </label>
+                    <select
+                      id={`${baseId}-or-model`}
+                      value={openRouterModel}
+                      onChange={(e) => setOpenRouterModel(e.target.value as OpenRouterModel)}
+                      className={`${FIELD_BASE} cursor-pointer ${s.field}`}
+                    >
+                      {OPENROUTER_IMAGE_MODELS.map((modelId) => (
+                        <option key={modelId} value={modelId}>
+                          {t(OPENROUTER_MODEL_LABEL_KEYS[modelId])}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor={`${baseId}-or-api-key`}
+                      className={`block text-sm font-medium mb-2 ${s.label}`}
+                    >
+                      {t('settings.openrouter.api_key')}
+                    </label>
+                    <div className="relative">
+                      <input
+                        id={`${baseId}-or-api-key`}
+                        type={showApiKey ? 'text' : 'password'}
+                        value={openRouterApiKey}
+                        onChange={(e) => setOpenRouterApiKey(e.target.value)}
+                        placeholder={t('settings.openrouter.api_key_placeholder')}
+                        autoComplete="off"
+                        spellCheck={false}
+                        className={`${FIELD_BASE} pr-20 ${s.field}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey((prev) => !prev)}
+                        aria-pressed={showApiKey}
+                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-xs font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
+                      >
+                        {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
+                      </button>
+                    </div>
+                    <p className={`text-xs mt-2 ${s.hint}`}>
+                      {t('settings.openrouter.api_key_desc')}
+                    </p>
+                  </div>
+
+                  <p className={`text-xs ${s.hint}`}>{t('settings.openrouter.gemini_only_note')}</p>
+                </>
+              )}
             </div>,
           )}
 

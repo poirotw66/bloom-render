@@ -10,14 +10,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  formatApiErrorMessage,
-  supportsMultiResolution,
-} from '../../services/gemini/shared';
+import { formatApiErrorMessage, supportsMultiResolution } from '../../services/gemini/shared';
+import { runImageGeneration } from '../../services/gemini/runImageGeneration';
 import { generateCoupleGroupPrompt } from '../../services/gemini/prompts';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { logger } from '../../utils/logger';
@@ -224,20 +218,10 @@ export function useCoupleGroup() {
       });
     };
 
-    // Prepare file parts (same for all variations)
-    const fileParts: Array<{ inlineData?: { mimeType: string; data: string } }> = [];
-    for (const file of files) {
-      fileParts.push(await fileToPartAuto(file));
-    }
-
-    const ai = getClient(settings);
-    const model = getModel(settings);
+    const serviceSettings = settings.toServiceSettings();
+    const model = serviceSettings.model;
     const supportsMultiRes = supportsMultiResolution(model);
     const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? outputSize : '1K';
-    const imageConfig: { aspectRatio: string; imageSize?: '1K' | '2K' | '4K' } = {
-      aspectRatio,
-    };
-    if (supportsMultiRes) imageConfig.imageSize = effectiveSize;
 
     logger.debug('Starting couple/group photo generation', {
       mode,
@@ -245,25 +229,22 @@ export function useCoupleGroup() {
       fileCount,
       outputSize: effectiveSize,
       aspectRatio,
+      provider: serviceSettings.provider,
     });
 
     return async (i: number) => {
       const variedPrompt = createPrompt(i);
-      const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [
-        ...fileParts,
-        { text: variedPrompt },
-      ];
 
       try {
-        const response = await ai.models.generateContent({
-          model,
-          contents: { parts },
-          config: {
-            responseModalities: ['TEXT', 'IMAGE'],
-            imageConfig,
-          },
+        const url = await runImageGeneration({
+          prompt: variedPrompt,
+          images: files,
+          settings: serviceSettings,
+          aspectRatio,
+          imageSize: supportsMultiRes ? effectiveSize : undefined,
+          includeImageConfig: true,
+          context: mode === 'couple' ? 'couple' : 'group',
         });
-        const url = handleApiResponse(response, mode === 'couple' ? 'couple' : 'group');
         addToHistory(mode, url, {
           style,
           fileCount,

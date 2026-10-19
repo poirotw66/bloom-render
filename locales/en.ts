@@ -632,6 +632,8 @@ export const enMessages: Record<string, string> = {
   'travel.custom': 'Custom',
   'travel.custom_btn': 'Custom scene',
   'travel.custom_placeholder': 'e.g. in Tokyo, city street, travel photography',
+  'travel.optimize_gemini_only_notice':
+    'Custom-scene prompt optimization is Gemini-only. With OpenRouter, your prompt is used as written.',
   'travel.custom_reference_label': 'Reference scene photo',
   'travel.custom_reference_btn': 'Choose image',
   'travel.custom_reference_remove': 'Remove',
@@ -1034,6 +1036,8 @@ export const enMessages: Record<string, string> = {
   'apikey.notice_title': 'Add an API key to generate your own',
   'apikey.notice_hint':
     'Browse the examples below without one. To run the model yourself, paste a Google AI Studio key into Settings — it stays in your browser and is never sent anywhere but Google.',
+  'apikey.notice_hint_openrouter':
+    'Browse the examples below without one. To run the model yourself, paste an OpenRouter key into Settings — it stays in your browser only.',
   'apikey.open_settings': 'Open settings',
   'apikey.get_key': 'Get an API key',
   'examples.before': 'Before',
@@ -1062,6 +1066,15 @@ export const enMessages: Record<string, string> = {
   'gallery.subtitle': 'Every image below came out of this app. Pick one to see how it was made.',
   'gallery.start_editing': 'Or start with your own photo',
   'error.api_key_missing': 'API key not found. Please check your settings.',
+  'error.openrouter_invalid_key':
+    'OpenRouter API key is missing or invalid. Check Settings and paste a valid key.',
+  'error.openrouter_rate_limit':
+    'OpenRouter rate limit or overload. Wait a moment and retry, or switch model / provider in Settings.',
+  'error.openrouter_failed': 'OpenRouter image generation failed. Please try again.',
+  'error.openrouter_model_no_image_ref':
+    'This OpenRouter model may not support image references. Try google/gemini-*-image or switch to Gemini.',
+  'error.optimize_prompt_gemini_only':
+    'Prompt optimization is Gemini-only. Switch to Gemini in Settings, or continue with your raw prompt.',
   'error.blocked': 'Request was blocked. Please try again or modify your request.',
   'error.safety_filter':
     'Content was filtered by safety settings. Please try a different approach.',
@@ -1153,10 +1166,27 @@ export const enMessages: Record<string, string> = {
   'panel.crop.apply': 'Apply Crop',
 
   'settings.title': 'Settings',
+  'settings.provider_section': 'Image provider',
+  'settings.provider': 'Provider',
+  'settings.provider_desc':
+    'Bring-your-own-key. Gemini uses Google AI Studio keys; OpenRouter uses OpenRouter keys. Keys stay in this browser only.',
+  'settings.provider.gemini': 'Google Gemini',
+  'settings.provider.openrouter': 'OpenRouter (BYOK)',
   'settings.model': 'Model',
   'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
   'settings.model.flash31': 'Gemini 3.1 Flash',
   'settings.model.pro': 'Gemini 3 Pro',
+  'settings.openrouter.model': 'OpenRouter model',
+  'settings.openrouter.model.flash25': 'Google Gemini 2.5 Flash Image',
+  'settings.openrouter.model.pro3': 'Google Gemini 3 Pro Image',
+  'settings.openrouter.model.gptImage1': 'OpenAI GPT Image 1',
+  'settings.openrouter.model.flux2pro': 'Black Forest Labs FLUX.2 Pro',
+  'settings.openrouter.api_key': 'OpenRouter API Key',
+  'settings.openrouter.api_key_placeholder': 'Enter your OpenRouter API Key',
+  'settings.openrouter.api_key_desc':
+    'Kept only for this browser tab session and cleared when the tab is closed. Never bundled or sent to our servers.',
+  'settings.openrouter.gemini_only_note':
+    'Note: Travel custom-scene prompt optimization is Gemini-only and is skipped on OpenRouter (your raw prompt is used). Model compare on the home screen is also Gemini-only.',
   'settings.theme': 'Theme',
   'settings.motion.enable': 'Background animations',
   'settings.motion.enable_desc':
@@ -1166,7 +1196,8 @@ export const enMessages: Record<string, string> = {
   'settings.language.zh': 'Traditional Chinese',
   'settings.api_key': 'API Key',
   'settings.api_key_placeholder': 'Enter your Google GenAI API Key',
-  'settings.api_key_desc': 'Your key is stored locally in your browser.',
+  'settings.api_key_desc':
+    'Kept only for this browser tab session and cleared when the tab is closed. Never bundled.',
   'settings.api_key_show': 'Show',
   'settings.api_key_hide': 'Hide',
   'settings.autosave_hint': 'Changes are saved automatically.',

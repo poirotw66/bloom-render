@@ -34,8 +34,8 @@ const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
   disabled = false,
 }) => {
   const { t } = useLanguage();
-  const { model } = useSettings();
-  const supportsMultiRes = supportsMultiResolution(model);
+  const { effectiveModel } = useSettings();
+  const supportsMultiRes = supportsMultiResolution(effectiveModel);
   const allowedSizes: TryOnOutputSize[] = supportsMultiRes ? TRYON_OUTPUT_SIZES : ['1K'];
 
   return (

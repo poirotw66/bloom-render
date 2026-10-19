@@ -114,7 +114,7 @@ export function useIdPhoto() {
           idPhotoClothingOption === 'custom' && idPhotoClothingReferenceFile
             ? idPhotoClothingReferenceFile
             : undefined,
-        settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
+        settings: settings.toServiceSettings(signal),
         variationIndex,
       })
         .then((url) => {
@@ -138,8 +138,7 @@ export function useIdPhoto() {
       idPhotoClothingOption,
       idPhotoClothingCustomText,
       idPhotoClothingReferenceFile,
-      settings.apiKey,
-      settings.model,
+      settings,
       addToHistory,
     ],
   );

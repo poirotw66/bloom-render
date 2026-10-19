@@ -5,7 +5,6 @@
  * ID / passport photo generation.
  */
 
-import { GenerateContentResponse } from '@google/genai';
 import { logger } from '../../utils/logger';
 import type { RetouchLevel, IdPhotoType, OutputSpec, ClothingOption } from '../../types';
 import {
@@ -18,13 +17,8 @@ import {
   DEFAULT_OUTPUT_SPEC,
   DEFAULT_CLOTHING_OPTION,
 } from '../../constants/idPhoto';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  type ServiceSettings,
-} from './shared';
+import { runImageGeneration } from './runImageGeneration';
+import type { ServiceSettings } from './shared';
 import { generateIdPhotoPrompt } from './prompts';
 
 export interface GenerateIdPhotoOptions {
@@ -35,7 +29,7 @@ export interface GenerateIdPhotoOptions {
   clothingCustomText?: string;
   clothingReferenceImage?: File;
   settings?: ServiceSettings;
-  variationIndex?: number; // For generating different variations
+  variationIndex?: number;
 }
 
 /**
@@ -82,7 +76,6 @@ export const generateIdPhoto = async (
     clothingHint = 'Use appropriate professional attire suitable for an ID photo.';
   }
 
-  // Generate prompt using unified prompt system
   const prompt = generateIdPhotoPrompt({
     retouchLevel: level,
     idType: type,
@@ -91,7 +84,6 @@ export const generateIdPhoto = async (
     clothingReferenceImage: clothingReferenceImage ?? undefined,
     variationIndex: opts.variationIndex,
   });
-  const textPart = { text: prompt };
 
   logger.debug('Starting ID photo generation', {
     retouchLevel,
@@ -100,23 +92,15 @@ export const generateIdPhoto = async (
     clothingOption,
     hasClothingRefImage: !!clothingReferenceImage,
   });
-  const ai = getClient(serviceSettings);
-  const model = getModel(serviceSettings);
-  const originalImagePart = await fileToPartAuto(originalImage);
-  const parts: Array<{ inlineData?: { mimeType: string; data: string } } | { text: string }> = [
-    originalImagePart,
-  ];
-  if (clothingReferenceImage) {
-    parts.push(await fileToPartAuto(clothingReferenceImage));
-  }
-  parts.push(textPart);
 
-  logger.debug(`Sending image(s) to model (${model}) for ID photo...`);
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model,
-    contents: { parts },
-    config: { abortSignal: serviceSettings?.abortSignal },
+  const images: File[] = [originalImage];
+  if (clothingReferenceImage) images.push(clothingReferenceImage);
+
+  return runImageGeneration({
+    prompt,
+    images,
+    settings: serviceSettings,
+    includeImageConfig: false,
+    context: 'id-photo',
   });
-  logger.debug('Received response from model for ID photo', response);
-  return handleApiResponse(response, 'id-photo');
 };

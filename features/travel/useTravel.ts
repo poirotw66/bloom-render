@@ -191,10 +191,10 @@ export function useTravel() {
 
   /** When switching to Flash, 2K/4K are not supported; reset to 1K. */
   useEffect(() => {
-    if (!supportsMultiResolution(settings.model) && imageSize !== '1K') {
+    if (!supportsMultiResolution(settings.effectiveModel) && imageSize !== '1K') {
       setImageSize('1K');
     }
-  }, [settings.model, imageSize]);
+  }, [settings.effectiveModel, imageSize]);
 
   const resolveScenePrompt = useCallback((): string => {
     if (selectedSceneId === 'custom') {
@@ -269,17 +269,19 @@ export function useTravel() {
         return;
       }
 
-      // Auto-optimize prompt for custom scenes using AI
+      // Auto-optimize prompt for custom scenes using AI (Gemini-only).
       setLoading(true);
       try {
-        if (rawPrompt) {
+        if (!rawPrompt) {
+          scenePrompt = '';
+        } else if (settings.imageProvider === 'openrouter') {
+          scenePrompt = rawPrompt;
+        } else {
           scenePrompt = await generateOptimizedPrompt(
             rawPrompt,
             customSceneReferenceFile ?? undefined,
-            { apiKey: settings.apiKey, model: settings.model },
+            settings.toServiceSettings(),
           );
-        } else {
-          scenePrompt = '';
         }
       } catch (e) {
         logger.warn('Prompt optimization failed, using raw prompt', e);
@@ -383,7 +385,7 @@ export function useTravel() {
           aspectRatio,
           imageSize,
           sceneReferenceImage,
-          settings: { apiKey: settings.apiKey, model: settings.model, abortSignal: signal },
+          settings: settings.toServiceSettings(signal),
         })
           .then((url) => {
             addToHistory('travel', url, {
@@ -478,8 +480,7 @@ export function useTravel() {
     relationship,
     framing,
     clearBackground,
-    settings.apiKey,
-    settings.model,
+    settings,
     travelScenes,
     t,
     useReferenceImage,

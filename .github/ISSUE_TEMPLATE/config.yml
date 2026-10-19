@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security / leaked credentials
+    url: https://github.com/poirotw66/bloom-render/security/advisories/new
+    about: Report vulnerabilities privately. Never paste API keys into public issues.

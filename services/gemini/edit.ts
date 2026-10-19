@@ -5,15 +5,9 @@
  * Generative edit: localized edit based on prompt and hotspot.
  */
 
-import { GenerateContentResponse } from '@google/genai';
 import { logger } from '../../utils/logger';
-import {
-  fileToPartAuto,
-  getClient,
-  getModel,
-  handleApiResponse,
-  type ServiceSettings,
-} from './shared';
+import { runImageGeneration } from './runImageGeneration';
+import type { ServiceSettings } from './shared';
 
 /**
  * Generates an edited image using generative AI based on a text prompt and a specific point.
@@ -25,10 +19,7 @@ export const generateEditedImage = async (
   settings?: ServiceSettings,
 ): Promise<string> => {
   logger.debug('Starting generative edit at:', hotspot);
-  const ai = getClient(settings);
-  const model = getModel(settings);
 
-  const originalImagePart = await fileToPartAuto(originalImage);
   const prompt = `You are an expert photo editor AI. Your task is to perform a natural, localized edit on the provided image based on the user's request.
 User Request: "${userPrompt}"
 Edit Location: Focus on the area around pixel coordinates (x: ${hotspot.x}, y: ${hotspot.y}).
@@ -42,15 +33,12 @@ Safety & Ethics Policy:
 - You MUST REFUSE any request to change a person's fundamental race or ethnicity (e.g., 'make me look Asian', 'change this person to be Black'). Do not perform these edits. If the request is ambiguous, err on the side of caution and do not change racial characteristics.
 
 Output: Return ONLY the final edited image. Do not return text.`;
-  const textPart = { text: prompt };
 
-  logger.debug(`Sending image and prompt to the model (${model})...`);
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model: model,
-    contents: { parts: [originalImagePart, textPart] },
-    config: { abortSignal: settings?.abortSignal },
+  return runImageGeneration({
+    prompt,
+    images: [originalImage],
+    settings,
+    includeImageConfig: false,
+    context: 'edit',
   });
-  logger.debug('Received response from model for edit', response);
-
-  return handleApiResponse(response, 'edit');
 };

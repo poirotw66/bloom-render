@@ -107,10 +107,7 @@ export function useGeneratePage<TFile = File, TOptions = unknown>({
     try {
       const stopProgress = startRandomProgressTicker(setProgress);
 
-      const url = await generateApi(file, options, {
-        apiKey: settings.apiKey,
-        model: settings.model,
-      });
+      const url = await generateApi(file, options, settings.toServiceSettings());
 
       stopProgress();
       setProgress(100);

@@ -608,6 +608,8 @@ export const zhTWMessages: Record<string, string> = {
   'travel.custom': '自訂',
   'travel.custom_btn': '自訂場景',
   'travel.custom_placeholder': '例如：in Tokyo, city street, travel photography',
+  'travel.optimize_gemini_only_notice':
+    '自訂場景的提示詞優化僅支援 Gemini。使用 OpenRouter 時會直接使用你輸入的提示詞。',
   'travel.custom_reference_label': '參考場景照片',
   'travel.custom_reference_btn': '選擇圖片',
   'travel.custom_reference_remove': '移除',
@@ -971,6 +973,8 @@ export const zhTWMessages: Record<string, string> = {
   'apikey.notice_title': '想自己生成？請先填入 API 金鑰',
   'apikey.notice_hint':
     '沒有金鑰也可以瀏覽下方範例。若要實際執行模型，請到「設定」貼上 Google AI Studio 金鑰；金鑰只存在你的瀏覽器，除了 Google 之外不會送到任何地方。',
+  'apikey.notice_hint_openrouter':
+    '沒有金鑰也可以瀏覽下方範例。若要實際執行模型，請到「設定」貼上 OpenRouter 金鑰；金鑰只存在你的瀏覽器。',
   'apikey.open_settings': '開啟設定',
   'apikey.get_key': '取得 API 金鑰',
   'examples.before': '原圖',
@@ -998,6 +1002,14 @@ export const zhTWMessages: Record<string, string> = {
   'gallery.subtitle': '以下每一張都出自本站。點一張看看它是怎麼做出來的。',
   'gallery.start_editing': '或者，直接上傳自己的照片',
   'error.api_key_missing': '找不到 API 金鑰。請檢查您的設定。',
+  'error.openrouter_invalid_key': 'OpenRouter API 金鑰缺失或無效。請到設定貼上有效金鑰。',
+  'error.openrouter_rate_limit':
+    'OpenRouter 速率限制或過載。請稍候再試，或在設定中更換模型／供應商。',
+  'error.openrouter_failed': 'OpenRouter 影像生成失敗。請重試。',
+  'error.openrouter_model_no_image_ref':
+    '此 OpenRouter 模型可能不支援影像參考。請改用 google/gemini-*-image，或切換到 Gemini。',
+  'error.optimize_prompt_gemini_only':
+    '提示詞優化僅支援 Gemini。請在設定切換到 Gemini，或直接使用原始提示詞。',
   'error.blocked': '請求被阻擋。請重試或修改您的請求。',
   'error.safety_filter': '內容被安全設定過濾。請嘗試其他方式。',
   'error.no_image': 'AI 模型未返回圖片。請重試。',
@@ -1087,10 +1099,27 @@ export const zhTWMessages: Record<string, string> = {
   'panel.crop.apply': '應用裁切',
 
   'settings.title': '設定',
+  'settings.provider_section': '影像供應商',
+  'settings.provider': '供應商',
+  'settings.provider_desc':
+    '自備金鑰（BYOK）。Gemini 使用 Google AI Studio 金鑰；OpenRouter 使用 OpenRouter 金鑰。金鑰只存在此瀏覽器。',
+  'settings.provider.gemini': 'Google Gemini',
+  'settings.provider.openrouter': 'OpenRouter（自備金鑰）',
   'settings.model': '模型',
   'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
   'settings.model.flash31': 'Gemini 3.1 Flash',
   'settings.model.pro': 'Gemini 3 Pro',
+  'settings.openrouter.model': 'OpenRouter 模型',
+  'settings.openrouter.model.flash25': 'Google Gemini 2.5 Flash Image',
+  'settings.openrouter.model.pro3': 'Google Gemini 3 Pro Image',
+  'settings.openrouter.model.gptImage1': 'OpenAI GPT Image 1',
+  'settings.openrouter.model.flux2pro': 'Black Forest Labs FLUX.2 Pro',
+  'settings.openrouter.api_key': 'OpenRouter API 金鑰',
+  'settings.openrouter.api_key_placeholder': '輸入您的 OpenRouter API Key',
+  'settings.openrouter.api_key_desc':
+    '僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包或送到我們的伺服器。',
+  'settings.openrouter.gemini_only_note':
+    '注意：旅遊照「自訂場景」的提示詞優化僅支援 Gemini；選 OpenRouter 時會略過優化並使用你輸入的原文。首頁模型比較也僅支援 Gemini。',
   'settings.theme': '主題',
   'settings.motion.enable': '背景動畫',
   'settings.motion.enable_desc': '頁面背景的星空、花瓣與漸層動態效果。預設關閉以提升流暢度。',
@@ -1099,7 +1128,7 @@ export const zhTWMessages: Record<string, string> = {
   'settings.language.zh': '繁體中文',
   'settings.api_key': 'API 金鑰',
   'settings.api_key_placeholder': '輸入您的 Google GenAI API Key',
-  'settings.api_key_desc': '您的金鑰僅儲存在瀏覽器本地。',
+  'settings.api_key_desc': '僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包。',
   'settings.api_key_show': '顯示',
   'settings.api_key_hide': '隱藏',
   'settings.autosave_hint': '設定會自動儲存。',
