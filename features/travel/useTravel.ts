@@ -52,6 +52,7 @@ import type {
 import { mimeTypeForImagePath, referenceFileName, sceneRefPath } from '../../utils/imageAsset';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { publicAssetUrl } from '../../utils/publicAsset';
+import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 
 export type TravelSceneIdOrCustom = string;
 
@@ -145,6 +146,22 @@ export function useTravel() {
   // on every render, so those callbacks were rebuilt every render and their
   // dependency lists never actually gated anything.
   const travelScenes = useMemo(() => sceneCatalog?.all ?? [], [sceneCatalog]);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'travel') return;
+    const opts = payload.options ?? {};
+    if (typeof opts.sceneId === 'string') setSelectedSceneId(opts.sceneId);
+    if (typeof opts.style === 'string') setStyle(opts.style as TravelStyle);
+    if (typeof opts.aspectRatio === 'string') setAspectRatio(opts.aspectRatio as TravelAspectRatio);
+    if (typeof opts.imageSize === 'string') setImageSize(opts.imageSize as TravelImageSize);
+    if (typeof opts.weather === 'string') setWeather(opts.weather as TravelWeather);
+    if (typeof opts.time === 'string') setTimeOfDay(opts.time as TravelTimeOfDay);
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'travel-source.png').then((file) =>
+        setFiles([file]),
+      );
+    }
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -405,6 +422,7 @@ export function useTravel() {
                 variationIndex: i,
                 prompt: variedPrompt,
               }),
+              files[0] ?? null,
             );
             return url;
           })

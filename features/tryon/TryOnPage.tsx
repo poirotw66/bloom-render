@@ -80,13 +80,8 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
                 <TryOnResult
                   key={idx}
                   result={dataUrl}
+                  originalUrl={tryOn.personPreviewUrl}
                   label={resultList.length > 1 ? `${t('tryon.style')} ${idx + 1}` : undefined}
-                  onDownload={() => {
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    link.download = `try-on-${idx + 1}.png`;
-                    link.click();
-                  }}
                   onEditInEditor={() => {
                     onImageSelected(dataURLtoFile(dataUrl, `try-on-${idx + 1}.png`));
                   }}

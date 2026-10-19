@@ -9,16 +9,16 @@ import GenericResult from '../../components/GenericResult';
 
 interface ThemedResultProps {
   themedResult: string;
+  originalUrl?: string | null;
   themeType: string;
-  onDownload: () => void;
   onAgain: () => void;
   onEditInEditor: () => void;
 }
 
 const ThemedResult: React.FC<ThemedResultProps> = ({
   themedResult,
+  originalUrl,
   themeType,
-  onDownload,
   onAgain,
   onEditInEditor,
 }) => {
@@ -29,9 +29,10 @@ const ThemedResult: React.FC<ThemedResultProps> = ({
   return (
     <GenericResult
       result={themedResult}
-      onDownload={onDownload}
+      originalUrl={originalUrl}
       onAgain={onAgain}
       onEditInEditor={onEditInEditor}
+      fileBaseName="themed"
       paramsTitleKey="idphoto.result.params_title"
       params={[{ labelKey: 'themed.label.type', value: t(themeNameKey) }]}
     />

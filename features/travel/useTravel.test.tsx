@@ -21,6 +21,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { SettingsProvider } from '../../contexts/SettingsContext';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { useTravel } from './useTravel';
@@ -51,9 +52,11 @@ vi.mock('../../services/geminiService', async (importOriginal) => {
 
 function wrapper({ children }: { children: ReactNode }) {
   return (
-    <SettingsProvider>
-      <LanguageProvider>{children}</LanguageProvider>
-    </SettingsProvider>
+    <MemoryRouter>
+      <SettingsProvider>
+        <LanguageProvider>{children}</LanguageProvider>
+      </SettingsProvider>
+    </MemoryRouter>
   );
 }
 

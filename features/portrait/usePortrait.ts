@@ -12,6 +12,7 @@ import { formatApiErrorMessage, supportsMultiResolution } from '../../services/g
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { useHistory } from '../../hooks/useHistory';
+import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import {
   allFailedError,
@@ -59,6 +60,19 @@ export function usePortrait() {
     }
   }, [searchParams]);
 
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'portrait') return;
+    const opts = payload.options ?? {};
+    if (typeof opts.portraitType === 'string') setPortraitType(opts.portraitType as PortraitType);
+    if (typeof opts.outputSpec === 'string') setPortraitOutputSpec(opts.outputSpec as OutputSpec);
+    if (opts.imageSize === '1K' || opts.imageSize === '2K' || opts.imageSize === '4K') {
+      setImageSize(opts.imageSize);
+    }
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'portrait-source.png').then(setPortraitFile);
+    }
+  });
+
   useEffect(() => {
     if (portraitFile) {
       const u = URL.createObjectURL(portraitFile);
@@ -99,6 +113,7 @@ export function usePortrait() {
               imageSize,
               variationIndex,
             }),
+            file,
           );
           return url;
         })

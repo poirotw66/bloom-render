@@ -100,16 +100,11 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
                 <IdPhotoResult
                   key={idx}
                   idPhotoResult={result}
+                  originalUrl={id.idPhotoPreviewUrl}
                   idPhotoType={id.idPhotoType}
                   idPhotoRetouchLevel={id.idPhotoRetouchLevel}
                   idPhotoOutputSpec={id.idPhotoOutputSpec}
                   idPhotoClothingOption={id.idPhotoClothingOption}
-                  onDownload={() => {
-                    const link = document.createElement('a');
-                    link.href = result;
-                    link.download = `id-photo-${idx + 1}.png`;
-                    link.click();
-                  }}
                   onAgain={id.clearIdPhotoResult}
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
@@ -119,11 +114,11 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
         ) : id.idPhotoResult ? (
           <IdPhotoResult
             idPhotoResult={id.idPhotoResult}
+            originalUrl={id.idPhotoPreviewUrl}
             idPhotoType={id.idPhotoType}
             idPhotoRetouchLevel={id.idPhotoRetouchLevel}
             idPhotoOutputSpec={id.idPhotoOutputSpec}
             idPhotoClothingOption={id.idPhotoClothingOption}
-            onDownload={id.handleIdPhotoDownload}
             onAgain={id.clearIdPhotoResult}
             onEditInEditor={() => handleEditInEditor(id.idPhotoResult!)}
           />

@@ -7,39 +7,42 @@
 
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { UI_BTN_PRIMARY, UI_BTN_SECONDARY, UI_BTN_SUCCESS, UI_CARD } from '../utils/uiClasses';
+import ResultActions from './ResultActions';
+import ResultImage from './ResultImage';
+import { UI_BTN_PRIMARY, UI_BTN_SECONDARY, UI_CARD } from '../utils/uiClasses';
 
 interface GenericResultProps {
   result: string;
-  onDownload: () => void;
+  /** Input / before image URL for compare + branded cards. */
+  originalUrl?: string | null;
   onAgain: () => void;
   onEditInEditor?: () => void;
   paramsTitleKey?: string;
   params?: Array<{ labelKey: string; value: string | React.ReactNode }>;
-  downloadKey?: string;
   editKey?: string;
   againKey?: string;
+  fileBaseName?: string;
   className?: string;
 }
 
 const GenericResult: React.FC<GenericResultProps> = ({
   result,
-  onDownload,
+  originalUrl,
   onAgain,
   onEditInEditor,
   paramsTitleKey,
   params = [],
-  downloadKey = 'start.idphoto_download',
   editKey = 'start.idphoto_edit',
   againKey = 'start.idphoto_again',
+  fileBaseName = 'bloomrender-result',
   className = '',
 }) => {
   const { t } = useLanguage();
 
   return (
     <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto ${className}`}>
-      <div className="relative w-full rounded-xl overflow-hidden shadow-2xl border-2 border-gray-700">
-        <img src={result} alt="Generated result" className="w-full h-auto" />
+      <div className="relative w-full rounded-xl overflow-hidden shadow-2xl border-2 border-gray-700 p-2 bg-gray-950/40">
+        <ResultImage resultUrl={result} originalUrl={originalUrl} />
       </div>
 
       {params.length > 0 && paramsTitleKey && (
@@ -60,21 +63,16 @@ const GenericResult: React.FC<GenericResultProps> = ({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        <button type="button" onClick={onDownload} className={UI_BTN_SUCCESS}>
-          <span>💾</span>
-          {t(downloadKey)}
-        </button>
+      <ResultActions result={result} originalUrl={originalUrl} fileBaseName={fileBaseName} />
 
+      <div className="flex flex-wrap items-center justify-center gap-4">
         {onEditInEditor && (
           <button type="button" onClick={onEditInEditor} className={UI_BTN_PRIMARY}>
-            <span>✏️</span>
             {t(editKey)}
           </button>
         )}
 
         <button type="button" onClick={onAgain} className={UI_BTN_SECONDARY}>
-          <span>🔄</span>
           {t(againKey)}
         </button>
       </div>

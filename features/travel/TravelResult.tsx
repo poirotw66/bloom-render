@@ -5,14 +5,9 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import {
-  DownloadIcon,
-  EditIcon,
-  RefreshIcon,
-  SparklesIcon,
-  TravelIcon,
-  UsersIcon,
-} from '../../components/icons';
+import { EditIcon, RefreshIcon, SparklesIcon, TravelIcon, UsersIcon } from '../../components/icons';
+import ResultActions from '../../components/ResultActions';
+import ResultImage from '../../components/ResultImage';
 import { TRAVEL_PANEL } from './travelUi';
 
 import {
@@ -34,6 +29,7 @@ import {
 
 interface TravelResultProps {
   result: string;
+  originalUrl?: string | null;
   resultSceneNameKey: string | null;
   resultSceneCustomLabel: string | null;
   resultMetadata: {
@@ -50,17 +46,16 @@ interface TravelResultProps {
     framing: TravelFraming;
     clearBackground: boolean;
   } | null;
-  onDownload: () => void;
   onAgain: () => void;
   onEditInEditor: (result: string, index?: number) => void;
 }
 
 const TravelResult: React.FC<TravelResultProps> = ({
   result,
+  originalUrl,
   resultSceneNameKey,
   resultSceneCustomLabel,
   resultMetadata,
-  onDownload,
   onAgain,
   onEditInEditor,
 }) => {
@@ -78,11 +73,12 @@ const TravelResult: React.FC<TravelResultProps> = ({
       <div className="text-center w-full">
         <h3 className="text-xl font-bold text-white">{t('travel.title')}</h3>
       </div>
-      <div className="w-full aspect-[4/3] max-h-[400px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center shadow-2xl">
-        <img
-          src={result}
-          alt="Travel photo"
-          className="max-w-full max-h-full w-auto h-auto object-contain"
+      <div className="w-full max-h-[480px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center shadow-2xl p-2">
+        <ResultImage
+          resultUrl={result}
+          originalUrl={originalUrl}
+          alt={t('travel.title')}
+          imageClassName="max-w-full max-h-[400px] w-auto h-auto object-contain"
         />
       </div>
 
@@ -217,31 +213,26 @@ const TravelResult: React.FC<TravelResultProps> = ({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-center gap-3 w-full border-t border-gray-700/50 pt-6">
-        <button
-          type="button"
-          onClick={onDownload}
-          className="inline-flex items-center gap-2 bg-gradient-to-br from-emerald-600 to-emerald-500 text-white font-bold py-3 px-5 rounded-xl transition-colors duration-200 shadow-md shadow-emerald-500/20 hover:from-emerald-500 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-        >
-          <DownloadIcon className="w-5 h-5" />
-          {t('travel.download')}
-        </button>
-        <button
-          type="button"
-          onClick={onAgain}
-          className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-        >
-          <RefreshIcon className="w-5 h-5" />
-          {t('travel.again')}
-        </button>
-        <button
-          type="button"
-          onClick={() => onEditInEditor(result)}
-          className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-5 rounded-xl transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-        >
-          <EditIcon className="w-5 h-5" />
-          {t('travel.edit_in_editor')}
-        </button>
+      <div className="flex flex-col items-center gap-4 w-full border-t border-gray-700/50 pt-6">
+        <ResultActions result={result} originalUrl={originalUrl} fileBaseName="travel-photo" />
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={onAgain}
+            className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+          >
+            <RefreshIcon className="w-5 h-5" />
+            {t('travel.again')}
+          </button>
+          <button
+            type="button"
+            onClick={() => onEditInEditor(result)}
+            className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-5 rounded-xl transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+          >
+            <EditIcon className="w-5 h-5" />
+            {t('travel.edit_in_editor')}
+          </button>
+        </div>
       </div>
     </div>
   );

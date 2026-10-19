@@ -9,6 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
+import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { generateVirtualTryOn } from '../../services/geminiService';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
@@ -55,6 +56,22 @@ export function useTryOn() {
   const [style, setStyle] = useState<TryOnStyleId>(DEFAULT_TRYON_STYLE);
   const [outputSize, setOutputSize] = useState<TryOnOutputSize>(DEFAULT_TRYON_OUTPUT_SIZE);
   const [aspectRatio, setAspectRatio] = useState<TryOnAspectRatio>(DEFAULT_TRYON_ASPECT_RATIO);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'tryon') return;
+    const opts = payload.options ?? {};
+    if (typeof opts.background === 'string') setBackground(opts.background as TryOnBackgroundId);
+    if (typeof opts.style === 'string') setStyle(opts.style as TryOnStyleId);
+    if (opts.outputSize === '1K' || opts.outputSize === '2K' || opts.outputSize === '4K') {
+      setOutputSize(opts.outputSize);
+    }
+    if (opts.aspectRatio === '1:1' || opts.aspectRatio === '16:9' || opts.aspectRatio === '9:16') {
+      setAspectRatio(opts.aspectRatio);
+    }
+    if (payload.sourceUrl) {
+      void fileFromSourceUrl(payload.sourceUrl, 'tryon-person.png').then(setPersonFile);
+    }
+  });
 
   // Person preview URL
   useEffect(() => {
@@ -174,6 +191,7 @@ export function useTryOn() {
             aspectRatio,
             variationIndex,
           }),
+          person,
         );
         return dataUrl;
       });
