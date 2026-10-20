@@ -17,6 +17,7 @@ import type {
   OutputSpec,
   ClothingOption,
 } from '../../constants/idPhoto';
+import { ID_PHOTO_SIZE_PRESETS, type IdPhotoSizeId } from '../../constants/idPhotoSizes';
 import {
   UI_FILE_PICKER,
   UI_FORM_CARD,
@@ -34,6 +35,8 @@ interface IdPhotoFormProps {
   setIdPhotoRetouchLevel: (v: RetouchLevel) => void;
   idPhotoOutputSpec: OutputSpec;
   setIdPhotoOutputSpec: (v: OutputSpec) => void;
+  idPhotoSizeId: IdPhotoSizeId;
+  setIdPhotoSizeId: (v: IdPhotoSizeId) => void;
   idPhotoClothingOption: ClothingOption;
   setIdPhotoClothingOption: (v: ClothingOption) => void;
   idPhotoClothingCustomText: string;
@@ -51,6 +54,8 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
   setIdPhotoRetouchLevel,
   idPhotoOutputSpec,
   setIdPhotoOutputSpec,
+  idPhotoSizeId,
+  setIdPhotoSizeId,
   idPhotoClothingOption,
   setIdPhotoClothingOption,
   idPhotoClothingCustomText,
@@ -110,6 +115,22 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
             </button>
           ))}
         </div>
+      </div>
+      <div>
+        <label className={UI_LABEL}>{t('idphoto.label.print_size')}</label>
+        <select
+          value={idPhotoSizeId}
+          onChange={(e) => setIdPhotoSizeId(e.target.value as IdPhotoSizeId)}
+          disabled={disabled}
+          className={UI_SELECT}
+        >
+          {ID_PHOTO_SIZE_PRESETS.map((size) => (
+            <option key={size.id} value={size.id}>
+              {t(size.nameKey)}
+            </option>
+          ))}
+        </select>
+        <p className={`mt-1 ${UI_LABEL_HINT}`}>{t('idphoto.print_size_hint')}</p>
       </div>
       <div>
         <label className={UI_LABEL}>{t('idphoto.label.clothing')}</label>

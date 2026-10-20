@@ -106,9 +106,12 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
                   idPhotoType={id.idPhotoType}
                   idPhotoRetouchLevel={id.idPhotoRetouchLevel}
                   idPhotoOutputSpec={id.idPhotoOutputSpec}
+                  idPhotoSizeId={id.idPhotoSizeId}
                   idPhotoClothingOption={id.idPhotoClothingOption}
                   onAgain={id.clearIdPhotoResult}
                   onEditInEditor={() => handleEditInEditor(result, idx)}
+                  onDownloadPrintSheetJpg={id.handleDownloadPrintSheetJpg}
+                  onDownloadPrintSheetPdf={id.handleDownloadPrintSheetPdf}
                 />
               ))}
             </div>
@@ -120,9 +123,12 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
             idPhotoType={id.idPhotoType}
             idPhotoRetouchLevel={id.idPhotoRetouchLevel}
             idPhotoOutputSpec={id.idPhotoOutputSpec}
+            idPhotoSizeId={id.idPhotoSizeId}
             idPhotoClothingOption={id.idPhotoClothingOption}
             onAgain={id.clearIdPhotoResult}
             onEditInEditor={() => handleEditInEditor(id.idPhotoResult!)}
+            onDownloadPrintSheetJpg={id.handleDownloadPrintSheetJpg}
+            onDownloadPrintSheetPdf={id.handleDownloadPrintSheetPdf}
           />
         ) : id.idPhotoLoading ? (
           <ProgressIndicator
@@ -139,6 +145,8 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
               setIdPhotoRetouchLevel={id.setIdPhotoRetouchLevel}
               idPhotoOutputSpec={id.idPhotoOutputSpec}
               setIdPhotoOutputSpec={id.setIdPhotoOutputSpec}
+              idPhotoSizeId={id.idPhotoSizeId}
+              setIdPhotoSizeId={id.setIdPhotoSizeId}
               idPhotoClothingOption={id.idPhotoClothingOption}
               setIdPhotoClothingOption={id.setIdPhotoClothingOption}
               idPhotoClothingCustomText={id.idPhotoClothingCustomText}
