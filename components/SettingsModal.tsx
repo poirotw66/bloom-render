@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React, { useId, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { useSettings } from '../contexts/SettingsContext';
+import { IMAGE_PRICING_LAST_UPDATED } from '../constants/imagePricing';
 import { MODEL_LABEL_KEYS, SUPPORTED_MODELS, type ModelType } from '../constants/models';
 import {
   OPENROUTER_IMAGE_MODELS,
@@ -15,6 +16,13 @@ import {
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, type ThemeType } from '../contexts/ThemeContext';
 import { useDialog } from '../hooks/useDialog';
+import { formatUsd } from '../utils/costEstimate';
+import {
+  readSessionSpendUsd,
+  resetSessionSpendUsd,
+  SESSION_SPEND_EVENT,
+  notifySessionSpendChanged,
+} from '../utils/sessionSpend';
 import { ChevronDownIcon, XMarkIcon } from './icons';
 
 interface SettingsModalProps {
@@ -88,7 +96,7 @@ const FIELD_BASE =
 const CHOICE_BASE =
   'rounded-lg border px-3 py-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-black cursor-pointer';
 
-type SectionKey = 'theme' | 'language' | 'model' | 'compression';
+type SectionKey = 'theme' | 'language' | 'model' | 'compression' | 'spend';
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const {
@@ -119,10 +127,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     language: false,
     model: true,
     compression: false,
+    spend: true,
   });
   const [showApiKey, setShowApiKey] = useState(false);
+  const [sessionSpend, setSessionSpend] = useState(0);
   const isDemo = imageProvider === 'demo';
   const isGemini = imageProvider === 'gemini';
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const sync = () => setSessionSpend(readSessionSpendUsd());
+    sync();
+    window.addEventListener(SESSION_SPEND_EVENT, sync);
+    return () => window.removeEventListener(SESSION_SPEND_EVENT, sync);
+  }, [isOpen]);
 
   const toggleSection = (key: SectionKey) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -465,6 +483,30 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   </p>
                 </div>
               )}
+            </div>,
+          )}
+
+          {renderSection(
+            'spend',
+            'settings.spend',
+            <div className="px-4 pb-4 space-y-3">
+              <p className={`text-sm ${s.label}`}>
+                {t('settings.spend_total', { amount: formatUsd(sessionSpend) })}
+              </p>
+              <p className={`text-xs ${s.hint}`}>
+                {t('settings.spend_desc', { date: IMAGE_PRICING_LAST_UPDATED })}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  resetSessionSpendUsd();
+                  notifySessionSpendChanged();
+                  setSessionSpend(0);
+                }}
+                className={`text-sm font-medium px-3 py-2 rounded-lg border cursor-pointer focus:outline-none focus-visible:ring-2 ${s.choiceIdle}`}
+              >
+                {t('settings.spend_reset')}
+              </button>
             </div>,
           )}
         </div>

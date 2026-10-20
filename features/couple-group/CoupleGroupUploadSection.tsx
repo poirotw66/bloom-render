@@ -9,6 +9,7 @@ import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { usePasteImage } from '../../hooks/usePasteImage';
+import CostEstimateBadge from '../../components/CostEstimateBadge';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import type { CoupleGroupMode } from './types';
 import { UI_BTN, UI_FILE_PICKER } from '../../utils/uiClasses';
@@ -26,6 +27,8 @@ interface CoupleGroupUploadSectionProps {
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
+  quantity?: number;
+  imageSize?: string | null;
 }
 
 const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
@@ -41,6 +44,8 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
   onDragOver,
   onDragLeave,
   onDrop,
+  quantity = 1,
+  imageSize,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
@@ -150,32 +155,35 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                 </label>
               )}
 
-              <button
-                type="button"
-                onClick={onGenerate}
-                disabled={
-                  loading ||
-                  (mode === 'couple' && files.length !== 2) ||
-                  (mode === 'group' && (files.length < minFiles || files.length > maxFiles))
-                }
-                className={`${UI_BTN} px-8 py-3.5 font-black text-white shadow-lg ${
-                  mode === 'couple'
-                    ? 'bg-pink-600 hover:bg-pink-500 focus-visible:ring-pink-500 shadow-pink-600/20'
-                    : 'bg-purple-600 hover:bg-purple-500 focus-visible:ring-purple-500 shadow-purple-600/20'
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <span className="animate-spin">⏳</span>
-                    {t('couple_group.generating')}
-                  </>
-                ) : (
-                  <>
-                    <span>{mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'}</span>
-                    {t('couple_group.generate_btn')}
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={onGenerate}
+                  disabled={
+                    loading ||
+                    (mode === 'couple' && files.length !== 2) ||
+                    (mode === 'group' && (files.length < minFiles || files.length > maxFiles))
+                  }
+                  className={`${UI_BTN} px-8 py-3.5 font-black text-white shadow-lg ${
+                    mode === 'couple'
+                      ? 'bg-pink-600 hover:bg-pink-500 focus-visible:ring-pink-500 shadow-pink-600/20'
+                      : 'bg-purple-600 hover:bg-purple-500 focus-visible:ring-purple-500 shadow-purple-600/20'
+                  }`}
+                >
+                  {loading ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      {t('couple_group.generating')}
+                    </>
+                  ) : (
+                    <>
+                      <span>{mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'}</span>
+                      {t('couple_group.generate_btn')}
+                    </>
+                  )}
+                </button>
+                <CostEstimateBadge quantity={quantity} imageSize={imageSize} />
+              </div>
             </div>
           </div>
         ) : (

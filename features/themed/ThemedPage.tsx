@@ -138,6 +138,8 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
               onDragOver={themed.handleDragOver}
               onDragLeave={themed.handleDragLeave}
               onDrop={themed.handleDrop}
+              quantity={themed.quantity}
+              imageSize={themed.outputSize}
             />
           </div>
         )}

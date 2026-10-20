@@ -98,7 +98,7 @@ export const demoImageProvider: ImageProvider = {
     // No key required.
   },
 
-  async generateImage(request: GenerateImageRequest): Promise<string> {
+  async generateImage(request: GenerateImageRequest) {
     if (request.signal?.aborted) {
       throw new DOMException('Aborted', 'AbortError');
     }
@@ -109,7 +109,8 @@ export const demoImageProvider: ImageProvider = {
     const afterPath = assets.after[index] ?? assets.after[0];
 
     await sleep(simulatedDelayMs(), request.signal);
-    return fetchPublicImageAsDataUrl(afterPath, request.signal);
+    const dataUrl = await fetchPublicImageAsDataUrl(afterPath, request.signal);
+    return { dataUrl, costUsd: 0 };
   },
 };
 

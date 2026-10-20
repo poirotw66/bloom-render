@@ -142,6 +142,8 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
               onDragOver={portrait.handleDragOver}
               onDragLeave={portrait.handleDragLeave}
               onDrop={portrait.handleDrop}
+              quantity={portrait.quantity}
+              imageSize={portrait.imageSize}
             />
           </>
         )}

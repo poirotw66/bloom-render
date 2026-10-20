@@ -1,4 +1,10 @@
-export type { GenerateImageRequest, ImagePart, ImageProvider, ImageProviderId } from './types';
+export type {
+  GenerateImageRequest,
+  GenerateImageResult,
+  ImagePart,
+  ImageProvider,
+  ImageProviderId,
+} from './types';
 export { IMAGE_PROVIDER_IDS, isDemoProvider, isImageProviderId } from './types';
 export { getImageProvider } from './registry';
 export { toProviderI18nError } from './providerErrors';

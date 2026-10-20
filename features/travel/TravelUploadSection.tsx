@@ -7,6 +7,7 @@ import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { usePasteImage } from '../../hooks/usePasteImage';
+import CostEstimateBadge from '../../components/CostEstimateBadge';
 import { TravelIcon, UserIcon, UsersIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import { TRAVEL_PANEL } from './travelUi';
@@ -25,6 +26,8 @@ interface TravelUploadSectionProps {
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
+  quantity?: number;
+  imageSize?: string | null;
 }
 
 const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
@@ -41,6 +44,8 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
   onDragOver,
   onDragLeave,
   onDrop,
+  quantity = 1,
+  imageSize,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
@@ -177,19 +182,22 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                 </label>
               )}
 
-              <button
-                type="button"
-                onClick={onGenerate}
-                disabled={loading || files.length === 0}
-                className={`inline-flex items-center justify-center gap-3 px-8 py-3.5 text-white font-bold rounded-xl shadow-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:opacity-40 disabled:cursor-not-allowed ${
-                  isGroupMode
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-indigo-600/20 focus-visible:ring-indigo-400'
-                    : 'bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 shadow-sky-600/20 focus-visible:ring-sky-400'
-                }`}
-              >
-                <TravelIcon className="w-5 h-5 motion-safe:animate-pulse" />
-                {t('travel.generate_btn')}
-              </button>
+              <div className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={onGenerate}
+                  disabled={loading || files.length === 0}
+                  className={`inline-flex items-center justify-center gap-3 px-8 py-3.5 text-white font-bold rounded-xl shadow-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:opacity-40 disabled:cursor-not-allowed ${
+                    isGroupMode
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-indigo-600/20 focus-visible:ring-indigo-400'
+                      : 'bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 shadow-sky-600/20 focus-visible:ring-sky-400'
+                  }`}
+                >
+                  <TravelIcon className="w-5 h-5 motion-safe:animate-pulse" />
+                  {t('travel.generate_btn')}
+                </button>
+                <CostEstimateBadge quantity={quantity} imageSize={imageSize} />
+              </div>
             </div>
           </div>
         ) : (

@@ -3,7 +3,9 @@
  * Feature modules build prompts / file lists; this helper talks to Gemini or OpenRouter.
  */
 
+import { lookupImagePriceUsd } from '../../constants/imagePricing';
 import { logger } from '../../utils/logger';
+import { recordSessionSpendUsd } from '../../utils/sessionSpend';
 import { getImageProvider, type ImageProviderId, type ImagePart } from '../imageProviders';
 import { fileToPartAuto, type ServiceSettings } from './shared';
 
@@ -65,11 +67,12 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
 
   const imageParts = await filesToImageParts(images);
   const provider = getImageProvider(providerId);
+  const resolvedModel = providerId === 'demo' ? model || 'demo-samples' : model;
 
-  return provider.generateImage({
+  const result = await provider.generateImage({
     prompt,
     images: imageParts,
-    model: providerId === 'demo' ? model || 'demo-samples' : model,
+    model: resolvedModel,
     apiKey: providerId === 'demo' ? apiKey || 'demo' : apiKey,
     aspectRatio,
     imageSize,
@@ -77,4 +80,16 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
     includeImageConfig,
     context,
   });
+
+  // Prefer real OpenRouter usage.cost; otherwise fall back to the published table.
+  if (typeof result.costUsd === 'number' && Number.isFinite(result.costUsd)) {
+    if (result.costUsd > 0) recordSessionSpendUsd(result.costUsd);
+  } else if (providerId !== 'demo') {
+    const estimated = lookupImagePriceUsd(resolvedModel, imageSize);
+    if (typeof estimated === 'number' && estimated > 0) {
+      recordSessionSpendUsd(estimated);
+    }
+  }
+
+  return result.dataUrl;
 }

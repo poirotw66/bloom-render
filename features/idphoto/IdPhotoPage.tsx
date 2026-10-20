@@ -173,6 +173,7 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
               onDragOver={id.handleDragOver}
               onDragLeave={id.handleDragLeave}
               onDrop={id.handleDrop}
+              quantity={id.quantity}
             />
           </>
         )}

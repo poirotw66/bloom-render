@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import CostEstimateBadge from './CostEstimateBadge';
 import SavedPromptsBar from './SavedPromptsBar';
 
 interface FilterPanelProps {
@@ -144,6 +145,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilter, isLoading }) =
           >
             {t('panel.filter.apply')}
           </button>
+          <CostEstimateBadge />
         </div>
       )}
     </div>

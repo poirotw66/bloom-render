@@ -16,6 +16,8 @@ interface PortraitUploadSectionProps {
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
+  quantity?: number;
+  imageSize?: string | null;
 }
 
 const PortraitUploadSection: React.FC<PortraitUploadSectionProps> = ({
@@ -28,6 +30,8 @@ const PortraitUploadSection: React.FC<PortraitUploadSectionProps> = ({
   onDragOver,
   onDragLeave,
   onDrop,
+  quantity,
+  imageSize,
 }) => (
   <SingleImageUploadPanel
     previewUrl={portraitPreviewUrl}
@@ -43,6 +47,8 @@ const PortraitUploadSection: React.FC<PortraitUploadSectionProps> = ({
     generateButtonKey="service.action.generate"
     uploadInputId="image-upload-portrait"
     accent="blue"
+    quantity={quantity}
+    imageSize={imageSize}
   />
 );
 

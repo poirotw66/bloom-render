@@ -9,6 +9,7 @@ import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { usePasteImage } from '../hooks/usePasteImage';
 import { ErrorDisplay } from './ErrorDisplay';
+import CostEstimateBadge from './CostEstimateBadge';
 import { UI_BTN_GENERATE, UI_BTN_UPLOAD, UI_FILE_PICKER } from '../utils/uiClasses';
 
 interface BatchUploadSectionProps {
@@ -145,24 +146,27 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
                 {t('batch.change_files')}
               </label>
 
-              <button
-                type="button"
-                onClick={onGenerate}
-                disabled={!canGenerate}
-                className={UI_BTN_GENERATE}
-              >
-                {loading ? (
-                  <>
-                    <span className="animate-spin">⏳</span>
-                    {t('batch.generating')}
-                  </>
-                ) : (
-                  <>
-                    <span>{icon}</span>
-                    {t('batch.generate_all').replace('{count}', String(files.length))}
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={onGenerate}
+                  disabled={!canGenerate}
+                  className={UI_BTN_GENERATE}
+                >
+                  {loading ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      {t('batch.generating')}
+                    </>
+                  ) : (
+                    <>
+                      <span>{icon}</span>
+                      {t('batch.generate_all').replace('{count}', String(files.length))}
+                    </>
+                  )}
+                </button>
+                <CostEstimateBadge quantity={Math.max(1, files.length)} />
+              </div>
             </div>
 
             <p className="text-xs text-gray-500 italic max-w-sm text-center">

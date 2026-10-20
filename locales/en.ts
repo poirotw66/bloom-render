@@ -1301,6 +1301,22 @@ export const enMessages: Record<string, string> = {
   'settings.compression.quality': 'Compression Quality',
   'settings.compression.quality_desc':
     'Higher quality = larger file size. Recommended: 85% (almost no visible difference).',
+  'settings.spend': 'Estimated spend',
+  'settings.spend_total': 'This tab session: ~US${amount}',
+  'settings.spend_desc':
+    'Running total of estimated (or provider-reported) image costs for this browser tab. Price table last checked {date}. Not a bill.',
+  'settings.spend_reset': 'Reset session total',
+
+  'cost.estimate_unit': '~US${amount}',
+  'cost.estimate_times': '~US${amount} × {count}',
+  'cost.price_unknown': 'price unknown',
+  'cost.free': 'Free (offline / demo)',
+  'cost.estimate_hint':
+    'Estimate for output images only (published list prices). OpenRouter usage.cost is preferred when returned.',
+
+  'pwa.update_available': 'A new version of BloomRender is ready.',
+  'pwa.update_reload': 'Update now',
+  'pwa.update_dismiss': 'Later',
 
   'validation.error_not_image': 'Please upload an image file (JPEG, PNG, WebP, etc.).',
   'validation.error_file_too_large': 'Image is too large. Maximum size is 50 MB.',

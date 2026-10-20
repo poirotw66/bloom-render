@@ -29,10 +29,16 @@ export interface GenerateImageRequest {
   context?: string;
 }
 
+/** Result of one provider call; `costUsd` is set when the API reports a real charge. */
+export interface GenerateImageResult {
+  dataUrl: string;
+  /** Actual billed USD when the provider returns usage/cost (e.g. OpenRouter). */
+  costUsd?: number;
+}
+
 export interface ImageProvider {
   readonly id: ImageProviderId;
-  /** Returns a data URL (`data:image/...;base64,...`). */
-  generateImage(request: GenerateImageRequest): Promise<string>;
+  generateImage(request: GenerateImageRequest): Promise<GenerateImageResult>;
   validateApiKey(apiKey: string, signal?: AbortSignal): Promise<void>;
 }
 

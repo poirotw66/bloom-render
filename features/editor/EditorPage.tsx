@@ -13,6 +13,7 @@ import {
   generateAdjustedImage,
 } from '../../services/geminiService';
 import Spinner from '../../components/Spinner';
+import CostEstimateBadge from '../../components/CostEstimateBadge';
 import FilterPanel from '../../components/FilterPanel';
 import AdjustmentPanel from '../../components/AdjustmentPanel';
 import CropPanel from '../../components/CropPanel';
@@ -501,13 +502,16 @@ const EditorPage: React.FC = () => {
                   className={`flex-grow border rounded-lg p-5 text-lg focus-visible:ring-2 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60 ${editorTheme.input}`}
                   disabled={isLoading || !editHotspot}
                 />
-                <button
-                  type="submit"
-                  className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${editorTheme.submitButton}`}
-                  disabled={isLoading || !prompt.trim() || !editHotspot}
-                >
-                  {t('main.btn_generate')}
-                </button>
+                <div className="flex flex-col items-stretch gap-1.5">
+                  <button
+                    type="submit"
+                    className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${editorTheme.submitButton}`}
+                    disabled={isLoading || !prompt.trim() || !editHotspot}
+                  >
+                    {t('main.btn_generate')}
+                  </button>
+                  <CostEstimateBadge />
+                </div>
               </form>
               <SavedPromptsBar
                 scope="retouch"
