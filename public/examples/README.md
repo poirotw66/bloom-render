@@ -9,8 +9,8 @@ the app's own chrome — headers, parameter cards, download buttons — which wo
 look wrong rendered back inside the app, so each generated photo was cut out of
 its screenshot and re-encoded as WebP (long edge capped at 720px, quality 80).
 
-| File                   | Cropped from                | Shown as                          |
-| ---------------------- | --------------------------- | --------------------------------- |
+| File                   | Cropped from                 | Shown as                          |
+| ---------------------- | ---------------------------- | --------------------------------- |
 | `generate-1/2.webp`    | `generate_2_image.webp`      | Generate: two takes on one prompt |
 | `editor-before.webp`   | `edit_1_prompt.webp`         | Editor: compare slider, before    |
 | `editor-after.webp`    | `edit_2_image.webp`          | Editor: compare slider, after     |
@@ -19,7 +19,7 @@ its screenshot and re-encoded as WebP (long edge capped at 720px, quality 80).
 | `idphoto-after-2.webp` | `idphoto_2_messy_idp.webp`   | ID photo: result, shirt and tie   |
 | `portrait-1/2.webp`    | `portrait_3_full.webp`       | Portrait: two studio setups       |
 | `travel-1.webp`        | `travel_3_man.webp`          | Travel: Eiffel Tower, snow        |
-| `travel-2.webp`        | `travel_5_couple_img.webp`    | Travel: Yehliu Geopark, couple    |
+| `travel-2.webp`        | `travel_5_couple_img.webp`   | Travel: Yehliu Geopark, couple    |
 | `tryon-before.webp`    | `tryon_3_girl.webp`          | Try-on: the uploaded photo        |
 | `tryon-after.webp`     | `tryon_4_girl_img.webp`      | Try-on: result, style 1           |
 | `tryon-after-2.webp`   | `tryon_4_girl_img.webp`      | Try-on: result, style 2           |

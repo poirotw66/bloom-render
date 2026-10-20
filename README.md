@@ -18,8 +18,8 @@ AI-powered photo editing and generation studio with bring-your-own-key **Google 
 | ----------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
 | ![Text to image result](images/generate_2_image.webp) | ![ID photo result](images/idphoto_5_idp.webp) | ![Editor retouch](images/edit_2_image.webp) |
 
-| AI travel photo                                        | AI virtual try-on                              |
-| ------------------------------------------------------ | ---------------------------------------------- |
+| AI travel photo                                         | AI virtual try-on                              |
+| ------------------------------------------------------- | ---------------------------------------------- |
 | ![Travel photo result](images/travel_5_couple_img.webp) | ![Try-on result](images/tryon_4_girl_img.webp) |
 
 ---
