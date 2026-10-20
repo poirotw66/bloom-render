@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useDisplayResult } from '../../hooks/useDisplayResult';
 import { EditIcon, RefreshIcon, SparklesIcon, TravelIcon, UsersIcon } from '../../components/icons';
 import ResultActions from '../../components/ResultActions';
 import ResultImage from '../../components/ResultImage';
@@ -60,6 +61,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
   onEditInEditor,
 }) => {
   const { t } = useLanguage();
+  const { displayResult, onEnhanced } = useDisplayResult(result);
   const sceneLabel = resultSceneNameKey
     ? t(resultSceneNameKey)
     : resultSceneCustomLabel || t('travel.custom_btn');
@@ -75,7 +77,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
       </div>
       <div className="w-full max-h-[480px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center shadow-2xl p-2">
         <ResultImage
-          resultUrl={result}
+          resultUrl={displayResult}
           originalUrl={originalUrl}
           alt={t('travel.title')}
           imageClassName="max-w-full max-h-[400px] w-auto h-auto object-contain"
@@ -214,7 +216,12 @@ const TravelResult: React.FC<TravelResultProps> = ({
       )}
 
       <div className="flex flex-col items-center gap-4 w-full border-t border-gray-700/50 pt-6">
-        <ResultActions result={result} originalUrl={originalUrl} fileBaseName="travel-photo" />
+        <ResultActions
+          result={displayResult}
+          originalUrl={originalUrl}
+          fileBaseName="travel-photo"
+          onEnhanced={onEnhanced}
+        />
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
@@ -226,7 +233,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => onEditInEditor(result)}
+            onClick={() => onEditInEditor(displayResult)}
             className="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 px-5 rounded-xl transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <EditIcon className="w-5 h-5" />

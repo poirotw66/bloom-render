@@ -104,15 +104,29 @@ OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-i
 - **路由**：React Router 7
 - **編輯**：react-image-crop
 - **AI**：[@google/genai](https://www.npmjs.com/package/@google/genai)（Gemini）＋ OpenRouter Images API（`services/imageProviders/`）
+- **本機強化**：[@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers)（WebGPU + WASM）去背與 2× 放大——不需 API 金鑰
 - **批次下載**：JSZip
 - **樣式**：Tailwind CSS 4（`@tailwindcss/vite` 建置時編譯，非 CDN）＋自訂 CSS
 - **開發**：ESLint、Prettier、Vitest、Husky、lint-staged
+
+### 用戶端模型（影像強化）
+
+首次使用時懶載入，並由瀏覽器快取。約略下載大小：
+
+| 任務     | 模型                                                                                          | 約大小 | 授權       |
+| -------- | --------------------------------------------------------------------------------------------- | ------ | ---------- |
+| 去除背景 | [Xenova/modnet](https://huggingface.co/Xenova/modnet)（MODNet／RMBG 類去背）                  | 25 MB  | Apache-2.0 |
+| 放大 2×  | [Xenova/swin2SR-classical-sr-x2-64](https://huggingface.co/Xenova/swin2SR-classical-sr-x2-64) | 45 MB  | Apache-2.0 |
+
+執行環境：transformers.js 的 ONNX（優先 WebGPU，否則 WASM）。見應用內 `/enhance` 與 `services/localEnhance/`。
 
 ---
 
 ## 架構
 
 影像生成統一走 `services/imageProviders/`：共用的 `ImageProvider` 介面（`generateImage`、`validateApiKey`），由 Gemini、OpenRouter 與離線 Demo 實作，透過 `getImageProvider()` 依設定選取。各功能模組呼叫 `runImageGeneration`，依 Settings 解析供應商並回傳 data URL。自備金鑰（BYOK）只存在 `sessionStorage`（僅此分頁；關閉分頁後清除），由 `utils/credentialStorage.ts` 管理——不會長期留在 `localStorage`、環境變數或正式版打包中。
+
+本機強化（去背／2× 放大）另走 `services/localEnhance/`：以 `@huggingface/transformers` 懶載入並快取 pipeline，提供「影像強化」頁面，並在各生成結果頁加入操作按鈕。
 
 ---
 

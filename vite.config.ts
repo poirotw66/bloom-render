@@ -20,6 +20,10 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    optimizeDeps: {
+      // transformers.js / onnxruntime-web ship their own WASM; pre-bundling breaks paths.
+      exclude: ['@huggingface/transformers'],
+    },
     build: {
       rollupOptions: {
         output: {
@@ -27,6 +31,13 @@ export default defineConfig(({ mode }) => {
             if (id.includes('node_modules')) {
               if (id.includes('@google/genai')) {
                 return 'gemini-sdk';
+              }
+              if (
+                id.includes('@huggingface/transformers') ||
+                id.includes('onnxruntime-web') ||
+                id.includes('onnxruntime-common')
+              ) {
+                return 'transformers';
               }
               return 'vendor';
             }
