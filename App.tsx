@@ -27,6 +27,7 @@ const CoupleGroupPage = lazy(() => import('./features/couple-group/CoupleGroupPa
 const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
 const EnhancePage = lazy(() => import('./features/enhance/EnhancePage'));
 const EditorPage = lazy(() => import('./features/editor/EditorPage'));
+const PromptGalleryPage = lazy(() => import('./features/prompt-gallery/PromptGalleryPage'));
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -130,6 +131,7 @@ const App: React.FC = () => {
             />
             <Route path={ROUTES.PHOTOGRAPHY_SERVICE} element={<PhotographyServicePage />} />
             <Route path={ROUTES.EDIT} element={<EditorPage />} />
+            <Route path={ROUTES.PROMPT_GALLERY} element={<PromptGalleryPage />} />
             <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
           </Routes>
         </Suspense>

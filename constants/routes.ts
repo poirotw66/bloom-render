@@ -19,6 +19,7 @@ export const ROUTES = {
   TRY_ON: '/try-on',
   PHOTOGRAPHY_SERVICE: '/photography-service',
   ENHANCE: '/enhance',
+  PROMPT_GALLERY: '/prompt-gallery',
 } as const;
 
 export type AppRoutePath = (typeof ROUTES)[keyof typeof ROUTES];

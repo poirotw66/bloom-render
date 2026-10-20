@@ -1,0 +1,14 @@
+{
+  "id": "yehliu-dawn-couple",
+  "title": "Yehliu dawn couple",
+  "prompt": "A couple holding hands at Yehliu Geopark at dawn, soft mist over honeycomb rocks, cool blue hour light turning warm on the horizon, photorealistic",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "16:9",
+    "quantity": 1
+  },
+  "thumbnail": "examples/travel-2.webp",
+  "description": "Couple travel scene inspired by the Yehliu example.",
+  "author": "bloom-render",
+  "tags": ["generate", "travel", "couple"]
+}

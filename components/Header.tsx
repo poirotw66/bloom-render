@@ -6,7 +6,7 @@ import React, { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { CogIcon, ListBulletIcon } from './icons';
+import { BookmarkIcon, CogIcon, ListBulletIcon } from './icons';
 import SettingsModal from './SettingsModal';
 import StartTabNav, { type StartTab } from './StartTabNav';
 import { publicAssetUrl as asset } from '../utils/publicAsset';
@@ -115,6 +115,20 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
           </div>
 
           <div className="flex items-center gap-2 order-2 md:order-3 shrink-0">
+            <Link
+              to={ROUTES.PROMPT_GALLERY}
+              className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 hover:bg-white/10 ${
+                theme === 'newyear'
+                  ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
+                  : theme === 'bloom'
+                    ? 'text-gray-300 hover:text-white focus-visible:ring-fuchsia-500'
+                    : 'text-slate-300 hover:text-white focus-visible:ring-blue-500'
+              } ${location.pathname.startsWith(ROUTES.PROMPT_GALLERY) ? 'bg-white/10' : ''}`}
+              aria-label={t('prompt_gallery.title')}
+              title={t('prompt_gallery.title')}
+            >
+              <BookmarkIcon className="w-5 h-5" />
+            </Link>
             <button
               type="button"
               onClick={() => setIsHistoryOpen(true)}

@@ -4,6 +4,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   UploadIcon,
   MagicWandIcon,
@@ -44,6 +45,7 @@ import { demoAssetsForFeature, fetchPublicImageAsFile } from '../services/imageP
 import { useTheme } from '../contexts/ThemeContext';
 import type { ThemeType } from '../contexts/ThemeContext';
 import { applyValidatedImageFile } from '../utils/applyValidatedImageFile';
+import type { GenerateGalleryLocationState } from '../utils/applyPromptGalleryPreset';
 import {
   UI_BTN_GHOST,
   UI_BTN_PRIMARY,
@@ -129,11 +131,22 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const settings = useSettings();
   const { theme } = useTheme();
   const { addToHistory } = useHistory();
+  const location = useLocation();
+  const routerNavigate = useNavigate();
   const s = themeStyles[theme];
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [generationPrompt, setGenerationPrompt] = useState('');
-  const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:4' | '4:3' | '16:9' | '9:16'>('1:1');
-  const [numberOfImages, setNumberOfImages] = useState<number>(1);
+  const galleryPreset = (location.state as GenerateGalleryLocationState | null)?.galleryPreset;
+  const [generationPrompt, setGenerationPrompt] = useState(() => galleryPreset?.prompt ?? '');
+  const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:4' | '4:3' | '16:9' | '9:16'>(
+    () => galleryPreset?.aspectRatio ?? '1:1',
+  );
+  const [numberOfImages, setNumberOfImages] = useState<number>(() => galleryPreset?.quantity ?? 1);
+
+  useEffect(() => {
+    if (!galleryPreset) return;
+    routerNavigate(location.pathname, { replace: true, state: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- consume gallery state once on mount
+  }, []);
 
   useHistoryReplay((payload) => {
     if (payload.type !== 'generate') return;

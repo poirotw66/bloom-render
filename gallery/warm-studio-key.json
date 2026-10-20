@@ -1,0 +1,13 @@
+{
+  "id": "warm-studio-key",
+  "title": "Warm studio key light",
+  "prompt": "Add soft warm studio key light from camera left, gentle fill on the shadow side, keep the background and pose unchanged",
+  "feature": "retouch",
+  "settings": {
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/portrait-1.webp",
+  "description": "Lighting retouch for portraits.",
+  "author": "bloom-render",
+  "tags": ["retouch", "lighting", "portrait"]
+}

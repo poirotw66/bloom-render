@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.bloss0m.com/bloom-render/gallery-entry.schema.json",
+  "title": "BloomRender community prompt gallery entry",
+  "description": "One community prompt preset. Validated in CI by scripts/validate-gallery.mjs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "prompt", "feature", "settings", "thumbnail"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 3,
+      "maxLength": 64,
+      "description": "Stable kebab-case id; must match the JSON filename (without .json)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 2000
+    },
+    "feature": {
+      "type": "string",
+      "enum": ["generate", "retouch", "adjust", "filter"],
+      "description": "Which prompt surface this preset targets."
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "aspectRatio": {
+          "type": "string",
+          "enum": ["1:1", "3:4", "4:3", "16:9", "9:16"]
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "tab": {
+          "type": "string",
+          "enum": ["retouch", "adjust", "filters"],
+          "description": "Editor tab when feature is retouch/adjust/filter."
+        }
+      }
+    },
+    "thumbnail": {
+      "type": "string",
+      "pattern": "^examples/[A-Za-z0-9._-]+\\.webp$",
+      "description": "Path under public/, e.g. examples/generate-1.webp"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 280
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32
+      },
+      "maxItems": 8,
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "eiffel-snow-sunset",
+  "title": "Eiffel Tower snow sunset",
+  "prompt": "Place the person in front of the Eiffel Tower at sunset with light snowfall, warm golden rim light, natural winter coat, photorealistic travel photo",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "16:9",
+    "quantity": 1
+  },
+  "thumbnail": "examples/travel-1.webp",
+  "description": "Travel-style scene prompt inspired by the Eiffel Tower example.",
+  "author": "bloom-render",
+  "tags": ["generate", "travel", "landmark"]
+}
