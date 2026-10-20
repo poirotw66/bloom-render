@@ -18,6 +18,7 @@ export const ROUTES = {
   COUPLE_GROUP: '/couple-group',
   TRY_ON: '/try-on',
   PHOTOGRAPHY_SERVICE: '/photography-service',
+  ENHANCE: '/enhance',
 } as const;
 
 export type AppRoutePath = (typeof ROUTES)[keyof typeof ROUTES];

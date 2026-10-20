@@ -20,7 +20,8 @@ export type StartTab =
   | 'themed'
   | 'photography-service'
   | 'couple-group'
-  | 'tryon';
+  | 'tryon'
+  | 'enhance';
 
 interface TabItem {
   tab: StartTab;
@@ -97,6 +98,13 @@ const tabs: TabItem[] = [
     i18nKey: 'start.tab_tryon',
     activeClass: 'bg-teal-600 text-white shadow-lg shadow-teal-500/20',
     focusRing: 'focus-visible:ring-teal-500',
+  },
+  {
+    tab: 'enhance',
+    path: ROUTES.ENHANCE,
+    i18nKey: 'start.tab_enhance',
+    activeClass: 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20',
+    focusRing: 'focus-visible:ring-cyan-500',
   },
 ];
 

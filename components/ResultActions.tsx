@@ -11,6 +11,7 @@ import { downloadImageAs, type ImageExportFormat, withExtension } from '../utils
 import { shareBrandedCard, shareResultImage, type ShareOutcome } from '../utils/shareResult';
 import { UI_BTN_SECONDARY, UI_BTN_SUCCESS } from '../utils/uiClasses';
 import { logger } from '../utils/logger';
+import LocalEnhanceActions from './LocalEnhanceActions';
 
 interface ResultActionsProps {
   result: string | Blob;
@@ -18,6 +19,10 @@ interface ResultActionsProps {
   fileBaseName?: string;
   className?: string;
   extraActions?: React.ReactNode;
+  /** Replace the displayed result after in-browser remove-bg / upscale. */
+  onEnhanced?: (dataUrl: string) => void;
+  /** Hide local enhance buttons (e.g. when the parent page owns them). */
+  hideLocalEnhance?: boolean;
 }
 
 const FORMATS: ImageExportFormat[] = ['png', 'jpeg', 'webp'];
@@ -34,6 +39,8 @@ const ResultActions: React.FC<ResultActionsProps> = ({
   fileBaseName = 'bloomrender-result',
   className = '',
   extraActions,
+  onEnhanced,
+  hideLocalEnhance = false,
 }) => {
   const { t } = useLanguage();
   const [format, setFormat] = useState<ImageExportFormat>('png');
@@ -166,6 +173,15 @@ const ResultActions: React.FC<ResultActionsProps> = ({
 
         {extraActions}
       </div>
+
+      {!hideLocalEnhance && (
+        <LocalEnhanceActions
+          result={result}
+          fileBaseName={fileBaseName}
+          onEnhanced={onEnhanced}
+          disabled={busy}
+        />
+      )}
 
       {status && (
         <p className="text-xs text-gray-400" role="status">

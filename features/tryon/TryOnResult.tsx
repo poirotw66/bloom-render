@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useDisplayResult } from '../../hooks/useDisplayResult';
 import { RefreshIcon, EditIcon } from '../../components/icons';
 import ResultActions from '../../components/ResultActions';
 import ResultImage from '../../components/ResultImage';
@@ -31,6 +32,7 @@ const TryOnResult: React.FC<TryOnResultProps> = ({
   hideAgain = false,
 }) => {
   const { t } = useLanguage();
+  const { displayResult, onEnhanced } = useDisplayResult(result);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full animate-fade-in bg-gray-800/40 p-4 rounded-xl border border-gray-700/50 backdrop-blur-sm">
@@ -39,16 +41,17 @@ const TryOnResult: React.FC<TryOnResultProps> = ({
       )}
       <div className="w-full max-h-[480px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-lg p-2">
         <ResultImage
-          resultUrl={result}
+          resultUrl={displayResult}
           originalUrl={originalUrl}
           alt={label || t('tryon.title')}
           imageClassName="max-w-full max-h-[420px] w-auto h-auto object-contain"
         />
       </div>
       <ResultActions
-        result={result}
+        result={displayResult}
         originalUrl={originalUrl}
         fileBaseName="tryon"
+        onEnhanced={onEnhanced}
         extraActions={
           <>
             <button

@@ -53,6 +53,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
     if (path.startsWith(ROUTES.THEMED)) return 'themed';
     if (path.startsWith(ROUTES.COUPLE_GROUP)) return 'couple-group';
     if (path.startsWith(ROUTES.TRY_ON)) return 'tryon';
+    if (path.startsWith(ROUTES.ENHANCE)) return 'enhance';
     return 'upload';
   }, [location.pathname]);
 

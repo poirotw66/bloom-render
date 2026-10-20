@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useDisplayResult } from '../../hooks/useDisplayResult';
 import { EditIcon } from '../../components/icons';
 import ResultActions from '../../components/ResultActions';
 import ResultImage from '../../components/ResultImage';
@@ -29,6 +30,7 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
   onEditInEditor,
 }) => {
   const { t } = useLanguage();
+  const { displayResult, onEnhanced } = useDisplayResult(result);
 
   const styleConfig =
     mode === 'couple'
@@ -39,7 +41,7 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
     <div className="flex flex-col items-center gap-4 w-full animate-fade-in bg-gray-800/40 p-4 rounded-xl border border-gray-700/50 backdrop-blur-sm">
       <div className="w-full max-h-[480px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-lg p-2">
         <ResultImage
-          resultUrl={result}
+          resultUrl={displayResult}
           originalUrl={originalUrl}
           alt={t(`couple_group.mode.${mode}`)}
           imageClassName="max-w-full max-h-[400px] w-auto h-auto object-contain"
@@ -67,9 +69,10 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
       </div>
 
       <ResultActions
-        result={result}
+        result={displayResult}
         originalUrl={originalUrl}
         fileBaseName={`${mode}-photo`}
+        onEnhanced={onEnhanced}
         extraActions={
           <button
             type="button"

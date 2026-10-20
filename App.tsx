@@ -25,6 +25,7 @@ const PhotographyServicePage = lazy(
 );
 const CoupleGroupPage = lazy(() => import('./features/couple-group/CoupleGroupPage'));
 const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
+const EnhancePage = lazy(() => import('./features/enhance/EnhancePage'));
 const EditorPage = lazy(() => import('./features/editor/EditorPage'));
 
 const App: React.FC = () => {
@@ -122,6 +123,10 @@ const App: React.FC = () => {
             <Route
               path={ROUTES.TRY_ON}
               element={<TryOnPage onImageSelected={handleImageUpload} />}
+            />
+            <Route
+              path={ROUTES.ENHANCE}
+              element={<EnhancePage onImageSelected={handleImageUpload} />}
             />
             <Route path={ROUTES.PHOTOGRAPHY_SERVICE} element={<PhotographyServicePage />} />
             <Route path={ROUTES.EDIT} element={<EditorPage />} />

@@ -8,6 +8,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { useDisplayResult } from '../hooks/useDisplayResult';
 import DemoModeBanner from './DemoModeBanner';
 import ResultActions from './ResultActions';
 import ResultImage from './ResultImage';
@@ -41,6 +42,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
+  const { displayResult, onEnhanced } = useDisplayResult(result);
 
   return (
     <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto ${className}`}>
@@ -51,7 +53,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
             <DemoModeBanner compact />
           </div>
         )}
-        <ResultImage resultUrl={result} originalUrl={originalUrl} />
+        <ResultImage resultUrl={displayResult} originalUrl={originalUrl} />
       </div>
 
       {params.length > 0 && paramsTitleKey && (
@@ -72,7 +74,12 @@ const GenericResult: React.FC<GenericResultProps> = ({
         </div>
       )}
 
-      <ResultActions result={result} originalUrl={originalUrl} fileBaseName={fileBaseName} />
+      <ResultActions
+        result={displayResult}
+        originalUrl={originalUrl}
+        fileBaseName={fileBaseName}
+        onEnhanced={onEnhanced}
+      />
 
       <div className="flex flex-wrap items-center justify-center gap-4">
         {onEditInEditor && (

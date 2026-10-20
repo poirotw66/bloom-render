@@ -418,6 +418,7 @@ export const enMessages: Record<string, string> = {
   'couple_group.result.style': 'Style',
   'couple_group.error_generation_failed': 'Failed to generate photo. Please try again.',
   'start.tab_tryon': 'AI Try-On',
+  'start.tab_enhance': 'Enhance',
   'tryon.title_part1': 'AI',
   'tryon.title_part2': 'Try-On',
   'tryon.subtitle':
@@ -1139,6 +1140,35 @@ export const enMessages: Record<string, string> = {
   'result.share_ok_downloaded': 'Downloaded share file.',
   'result.download_ok': 'Download started.',
   'result.action_failed': 'Action failed. Please try again.',
+
+  'enhance.title': 'Local Enhance',
+  'enhance.subtitle':
+    'Remove backgrounds or upscale 2× entirely in your browser — no API key required.',
+  'enhance.no_api_key_banner':
+    'Models download on first use (WebGPU when available, WASM fallback) and stay cached locally.',
+  'enhance.no_api_key_hint': 'Runs on-device · no API key',
+  'enhance.models_heading': 'Models (first download)',
+  'enhance.model_meta': '~{size} MB · {license}',
+  'enhance.models_cache_note':
+    'Files are fetched from Hugging Face and cached by the browser. See README for licenses.',
+  'enhance.task_label': 'Task',
+  'enhance.remove_bg': 'Remove background',
+  'enhance.upscale_2x': 'Upscale 2×',
+  'enhance.upload_hint': 'Drop a photo here or click to upload',
+  'enhance.run': 'Run locally',
+  'enhance.change_photo': 'Change photo',
+  'enhance.edit': 'Edit in Editor',
+  'enhance.again': 'Enhance another',
+  'enhance.result_params': 'Enhance settings',
+  'enhance.error_no_image': 'Please upload an image first.',
+  'enhance.error_failed':
+    'Local enhance failed. Check your connection for the first model download, then retry.',
+  'enhance.status_initiate': 'Preparing model…',
+  'enhance.status_download': 'Downloading model…',
+  'enhance.status_loading_model': 'Loading model…',
+  'enhance.status_ready': 'Model ready',
+  'enhance.status_running': 'Running on-device…',
+  'enhance.status_done': 'Done',
 
   'history.title': 'Generation History',
   'history.subtitle': 'View and manage your generated photos',

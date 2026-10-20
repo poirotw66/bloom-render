@@ -98,15 +98,29 @@ Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and bi
 - **Routing** — React Router 7
 - **Editing** — react-image-crop
 - **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini) + OpenRouter Images API via `services/imageProviders/`
+- **On-device enhance** — [@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers) (WebGPU + WASM) for background removal and 2× upscaling — no API key
 - **Batch download** — JSZip
 - **Styles** — Tailwind CSS 4 via `@tailwindcss/vite` (build-time; not CDN) + custom CSS
 - **Tooling** — ESLint, Prettier, Vitest, Husky, lint-staged
+
+### Client-side models (Enhance)
+
+Lazy-loaded on first use, cached by the browser. Approximate first-download sizes:
+
+| Task               | Model                                                                                         | ~Size | License    |
+| ------------------ | --------------------------------------------------------------------------------------------- | ----- | ---------- |
+| Background removal | [Xenova/modnet](https://huggingface.co/Xenova/modnet) (MODNet / RMBG-class matting)           | 25 MB | Apache-2.0 |
+| 2× upscaling       | [Xenova/swin2SR-classical-sr-x2-64](https://huggingface.co/Xenova/swin2SR-classical-sr-x2-64) | 45 MB | Apache-2.0 |
+
+Runtime: ONNX via transformers.js (prefers WebGPU, falls back to WASM). See `/enhance` in the app and `services/localEnhance/`.
 
 ---
 
 ## Architecture
 
 Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface (`generateImage`, `validateApiKey`) with Gemini, OpenRouter, and offline demo implementations selected via `getImageProvider()`. Feature modules call `runImageGeneration`, which resolves the active provider from Settings and returns a data URL. BYOK API keys are stored only in `sessionStorage` (tab-scoped; cleared when the tab closes) via `utils/credentialStorage.ts` — never in `localStorage` for ongoing use, env files, or the production bundle.
+
+Local enhance (background removal / 2× upscale) is separate: `@huggingface/transformers` pipelines in `services/localEnhance/`, lazy-loaded and browser-cached, exposed on the Enhance page and as actions on generation result pages.
 
 ---
 
