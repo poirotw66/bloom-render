@@ -1223,6 +1223,21 @@ export const zhTWMessages: Record<string, string> = {
   'settings.compression.threshold_desc': '僅壓縮超過此大小的圖片。較小的圖片將原樣上傳。',
   'settings.compression.quality': '壓縮品質',
   'settings.compression.quality_desc': '品質越高 = 檔案越大。建議：85%（幾乎看不出差異）。',
+  'settings.spend': '預估花費',
+  'settings.spend_total': '此分頁工作階段：約 US${amount}',
+  'settings.spend_desc':
+    '本瀏覽器分頁累計的影像預估（或供應商回報）費用。價目表上次核對日期：{date}。非帳單。',
+  'settings.spend_reset': '重設工作階段合計',
+
+  'cost.estimate_unit': '約 US${amount}',
+  'cost.estimate_times': '約 US${amount} × {count}',
+  'cost.price_unknown': '價格未知',
+  'cost.free': '免費（離線／Demo）',
+  'cost.estimate_hint': '僅估算輸出影像（公開標價）。若 OpenRouter 回傳 usage.cost 則優先採用。',
+
+  'pwa.update_available': 'BloomRender 有新版本可用。',
+  'pwa.update_reload': '立即更新',
+  'pwa.update_dismiss': '稍後',
 
   'validation.error_not_image': '請上傳圖片檔（JPEG、PNG、WebP 等）。',
   'validation.error_file_too_large': '圖片過大，上限為 50 MB。',

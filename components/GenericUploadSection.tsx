@@ -9,6 +9,7 @@ import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { usePasteImage } from '../hooks/usePasteImage';
+import CostEstimateBadge from './CostEstimateBadge';
 import { ErrorDisplay } from './ErrorDisplay';
 import { UI_BTN_GENERATE, UI_BTN_UPLOAD, UI_FILE_PICKER } from '../utils/uiClasses';
 
@@ -29,6 +30,10 @@ interface GenericUploadSectionProps {
   canGenerate?: boolean;
   className?: string;
   uploadInputId?: string;
+  /** For cost estimate next to the generate button. */
+  quantity?: number;
+  imageSize?: string | null;
+  showCostEstimate?: boolean;
 }
 
 const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
@@ -48,6 +53,9 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
   canGenerate = true,
   className = '',
   uploadInputId = 'generic-image-upload',
+  quantity = 1,
+  imageSize,
+  showCostEstimate = true,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
@@ -128,24 +136,29 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
                 </label>
               )}
 
-              <button
-                type="button"
-                onClick={onGenerate}
-                disabled={loading || !canGenerate}
-                className={UI_BTN_GENERATE}
-              >
-                {loading ? (
-                  <>
-                    <span className="animate-spin">⏳</span>
-                    {t('start.idphoto_generating')}
-                  </>
-                ) : (
-                  <>
-                    <span>{icon}</span>
-                    {t(generateButtonKey)}
-                  </>
+              <div className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={onGenerate}
+                  disabled={loading || !canGenerate}
+                  className={UI_BTN_GENERATE}
+                >
+                  {loading ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      {t('start.idphoto_generating')}
+                    </>
+                  ) : (
+                    <>
+                      <span>{icon}</span>
+                      {t(generateButtonKey)}
+                    </>
+                  )}
+                </button>
+                {showCostEstimate && (
+                  <CostEstimateBadge quantity={quantity} imageSize={imageSize} />
                 )}
-              </button>
+              </div>
             </div>
             {isDemoMode && (
               <p className="text-xs text-sky-200/80 text-center max-w-sm">

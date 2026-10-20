@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import CostEstimateBadge from './CostEstimateBadge';
 import SavedPromptsBar from './SavedPromptsBar';
 
 interface AdjustmentPanelProps {
@@ -142,6 +143,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({ onApplyAdjustment, is
           >
             {t('panel.adjust.apply')}
           </button>
+          <CostEstimateBadge />
         </div>
       )}
     </div>

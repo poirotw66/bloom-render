@@ -8,6 +8,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { UI_LABEL, uiOption } from '../utils/uiClasses';
+import CostEstimateBadge from './CostEstimateBadge';
 
 interface QuantitySelectorProps {
   quantity: number;
@@ -15,6 +16,9 @@ interface QuantitySelectorProps {
   disabled?: boolean;
   max?: number;
   min?: number;
+  /** When set, show cost × quantity under the chips. */
+  showCostEstimate?: boolean;
+  imageSize?: string | null;
 }
 
 const QuantitySelector: React.FC<QuantitySelectorProps> = ({
@@ -23,6 +27,8 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   disabled = false,
   max = 4,
   min = 1,
+  showCostEstimate = false,
+  imageSize,
 }) => {
   const { t } = useLanguage();
 
@@ -44,6 +50,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
           </button>
         ))}
       </div>
+      {showCostEstimate && <CostEstimateBadge quantity={quantity} imageSize={imageSize} />}
     </div>
   );
 };

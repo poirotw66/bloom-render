@@ -35,6 +35,19 @@ interface OpenRouterImageData {
 interface OpenRouterImagesResponse {
   data?: OpenRouterImageData[];
   error?: { message?: string; code?: string | number };
+  usage?: {
+    cost?: number;
+    total_cost?: number;
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+  };
+}
+
+function readUsageCostUsd(json: OpenRouterImagesResponse): number | undefined {
+  const raw = json.usage?.cost ?? json.usage?.total_cost;
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw >= 0) return raw;
+  return undefined;
 }
 
 async function parseErrorResponse(response: Response): Promise<string> {
@@ -92,7 +105,7 @@ export const openRouterImageProvider: ImageProvider = {
     }
   },
 
-  async generateImage(request: GenerateImageRequest): Promise<string> {
+  async generateImage(request: GenerateImageRequest) {
     const { prompt, images = [], model, apiKey, aspectRatio, imageSize, signal } = request;
 
     const key = apiKey.trim();
@@ -138,13 +151,14 @@ export const openRouterImageProvider: ImageProvider = {
             throw new Error(json.error.message);
           }
 
+          const costUsd = readUsageCostUsd(json);
           const first = json.data?.[0];
           if (first?.b64_json) {
             const mime = first.media_type || 'image/png';
-            return `data:${mime};base64,${first.b64_json}`;
+            return { dataUrl: `data:${mime};base64,${first.b64_json}`, costUsd };
           }
           if (first?.url?.startsWith('data:')) {
-            return first.url;
+            return { dataUrl: first.url, costUsd };
           }
           if (first?.url) {
             const imageResponse = await fetch(first.url, { signal: combined });
@@ -163,7 +177,7 @@ export const openRouterImageProvider: ImageProvider = {
             }
             const b64 = btoa(binary);
             const mime = imageResponse.headers.get('content-type') || 'image/png';
-            return `data:${mime};base64,${b64}`;
+            return { dataUrl: `data:${mime};base64,${b64}`, costUsd };
           }
 
           throw createI18nError('error.no_image');

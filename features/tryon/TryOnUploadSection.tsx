@@ -9,6 +9,7 @@ import React, { useCallback, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { usePasteImage } from '../../hooks/usePasteImage';
+import CostEstimateBadge from '../../components/CostEstimateBadge';
 import QuantitySelector from '../../components/QuantitySelector';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 
@@ -264,24 +265,27 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
 
       {error && <ErrorDisplay message={error} />}
 
-      <button
-        type="button"
-        onClick={onGenerate}
-        disabled={loading || !canGenerate}
-        className="w-full py-4 px-6 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-700 disabled:to-gray-700 text-white font-bold rounded-xl shadow-lg shadow-teal-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
-      >
-        {loading ? (
-          <>
-            <span className="animate-spin">⏳</span>
-            {t('tryon.generating')}
-          </>
-        ) : (
-          <>
-            <span>👗</span>
-            {t('tryon.generate_btn')}
-          </>
-        )}
-      </button>
+      <div className="flex flex-col items-center gap-1.5 w-full">
+        <button
+          type="button"
+          onClick={onGenerate}
+          disabled={loading || !canGenerate}
+          className="w-full py-4 px-6 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-700 disabled:to-gray-700 text-white font-bold rounded-xl shadow-lg shadow-teal-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <span className="animate-spin">⏳</span>
+              {t('tryon.generating')}
+            </>
+          ) : (
+            <>
+              <span>👗</span>
+              {t('tryon.generate_btn')}
+            </>
+          )}
+        </button>
+        <CostEstimateBadge quantity={quantity} />
+      </div>
     </div>
   );
 };

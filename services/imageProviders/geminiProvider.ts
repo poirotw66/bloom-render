@@ -53,7 +53,7 @@ export const geminiImageProvider: ImageProvider = {
     );
   },
 
-  async generateImage(request: GenerateImageRequest): Promise<string> {
+  async generateImage(request: GenerateImageRequest) {
     const {
       prompt,
       images = [],
@@ -106,7 +106,8 @@ export const geminiImageProvider: ImageProvider = {
             contents: { parts },
             config,
           });
-          return handleApiResponse(response, 'generation');
+          const dataUrl = handleApiResponse(response, 'generation');
+          return { dataUrl };
         },
         { signal },
       );

@@ -77,7 +77,8 @@ describe('demoImageProvider', () => {
     await vi.runAllTimersAsync();
     const result = await pending;
 
-    expect(result.startsWith('data:image/')).toBe(true);
+    expect(result.dataUrl.startsWith('data:image/')).toBe(true);
+    expect(result.costUsd).toBe(0);
     expect(fetchMock).toHaveBeenCalled();
     const firstCall = fetchMock.mock.calls[0] as unknown as [string] | undefined;
     expect(String(firstCall?.[0] ?? '')).toContain('examples/generate-');

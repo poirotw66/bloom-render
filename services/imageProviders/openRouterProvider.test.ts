@@ -49,7 +49,8 @@ describe('openRouterImageProvider', () => {
       imageSize: '1K',
     });
 
-    expect(result).toBe(`data:image/png;base64,${TINY_PNG_B64}`);
+    expect(result.dataUrl).toBe(`data:image/png;base64,${TINY_PNG_B64}`);
+    expect(result.costUsd).toBeUndefined();
     expect(fetchMock).toHaveBeenCalledOnce();
     const call = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     const body = JSON.parse(String(call[1].body));
@@ -83,6 +84,29 @@ describe('openRouterImageProvider', () => {
     const body = JSON.parse(String(call[1].body));
     expect(body.input_references).toBeUndefined();
     expect(body.prompt).toBe('a red bicycle');
+  });
+
+  it('prefers usage.cost from the OpenRouter response', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              data: [{ b64_json: TINY_PNG_B64, media_type: 'image/png' }],
+              usage: { cost: 0.04 },
+            }),
+            { status: 200 },
+          ),
+      ),
+    );
+
+    const result = await openRouterImageProvider.generateImage({
+      prompt: 'costed',
+      model: 'google/gemini-2.5-flash-image',
+      apiKey: 'sk-or-test',
+    });
+    expect(result.costUsd).toBe(0.04);
   });
 
   it('maps 401 to OpenRouter invalid key i18n error', async () => {

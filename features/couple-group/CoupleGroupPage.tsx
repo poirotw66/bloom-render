@@ -141,6 +141,8 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
               onDragOver={coupleGroup.handleDragOver}
               onDragLeave={coupleGroup.handleDragLeave}
               onDrop={coupleGroup.handleDrop}
+              quantity={coupleGroup.quantity}
+              imageSize={coupleGroup.outputSize}
             />
           </div>
         )}

@@ -16,6 +16,8 @@ interface IdPhotoUploadSectionProps {
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
+  quantity?: number;
+  imageSize?: string | null;
 }
 
 const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
@@ -28,6 +30,8 @@ const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
   onDragOver,
   onDragLeave,
   onDrop,
+  quantity,
+  imageSize,
 }) => (
   <SingleImageUploadPanel
     previewUrl={idPhotoPreviewUrl}
@@ -43,6 +47,8 @@ const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
     generateButtonKey="start.idphoto_generate_btn"
     uploadInputId="image-upload-idphoto"
     accent="emerald"
+    quantity={quantity}
+    imageSize={imageSize}
   />
 );
 

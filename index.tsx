@@ -15,10 +15,16 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useBackgroundMotionPause } from './hooks/useBackgroundMotionPause';
+import PwaUpdatePrompt from './components/PwaUpdatePrompt';
 
 function AppWithMotionPause() {
   useBackgroundMotionPause();
-  return <App />;
+  return (
+    <>
+      <App />
+      <PwaUpdatePrompt />
+    </>
+  );
 }
 
 const rootElement = document.getElementById('root');

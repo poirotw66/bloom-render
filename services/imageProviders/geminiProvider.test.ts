@@ -50,7 +50,7 @@ describe('geminiImageProvider', () => {
       includeImageConfig: true,
     });
 
-    expect(result).toBe(`data:image/png;base64,${TINY_PNG_B64}`);
+    expect(result.dataUrl).toBe(`data:image/png;base64,${TINY_PNG_B64}`);
     expect(generateContent).toHaveBeenCalled();
     const arg = generateContent.mock.calls[0]![0];
     expect(arg.model).toBe('gemini-3.1-flash-lite-image');

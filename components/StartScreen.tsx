@@ -24,6 +24,7 @@ import { useGenerationFailures } from '../hooks/useGenerationFailures';
 import { useHistory } from '../hooks/useHistory';
 import { fileFromSourceUrl, useHistoryReplay } from '../hooks/useHistoryReplay';
 import { usePasteImage } from '../hooks/usePasteImage';
+import CostEstimateBadge from './CostEstimateBadge';
 import ResultActions from './ResultActions';
 import ResultImage from './ResultImage';
 import { SUPPORTED_MODELS, MODEL_LABEL_KEYS } from '../constants/models';
@@ -872,6 +873,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                 </>
               )}
             </button>
+            <CostEstimateBadge
+              quantity={compareEnabled ? 2 : numberOfImages}
+              imageSize="1K"
+              className="mt-1"
+            />
           </div>
         )}
 

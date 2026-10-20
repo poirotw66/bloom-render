@@ -16,6 +16,8 @@ interface ThemedUploadSectionProps {
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
+  quantity?: number;
+  imageSize?: string | null;
 }
 
 const ThemedUploadSection: React.FC<ThemedUploadSectionProps> = ({
@@ -28,6 +30,8 @@ const ThemedUploadSection: React.FC<ThemedUploadSectionProps> = ({
   onDragOver,
   onDragLeave,
   onDrop,
+  quantity,
+  imageSize,
 }) => (
   <SingleImageUploadPanel
     previewUrl={themedPreviewUrl}
@@ -43,6 +47,8 @@ const ThemedUploadSection: React.FC<ThemedUploadSectionProps> = ({
     generateButtonKey="service.action.generate"
     uploadInputId="image-upload-themed"
     accent="purple"
+    quantity={quantity}
+    imageSize={imageSize}
   />
 );
 

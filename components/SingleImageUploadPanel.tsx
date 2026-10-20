@@ -25,6 +25,8 @@ interface SingleImageUploadPanelProps {
   generateButtonKey: string;
   uploadInputId: string;
   accent: Accent;
+  quantity?: number;
+  imageSize?: string | null;
 }
 
 const accentIcon: Record<Accent, string> = {
@@ -47,6 +49,8 @@ export function SingleImageUploadPanel({
   generateButtonKey,
   uploadInputId,
   accent,
+  quantity = 1,
+  imageSize,
 }: SingleImageUploadPanelProps): React.ReactElement {
   const { t } = useLanguage();
   return (
@@ -67,6 +71,8 @@ export function SingleImageUploadPanel({
         changePhotoKey="start.idphoto_change_photo"
         icon={accentIcon[accent]}
         uploadInputId={uploadInputId}
+        quantity={quantity}
+        imageSize={imageSize}
       />
     </div>
   );

@@ -291,6 +291,8 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   onDragOver={tr.handleDragOver}
                   onDragLeave={tr.handleDragLeave}
                   onDrop={tr.handleDrop}
+                  quantity={tr.quantity}
+                  imageSize={tr.imageSize}
                 />
               </div>
             </div>
