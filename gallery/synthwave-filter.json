@@ -1,0 +1,13 @@
+{
+  "id": "synthwave-filter",
+  "title": "Synthwave filter",
+  "prompt": "Apply a vibrant 80s synthwave aesthetic with neon magenta and cyan glows, and subtle scan lines.",
+  "feature": "filter",
+  "settings": {
+    "tab": "filters"
+  },
+  "thumbnail": "examples/portrait-2.webp",
+  "description": "Whole-image filter preset matching the built-in Synthwave style.",
+  "author": "bloom-render",
+  "tags": ["filter", "stylize"]
+}

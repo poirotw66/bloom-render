@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "gallery:validate": "node scripts/validate-gallery.mjs",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky",

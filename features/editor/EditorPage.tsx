@@ -37,19 +37,26 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useTheme } from '../../contexts/ThemeContext';
 
+type Tab = 'retouch' | 'adjust' | 'filters' | 'crop';
+
 export type EditorLocationState = {
   initialFile?: File;
+  /** Seeded from the community prompt gallery (Wave J). */
+  galleryPreset?: {
+    prompt: string;
+    tab?: Tab;
+  };
 };
-
-type Tab = 'retouch' | 'adjust' | 'filters' | 'crop';
 
 const EditorPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const initialFile = (location.state as EditorLocationState | null)?.initialFile;
+  const locationState = location.state as EditorLocationState | null;
+  const initialFile = locationState?.initialFile;
+  const initialGalleryPreset = locationState?.galleryPreset;
 
   useEffect(() => {
-    if (initialFile) {
+    if (initialFile || initialGalleryPreset) {
       navigate(location.pathname, { replace: true, state: null });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- consume router state once on mount
@@ -61,12 +68,12 @@ const EditorPage: React.FC = () => {
   const editorTheme = getEditorThemeClasses(theme);
   const [history, setHistory] = useState<File[]>(() => (initialFile ? [initialFile] : []));
   const [historyIndex, setHistoryIndex] = useState<number>(() => (initialFile ? 0 : -1));
-  const [prompt, setPrompt] = useState<string>('');
+  const [prompt, setPrompt] = useState<string>(() => initialGalleryPreset?.prompt ?? '');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [editHotspot, setEditHotspot] = useState<{ x: number; y: number } | null>(null);
   const [displayHotspot, setDisplayHotspot] = useState<{ x: number; y: number } | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('retouch');
+  const [activeTab, setActiveTab] = useState<Tab>(() => initialGalleryPreset?.tab ?? 'retouch');
   const [retouchMode, setRetouchMode] = useState<RetouchSelectMode>('point');
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
 
@@ -642,10 +649,22 @@ const EditorPage: React.FC = () => {
             />
           )}
           {activeTab === 'adjust' && (
-            <AdjustmentPanel onApplyAdjustment={handleApplyAdjustment} isLoading={isLoading} />
+            <AdjustmentPanel
+              onApplyAdjustment={handleApplyAdjustment}
+              isLoading={isLoading}
+              initialPrompt={
+                initialGalleryPreset?.tab === 'adjust' ? initialGalleryPreset.prompt : undefined
+              }
+            />
           )}
           {activeTab === 'filters' && (
-            <FilterPanel onApplyFilter={handleApplyFilter} isLoading={isLoading} />
+            <FilterPanel
+              onApplyFilter={handleApplyFilter}
+              isLoading={isLoading}
+              initialPrompt={
+                initialGalleryPreset?.tab === 'filters' ? initialGalleryPreset.prompt : undefined
+              }
+            />
           )}
         </div>
 

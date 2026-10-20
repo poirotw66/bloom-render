@@ -51,6 +51,9 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      - name: Validate prompt gallery
+        run: npm run gallery:validate
+
       - name: Test
         run: npm test
 

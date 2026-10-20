@@ -1,0 +1,13 @@
+{
+  "id": "shirt-color-blue",
+  "title": "Shirt color to blue",
+  "prompt": "Change the shirt color to a rich cobalt blue while keeping fabric folds, lighting, and skin tone unchanged",
+  "feature": "retouch",
+  "settings": {
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/editor-after.webp",
+  "description": "Classic localized retouch prompt for the editor point or brush mask.",
+  "author": "bloom-render",
+  "tags": ["retouch", "clothing", "color"]
+}

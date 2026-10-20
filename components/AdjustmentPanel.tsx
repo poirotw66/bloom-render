@@ -12,13 +12,19 @@ import SavedPromptsBar from './SavedPromptsBar';
 interface AdjustmentPanelProps {
   onApplyAdjustment: (prompt: string) => void;
   isLoading: boolean;
+  /** Prefill from community gallery / deep link. */
+  initialPrompt?: string;
 }
 
-const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({ onApplyAdjustment, isLoading }) => {
+const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
+  onApplyAdjustment,
+  isLoading,
+  initialPrompt = '',
+}) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
   const [selectedPresetPrompt, setSelectedPresetPrompt] = useState<string | null>(null);
-  const [customPrompt, setCustomPrompt] = useState('');
+  const [customPrompt, setCustomPrompt] = useState(initialPrompt);
 
   const presets = [
     {

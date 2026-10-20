@@ -1,0 +1,14 @@
+{
+  "id": "airport-lounge",
+  "title": "Airport lounge colleagues",
+  "prompt": "Two colleagues sitting in a bright modern airport lounge near floor-to-ceiling windows, soft morning light, candid conversation, photorealistic, 35mm lens",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "16:9",
+    "quantity": 1
+  },
+  "thumbnail": "examples/generate-1.webp",
+  "description": "Text-to-image scene matching the home gallery airport lounge example.",
+  "author": "bloom-render",
+  "tags": ["generate", "people", "interior"]
+}

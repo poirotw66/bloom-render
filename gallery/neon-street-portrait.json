@@ -1,0 +1,14 @@
+{
+  "id": "neon-street-portrait",
+  "title": "Neon street portrait",
+  "prompt": "Cinematic night street portrait, wet asphalt reflections, cyan and magenta neon signs, shallow depth of field, film grain, photorealistic",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "3:4",
+    "quantity": 1
+  },
+  "thumbnail": "examples/generate-2.webp",
+  "description": "Moody night portrait lighting for text-to-image.",
+  "author": "bloom-render",
+  "tags": ["generate", "portrait", "night"]
+}

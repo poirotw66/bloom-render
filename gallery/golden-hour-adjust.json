@@ -1,0 +1,13 @@
+{
+  "id": "golden-hour-adjust",
+  "title": "Golden hour warmth",
+  "prompt": "Warm the color temperature toward golden hour, lift the shadows slightly, and add a soft sunset glow without changing the subject",
+  "feature": "adjust",
+  "settings": {
+    "tab": "adjust"
+  },
+  "thumbnail": "examples/editor-before.webp",
+  "description": "Global adjustment prompt for the editor Adjust tab.",
+  "author": "bloom-render",
+  "tags": ["adjust", "color", "mood"]
+}

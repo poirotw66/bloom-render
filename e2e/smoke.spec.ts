@@ -25,6 +25,7 @@ const ROUTES: { path: string; expectText: RegExp | string }[] = [
   { path: '/try-on', expectText: /Try-On/i },
   { path: '/enhance', expectText: /Local Enhance/i },
   { path: '/photography-service', expectText: /Photography/i },
+  { path: '/prompt-gallery', expectText: /Prompt gallery/i },
 ];
 
 test.describe('smoke', () => {
