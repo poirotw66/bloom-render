@@ -5,7 +5,12 @@ export type {
   ImageProvider,
   ImageProviderId,
 } from './types';
-export { IMAGE_PROVIDER_IDS, isDemoProvider, isImageProviderId } from './types';
+export {
+  IMAGE_PROVIDER_IDS,
+  isDemoProvider,
+  isImageProviderId,
+  providerSupportsNativeMask,
+} from './types';
 export { getImageProvider } from './registry';
 export { toProviderI18nError } from './providerErrors';
 export {

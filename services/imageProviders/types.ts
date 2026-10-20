@@ -15,6 +15,12 @@ export interface GenerateImageRequest {
   prompt: string;
   /** Ordered reference / subject images (may be empty for text-to-image). */
   images?: ImagePart[];
+  /**
+   * Optional edit mask (white = change, black = keep). Only sent when the
+   * provider advertises native mask support via `providerSupportsNativeMask`.
+   * Callers that need a fallback should overlay the mask themselves.
+   */
+  mask?: ImagePart;
   model: string;
   apiKey: string;
   aspectRatio?: string;
@@ -55,4 +61,17 @@ export function isImageProviderId(value: string): value is ImageProviderId {
 
 export function isDemoProvider(id: ImageProviderId | string | undefined | null): boolean {
   return id === 'demo';
+}
+
+/**
+ * True when `GenerateImageRequest.mask` is forwarded as a first-class mask to
+ * the upstream API. Gemini consumer image models and OpenRouter's images
+ * endpoint used here are prompt/reference based — they return false, so the
+ * editor overlays the mask onto the photo and describes the tinted regions.
+ */
+export function providerSupportsNativeMask(
+  id: ImageProviderId | string | undefined | null,
+): boolean {
+  void id;
+  return false;
 }

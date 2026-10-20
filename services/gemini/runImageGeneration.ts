@@ -12,6 +12,8 @@ import { fileToPartAuto, type ServiceSettings } from './shared';
 export interface RunImageGenerationOptions {
   prompt: string;
   images?: File[];
+  /** Binary edit mask (white = change). Forwarded only when the provider supports it. */
+  mask?: File;
   settings?: ServiceSettings;
   aspectRatio?: string;
   imageSize?: '1K' | '2K' | '4K';
@@ -45,6 +47,7 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
   const {
     prompt,
     images = [],
+    mask,
     settings,
     aspectRatio,
     imageSize,
@@ -60,18 +63,21 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
     context,
     model,
     imageCount: images.length,
+    hasMask: Boolean(mask),
     aspectRatio,
     imageSize,
     includeImageConfig,
   });
 
   const imageParts = await filesToImageParts(images);
+  const maskParts = mask ? await filesToImageParts([mask]) : [];
   const provider = getImageProvider(providerId);
   const resolvedModel = providerId === 'demo' ? model || 'demo-samples' : model;
 
   const result = await provider.generateImage({
     prompt,
     images: imageParts,
+    mask: maskParts[0],
     model: resolvedModel,
     apiKey: providerId === 'demo' ? apiKey || 'demo' : apiKey,
     aspectRatio,
