@@ -60,3 +60,34 @@ jobs:
           # Deploy workflow sets this for the Pages base path; CI builds with
           # the default `/` base so PRs exercise a plain production build.
           GITHUB_PAGES: 'false'
+
+  # Sibling job: Chromium-only Playwright smoke (home, routes, demo, upload).
+  # Kept separate so a slow browser install does not block the quality-gate
+  # signal, and so quality-gate failures do not skip e2e entirely when both
+  # are requested as checks.
+  e2e-chromium:
+    name: e2e-chromium
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright smoke
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+          GITHUB_PAGES: 'false'

@@ -140,6 +140,8 @@ export default defineConfig(({ mode }) => {
       // need a DOM opt in per-file with a `// @vitest-environment jsdom`
       // docblock instead of forcing jsdom on every suite.
       setupFiles: ['./test-setup.ts'],
+      // Playwright smoke lives under e2e/ and must not be collected by Vitest.
+      exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
     },
   };
 });

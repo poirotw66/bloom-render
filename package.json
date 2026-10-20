@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky",
@@ -26,6 +27,7 @@
     "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.3.0",
     "@testing-library/react": "^16.3.2",
     "@types/jszip": "^3.4.0",
