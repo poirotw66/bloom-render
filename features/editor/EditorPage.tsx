@@ -18,6 +18,8 @@ import FilterPanel from '../../components/FilterPanel';
 import AdjustmentPanel from '../../components/AdjustmentPanel';
 import CropPanel from '../../components/CropPanel';
 import DemoModeBanner from '../../components/DemoModeBanner';
+import MaskBrushCanvas from '../../components/MaskBrushCanvas';
+import RetouchMaskToolbar, { type RetouchSelectMode } from '../../components/RetouchMaskToolbar';
 import { UndoIcon, RedoIcon, EyeIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
@@ -25,6 +27,7 @@ import CompareSlider from '../../components/CompareSlider';
 import { confirmDiscardUnsavedWork, useUnsavedWork } from '../../hooks/useUnsavedWork';
 import { useEditorHistoryShortcuts } from '../../hooks/useEditorHistoryShortcuts';
 import { useHistory as useGenerationHistory } from '../../hooks/useHistory';
+import { useMaskBrush } from '../../hooks/useMaskBrush';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { buildHistoryOptions } from '../../utils/historyOptions';
@@ -64,6 +67,8 @@ const EditorPage: React.FC = () => {
   const [editHotspot, setEditHotspot] = useState<{ x: number; y: number } | null>(null);
   const [displayHotspot, setDisplayHotspot] = useState<{ x: number; y: number } | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('retouch');
+  const [retouchMode, setRetouchMode] = useState<RetouchSelectMode>('point');
+  const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
 
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
@@ -76,6 +81,25 @@ const EditorPage: React.FC = () => {
 
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
   const [originalImageUrl, setOriginalImageUrl] = useState<string | null>(null);
+
+  const maskBrush = useMaskBrush({
+    naturalWidth: naturalSize.width,
+    naturalHeight: naturalSize.height,
+    imageKey: currentImageUrl,
+  });
+  const {
+    hasMask,
+    exportMaskFile,
+    clearMask,
+    canUndoStroke,
+    undoStroke,
+    setTool,
+    setBrushSize,
+    tool,
+    brushSize,
+  } = maskBrush;
+
+  const retouchTargetReady = retouchMode === 'brush' ? hasMask : editHotspot !== null;
 
   // Effect to create and revoke object URLs safely for the current image
   useEffect(() => {
@@ -148,7 +172,19 @@ const EditorPage: React.FC = () => {
       setError(t('main.error_no_prompt_edit'));
       return;
     }
-    if (!editHotspot) {
+
+    let maskFile: File | null = null;
+    if (retouchMode === 'brush') {
+      if (!hasMask) {
+        setError(t('main.error_no_mask'));
+        return;
+      }
+      maskFile = await exportMaskFile();
+      if (!maskFile) {
+        setError(t('main.error_no_mask'));
+        return;
+      }
+    } else if (!editHotspot) {
       setError(t('main.error_no_hotspot'));
       return;
     }
@@ -160,7 +196,7 @@ const EditorPage: React.FC = () => {
       const editedImageUrl = await generateEditedImage(
         currentImage,
         prompt,
-        editHotspot,
+        maskFile ? { mask: maskFile } : { hotspot: editHotspot },
         settings.toServiceSettings(),
       );
       void addToGenerationHistory(
@@ -169,7 +205,7 @@ const EditorPage: React.FC = () => {
         buildHistoryOptions('editor', settings, {
           prompt,
           tab: 'retouch',
-          hotspot: editHotspot,
+          ...(maskFile ? { retouchMode: 'brush' } : { hotspot: editHotspot, retouchMode: 'point' }),
         }),
         currentImage,
       );
@@ -177,13 +213,26 @@ const EditorPage: React.FC = () => {
       setPrompt('');
       setEditHotspot(null);
       setDisplayHotspot(null);
+      clearMask();
     } catch (err) {
       setError(formatApiErrorMessage(err, t, 'edit'));
       logger.error('Generative edit failed:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [addImageToHistory, addToGenerationHistory, currentImage, editHotspot, prompt, settings, t]);
+  }, [
+    addImageToHistory,
+    addToGenerationHistory,
+    clearMask,
+    currentImage,
+    editHotspot,
+    exportMaskFile,
+    hasMask,
+    prompt,
+    retouchMode,
+    settings,
+    t,
+  ]);
 
   const handleApplyFilter = useCallback(
     async (filterPrompt: string) => {
@@ -335,7 +384,7 @@ const EditorPage: React.FC = () => {
 
   const handleImageClick = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
-      if (activeTab !== 'retouch') return;
+      if (activeTab !== 'retouch' || retouchMode !== 'point') return;
 
       const img = e.currentTarget;
       const rect = img.getBoundingClientRect();
@@ -354,7 +403,28 @@ const EditorPage: React.FC = () => {
 
       setEditHotspot({ x: originalX, y: originalY });
     },
-    [activeTab],
+    [activeTab, retouchMode],
+  );
+
+  const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    setNaturalSize({
+      width: img.naturalWidth || 0,
+      height: img.naturalHeight || 0,
+    });
+  }, []);
+
+  const handleRetouchModeChange = useCallback(
+    (mode: RetouchSelectMode) => {
+      setRetouchMode(mode);
+      if (mode === 'brush') {
+        setEditHotspot(null);
+        setDisplayHotspot(null);
+      } else {
+        clearMask();
+      }
+    },
+    [clearMask],
   );
 
   const renderEditor = () => {
@@ -402,9 +472,23 @@ const EditorPage: React.FC = () => {
             key={currentImageUrl ?? 'none'}
             src={currentImageUrl ?? undefined}
             alt="Current edited image"
+            onLoad={handleImageLoad}
             onClick={handleImageClick}
-            className={`absolute top-0 left-0 w-full h-auto object-contain max-h-[60vh] rounded-xl ${activeTab === 'retouch' ? 'cursor-crosshair' : 'cursor-default'}`}
+            className={`absolute top-0 left-0 w-full h-auto object-contain max-h-[60vh] rounded-xl ${
+              activeTab === 'retouch' && retouchMode === 'point'
+                ? 'cursor-crosshair'
+                : activeTab === 'retouch' && retouchMode === 'brush'
+                  ? 'pointer-events-none'
+                  : 'cursor-default'
+            }`}
           />
+          {activeTab === 'retouch' && retouchMode === 'brush' && !isLoading && (
+            <MaskBrushCanvas
+              brush={maskBrush}
+              disabled={isLoading}
+              cursor={maskBrush.tool === 'erase' ? 'cell' : 'crosshair'}
+            />
+          )}
         </div>
       );
 
@@ -451,14 +535,18 @@ const EditorPage: React.FC = () => {
             imageDisplay
           )}
 
-          {displayHotspot && !isLoading && !isComparing && activeTab === 'retouch' && (
-            <div
-              className="absolute rounded-full w-6 h-6 bg-blue-500/50 border-2 border-white pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
-              style={{ left: `${displayHotspot.x}px`, top: `${displayHotspot.y}px` }}
-            >
-              <div className="absolute inset-0 rounded-full w-6 h-6 animate-ping bg-blue-400"></div>
-            </div>
-          )}
+          {displayHotspot &&
+            !isLoading &&
+            !isComparing &&
+            activeTab === 'retouch' &&
+            retouchMode === 'point' && (
+              <div
+                className="absolute rounded-full w-6 h-6 bg-blue-500/50 border-2 border-white pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
+                style={{ left: `${displayHotspot.x}px`, top: `${displayHotspot.y}px` }}
+              >
+                <div className="absolute inset-0 rounded-full w-6 h-6 animate-ping bg-blue-400"></div>
+              </div>
+            )}
         </div>
 
         {isComparing && <p className="text-sm text-gray-400">{t('main.compare_hint')}</p>}
@@ -480,13 +568,32 @@ const EditorPage: React.FC = () => {
         <div className="w-full">
           {activeTab === 'retouch' && (
             <div className="flex flex-col items-center gap-4">
+              <RetouchMaskToolbar
+                mode={retouchMode}
+                onModeChange={handleRetouchModeChange}
+                tool={tool}
+                onToolChange={setTool}
+                brushSize={brushSize}
+                onBrushSizeChange={setBrushSize}
+                canUndoStroke={canUndoStroke}
+                onUndoStroke={undoStroke}
+                hasMask={hasMask}
+                onClearMask={clearMask}
+                disabled={isLoading}
+              />
               <p className={`text-md ${editorTheme.retouchInstruction}`}>
-                {editHotspot ? t('main.retouch_instr_ready') : t('main.retouch_instr_initial')}
+                {retouchMode === 'brush'
+                  ? hasMask
+                    ? t('main.retouch_instr_brush_ready')
+                    : t('main.retouch_instr_brush_initial')
+                  : editHotspot
+                    ? t('main.retouch_instr_ready')
+                    : t('main.retouch_instr_initial')}
               </p>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  handleGenerate();
+                  void handleGenerate();
                 }}
                 className="w-full flex items-center gap-2"
               >
@@ -495,18 +602,22 @@ const EditorPage: React.FC = () => {
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder={
-                    editHotspot
-                      ? t('main.retouch_placeholder_ready')
-                      : t('main.retouch_placeholder_initial')
+                    retouchMode === 'brush'
+                      ? hasMask
+                        ? t('main.retouch_placeholder_brush_ready')
+                        : t('main.retouch_placeholder_brush_initial')
+                      : editHotspot
+                        ? t('main.retouch_placeholder_ready')
+                        : t('main.retouch_placeholder_initial')
                   }
                   className={`flex-grow border rounded-lg p-5 text-lg focus-visible:ring-2 focus:outline-none transition w-full disabled:cursor-not-allowed disabled:opacity-60 ${editorTheme.input}`}
-                  disabled={isLoading || !editHotspot}
+                  disabled={isLoading || !retouchTargetReady}
                 />
                 <div className="flex flex-col items-stretch gap-1.5">
                   <button
                     type="submit"
                     className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${editorTheme.submitButton}`}
-                    disabled={isLoading || !prompt.trim() || !editHotspot}
+                    disabled={isLoading || !prompt.trim() || !retouchTargetReady}
                   >
                     {t('main.btn_generate')}
                   </button>
@@ -517,7 +628,7 @@ const EditorPage: React.FC = () => {
                 scope="retouch"
                 value={prompt}
                 onApply={setPrompt}
-                disabled={isLoading || !editHotspot}
+                disabled={isLoading || !retouchTargetReady}
                 className="w-full"
               />
             </div>

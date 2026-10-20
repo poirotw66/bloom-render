@@ -94,6 +94,19 @@ describe('EditorPage', () => {
     });
     expect(screen.getByRole('button', { name: 'Generate' })).toBeTruthy();
     expect(screen.getByAltText('Current edited image')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Point' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Brush mask' })).toBeTruthy();
+  });
+
+  it('switches to brush mask mode and shows brush controls', async () => {
+    renderEditor(samplePhoto());
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Brush mask' })).toBeTruthy();
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Brush mask' }));
+    expect(screen.getByRole('button', { name: 'Paint' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Eraser' })).toBeTruthy();
+    expect(screen.getByText(/Paint the area to change/i)).toBeTruthy();
   });
 
   it('applies a filter through the mocked provider and records history', async () => {
