@@ -1,0 +1,12 @@
+{
+  "id": "film-noir-alley",
+  "title": "Film noir alley",
+  "prompt": "High-contrast black-and-white film noir alley at night, single streetlamp, deep shadows, wet cobblestones, 1940s detective-movie atmosphere",
+  "feature": "filter",
+  "settings": {
+    "tab": "filters"
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["filter", "noir"]
+}

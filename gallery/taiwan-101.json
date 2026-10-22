@@ -1,0 +1,14 @@
+{
+  "id": "taiwan-101",
+  "title": "Taipei 101 blue hour",
+  "prompt": "Place the person at a Taipei viewpoint with Taipei 101 glowing in the skyline behind them at blue hour, clean city lights bokeh, stylish travel portrait, photorealistic.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/taiwan-101.webp",
+  "description": "Travel retouch with Taipei 101 skyline.",
+  "author": "bloom-render",
+  "tags": ["retouch", "taiwan", "skyline"]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "idphoto-open-collar",
+  "title": "ID photo open collar",
+  "prompt": "Clean studio ID photo look with open collar, even soft lighting, solid light-gray background, natural skin texture, photorealistic passport-style framing",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "3:4",
+    "quantity": 1
+  },
+  "thumbnail": "examples/idphoto-after.webp",
+  "description": "Matches the open-collar ID photo example.",
+  "author": "bloom-render",
+  "tags": ["generate", "idphoto"]
+}

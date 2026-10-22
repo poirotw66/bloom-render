@@ -73,6 +73,7 @@ const ResultImage: React.FC<ResultImageProps> = ({
             originalUrl={originalUrl}
             currentUrl={resultUrl}
             imageClassName={imageClassName}
+            offsetBeforeLabel={demoBadge}
           />
         ) : (
           <img src={resultUrl} alt={alt ?? t('result.image_alt')} className={imageClassName} />

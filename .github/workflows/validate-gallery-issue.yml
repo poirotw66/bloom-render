@@ -1,0 +1,90 @@
+name: Validate gallery submission
+
+# When someone opens/edits a Prompt gallery issue-form submission, parse the
+# body and validate against gallery/schema.json (same rules as CI).
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  validate:
+    name: validate-gallery-issue
+    if: contains(github.event.issue.labels.*.name, 'gallery-submission')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Write issue body
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          printf '%s' "$ISSUE_BODY" > /tmp/gallery-issue-body.md
+
+      - name: Validate submission
+        id: validate
+        run: |
+          set +e
+          node scripts/parse-gallery-issue.mjs --body-file /tmp/gallery-issue-body.md > /tmp/gallery-entry.json 2> /tmp/gallery-errors.txt
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -eq 0 ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Comment result
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const ok = '${{ steps.validate.outputs.ok }}' === 'true';
+            const errors = fs.existsSync('/tmp/gallery-errors.txt')
+              ? fs.readFileSync('/tmp/gallery-errors.txt', 'utf8').trim()
+              : '';
+            const entry = fs.existsSync('/tmp/gallery-entry.json')
+              ? fs.readFileSync('/tmp/gallery-entry.json', 'utf8').trim()
+              : '';
+            const body = ok
+              ? [
+                  '### Gallery submission looks valid',
+                  '',
+                  'Fields match `gallery/schema.json`. A maintainer can add `gallery/<id>.json` from:',
+                  '',
+                  '```json',
+                  entry,
+                  '```',
+                  '',
+                  'Remember: thumbnails must match the title, or omit `thumbnail` for a gradient card.',
+                ].join('\n')
+              : [
+                  '### Gallery submission needs fixes',
+                  '',
+                  'Validation failed:',
+                  '',
+                  '```',
+                  errors || '(no details)',
+                  '```',
+                  '',
+                  'See `gallery/schema.json` and CONTRIBUTING.md.',
+                ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            if (!ok) {
+              core.setFailed('Gallery submission validation failed');
+            }

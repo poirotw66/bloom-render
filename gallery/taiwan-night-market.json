@@ -1,0 +1,14 @@
+{
+  "id": "taiwan-night-market",
+  "title": "Taiwan night market",
+  "prompt": "Place the person naturally at a bustling Taiwan night market: red lanterns, steam from food stalls, neon signage, crowded aisle, warm tungsten and neon mix, candid travel photo, photorealistic.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/taiwan-night-market.webp",
+  "description": "Travel retouch at a Taiwan night market.",
+  "author": "bloom-render",
+  "tags": ["retouch", "taiwan", "night-market"]
+}

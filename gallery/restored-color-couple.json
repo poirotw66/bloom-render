@@ -1,0 +1,14 @@
+{
+  "id": "restored-color-couple",
+  "title": "Restored colorized couple",
+  "prompt": "A restored and naturally colorized 1960s portrait of a couple outdoors, clean film grain, gentle contrast, historically plausible colors, photorealistic",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "4:3",
+    "quantity": 1
+  },
+  "thumbnail": "examples/restore-after.webp",
+  "description": "Matches the old-photo restoration colorized example.",
+  "author": "bloom-render",
+  "tags": ["generate", "restore", "vintage"]
+}

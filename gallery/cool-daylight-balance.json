@@ -1,0 +1,12 @@
+{
+  "id": "cool-daylight-balance",
+  "title": "Cool daylight white balance",
+  "prompt": "Shift the global white balance cooler toward clean daylight: slightly bluer shadows, neutralize yellow cast, keep skin natural, photorealistic",
+  "feature": "adjust",
+  "settings": {
+    "tab": "adjust"
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["adjust", "color"]
+}

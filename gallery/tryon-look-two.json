@@ -1,0 +1,14 @@
+{
+  "id": "tryon-look-two",
+  "title": "Virtual try-on look B",
+  "prompt": "Alternate styling of the same garment on the person: natural fabric folds, consistent color and lighting, photorealistic virtual try-on",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/tryon-after-2.webp",
+  "description": "Matches try-on result style 2.",
+  "author": "bloom-render",
+  "tags": ["retouch", "tryon"]
+}

@@ -4,7 +4,13 @@ JSON presets shown on the in-app **Prompt gallery** page (`/prompt-gallery`).
 
 Each file (except `schema.json` and this README) is one entry. CI runs
 `npm run gallery:validate` to check every entry against [`schema.json`](./schema.json)
-and to confirm the `thumbnail` exists under `public/`.
+and to confirm any `thumbnail` exists under `public/`.
+
+`thumbnail` is optional. Only set it when the image matches the title; otherwise
+omit it and the app renders a feature-colored gradient card.
+
+You can also propose entries with the **Prompt gallery submission** GitHub issue
+form (validated by `.github/workflows/validate-gallery-issue.yml`).
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md#community-prompt-gallery) for how to
 add an entry by pull request.

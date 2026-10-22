@@ -1,0 +1,14 @@
+{
+  "id": "taiwan-jiufen",
+  "title": "Jiufen lantern steps",
+  "prompt": "Place the person on the misty lantern-lit steps of Jiufen Old Street, Taiwan: tea-house rooftops, orange lanterns in fog, cool dusk light, cinematic travel portrait, photorealistic.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/taiwan-jiufen.webp",
+  "description": "Travel retouch on Jiufen Old Street.",
+  "author": "bloom-render",
+  "tags": ["retouch", "taiwan", "jiufen"]
+}

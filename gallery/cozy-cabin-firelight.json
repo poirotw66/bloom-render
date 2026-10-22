@@ -1,0 +1,13 @@
+{
+  "id": "cozy-cabin-firelight",
+  "title": "Cozy cabin firelight",
+  "prompt": "Interior of a small wooden cabin at night, warm fireplace glow, wool blankets, snow visible through a frosted window, cozy atmosphere, photorealistic",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "4:3",
+    "quantity": 1
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["generate", "interior"]
+}

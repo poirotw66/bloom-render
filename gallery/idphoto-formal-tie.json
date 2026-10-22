@@ -1,0 +1,14 @@
+{
+  "id": "idphoto-formal-tie",
+  "title": "ID photo shirt and tie",
+  "prompt": "Formal ID photo with dress shirt and tie, soft even studio light, plain light background, centered head-and-shoulders crop, photorealistic",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "3:4",
+    "quantity": 1
+  },
+  "thumbnail": "examples/idphoto-after-2.webp",
+  "description": "Matches the shirt-and-tie ID photo example.",
+  "author": "bloom-render",
+  "tags": ["generate", "idphoto"]
+}

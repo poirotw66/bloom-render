@@ -1,0 +1,13 @@
+{
+  "id": "misty-fjord-dawn",
+  "title": "Misty fjord dawn",
+  "prompt": "Wide misty fjord at dawn, soft pastel sky, mirror-still water, lone wooden dock in the foreground, photorealistic landscape, 35mm",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "16:9",
+    "quantity": 1
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["generate", "landscape"]
+}

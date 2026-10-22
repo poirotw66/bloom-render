@@ -55,7 +55,7 @@ export const enMessages: Record<string, string> = {
   'prompt_gallery.apply_failed': 'Could not open that preset. Please try again.',
   'prompt_gallery.empty': 'No presets in this filter.',
   'prompt_gallery.contribute_hint':
-    'Want to add one? Open a PR with a new file under gallery/ — see CONTRIBUTING.md.',
+    'Want to add one? Use the Prompt gallery submission issue form, or open a PR under gallery/ — see CONTRIBUTING.md.',
   'common.selected': 'Selected',
   'common.none': 'None',
   'common.output_quantity': 'Output Quantity',

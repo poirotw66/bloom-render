@@ -1,0 +1,123 @@
+name: Prompt gallery submission
+description: Propose a community prompt for the in-app Prompt gallery
+title: '[Gallery]: '
+labels: ['gallery-submission']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest a preset for `/prompt-gallery`. A bot validates the fields against
+        [`gallery/schema.json`](../../gallery/schema.json).
+
+        **Never paste API keys.** Prefer reusing an existing `examples/*.webp` thumbnail
+        that matches the title, or leave thumbnail blank for a gradient card.
+
+  - type: input
+    id: entry_id
+    attributes:
+      label: id
+      description: Stable kebab-case id (will become `gallery/<id>.json`).
+      placeholder: misty-harbor-dawn
+    validations:
+      required: true
+
+  - type: input
+    id: title
+    attributes:
+      label: title
+      description: Short display title (3–80 characters).
+    validations:
+      required: true
+
+  - type: textarea
+    id: prompt
+    attributes:
+      label: prompt
+      description: Full prompt text sent to the model (8–2000 characters). Prefer English for quality.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature
+    attributes:
+      label: feature
+      options:
+        - generate
+        - retouch
+        - adjust
+        - filter
+    validations:
+      required: true
+
+  - type: dropdown
+    id: aspect_ratio
+    attributes:
+      label: settings.aspectRatio (optional)
+      options:
+        - (none)
+        - '1:1'
+        - '3:4'
+        - '4:3'
+        - '16:9'
+        - '9:16'
+    validations:
+      required: false
+
+  - type: dropdown
+    id: quantity
+    attributes:
+      label: settings.quantity (optional, generate)
+      options:
+        - (none)
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+    validations:
+      required: false
+
+  - type: dropdown
+    id: tab
+    attributes:
+      label: settings.tab (optional, editor surfaces)
+      options:
+        - (none)
+        - retouch
+        - adjust
+        - filters
+    validations:
+      required: false
+
+  - type: input
+    id: thumbnail
+    attributes:
+      label: thumbnail (optional)
+      description: Path under public/ that matches the title, e.g. `examples/travel-1.webp` or `examples/viral/figurine-box.webp`. Leave empty for a gradient card.
+      placeholder: examples/generate-1.webp
+    validations:
+      required: false
+
+  - type: input
+    id: author
+    attributes:
+      label: author (optional)
+      description: Credit handle (max 64 chars).
+    validations:
+      required: false
+
+  - type: input
+    id: tags
+    attributes:
+      label: tags (optional)
+      description: Comma-separated tags (max 8).
+      placeholder: generate, landscape, dawn
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: description (optional)
+      description: Short blurb shown on the card (max 280 chars).
+    validations:
+      required: false
