@@ -22,7 +22,7 @@ test.describe('Wave T — key handling + CSP', () => {
   test('settings shows remember-key toggle (zh-TW) and persists opt-in', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
-    await page.getByRole('button', { name: '設定' }).click();
+    await page.locator('button[aria-label="設定"]').click();
     const remember = page.getByTestId('remember-api-key');
     await expect(remember).toBeVisible();
     await expect(page.getByText('在此裝置記住金鑰')).toBeVisible();
