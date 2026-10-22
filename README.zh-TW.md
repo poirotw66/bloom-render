@@ -2,81 +2,70 @@
 
 [English](./README.md) | [繁體中文](./README.zh-TW.md)
 
+**瀏覽器裡的 AI 照相館 — 自備 Gemini／OpenRouter 金鑰，或免金鑰離線 Demo。**
+
 [![CI](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml/badge.svg)](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![線上 Demo](https://img.shields.io/badge/demo-bloss0m.com-e23d2f)](https://www.bloss0m.com/bloom-render/)
 
-**BloomRender — Let your ideas bloom.**
+**[線上 Demo → https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)** · 點 **試試 Demo** 使用內建範例（無需 API 金鑰、不連線 AI）。你貼上的金鑰只存在此分頁的 `sessionStorage`。
 
-AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Google Gemini** 或 **OpenRouter**：修圖、濾鏡、證件照、形象照、旅遊照、主題寫真、雙人／團體照與 AI 虛擬試穿等功能。
+![BloomRender 核心流程：試試 Demo → 證件照 → 前後對比](docs/showcase/core-flow.gif)
 
-**試試 Demo，免金鑰：** 開啟[線上網站](https://www.bloss0m.com/bloom-render/)後點 **試試 Demo**（或在設定選擇 **線上 Demo（免金鑰）**）。各功能可用內建範例照片按生成——不需 API 金鑰，也不會連線到 AI 供應商。結果會標示 **Demo**。要用自己的照片生成時，再到設定加入 Gemini 或 OpenRouter 金鑰。
+### 主題 · 繁花 Bloom · 深夜 Night · 新年 New Year
 
-### 預覽
+| 繁花 Bloom                                    | 深夜 Night                                    | 新年 New Year                                   |
+| --------------------------------------------- | --------------------------------------------- | ----------------------------------------------- |
+| ![首頁 · 繁花](docs/showcase/hero-bloom.webp) | ![首頁 · 深夜](docs/showcase/hero-night.webp) | ![首頁 · 新年](docs/showcase/hero-newyear.webp) |
 
-| 文字生圖                                      | AI 證件照                                | 圖片編輯器                              |
-| --------------------------------------------- | ---------------------------------------- | --------------------------------------- |
-| ![文字生圖結果](images/generate_2_image.webp) | ![證件照結果](images/idphoto_5_idp.webp) | ![編輯器修圖](images/edit_2_image.webp) |
+### 功能一覽
 
-| AI 旅遊照                                      | AI 虛擬試穿                                   |
-| ---------------------------------------------- | --------------------------------------------- |
-| ![旅遊照結果](images/travel_5_couple_img.webp) | ![虛擬試穿結果](images/tryon_4_girl_img.webp) |
+| 文字生圖                                       | 證件照 + 4×6″ 排版                                      | 照相館                                                  |
+| ---------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| ![文字生圖](docs/showcase/generate-night.webp) | ![證件照排版](docs/showcase/idphoto-print-newyear.webp) | ![照相館](docs/showcase/photography-service-bloom.webp) |
+
+| 本機強化                                      | 編輯器筆刷遮罩                                    | 提示詞藝廊                                             |
+| --------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| ![本機強化](docs/showcase/enhance-night.webp) | ![筆刷遮罩](docs/showcase/editor-mask-bloom.webp) | ![提示詞藝廊](docs/showcase/prompt-gallery-bloom.webp) |
 
 ---
 
 ## 功能概覽
 
-入口頁以分頁切換，順序為：**上傳圖片** → **文字生圖** → **攝影服務** → **證件照** → **形象照** → **旅遊照** → **主題寫真** → **雙人／團體照** → **虛擬試穿**。
+分頁順序：**上傳** → **文字生圖** → **照相館** → **證件照** → **形象照** → **旅遊照** → **主題寫真** → **雙人／團體** → **虛擬試穿** → **影像強化**。
 
-- **上傳圖片**：拖放或選擇檔案後進入編輯器。
-- **文字生圖**：輸入描述、選擇長寬比（1:1、4:3、3:4、16:9、9:16）與張數（1～4），由 AI 生成圖片；多張結果可單張下載或**全部下載為 ZIP**，亦可選一張送入編輯器。
-- **圖片編輯器**
-  - **修圖**：點選畫面位置並輸入描述，進行局部編輯。
-  - **濾鏡**：套用風格濾鏡（如 Synthwave、Anime、Lomo 等）或自訂描述。
-  - **調整**：整體調整（模糊背景、增強細節、光線等）或自訂描述。
-  - **裁切**：自由裁切或證件規格（2 吋大頭／半身、1 吋等）。
-  - 支援復原、重做、與原圖比較、重置、下載。
-- **AI 證件照**：選擇證件類型、修圖等級、輸出規格、服裝（可自訂描述與參考圖），上傳肖像後生成證件照；支援單張與批次 ZIP 下載。
-- **AI 形象照**：選擇類型與輸出規格，上傳肖像後生成專業形象照。
-- **AI 旅遊照**：世界地圖／台灣地圖選景，搭配天氣、時間、服裝、構圖等選項，上傳肖像後生成旅遊照；單人、情侶或團體皆可。
-- **AI 主題寫真**：選擇主題類型、輸出尺寸與長寬比，上傳肖像後生成主題寫真。
-- **AI 雙人／團體照**：上傳 2 張（雙人）或 3～6 張（團體），選擇風格後生成合照。
-- **AI 虛擬試穿**：上傳一張人物照與 1～5 張服裝照，可產出多種風格試穿圖，支援單張下載與全部下載。
-- **攝影服務**：導向各 AI 生成功能的入口頁。
-- **設定**：影像供應商（Gemini／OpenRouter）、對應 API 金鑰與模型、語言、主題（僅存於瀏覽器）。
-- **多語系**：英文、繁體中文。
-- **主題**：繁花（Bloom）、深夜（Night）、新年（New Year）。
-- **生成歷史**：可檢視、篩選與批次下載過往生成結果。
+- **上傳／編輯器** — 點選修圖、**筆刷遮罩**、濾鏡、整體調整、自由／證件裁切；復原、重做、對比、下載。
+- **文字生圖** — 提示詞、長寬比、1～4 張；下載或送入編輯器。
+- **照相館** — 導向證件、形象、主題、雙人／團體與精選組合（**不顯示價格**）。
+- **AI 證件照** — 規格、修圖、服裝；前後對比；**4×6″ 排版**（JPG／PDF）；單張與批次 ZIP。
+- **形象／旅遊／主題／雙人·團體／試穿** — 各有專頁與 Demo 範例。
+- **本機強化** — 瀏覽器內去背與 2× 放大（免金鑰）。
+- **提示詞藝廊** — 社群預設；一鍵套用到生圖／修圖／調整／濾鏡。
+- **歷史 · 分享 · 對比** — 瀏覽紀錄、分享卡片、前後滑桿。
+- **設定** — Gemini／OpenRouter／線上 Demo；語系；主題（**繁花**、**深夜**、**新年**）。
+- **多語系** — 英文、繁體中文。支援 **PWA** 靜態建置。
 
 ---
 
 ## 快速開始
 
-環境需求：**Node.js 20+**、npm（有 `package-lock.json` 時請用 `npm ci`）。
+環境：**Node.js 20+**、npm（有 lockfile 時請用 `npm ci`）。
 
-1. **安裝依賴**
+```bash
+npm ci
+npm run dev
+```
 
-   ```bash
-   npm ci
-   ```
+依終端網址開啟（預設 [http://localhost:3002](http://localhost:3002)）。
 
-2. **API 金鑰（自備金鑰 / BYOK）或試試 Demo** — 於「設定」選擇 **影像供應商**（`Google Gemini`、`OpenRouter（自備金鑰）` 或 `線上 Demo（免金鑰）`）。實際生成時貼上對應金鑰。金鑰只存在此瀏覽器分頁（`sessionStorage`），關閉分頁後即清除；不會寫入 repo、不會從環境變數讀取，也不會打包進正式版。也可點 **試試 Demo**，用內建範例免金鑰體驗。見 [`.env.example`](./.env.example)。
+1. 點 **試試 Demo**（或設定 → **線上 Demo（免金鑰）**）用內建範例體驗。
+2. 正式生成：設定 → **Google Gemini** 或 **OpenRouter（自備金鑰）** → 貼上金鑰（僅此分頁 `sessionStorage`；永不提交或打包）。見 [`.env.example`](./.env.example)。
 
-3. **啟動**
-
-   ```bash
-   npm run dev
-   ```
-
-   依終端顯示網址開啟（預設 [http://localhost:3002](http://localhost:3002)）。
-
-4. **（選用）靜態圖片**
-   - **地圖**：Travel 需 `public/images/world-map.webp`、`public/images/taiwan-map.webp`（見 `public/images/README.md`）。PNG 可執行 `node scripts/convert-public-images-to-webp.mjs` 轉檔。
-   - **旅遊場景參考圖**：可依 [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md) 放入 `public/images/scenes/`；未放置時仍可以文字描述生成。
+選用旅遊地圖：`public/images/world-map.webp`、`public/images/taiwan-map.webp`（見 [public/images/README.md](public/images/README.md)）。場景參考圖：[docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md)。
 
 ---
 
-## API 金鑰
+## 隱私／自備金鑰（BYOK）
 
 | 情境                    | 作法                                                                                                                                                      |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -91,10 +80,9 @@ AI 驅動的專業照片編輯與生成工作室，支援自備金鑰的 **Googl
 | 文字生圖、編輯器（修圖／濾鏡／調整）、證件照、形象照、旅遊照、主題寫真、雙人／團體、試穿 | 所選供應商（`services/imageProviders/`）           |
 | 旅遊照「自訂場景」**提示詞優化**（文字）                                                 | **僅 Gemini** — 選 OpenRouter 時略過，直接使用原文 |
 | 首頁 **模型比較**                                                                        | **僅 Gemini**（比較 Gemini 模型 ID）               |
+| **本機強化**（去背／2× 放大）                                                            | 裝置端 — 不需供應商金鑰                            |
 
-OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-image`）。不支援影像參考的模型，在修圖／試穿／多圖流程可能失敗。
-
-請勿提交 `.env`／`.env.local`，也勿把金鑰貼到 issue。請在供應商端設定配額與帳單上限。
+OpenRouter 請優先選支援影像的模型。請勿提交 `.env`／`.env.local`，也勿把金鑰貼到 issue。
 
 ---
 
@@ -104,29 +92,23 @@ OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-i
 - **路由**：React Router 7
 - **編輯**：react-image-crop
 - **AI**：[@google/genai](https://www.npmjs.com/package/@google/genai)（Gemini）＋ OpenRouter Images API（`services/imageProviders/`）
-- **本機強化**：[@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers)（WebGPU + WASM）去背與 2× 放大——不需 API 金鑰
+- **本機強化**：[@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers)（WebGPU + WASM）
 - **批次下載**：JSZip
-- **樣式**：Tailwind CSS 4（`@tailwindcss/vite` 建置時編譯，非 CDN）＋自訂 CSS
+- **樣式**：Tailwind CSS 4（`@tailwindcss/vite`）＋自訂 CSS
 - **開發**：ESLint、Prettier、Vitest、Husky、lint-staged
 
 ### 用戶端模型（影像強化）
 
-首次使用時懶載入，並由瀏覽器快取。約略下載大小：
-
 | 任務     | 模型                                                                                          | 約大小 | 授權       |
 | -------- | --------------------------------------------------------------------------------------------- | ------ | ---------- |
-| 去除背景 | [Xenova/modnet](https://huggingface.co/Xenova/modnet)（MODNet／RMBG 類去背）                  | 25 MB  | Apache-2.0 |
+| 去除背景 | [Xenova/modnet](https://huggingface.co/Xenova/modnet)                                         | 25 MB  | Apache-2.0 |
 | 放大 2×  | [Xenova/swin2SR-classical-sr-x2-64](https://huggingface.co/Xenova/swin2SR-classical-sr-x2-64) | 45 MB  | Apache-2.0 |
-
-執行環境：transformers.js 的 ONNX（優先 WebGPU，否則 WASM）。見應用內 `/enhance` 與 `services/localEnhance/`。
 
 ---
 
 ## 架構
 
-影像生成統一走 `services/imageProviders/`：共用的 `ImageProvider` 介面（`generateImage`、`validateApiKey`），由 Gemini、OpenRouter 與離線 Demo 實作，透過 `getImageProvider()` 依設定選取。各功能模組呼叫 `runImageGeneration`，依 Settings 解析供應商並回傳 data URL。自備金鑰（BYOK）只存在 `sessionStorage`（僅此分頁；關閉分頁後清除），由 `utils/credentialStorage.ts` 管理——不會長期留在 `localStorage`、環境變數或正式版打包中。
-
-本機強化（去背／2× 放大）另走 `services/localEnhance/`：以 `@huggingface/transformers` 懶載入並快取 pipeline，提供「影像強化」頁面，並在各生成結果頁加入操作按鈕。
+影像生成統一走 `services/imageProviders/`（Gemini／OpenRouter／離線 Demo）。BYOK 金鑰只存在 `sessionStorage`（`utils/credentialStorage.ts`）。本機強化在 `services/localEnhance/`。
 
 ---
 
@@ -147,7 +129,7 @@ OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-i
 ## 部署
 
 - 將 `dist/` 部署至任何靜態託管即可。
-- **GitHub Pages**：建置時設定 `GITHUB_PAGES=true`，使 `base` 為 `/bloom-render/`。見 [.github/workflows/deploy.yml](.github/workflows/deploy.yml)（僅在 `main` 部署，且須通過 CI quality-gate）。
+- **GitHub Pages**：`GITHUB_PAGES=true` → `base` 為 `/bloom-render/`。見 [.github/workflows/deploy.yml](.github/workflows/deploy.yml)。
 
 ---
 
@@ -155,15 +137,16 @@ OpenRouter 請優先選支援影像的模型（例如 `google/gemini-2.5-flash-i
 
 完整索引見 [docs/README.md](docs/README.md)。重點：
 
-- **[BloomRender 操作手冊](docs/BLOOMRENDER_MANUAL.md)**：圖文教學，含文字生圖、證件照、形象照、旅遊照、虛擬試穿與編輯器流程
-- **[場景圖來源](docs/SCENE_IMAGES_SOURCES.md)**／**[狀態表](docs/SCENE_IMAGES_STATUS.md)**：可選的旅遊場景參考圖
-- **[型別配置](docs/TYPES.md)**：共用與 feature 區域 TypeScript 型別放置說明
+- **[Showcase 素材](docs/showcase/README.md)** — README 截圖與核心流程 GIF（Wave K/L UI）
+- **[BloomRender 操作手冊](docs/BLOOMRENDER_MANUAL.md)**
+- **[場景圖來源](docs/SCENE_IMAGES_SOURCES.md)**／**[狀態表](docs/SCENE_IMAGES_STATUS.md)**
+- **[型別配置](docs/TYPES.md)**
 
 ---
 
 ## 貢獻
 
-見 [CONTRIBUTING.md](./CONTRIBUTING.md)。本專案遵循 [Contributor Covenant 行為準則](./CODE_OF_CONDUCT.md)。安全性回報見 [SECURITY.md](./SECURITY.md)。
+見 [CONTRIBUTING.md](./CONTRIBUTING.md)。行為準則：[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。安全性：[SECURITY.md](./SECURITY.md)。
 
 ---
 
