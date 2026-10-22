@@ -35,598 +35,151 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        /* Bloom palette (logo-aligned: warm → cool) */
-        --bloom-orange: 249, 115, 22;
-        --bloom-pink: 236, 72, 153;
-        --bloom-fuchsia: 217, 70, 239;
-        --bloom-purple: 168, 85, 247;
-        --bloom-blue: 59, 130, 246;
-        --bloom-teal: 20, 184, 166;
-        --bg-main: #0c0a0f;
-        /* Bloom radial gradients: flower-like soft blurs (stronger for 繁花綻放) */
-        --bg-gradient-1: radial-gradient(
-          ellipse 90% 55% at 20% 90%,
-          rgba(var(--bloom-pink), 0.32) 0%,
-          transparent 55%
-        );
-        --bg-gradient-2: radial-gradient(
-          ellipse 75% 45% at 85% 20%,
-          rgba(var(--bloom-purple), 0.28) 0%,
-          transparent 50%
-        );
-        --bg-gradient-3: radial-gradient(
-          ellipse 70% 70% at 50% 50%,
-          rgba(var(--bloom-fuchsia), 0.22) 0%,
-          transparent 65%
-        );
-        --bg-gradient-4: radial-gradient(
-          ellipse 110% 65% at 50% 110%,
-          rgba(var(--bloom-blue), 0.26) 0%,
-          transparent 55%
-        );
-        --bg-gradient-5: radial-gradient(
-          ellipse 55% 45% at 10% 30%,
-          rgba(var(--bloom-orange), 0.2) 0%,
-          transparent 50%
-        );
-        --bg-gradient-6: radial-gradient(
-          ellipse 45% 55% at 90% 70%,
-          rgba(var(--bloom-teal), 0.22) 0%,
-          transparent 50%
-        );
-        --star-color: rgba(255, 255, 255, 0.7);
-        --shooting-star-color: #c084fc;
-        --shooting-star-glow: #e879f9;
+        --bg-main: #121016;
+        --star-color: rgba(244, 240, 245, 0.55);
+        --shooting-star-color: #e879f9;
       }
-
-      /* 繁花 (Bloom): Sakura cherry-blossom theme – 花盛開 feel, palette #FEEAC9 #FFCDC9 #FDACAC #FD7979 */
       [data-theme='bloom'] {
-        --bg-main: #1a1412;
-        --bg-gradient-1: radial-gradient(
-          ellipse 90% 55% at 20% 90%,
-          rgba(253, 121, 121, 0.42) 0%,
-          transparent 55%
-        );
-        --bg-gradient-2: radial-gradient(
-          ellipse 75% 45% at 85% 20%,
-          rgba(255, 205, 201, 0.38) 0%,
-          transparent 50%
-        );
-        --bg-gradient-3: radial-gradient(
-          ellipse 70% 70% at 50% 50%,
-          rgba(253, 172, 172, 0.35) 0%,
-          transparent 65%
-        );
-        --bg-gradient-4: radial-gradient(
-          ellipse 110% 65% at 50% 110%,
-          rgba(254, 234, 201, 0.32) 0%,
-          transparent 55%
-        );
-        --bg-gradient-5: radial-gradient(
-          ellipse 55% 45% at 10% 30%,
-          rgba(255, 205, 201, 0.4) 0%,
-          transparent 50%
-        );
-        --bg-gradient-6: radial-gradient(
-          ellipse 45% 55% at 90% 70%,
-          rgba(253, 121, 121, 0.35) 0%,
-          transparent 50%
-        );
-        --star-color: rgba(255, 220, 210, 0.65);
-        --shooting-star-color: #fdacac;
-        --shooting-star-glow: #ffcdc9;
+        --bg-main: #121016;
+        --star-color: rgba(244, 220, 235, 0.5);
+        --shooting-star-color: #e879f9;
       }
-
-      /* 深夜 (Night): dark blue/slate, no petals */
       [data-theme='night'] {
-        --bg-main: #000000;
-        --bg-gradient-1: transparent;
-        --bg-gradient-2: transparent;
-        --bg-gradient-3: transparent;
-        --bg-gradient-4: #000000;
-        --bg-gradient-5: transparent;
-        --bg-gradient-6: transparent;
-        --star-color: rgba(255, 255, 255, 0.9);
-        --shooting-star-color: #7dd3fc;
-        --shooting-star-glow: #38bdf8;
+        --bg-main: #0a0c10;
+        --star-color: rgba(238, 242, 247, 0.7);
+        --shooting-star-color: #67e8f9;
       }
-      [data-theme='night'] #bloom-petals {
+      [data-theme='night'] #bloom-petals,
+      [data-theme='night'] #bloom-falling-petals {
         display: none;
       }
-
-      /* 新年 (New Year): red/gold */
       [data-theme='newyear'] {
-        --bg-main: #1a0000;
-        --bg-gradient-1: radial-gradient(
-          ellipse at 20% 80%,
-          rgba(220, 38, 38, 0.3) 0%,
-          rgba(220, 38, 38, 0) 60%
-        );
-        --bg-gradient-2: radial-gradient(
-          ellipse at 80% 30%,
-          rgba(234, 179, 8, 0.25) 0%,
-          rgba(234, 179, 8, 0) 50%
-        );
-        --bg-gradient-3: radial-gradient(
-          ellipse at 50% 50%,
-          rgba(220, 38, 38, 0.2) 0%,
-          rgba(220, 38, 38, 0) 70%
-        );
-        --bg-gradient-4: radial-gradient(ellipse at bottom, #2a0000 0%, #1a0000 100%);
-        --star-color: #fef3c7;
+        --bg-main: #160808;
+        --star-color: rgba(254, 243, 199, 0.55);
         --shooting-star-color: #fbbf24;
-        --shooting-star-glow: #fcd34d;
       }
-      [data-theme='newyear'] #bloom-petals {
+      [data-theme='newyear'] #bloom-petals,
+      [data-theme='newyear'] #bloom-falling-petals {
         display: none;
       }
 
-      html {
-        overflow-x: hidden;
-      }
+      html { overflow-x: hidden; }
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Work Sans', system-ui, sans-serif;
         overflow-x: hidden;
-        background:
-          var(--bg-gradient-5), var(--bg-gradient-6), var(--bg-gradient-1), var(--bg-gradient-2),
-          var(--bg-gradient-3), var(--bg-gradient-4);
         background-color: var(--bg-main);
-        background-size: 220% 220%;
-        min-height: 100vh;
-        animation: move-nebula 180s ease-in-out infinite alternate;
-        transition:
-          background-color 0.5s ease,
-          background 0.5s ease;
-      }
-
-      @keyframes move-nebula {
-        from {
-          background-position: 0% 0%;
-        }
-        to {
-          background-position: 100% 100%;
-        }
+        min-height: 100svh;
+        transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       @keyframes fly {
-        from {
-          transform: translateY(0px);
-        }
-        to {
-          transform: translateY(-1000px);
-        }
+        from { transform: translateY(0); }
+        to { transform: translateY(-1000px); }
       }
-
       @keyframes shooting-star {
-        0% {
-          transform: translateX(0);
-          opacity: 1;
-        }
-        100% {
-          transform: translateX(300vw);
-          opacity: 0;
-        }
+        0% { transform: translateX(0); opacity: 1; }
+        100% { transform: translateX(300vw); opacity: 0; }
+      }
+      @keyframes bloom-float {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(12px, -14px); }
+      }
+      @keyframes petal-fall {
+        0% { transform: translateY(-10%) translateX(0) rotate(0deg); opacity: 0.85; }
+        100% { transform: translateY(110vh) translateX(-6px) rotate(360deg); opacity: 0.4; }
       }
 
       #star-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -1;
-        overflow: hidden;
+        position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
       }
-
-      #stars1,
-      #stars2,
-      #stars3 {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        height: 2000px; /* Double the pattern height for seamless looping */
+      /* Starfield via SVG (no CSS gradients / box-shadow) */
+      #stars1, #stars2, #stars3 {
+        position: absolute; inset: 0;
         background-repeat: repeat;
         background-size: 1000px 1000px;
+        opacity: 0.85;
       }
-
-      /* Distant stars: small, dense, slow */
       #stars1 {
-        background-image:
-          radial-gradient(1px 1px at 100px 200px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 250px 800px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 400px 500px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 620px 720px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 800px 100px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 950px 450px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 150px 950px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 500px 300px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 50px 50px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 180px 600px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 330px 400px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 470px 900px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 600px 150px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 750px 650px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 880px 880px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 920px 250px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 20px 700px, var(--star-color), transparent),
-          radial-gradient(1px 1px at 550px 50px, var(--star-color), transparent);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'%3E%3Ccircle cx='100' cy='200' r='1' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='250' cy='800' r='1' fill='%23ffffff' fill-opacity='0.65'/%3E%3Ccircle cx='400' cy='500' r='1' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='620' cy='720' r='1' fill='%23ffffff' fill-opacity='0.6'/%3E%3Ccircle cx='800' cy='100' r='1' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='950' cy='450' r='1' fill='%23ffffff' fill-opacity='0.65'/%3E%3Ccircle cx='150' cy='950' r='1' fill='%23ffffff' fill-opacity='0.6'/%3E%3Ccircle cx='500' cy='300' r='1' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='50' cy='50' r='1' fill='%23ffffff' fill-opacity='0.55'/%3E%3Ccircle cx='180' cy='600' r='1' fill='%23ffffff' fill-opacity='0.65'/%3E%3Ccircle cx='330' cy='400' r='1' fill='%23ffffff' fill-opacity='0.6'/%3E%3Ccircle cx='470' cy='900' r='1' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='600' cy='150' r='1' fill='%23ffffff' fill-opacity='0.55'/%3E%3Ccircle cx='750' cy='650' r='1' fill='%23ffffff' fill-opacity='0.65'/%3E%3Ccircle cx='880' cy='880' r='1' fill='%23ffffff' fill-opacity='0.6'/%3E%3C/svg%3E");
         animation: fly 200s linear infinite;
       }
-
-      /* Mid-ground stars: medium, less dense, faster */
       #stars2 {
-        background-image:
-          radial-gradient(1.5px 1.5px at 50px 300px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 300px 100px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 550px 600px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 750px 250px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 900px 900px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 150px 700px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 400px 400px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 650px 850px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 850px 500px, var(--star-color), transparent),
-          radial-gradient(1.5px 1.5px at 200px 50px, var(--star-color), transparent);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'%3E%3Ccircle cx='50' cy='300' r='1.4' fill='%23ffffff' fill-opacity='0.75'/%3E%3Ccircle cx='300' cy='100' r='1.4' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='550' cy='600' r='1.4' fill='%23ffffff' fill-opacity='0.75'/%3E%3Ccircle cx='750' cy='250' r='1.4' fill='%23ffffff' fill-opacity='0.65'/%3E%3Ccircle cx='900' cy='900' r='1.4' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='150' cy='700' r='1.4' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='400' cy='400' r='1.4' fill='%23ffffff' fill-opacity='0.65'/%3E%3Ccircle cx='650' cy='850' r='1.4' fill='%23ffffff' fill-opacity='0.75'/%3E%3C/svg%3E");
         animation: fly 120s linear infinite;
       }
-
-      /* Foreground stars: large, sparse, fastest */
       #stars3 {
-        background-image:
-          radial-gradient(2px 2px at 200px 400px, var(--star-color), transparent),
-          radial-gradient(2px 2px at 700px 800px, var(--star-color), transparent),
-          radial-gradient(2px 2px at 50px 900px, var(--star-color), transparent),
-          radial-gradient(2px 2px at 950px 50px, var(--star-color), transparent),
-          radial-gradient(2px 2px at 450px 150px, var(--star-color), transparent),
-          radial-gradient(2px 2px at 850px 650px, var(--star-color), transparent),
-          radial-gradient(2px 2px at 300px 750px, var(--star-color), transparent);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'%3E%3Ccircle cx='200' cy='400' r='2' fill='%23ffffff' fill-opacity='0.8'/%3E%3Ccircle cx='700' cy='800' r='2' fill='%23ffffff' fill-opacity='0.75'/%3E%3Ccircle cx='50' cy='900' r='2' fill='%23ffffff' fill-opacity='0.8'/%3E%3Ccircle cx='950' cy='50' r='2' fill='%23ffffff' fill-opacity='0.7'/%3E%3Ccircle cx='450' cy='150' r='2' fill='%23ffffff' fill-opacity='0.75'/%3E%3Ccircle cx='850' cy='650' r='2' fill='%23ffffff' fill-opacity='0.8'/%3E%3C/svg%3E");
         animation: fly 70s linear infinite;
       }
 
-      /* Shooting Stars */
       #shooting-stars {
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
+        position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
         transform: rotateZ(-45deg);
       }
-
       #shooting-stars .star {
-        position: absolute;
-        height: 1px;
-        background: linear-gradient(-45deg, var(--shooting-star-color), rgba(0, 0, 0, 0));
-        border-radius: 999px;
-        filter: drop-shadow(0 0 6px var(--shooting-star-glow));
+        position: absolute; height: 2px; width: 180px;
+        background-color: var(--shooting-star-color);
+        opacity: 0.7;
         animation: shooting-star 3s linear infinite;
       }
+      #shooting-stars .star:nth-child(1) { top: 20%; left: 0; animation-duration: 2.8s; }
+      #shooting-stars .star:nth-child(2) { top: 40%; left: 10%; width: 120px; animation-delay: 1.2s; animation-duration: 2.1s; }
+      #shooting-stars .star:nth-child(3) { top: 60%; left: -20%; width: 160px; animation-delay: 2.5s; animation-duration: 3.5s; }
+      #shooting-stars .star:nth-child(4) { top: 85%; left: 5%; width: 90px; animation-delay: 4.1s; animation-duration: 1.8s; }
 
-      #shooting-stars .star:nth-child(1) {
-        top: 20%;
-        left: 0;
-        width: 300px;
-        animation-delay: 0s;
-        animation-duration: 2.8s;
-      }
-      #shooting-stars .star:nth-child(2) {
-        top: 40%;
-        left: 10%;
-        width: 150px;
-        animation-delay: 1.2s;
-        animation-duration: 2.1s;
-      }
-      #shooting-stars .star:nth-child(3) {
-        top: 60%;
-        left: -20%;
-        width: 200px;
-        animation-delay: 2.5s;
-        animation-duration: 3.5s;
-      }
-      #shooting-stars .star:nth-child(4) {
-        top: 85%;
-        left: 5%;
-        width: 100px;
-        animation-delay: 4.1s;
-        animation-duration: 1.8s;
-      }
-
-      /* Bloom petals: floating flower-like orbs (only in default/深夜 theme) */
       #bloom-petals {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -2;
-        pointer-events: none;
-        overflow: hidden;
+        position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
       }
       .bloom-petal-orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
-        opacity: 0.35;
-        animation: bloom-float 25s ease-in-out infinite;
+        position: absolute; border-radius: 50%;
+        filter: blur(72px); opacity: 0.22;
+        animation: bloom-float 28s ease-in-out infinite;
       }
-      .bloom-petal-orb:nth-child(1) {
-        width: 280px;
-        height: 280px;
-        background: rgba(236, 72, 153, 0.5);
-        top: 10%;
-        left: 5%;
-        animation-delay: 0s;
-        animation-duration: 28s;
-      }
-      .bloom-petal-orb:nth-child(2) {
-        width: 200px;
-        height: 200px;
-        background: rgba(168, 85, 247, 0.45);
-        top: 60%;
-        right: 10%;
-        animation-delay: -5s;
-        animation-duration: 22s;
-      }
-      .bloom-petal-orb:nth-child(3) {
-        width: 240px;
-        height: 240px;
-        background: rgba(249, 115, 22, 0.35);
-        bottom: 20%;
-        left: 15%;
-        animation-delay: -10s;
-        animation-duration: 30s;
-      }
-      .bloom-petal-orb:nth-child(4) {
-        width: 180px;
-        height: 180px;
-        background: rgba(59, 130, 246, 0.4);
-        top: 35%;
-        left: 50%;
-        animation-delay: -7s;
-        animation-duration: 26s;
-      }
-      .bloom-petal-orb:nth-child(5) {
-        width: 220px;
-        height: 220px;
-        background: rgba(20, 184, 166, 0.35);
-        top: 75%;
-        left: 40%;
-        animation-delay: -12s;
-        animation-duration: 24s;
-      }
-      .bloom-petal-orb:nth-child(6) {
-        width: 160px;
-        height: 160px;
-        background: rgba(217, 70, 239, 0.4);
-        top: 25%;
-        right: 25%;
-        animation-delay: -3s;
-        animation-duration: 20s;
-      }
-      /* Sakura orbs for Bloom theme – 花盛開 palette #FEEAC9 #FFCDC9 #FDACAC #FD7979 */
-      [data-theme='bloom'] .bloom-petal-orb {
-        opacity: 0.48;
-      }
-      [data-theme='bloom'] .bloom-petal-orb:nth-child(1) {
-        background: rgba(253, 121, 121, 0.5);
-      }
-      [data-theme='bloom'] .bloom-petal-orb:nth-child(2) {
-        background: rgba(255, 205, 201, 0.5);
-      }
-      [data-theme='bloom'] .bloom-petal-orb:nth-child(3) {
-        background: rgba(253, 172, 172, 0.48);
-      }
-      [data-theme='bloom'] .bloom-petal-orb:nth-child(4) {
-        background: rgba(254, 234, 201, 0.45);
-      }
-      [data-theme='bloom'] .bloom-petal-orb:nth-child(5) {
-        background: rgba(253, 121, 121, 0.42);
-      }
-      [data-theme='bloom'] .bloom-petal-orb:nth-child(6) {
-        background: rgba(255, 205, 201, 0.48);
-      }
-      @keyframes bloom-float {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-        }
-        25% {
-          transform: translate(15px, -20px) scale(1.05);
-        }
-        50% {
-          transform: translate(-10px, 15px) scale(0.98);
-        }
-        75% {
-          transform: translate(20px, 10px) scale(1.02);
-        }
-      }
+      .bloom-petal-orb:nth-child(1) { width: 240px; height: 240px; background: #d946ef; top: 12%; left: 6%; }
+      .bloom-petal-orb:nth-child(2) { width: 180px; height: 180px; background: #f472b6; top: 58%; right: 8%; animation-delay: -6s; }
+      .bloom-petal-orb:nth-child(3) { width: 200px; height: 200px; background: #e879f9; bottom: 18%; left: 18%; animation-delay: -12s; }
+      .bloom-petal-orb:nth-child(4) { width: 160px; height: 160px; background: #f9a8d4; top: 36%; left: 48%; animation-delay: -8s; }
+      .bloom-petal-orb:nth-child(5) { width: 190px; height: 190px; background: #c026d3; top: 72%; left: 40%; animation-delay: -14s; }
+      .bloom-petal-orb:nth-child(6) { width: 140px; height: 140px; background: #f472b6; top: 22%; right: 22%; animation-delay: -4s; }
 
-      /* Falling sakura petals – Bloom theme only, 花瓣飄落 */
       #bloom-falling-petals {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -2;
-        pointer-events: none;
-        overflow: hidden;
+        display: none; position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
       }
-      [data-theme='bloom'] #bloom-falling-petals {
-        display: block;
-      }
+      [data-theme='bloom'] #bloom-falling-petals { display: block; }
       .falling-petal {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        border-radius: 50% 50% 50% 0;
-        transform: rotate(0deg);
-        opacity: 0.85;
-        will-change: transform;
-      }
-      .falling-petal:nth-child(3n) {
-        width: 8px;
-        height: 8px;
-      }
-      .falling-petal:nth-child(4n) {
-        width: 12px;
-        height: 11px;
-      }
-      /* Sakura palette #FEEAC9 #FFCDC9 #FDACAC #FD7979 */
-      .falling-petal:nth-child(5n + 1) {
-        background: rgba(254, 234, 201, 0.9);
-      }
-      .falling-petal:nth-child(5n + 2) {
-        background: rgba(255, 205, 201, 0.9);
-      }
-      .falling-petal:nth-child(5n + 3) {
-        background: rgba(253, 172, 172, 0.9);
-      }
-      .falling-petal:nth-child(5n + 4) {
-        background: rgba(253, 121, 121, 0.85);
-      }
-      .falling-petal:nth-child(5n + 5) {
-        background: rgba(255, 220, 210, 0.85);
-      }
-      .falling-petal {
+        position: absolute; width: 9px; height: 9px;
+        border-radius: 50% 50% 50% 0; opacity: 0.75;
+        background: #f9a8d4;
         animation: petal-fall 18s linear infinite;
       }
-      .falling-petal:nth-child(1) {
-        left: 2%;
-        animation-delay: 0s;
-        animation-duration: 16s;
-      }
-      .falling-petal:nth-child(2) {
-        left: 12%;
-        animation-delay: -2s;
-        animation-duration: 22s;
-      }
-      .falling-petal:nth-child(3) {
-        left: 22%;
-        animation-delay: -5s;
-        animation-duration: 19s;
-      }
-      .falling-petal:nth-child(4) {
-        left: 35%;
-        animation-delay: -1s;
-        animation-duration: 24s;
-      }
-      .falling-petal:nth-child(5) {
-        left: 45%;
-        animation-delay: -8s;
-        animation-duration: 15s;
-      }
-      .falling-petal:nth-child(6) {
-        left: 55%;
-        animation-delay: -3s;
-        animation-duration: 20s;
-      }
-      .falling-petal:nth-child(7) {
-        left: 68%;
-        animation-delay: -6s;
-        animation-duration: 17s;
-      }
-      .falling-petal:nth-child(8) {
-        left: 78%;
-        animation-delay: -4s;
-        animation-duration: 23s;
-      }
-      .falling-petal:nth-child(9) {
-        left: 88%;
-        animation-delay: -7s;
-        animation-duration: 18s;
-      }
-      .falling-petal:nth-child(10) {
-        left: 95%;
-        animation-delay: -9s;
-        animation-duration: 21s;
-      }
-      .falling-petal:nth-child(11) {
-        left: 8%;
-        animation-delay: -11s;
-        animation-duration: 19s;
-      }
-      .falling-petal:nth-child(12) {
-        left: 28%;
-        animation-delay: -10s;
-        animation-duration: 16s;
-      }
-      .falling-petal:nth-child(13) {
-        left: 52%;
-        animation-delay: -12s;
-        animation-duration: 25s;
-      }
-      .falling-petal:nth-child(14) {
-        left: 72%;
-        animation-delay: -14s;
-        animation-duration: 18s;
-      }
-      .falling-petal:nth-child(15) {
-        left: 92%;
-        animation-delay: -13s;
-        animation-duration: 20s;
-      }
-      .falling-petal:nth-child(16) {
-        left: 5%;
-        animation-delay: -15s;
-        animation-duration: 22s;
-      }
-      .falling-petal:nth-child(17) {
-        left: 42%;
-        animation-delay: -16s;
-        animation-duration: 17s;
-      }
-      .falling-petal:nth-child(18) {
-        left: 62%;
-        animation-delay: -17s;
-        animation-duration: 21s;
-      }
-      .falling-petal:nth-child(19) {
-        left: 85%;
-        animation-delay: -18s;
-        animation-duration: 19s;
-      }
-      .falling-petal:nth-child(20) {
-        left: 18%;
-        animation-delay: -20s;
-        animation-duration: 23s;
-      }
-      @keyframes petal-fall {
-        0% {
-          transform: translateY(-10%) translateX(0) rotate(0deg);
-          opacity: 0.9;
-        }
-        25% {
-          transform: translateY(25vh) translateX(15px) rotate(90deg);
-          opacity: 0.85;
-        }
-        50% {
-          transform: translateY(50vh) translateX(-10px) rotate(180deg);
-          opacity: 0.8;
-        }
-        75% {
-          transform: translateY(75vh) translateX(8px) rotate(270deg);
-          opacity: 0.75;
-        }
-        100% {
-          transform: translateY(110vh) translateX(-5px) rotate(360deg);
-          opacity: 0.5;
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .falling-petal {
-          animation-duration: 28s;
-          animation-timing-function: ease-in-out;
-        }
-      }
+      .falling-petal:nth-child(3n) { width: 7px; height: 7px; background: #e879f9; }
+      .falling-petal:nth-child(4n) { width: 11px; height: 10px; background: #f472b6; }
+      .falling-petal:nth-child(1) { left: 2%; animation-duration: 16s; }
+      .falling-petal:nth-child(2) { left: 12%; animation-delay: -2s; animation-duration: 22s; }
+      .falling-petal:nth-child(3) { left: 22%; animation-delay: -5s; animation-duration: 19s; }
+      .falling-petal:nth-child(4) { left: 35%; animation-delay: -1s; animation-duration: 24s; }
+      .falling-petal:nth-child(5) { left: 45%; animation-delay: -8s; animation-duration: 15s; }
+      .falling-petal:nth-child(6) { left: 55%; animation-delay: -3s; animation-duration: 20s; }
+      .falling-petal:nth-child(7) { left: 68%; animation-delay: -6s; animation-duration: 17s; }
+      .falling-petal:nth-child(8) { left: 78%; animation-delay: -4s; animation-duration: 23s; }
+      .falling-petal:nth-child(9) { left: 88%; animation-delay: -7s; animation-duration: 18s; }
+      .falling-petal:nth-child(10) { left: 95%; animation-delay: -9s; animation-duration: 21s; }
+      .falling-petal:nth-child(11) { left: 8%; animation-delay: -11s; }
+      .falling-petal:nth-child(12) { left: 28%; animation-delay: -10s; }
+      .falling-petal:nth-child(13) { left: 52%; animation-delay: -12s; }
+      .falling-petal:nth-child(14) { left: 72%; animation-delay: -14s; }
+      .falling-petal:nth-child(15) { left: 92%; animation-delay: -13s; }
+      .falling-petal:nth-child(16) { left: 5%; animation-delay: -15s; }
+      .falling-petal:nth-child(17) { left: 42%; animation-delay: -16s; }
+      .falling-petal:nth-child(18) { left: 62%; animation-delay: -17s; }
+      .falling-petal:nth-child(19) { left: 85%; animation-delay: -18s; }
+      .falling-petal:nth-child(20) { left: 18%; animation-delay: -20s; }
 
-      /* Pause heavy background animations when tab is hidden or user prefers less motion */
       html.animations-paused body,
       html.animations-paused #stars1,
       html.animations-paused #stars2,
@@ -636,15 +189,12 @@
       html.animations-paused .falling-petal {
         animation-play-state: paused !important;
       }
-
-      html.reduce-motion body,
       html.reduce-motion #stars1,
       html.reduce-motion #stars2,
       html.reduce-motion #stars3,
       html.reduce-motion #shooting-stars .star,
       html.reduce-motion .bloom-petal-orb,
       html.reduce-motion .falling-petal,
-      html.background-motion-off body,
       html.background-motion-off #stars1,
       html.background-motion-off #stars2,
       html.background-motion-off #stars3,
@@ -653,14 +203,6 @@
       html.background-motion-off .falling-petal {
         animation: none !important;
       }
-
-      html.reduce-motion body,
-      html.background-motion-off body {
-        background-size: 100% 100% !important;
-        animation: none !important;
-      }
-
-      /* Hide petal layers when motion is off (avoids frozen petals at translateY(-10%)) */
       html.background-motion-off #bloom-falling-petals,
       html.background-motion-off #bloom-petals,
       html.reduce-motion #bloom-falling-petals,
@@ -668,24 +210,11 @@
       html.animations-paused #bloom-falling-petals {
         display: none !important;
       }
-
       @media (prefers-reduced-motion: reduce) {
-        body,
-        #stars1,
-        #stars2,
-        #stars3,
-        #shooting-stars .star,
-        .bloom-petal-orb,
-        .falling-petal {
+        #stars1, #stars2, #stars3, #shooting-stars .star, .bloom-petal-orb, .falling-petal {
           animation: none !important;
         }
-        body {
-          background-size: 100% 100% !important;
-        }
-        #bloom-falling-petals,
-        #bloom-petals {
-          display: none !important;
-        }
+        #bloom-falling-petals, #bloom-petals { display: none !important; }
       }
     </style>
   </head>

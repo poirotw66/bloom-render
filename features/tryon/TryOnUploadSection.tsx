@@ -12,6 +12,7 @@ import { usePasteImage } from '../../hooks/usePasteImage';
 import CostEstimateBadge from '../../components/CostEstimateBadge';
 import QuantitySelector from '../../components/QuantitySelector';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
+import { UserIcon, XMarkIcon } from '../../components/icons';
 
 interface TryOnUploadSectionProps {
   personPreviewUrl: string | null;
@@ -97,7 +98,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         tabIndex={isDemoMode ? undefined : 0}
         role="group"
         aria-label={t('tryon.person_photo')}
-        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
+        className={`relative rounded-3xl border-2 border-dashed p-6 transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-teal-400 bg-teal-500/10'
             : 'border-gray-700/50 bg-gray-800/40'
@@ -110,13 +111,13 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
           <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold">
             1
           </span>
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+          <h3 className="text-xs font-bold text-gray-400 tracking-normal">
             {t('tryon.person_photo')}
           </h3>
         </div>
         {personPreviewUrl ? (
           <div className="flex flex-col items-center gap-3">
-            <div className="relative group w-48 h-64 rounded-2xl overflow-hidden border-2 border-teal-500/30 bg-gray-900 shadow-2xl">
+            <div className="relative group w-48 h-64 rounded-2xl overflow-hidden border-2 border-teal-500/30 bg-gray-900">
               <img
                 src={personPreviewUrl}
                 alt="Person"
@@ -124,7 +125,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               />
               {!isDemoMode && (
                 <>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                  <div className="absolute inset-0 from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
                     <span className="text-[10px] text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">
                       {t('tryon.change_person')}
                     </span>
@@ -143,12 +144,12 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-[10px] text-teal-500/80 font-medium">✨ {t('common.selected')}</p>
+            <p className="text-[10px] text-teal-500/80 font-medium">{t('common.selected')}</p>
           </div>
         ) : (
-          <label className="flex flex-col items-center justify-center gap-3 py-12 rounded-2xl border-2 border-dashed border-gray-700 bg-gray-900/40 cursor-pointer hover:border-teal-500/50 hover:bg-teal-500/5 transition-all group">
-            <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
-              👤
+          <label className="flex flex-col items-center justify-center gap-3 py-12 rounded-2xl border-2 border-dashed border-gray-700 bg-gray-900/40 cursor-pointer hover:border-teal-500/50 hover:bg-teal-500/5 transition-colors group">
+            <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 text-gray-400">
+              <UserIcon className="w-8 h-8" />
             </div>
             <div className="text-center">
               <span className="block text-sm font-bold text-gray-300 group-hover:text-teal-400 transition-colors">
@@ -178,7 +179,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         tabIndex={isDemoMode ? undefined : 0}
         role="group"
         aria-label={t('tryon.clothing_photos')}
-        className={`relative rounded-3xl border-2 border-dashed p-6 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
+        className={`relative rounded-3xl border-2 border-dashed p-6 transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-amber-400/60 bg-amber-500/10'
             : 'border-gray-700/50 bg-gray-800/40'
@@ -192,7 +193,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
               2
             </span>
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <h3 className="text-xs font-bold text-gray-400 tracking-normal">
               {t('tryon.clothing_photos')}
             </h3>
           </div>
@@ -207,7 +208,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
           {clothingPreviewUrls.map((url, idx) => (
             <div
               key={idx}
-              className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-800 bg-gray-900 shadow-lg"
+              className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-800 bg-gray-900"
             >
               <img
                 src={url}
@@ -218,10 +219,10 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => onRemoveClothing(idx)}
-                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 scale-75 group-hover:scale-100"
+                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-colors hover:bg-red-600 scale-75 group-hover:scale-100"
                   aria-label={t('tryon.remove_clothing')}
                 >
-                  ✕
+                  <XMarkIcon className="w-3.5 h-3.5" />
                 </button>
               )}
               <div className="absolute bottom-1 right-1 bg-black/60 px-1.5 rounded-md text-[8px] text-white/80 font-bold">
@@ -230,7 +231,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
             </div>
           ))}
           {canAddClothing && (
-            <label className="aspect-square rounded-xl border-2 border-dashed border-gray-700 bg-gray-900/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/10 transition-all text-gray-500 hover:text-amber-400 group">
+            <label className="aspect-square rounded-xl border-2 border-dashed border-gray-700 bg-gray-900/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/10 transition-colors text-gray-500 hover:text-amber-400 group">
               <input
                 type="file"
                 className="hidden"
@@ -248,7 +249,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
           )}
         </div>
         <p className="text-[10px] text-gray-500 mt-4 italic text-center leading-tight">
-          💡 {t('tryon.clothing_hint')}
+          {t('tryon.clothing_hint')}
         </p>
       </div>
 
@@ -270,7 +271,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
           type="button"
           onClick={onGenerate}
           disabled={loading || !canGenerate}
-          className="w-full py-4 px-6 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-700 disabled:to-gray-700 text-white font-bold rounded-xl shadow-lg shadow-teal-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full py-4 px-6 brand-bg hover:brand-bg disabled:brand-bg text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -278,10 +279,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               {t('tryon.generating')}
             </>
           ) : (
-            <>
-              <span>👗</span>
-              {t('tryon.generate_btn')}
-            </>
+            t('tryon.generate_btn')
           )}
         </button>
         <CostEstimateBadge quantity={quantity} />

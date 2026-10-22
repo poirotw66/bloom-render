@@ -132,7 +132,7 @@ const ExampleShowcase: React.FC<ExampleShowcaseProps> = ({ feature, className = 
 
   return (
     <section
-      className={`w-full max-w-3xl mx-auto mt-10 pt-8 border-t border-gray-700/50 ${className}`}
+      className={`w-full max-w-3xl mx-auto mt-10 pt-8 border-0 border-gray-700/50 ${className}`}
       aria-labelledby={`examples-${feature}`}
     >
       <h2 id={`examples-${feature}`} className="text-sm font-bold text-gray-300 tracking-wide">

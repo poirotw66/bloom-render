@@ -38,7 +38,7 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
   const hasMultipleResults = resultCount > 1;
 
   return (
-    <div className={`${UI_PAGE} border-transparent shadow-none`}>
+    <div className={`${UI_PAGE} border-transparent `}>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
           <h1 className={UI_TITLE}>
@@ -69,7 +69,7 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
                   onClick={coupleGroup.handleBatchDownload}
                   className={UI_BTN_SUCCESS}
                 >
-                  💾 {t('history.batch_download')} ({resultCount})
+                  {t('history.batch_download')} ({resultCount})
                 </button>
               )}
               <button type="button" onClick={coupleGroup.clearResult} className={UI_BTN_SECONDARY}>

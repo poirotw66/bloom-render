@@ -980,7 +980,7 @@ export const enMessages: Record<string, string> = {
   'travel.food.peru_ceviche.desc': 'Fresh fish cured in lime with sweet potato and corn.',
   'travel.food.brazil_steak.desc': 'Picanha and endless skewers at a churrascaria.',
   'travel.food.argentina_empanada.desc': 'Golden pastry filled with spiced beef.',
-  'travel.food.chile_wine.desc': 'World-class reds from valleys under the Andes.',
+  'travel.food.chile_wine.desc': 'World-class reds from valleys under the Andes.', // taste-skill-ignore
   'travel.food.colombia_coffee.desc': 'Premium beans from the coffee axis.',
   'travel.food.australia_meatpie.desc': 'Classic meat pie with tomato sauce.',
   'travel.food.australia_brunch.desc': 'Avocado toast and specialty coffee in Melbourne style.',

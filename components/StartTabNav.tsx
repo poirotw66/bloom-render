@@ -40,70 +40,70 @@ const tabs: TabItem[] = [
     tab: 'upload',
     path: ROUTES.HOME,
     i18nKey: 'start.tab_upload',
-    activeClass: 'bg-gray-700 text-white shadow-lg',
+    activeClass: 'bg-gray-700 text-white ',
     focusRing: 'focus-visible:ring-blue-500',
   },
   {
     tab: 'generate',
     path: ROUTES.GENERATE,
     i18nKey: 'start.tab_generate',
-    activeClass: 'bg-blue-600 text-white shadow-lg shadow-blue-500/20',
+    activeClass: 'bg-blue-600 text-white  ',
     focusRing: 'focus-visible:ring-blue-500',
   },
   {
     tab: 'photography-service',
     path: ROUTES.PHOTOGRAPHY_SERVICE,
     i18nKey: 'start.tab_service',
-    activeClass: 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20',
-    focusRing: 'focus-visible:ring-indigo-500',
+    activeClass: 'brand-bg-strong text-white  ',
+    focusRing: 'focus-visible:brand-ring',
   },
   {
     tab: 'idphoto',
     path: ROUTES.ID_PHOTO,
     i18nKey: 'start.tab_idphoto',
-    activeClass: 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20',
+    activeClass: 'bg-emerald-600 text-white  ',
     focusRing: 'focus-visible:ring-emerald-500',
   },
   {
     tab: 'portrait',
     path: ROUTES.PORTRAIT,
     i18nKey: 'start.tab_portrait',
-    activeClass: 'bg-blue-600 text-white shadow-lg shadow-blue-500/20',
+    activeClass: 'bg-blue-600 text-white  ',
     focusRing: 'focus-visible:ring-blue-500',
   },
   {
     tab: 'travel',
     path: ROUTES.TRAVEL,
     i18nKey: 'start.tab_travel',
-    activeClass: 'bg-amber-600 text-white shadow-lg shadow-amber-500/20',
+    activeClass: 'bg-amber-600 text-white  ',
     focusRing: 'focus-visible:ring-amber-500',
   },
   {
     tab: 'themed',
     path: ROUTES.THEMED,
     i18nKey: 'start.tab_themed',
-    activeClass: 'bg-purple-600 text-white shadow-lg shadow-purple-500/20',
-    focusRing: 'focus-visible:ring-purple-500',
+    activeClass: 'brand-bg-strong text-white  ',
+    focusRing: 'focus-visible:brand-ring',
   },
   {
     tab: 'couple-group',
     path: ROUTES.COUPLE_GROUP,
     i18nKey: 'start.tab_couple_group',
-    activeClass: 'bg-pink-600 text-white shadow-lg shadow-pink-500/20',
+    activeClass: 'bg-pink-600 text-white  ',
     focusRing: 'focus-visible:ring-pink-500',
   },
   {
     tab: 'tryon',
     path: ROUTES.TRY_ON,
     i18nKey: 'start.tab_tryon',
-    activeClass: 'bg-teal-600 text-white shadow-lg shadow-teal-500/20',
+    activeClass: 'bg-teal-600 text-white  ',
     focusRing: 'focus-visible:ring-teal-500',
   },
   {
     tab: 'enhance',
     path: ROUTES.ENHANCE,
     i18nKey: 'start.tab_enhance',
-    activeClass: 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20',
+    activeClass: 'bg-cyan-600 text-white  ',
     focusRing: 'focus-visible:ring-cyan-500',
   },
 ];
@@ -132,7 +132,7 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
     <nav className="w-full min-w-0 relative" aria-label="Primary">
       <div
         ref={scrollerRef}
-        className="bg-gray-900/40 p-1.5 rounded-xl border border-gray-700/60 shadow-inner flex items-center gap-1.5 overflow-x-auto overflow-y-hidden md:flex-wrap md:justify-center md:overflow-visible scroll-smooth touch-pan-x no-scrollbar"
+        className="bg-gray-900/40 p-1.5 rounded-xl border border-gray-700/60 flex items-center gap-1.5 overflow-x-auto overflow-y-hidden md:flex-wrap md:justify-center md:overflow-visible scroll-smooth touch-pan-x no-scrollbar"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {tabs.map(({ tab, path, i18nKey, activeClass, focusRing }) => {
@@ -151,14 +151,14 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
                 }
               }}
               className={`
-                px-4 py-3 min-h-[44px] rounded-lg text-sm sm:text-base font-semibold
-                inline-flex items-center whitespace-nowrap
-                transition-colors duration-200 cursor-pointer
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-                focus-visible:ring-offset-gray-900 ${focusRing}
-                shrink-0
-                ${isActive ? activeClass : 'text-gray-400 hover:text-white hover:bg-white/10'}
-              `}
+ px-4 py-3 min-h-[44px] rounded-lg text-sm sm:text-base font-semibold
+ inline-flex items-center whitespace-nowrap
+ transition-colors duration-200 cursor-pointer
+ focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+ focus-visible:ring-offset-gray-900 ${focusRing}
+ shrink-0
+ ${isActive ? activeClass : 'text-gray-400 hover:text-white hover:bg-white/10'}
+ `}
             >
               {t(i18nKey)}
             </NavLink>
@@ -168,7 +168,7 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
 
       {/* Edge fade hints that the strip scrolls horizontally on narrow screens. */}
       <div
-        className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-xl bg-gradient-to-l from-gray-900/70 to-transparent md:hidden"
+        className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-xl bg-gray-950/80 md:hidden"
         aria-hidden="true"
       />
     </nav>

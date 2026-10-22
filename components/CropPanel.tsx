@@ -58,11 +58,11 @@ const CropPanel: React.FC<CropPanelProps> = ({
 
   return (
     <div
-      className={`w-full rounded-lg p-4 flex flex-col items-center gap-4 animate-fade-in backdrop-blur-sm ${
+      className={`w-full rounded-lg p-4 flex flex-col items-center gap-4 animate-fade-in ${
         theme === 'newyear'
           ? 'bg-red-900/30 border border-red-700/50'
           : theme === 'bloom'
-            ? 'bg-gray-800/50 border border-fuchsia-500/20'
+            ? 'bg-gray-800/50 border brand-border-soft'
             : 'bg-gray-800/50 border border-gray-700'
       }`}
     >
@@ -110,14 +110,14 @@ const CropPanel: React.FC<CropPanelProps> = ({
             className={`px-4 py-2 rounded-md text-base font-semibold transition-colors duration-200 active:scale-95 disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${
               activeAspect === name
                 ? theme === 'newyear'
-                  ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-md shadow-red-500/20 focus-visible:ring-red-500'
+                  ? ' brand-bg text-white focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'bg-gradient-to-br from-fuchsia-600 to-pink-500 text-white shadow-md shadow-fuchsia-500/20 focus-visible:ring-fuchsia-500'
-                    : 'bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/20 focus-visible:ring-blue-500'
+                    ? ' brand-bg text-white focus-visible:brand-ring'
+                    : ' brand-bg text-white focus-visible:ring-blue-500'
                 : theme === 'newyear'
                   ? 'bg-white/10 hover:bg-white/20 text-red-200 focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'bg-white/10 hover:bg-white/20 text-gray-200 focus-visible:ring-fuchsia-500'
+                    ? 'bg-white/10 hover:bg-white/20 text-gray-200 focus-visible:brand-ring'
                     : 'bg-white/10 hover:bg-white/20 text-gray-200 focus-visible:ring-blue-500'
             } disabled:cursor-not-allowed`}
           >
@@ -129,7 +129,7 @@ const CropPanel: React.FC<CropPanelProps> = ({
       <button
         onClick={onApplyCrop}
         disabled={isLoading || !isCropping}
-        className="w-full max-w-xs mt-2 bg-gradient-to-br from-green-600 to-green-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 ease-in-out shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-px active:scale-95 active:shadow-inner text-base disabled:from-green-800 disabled:to-green-700 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+        className="w-full max-w-xs mt-2 brand-bg text-white font-bold py-4 px-6 rounded-lg transition-colors duration-200 ease-in-out hover:-translate-y-px active:scale-95 active: text-base disabled:brand-bg disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
       >
         {t('panel.crop.apply')}
       </button>

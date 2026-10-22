@@ -10,6 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { usePasteImage } from '../hooks/usePasteImage';
 import { ErrorDisplay } from './ErrorDisplay';
 import CostEstimateBadge from './CostEstimateBadge';
+import { XMarkIcon } from './icons';
 import { UI_BTN_GENERATE, UI_BTN_UPLOAD, UI_FILE_PICKER } from '../utils/uiClasses';
 
 interface BatchUploadSectionProps {
@@ -44,7 +45,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
   onDrop,
   maxFiles = 10,
   minFiles = 1,
-  icon = '📸',
+  icon = '',
   className = '',
 }) => {
   const { t } = useLanguage();
@@ -76,7 +77,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
         tabIndex={0}
         role="group"
         aria-label={t('batch.title')}
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
           isDraggingOver
             ? 'border-blue-400 bg-blue-500/10 scale-[1.02]'
             : files.length > 0
@@ -90,7 +91,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              {icon} {t('batch.uploaded_files', { count: files.length, max: maxFiles })}
+              {t('batch.uploaded_files', { count: files.length, max: maxFiles })}
             </h3>
 
             {/* File Previews Grid */}
@@ -98,7 +99,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
               {previewUrls.map((url, idx) => (
                 <div
                   key={idx}
-                  className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-xl transition-transform hover:scale-105"
+                  className="group relative aspect-square rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 transition-transform hover:scale-105"
                 >
                   <img src={url} alt={`File ${idx + 1}`} className="w-full h-full object-cover" />
                   <button
@@ -106,16 +107,16 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
                     className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                     aria-label={t('batch.remove_file')}
                   >
-                    ✕
+                    <XMarkIcon className="w-3.5 h-3.5" />
                   </button>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm py-1 text-xs text-white text-center font-bold">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/40 py-1 text-xs text-white text-center font-bold">
                     #{idx + 1}
                   </div>
                 </div>
               ))}
 
               {canAddMore && (
-                <label className="aspect-square rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-blue-500 hover:bg-blue-500/5 transition-all text-gray-500 hover:text-blue-400 group">
+                <label className="aspect-square rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-blue-500 hover:bg-blue-500/5 transition-colors text-gray-500 hover:text-blue-400 group">
                   <input
                     type="file"
                     className="hidden"
@@ -159,10 +160,7 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
                       {t('batch.generating')}
                     </>
                   ) : (
-                    <>
-                      <span>{icon}</span>
-                      {t('batch.generate_all').replace('{count}', String(files.length))}
-                    </>
+                    t('batch.generate_all').replace('{count}', String(files.length))
                   )}
                 </button>
                 <CostEstimateBadge quantity={Math.max(1, files.length)} />
@@ -177,8 +175,8 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
           </div>
         ) : (
           <div className="flex flex-col items-center gap-6 py-4">
-            <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30">
-              <span className="text-4xl">{icon}</span>
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center bg-blue-600/20 text-blue-400 border border-blue-500/30">
+              <span className="text-sm font-bold uppercase tracking-wide">{icon || 'img'}</span>
             </div>
 
             <div className="text-center">
@@ -191,7 +189,6 @@ const BatchUploadSection: React.FC<BatchUploadSectionProps> = ({
             </div>
 
             <label htmlFor="batch-image-upload" className={UI_BTN_UPLOAD}>
-              <span className="mr-3">{icon}</span>
               {t('batch.upload_button')}
             </label>
             <input

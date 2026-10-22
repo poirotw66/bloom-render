@@ -25,7 +25,7 @@ const PwaUpdatePrompt: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-4 left-1/2 z-[60] w-[min(92vw,28rem)] -translate-x-1/2 rounded-xl border border-gray-600 bg-gray-900/95 p-4 shadow-2xl backdrop-blur"
+      className="fixed bottom-4 left-1/2 z-[60] w-[min(92vw,28rem)] -translate-x-1/2 rounded-xl border border-gray-600 bg-gray-900/95 p-4"
       role="status"
     >
       <p className="text-sm text-gray-100 mb-3">{t('pwa.update_available')}</p>

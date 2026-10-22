@@ -72,11 +72,11 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
 
   return (
     <div
-      className={`w-full rounded-lg p-4 flex flex-col gap-4 animate-fade-in backdrop-blur-sm ${
+      className={`w-full rounded-lg p-4 flex flex-col gap-4 animate-fade-in ${
         theme === 'newyear'
           ? 'bg-red-900/30 border border-red-700/50'
           : theme === 'bloom'
-            ? 'bg-gray-800/50 border border-fuchsia-500/20'
+            ? 'bg-gray-800/50 border brand-border-soft'
             : 'bg-gray-800/50 border border-gray-700'
       }`}
     >
@@ -102,7 +102,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
               theme === 'newyear'
                 ? `text-red-200 ${selectedPresetPrompt === preset.prompt ? 'ring-red-500' : ''} focus-visible:ring-red-500`
                 : theme === 'bloom'
-                  ? `text-gray-200 ${selectedPresetPrompt === preset.prompt ? 'ring-fuchsia-500' : ''} focus-visible:ring-fuchsia-500`
+                  ? `text-gray-200 ${selectedPresetPrompt === preset.prompt ? 'focus-visible:brand-ring' : ''} focus-visible:brand-ring`
                   : `text-gray-200 ${selectedPresetPrompt === preset.prompt ? 'ring-blue-500' : ''} focus-visible:ring-blue-500`
             }`}
           >
@@ -120,7 +120,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
           theme === 'newyear'
             ? 'bg-red-900/30 border border-red-700/50 text-red-50 placeholder-red-300 focus-visible:ring-red-500'
             : theme === 'bloom'
-              ? 'bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-400 focus-visible:ring-fuchsia-500'
+              ? 'bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-400 focus-visible:brand-ring'
               : 'bg-gray-800 border border-gray-600 text-gray-200 placeholder-gray-400 focus-visible:ring-blue-500'
         }`}
         disabled={isLoading}
@@ -138,12 +138,12 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
         <div className="animate-fade-in flex flex-col gap-4 pt-2">
           <button
             onClick={handleApply}
-            className={`w-full bg-gradient-to-br text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl hover:-translate-y-px active:scale-95 active:shadow-inner text-base disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${
+            className={`w-full text-white font-bold py-4 px-6 rounded-lg transition-colors duration-200 ease-in-out hover:-translate-y-px active:scale-95 active: text-base disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${
               theme === 'newyear'
-                ? 'from-red-600 to-red-500 shadow-red-500/20 hover:shadow-red-500/40 disabled:from-red-800 disabled:to-red-700 focus-visible:ring-red-500'
+                ? 'brand-bg disabled:brand-bg focus-visible:ring-red-500'
                 : theme === 'bloom'
-                  ? 'from-fuchsia-600 to-pink-500 shadow-fuchsia-500/20 hover:shadow-fuchsia-500/40 disabled:from-fuchsia-800 disabled:to-pink-800 focus-visible:ring-fuchsia-500'
-                  : 'from-blue-600 to-blue-500 shadow-blue-500/20 hover:shadow-blue-500/40 disabled:from-blue-800 disabled:to-blue-700 focus-visible:ring-blue-500'
+                  ? 'brand-bg disabled:brand-bg focus-visible:brand-ring'
+                  : 'brand-bg disabled:brand-bg focus-visible:ring-blue-500'
             }`}
             disabled={isLoading || !activePrompt.trim()}
           >

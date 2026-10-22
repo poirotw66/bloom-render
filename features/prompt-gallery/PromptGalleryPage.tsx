@@ -121,12 +121,12 @@ const PromptGalleryPage: React.FC = () => {
               {entry.description && (
                 <p className="text-xs text-gray-400 line-clamp-2">{entry.description}</p>
               )}
-              <p className="text-xs text-gray-500 line-clamp-3 font-mono">{entry.prompt}</p>
+              <p className="text-xs text-gray-500 line-clamp-3 font-sans">{entry.prompt}</p>
               <button
                 type="button"
                 disabled={applyingId === entry.id}
                 onClick={() => void handleApply(entry.id)}
-                className="mt-auto w-full rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 text-white font-bold py-2.5 text-sm hover:opacity-95 transition-opacity cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="mt-auto w-full rounded-lg brand-bg text-white font-bold py-2.5 text-sm hover:opacity-95 transition-opacity cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {applyingId === entry.id ? t('prompt_gallery.applying') : t('prompt_gallery.apply')}
               </button>

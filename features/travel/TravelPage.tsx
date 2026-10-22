@@ -65,9 +65,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
       <div className="flex flex-col items-center gap-6 motion-safe:animate-fade-in text-left">
         <header className="text-center w-full space-y-3">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
-            <span className="bg-gradient-to-r from-sky-200 via-cyan-100 to-sky-300 bg-clip-text text-transparent">
-              {t('travel.title')}
-            </span>
+            <span className="brand-bg brand-text">{t('travel.title')}</span>
           </h1>
           <p className="max-w-3xl text-lg text-slate-300 md:text-xl leading-relaxed mx-auto">
             {t('travel.subtitle')}

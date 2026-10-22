@@ -177,7 +177,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
       <button
         onClick={handleSurpriseMe}
         disabled={disabled}
-        className="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl font-bold shadow-lg shadow-violet-500/25 transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/50"
+        className="w-full py-3 px-4 brand-bg brand-bg hover:brand-bg hover:brand-bg text-white rounded-xl font-bold transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring"
       >
         <GiftIcon className="w-6 h-6 shrink-0" />
         <div>
@@ -199,7 +199,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
           <div className="space-y-4">
             <div>
-              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-semibold text-amber-400/90 tracking-normal mb-2">
                 {t('travel.group.international')}
               </h4>
 
@@ -271,7 +271,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-semibold text-amber-400/90 tracking-normal mb-2">
                 {t('travel.group.taiwan')}
               </h4>
 
@@ -339,7 +339,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-amber-400/90 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-semibold text-amber-400/90 tracking-normal mb-2">
                 {t('travel.group.random')}
               </h4>
               <button
@@ -352,7 +352,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-semibold text-gray-400 tracking-normal mb-2">
                 {t('travel.custom')}
               </h4>
               <button
@@ -465,14 +465,14 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
       {/* Subject & Character Group */}
       {showSceneSelector && (
-        <div className="space-y-4 p-5 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
+        <div className="space-y-4 p-5 brand-bg-tint rounded-2xl border brand-border-soft">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-            <h3 className="text-xs font-bold text-indigo-300">{t('travel.label.group_subject')}</h3>
+            <div className="w-1.5 h-1.5 rounded-full brand-bg" />
+            <h3 className="text-xs font-bold brand-text-soft">{t('travel.label.group_subject')}</h3>
           </div>
 
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-gray-500 tracking-normal">
               {t('travel.label.outfit')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -481,9 +481,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={o.id}
                   onClick={() => setOutfit(o.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${outfit === o.id ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/20' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${outfit === o.id ? 'bg-emerald-600 text-white border-emerald-500 ' : SCENE_INACTIVE}`}
                 >
-                  <span>{o.icon}</span>
+                  <span className="text-[10px] font-bold tracking-normal opacity-80">{o.icon}</span>
                   {t(o.nameKey)}
                 </button>
               ))}
@@ -503,21 +503,32 @@ const TravelForm: React.FC<TravelFormProps> = ({
             )}
 
             <div className="pt-2 space-y-2">
-              <label className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
+              <label className="text-[10px] font-bold text-gray-600 tracking-normal">
                 {t('travel.label.outfit_color')}
               </label>
               <div className="flex flex-wrap gap-2">
-                {OUTFIT_COLOR_PRESETS.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setOutfitColor(c.id)}
-                    disabled={disabled}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${outfitColor === c.id ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-110' : 'opacity-60 hover:opacity-100'}`}
-                    title={t(c.nameKey)}
-                  >
-                    <span className="text-sm">{c.icon}</span>
-                  </button>
-                ))}
+                {OUTFIT_COLOR_PRESETS.map((c) => {
+                  const swatch: Record<string, string> = {
+                    red: 'bg-red-600',
+                    blue: 'bg-blue-700',
+                    white: 'bg-white',
+                    black: 'bg-gray-950 border border-gray-600',
+                    beige: 'bg-amber-200',
+                    pink: 'bg-pink-400',
+                    green: 'bg-green-700',
+                    yellow: 'bg-yellow-400',
+                  };
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => setOutfitColor(c.id)}
+                      disabled={disabled}
+                      className={`w-8 h-8 rounded-full transition-colors ${swatch[c.id] || 'bg-gray-600'} ${outfitColor === c.id ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-110' : 'opacity-60 hover:opacity-100'}`}
+                      title={t(c.nameKey)}
+                      aria-label={t(c.nameKey)}
+                    />
+                  );
+                })}
                 <input
                   type="text"
                   value={OUTFIT_COLOR_PRESETS.some((c) => c.id === outfitColor) ? '' : outfitColor}
@@ -532,7 +543,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
           {/* Relationship settings only shown when multiple people are considered */}
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-gray-500 tracking-normal">
               {t('travel.label.relationship')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -541,9 +552,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={r.id}
                   onClick={() => setRelationship(r.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${relationship === r.id ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/20' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${relationship === r.id ? 'brand-bg-strong text-white brand-border ' : SCENE_INACTIVE}`}
                 >
-                  <span>{r.icon}</span>
+                  <span className="text-[10px] font-bold tracking-normal opacity-80">{r.icon}</span>
                   {t(r.nameKey)}
                 </button>
               ))}
@@ -551,7 +562,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
 
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-gray-500 tracking-normal">
               {t('travel.label.pose')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -560,9 +571,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={p.id}
                   onClick={() => setPose(p.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${pose === p.id ? 'bg-rose-600 text-white border-rose-500 shadow-md shadow-rose-600/20' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${pose === p.id ? 'bg-rose-600 text-white border-rose-500 ' : SCENE_INACTIVE}`}
                 >
-                  <span>{p.icon}</span>
+                  <span className="text-[10px] font-bold tracking-normal opacity-80">{p.icon}</span>
                   {t(p.nameKey)}
                 </button>
               ))}
@@ -588,7 +599,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
       {showSceneSelector && (
         <div className="space-y-4 p-5 bg-blue-500/5 rounded-2xl border border-blue-500/10">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             <h3 className="text-xs font-bold text-blue-300">
               {t('travel.label.group_environment')}
             </h3>
@@ -596,7 +607,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              <label className="text-[10px] font-bold text-gray-500 tracking-normal">
                 {t('travel.label.weather')}
               </label>
               <div className="flex flex-wrap gap-2">
@@ -605,9 +616,11 @@ const TravelForm: React.FC<TravelFormProps> = ({
                     key={w.id}
                     onClick={() => setWeather(w.id)}
                     disabled={disabled}
-                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-sky-600 text-white border-sky-500 shadow-md shadow-sky-600/20' : SCENE_INACTIVE}`}
+                    className={`${SCENE_BTN} ${weather === w.id ? 'bg-sky-600 text-white border-sky-500 ' : SCENE_INACTIVE}`}
                   >
-                    <span>{w.icon}</span>
+                    <span className="text-[10px] font-bold tracking-normal opacity-80">
+                      {w.icon}
+                    </span>
                     {t(w.nameKey)}
                   </button>
                 ))}
@@ -615,7 +628,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              <label className="text-[10px] font-bold text-gray-500 tracking-normal">
                 {t('travel.label.time')}
               </label>
               <div className="flex flex-wrap gap-2">
@@ -624,9 +637,11 @@ const TravelForm: React.FC<TravelFormProps> = ({
                     key={tod.id}
                     onClick={() => setTimeOfDay(tod.id)}
                     disabled={disabled}
-                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-orange-600 text-white border-orange-500 shadow-md shadow-orange-600/20' : SCENE_INACTIVE}`}
+                    className={`${SCENE_BTN} ${timeOfDay === tod.id ? 'bg-orange-600 text-white border-orange-500 ' : SCENE_INACTIVE}`}
                   >
-                    <span>{tod.icon}</span>
+                    <span className="text-[10px] font-bold tracking-normal opacity-80">
+                      {tod.icon}
+                    </span>
                     {t(tod.nameKey)}
                   </button>
                 ))}
@@ -634,10 +649,10 @@ const TravelForm: React.FC<TravelFormProps> = ({
             </div>
           </div>
 
-          <div className="pt-2 border-t border-blue-500/10">
+          <div className="pt-2 border-0 border-blue-500/10">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <label className="text-[10px] font-bold text-gray-400 tracking-normal">
                   {t('travel.label.clear_background')}
                 </label>
                 <p className="text-[10px] text-gray-600 italic">
@@ -647,10 +662,10 @@ const TravelForm: React.FC<TravelFormProps> = ({
               <button
                 onClick={() => setClearBackground(!clearBackground)}
                 disabled={disabled}
-                className={`w-12 h-6 rounded-full transition-all relative ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
+                className={`w-12 h-6 rounded-full transition-colors relative ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
               >
                 <div
-                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${clearBackground ? 'left-7' : 'left-1'}`}
+                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-colors ${clearBackground ? 'left-7' : 'left-1'}`}
                 />
               </button>
             </div>
@@ -659,17 +674,17 @@ const TravelForm: React.FC<TravelFormProps> = ({
       )}
 
       {/* Aesthetics Group */}
-      <div className="space-y-4 p-5 bg-purple-500/5 rounded-2xl border border-purple-500/10">
+      <div className="space-y-4 p-5 brand-bg-tint rounded-2xl border brand-border-soft">
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-          <h3 className="text-xs font-bold text-purple-300">
+          <div className="w-1.5 h-1.5 rounded-full brand-bg" />
+          <h3 className="text-xs font-bold brand-text-soft">
             {t('travel.label.group_aesthetics')}
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-gray-500 tracking-normal">
               {t('travel.label.style')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -678,7 +693,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={s.id}
                   onClick={() => setStyle(s.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 shadow-md shadow-amber-600/20' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${style === s.id ? 'bg-amber-600 text-white border-amber-500 ' : SCENE_INACTIVE}`}
                 >
                   {t(s.nameKey)}
                 </button>
@@ -687,7 +702,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
 
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-gray-500 tracking-normal">
               {t('travel.label.framing')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -696,9 +711,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={f.id}
                   onClick={() => setFraming(f.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${framing === f.id ? 'bg-teal-600 text-white border-teal-500 shadow-md shadow-teal-600/20' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${framing === f.id ? 'bg-teal-600 text-white border-teal-500 ' : SCENE_INACTIVE}`}
                 >
-                  <span>{f.icon}</span>
+                  <span className="text-[10px] font-bold tracking-normal opacity-80">{f.icon}</span>
                   {t(f.nameKey)}
                 </button>
               ))}
@@ -708,7 +723,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
 
         {showSceneSelector && (
           <div className="space-y-3">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-gray-500 tracking-normal">
               {t('travel.label.vibe')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -725,9 +740,9 @@ const TravelForm: React.FC<TravelFormProps> = ({
                   key={v.id}
                   onClick={() => setVibe(v.id)}
                   disabled={disabled}
-                  className={`${SCENE_BTN} ${vibe === v.id ? 'bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-600/20' : SCENE_INACTIVE}`}
+                  className={`${SCENE_BTN} ${vibe === v.id ? 'brand-bg-strong text-white brand-border ' : SCENE_INACTIVE}`}
                 >
-                  <span>{v.icon}</span>
+                  <span className="text-[10px] font-bold tracking-normal opacity-80">{v.icon}</span>
                   {t(v.nameKey)}
                 </button>
               ))}
@@ -745,7 +760,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
           <button
             onClick={() => setUseReferenceImage(!useReferenceImage)}
             disabled={disabled}
-            className={`px-3 py-1.5 flex items-center gap-2 rounded text-xs font-medium transition-colors ${useReferenceImage ? 'bg-indigo-600 text-white border border-indigo-500' : 'bg-gray-800 text-gray-400 border border-gray-600'}`}
+            className={`px-3 py-1.5 flex items-center gap-2 rounded text-xs font-medium transition-colors ${useReferenceImage ? 'brand-bg-strong text-white border brand-border' : 'bg-gray-800 text-gray-400 border border-gray-600'}`}
           >
             <span
               className={`w-2 h-2 rounded-full ${useReferenceImage ? 'bg-white' : 'bg-gray-500'}`}

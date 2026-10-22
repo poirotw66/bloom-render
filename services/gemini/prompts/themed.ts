@@ -51,7 +51,7 @@ export function generateThemedPrompt(options: ThemedPromptOptions): string {
 
   return buildPrompt({
     intro,
-    role: `You are a world-class themed portrait photographer and retouching AI. Transform the provided image${isGroup ? 's' : ''} into a themed photoshoot style image.`,
+    role: `You are a world-class themed portrait photographer and retouching AI. Transform the provided image${isGroup ? 's' : ''} into a themed photoshoot style image.`, // taste-skill-ignore
     requirements: [`${themeType.promptHint}${variationNote}`],
     guidelines: [
       `Maintain strict identity consistency: ${identityConsistency} must look the same as in the ${isGroup ? 'source images' : 'original image'}.`,

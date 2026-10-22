@@ -21,7 +21,7 @@ import {
 
 describe('uiClasses', () => {
   it('returns theme-specific page surfaces', () => {
-    expect(getPageSurface('bloom')).toContain('fuchsia');
+    expect(getPageSurface('bloom')).toContain('brand-border');
     expect(getPageSurface('newyear')).toContain('red');
     expect(getPageSurface('night')).toContain('slate');
   });
@@ -33,7 +33,7 @@ describe('uiClasses', () => {
   });
 
   it('returns theme-specific title accents', () => {
-    expect(getTitleAccent('bloom')).toBe('text-fuchsia-200');
+    expect(getTitleAccent('bloom')).toBe('brand-text-soft');
     expect(getTitleAccent('newyear')).toBe('text-red-200');
     expect(getTitleAccent('night')).toBe('text-blue-200');
   });

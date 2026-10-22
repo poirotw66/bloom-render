@@ -57,7 +57,7 @@ const HomeGallery: React.FC<HomeGalleryProps> = ({ className = '' }) => {
                 hover, and the label is what tells you where the tile goes. It
                 has to hold up over an ID photo's white backdrop, hence the
                 opaque base rather than a light scrim. */}
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent px-3 pt-10 pb-2.5">
+            <div className="absolute inset-x-0 bottom-0 from-black via-black/75 to-transparent px-3 pt-10 pb-2.5">
               <span className="block text-xs font-bold text-white">{t(example.featureKey)}</span>
               {/* No `block` alongside line-clamp-2: the clamp needs
                   display:-webkit-box, and a second display utility cancels it,

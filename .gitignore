@@ -40,3 +40,4 @@ dist-ssr
 public/images/scenes/*.jpg
 public/images/scenes/*.jpeg
 public/images/scenes/*.png
+skills-lock.json

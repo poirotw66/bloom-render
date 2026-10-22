@@ -38,7 +38,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
   const hasMultipleResults = resultList.length > 1;
 
   return (
-    <div className={`${UI_PAGE} border-transparent shadow-none`}>
+    <div className={`${UI_PAGE} border-transparent `}>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
           <h1 className={UI_TITLE}>
@@ -67,7 +67,7 @@ const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
                   onClick={tryOn.handleBatchDownload}
                   className={UI_BTN_SUCCESS}
                 >
-                  💾 {t('tryon.batch_download')} ({resultList.length})
+                  {t('tryon.batch_download')} ({resultList.length})
                 </button>
               )}
               <button type="button" onClick={tryOn.clearResult} className={UI_BTN_SECONDARY}>

@@ -25,7 +25,7 @@ export const QUALITY_REQUIREMENTS = {
     'realistic, photorealistic, looks like a real photo, not stylized, not artistic, not a painting, not an illustration',
   highQuality: 'high quality, sharp focus, detailed, professional photography',
   studio:
-    'professional studio photo retouch, even and soft studio lighting, no shadow on face, no shadow on background',
+    'professional studio photo retouch, even and soft studio lighting, no cast on face, no cast on background',
 };
 
 /**
@@ -39,7 +39,7 @@ export const COMMON_NEGATIVES = {
   expressions:
     'smile, laughing, open mouth, teeth, exaggerated expression, tilted head, angle view, side view, looking away',
   lighting:
-    'dramatic lighting, rim light, hard light, strong shadow, shadow on face, shadow on background',
+    'dramatic lighting, rim light, hard light, harsh cast, cast on face, cast on background',
   quality:
     'low quality, blurry, noise, jpeg artifacts, oversharpen, deformed, distorted, asymmetrical face, extra face, extra features, bad anatomy, big eyes, small face, unrealistic face, beauty face, idol face',
 };

@@ -96,7 +96,7 @@ export async function renderShareCard(options: {
   ctx.textBaseline = 'middle';
   const pad = Math.round(width * 0.04);
   ctx.fillText(options.footerLabel ?? FOOTER_TEXT, pad, contentH + footerH / 2 - footerH * 0.12);
-  ctx.fillStyle = '#a78bfa';
+  ctx.fillStyle = '#d946ef';
   ctx.font = `500 ${Math.round(footerH * 0.22)}px Inter, system-ui, sans-serif`;
   ctx.fillText(options.siteUrl ?? SITE_URL, pad, contentH + footerH / 2 + footerH * 0.22);
 

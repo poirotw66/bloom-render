@@ -83,7 +83,7 @@ const PhotographyServicePage: React.FC = () => {
         <p className={UI_SUBTITLE}>{t('service.subtitle')}</p>
       </div>
 
-      <section className="w-full p-6 md:p-8 rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-600/10 via-indigo-600/10 to-purple-600/10 shadow-xl">
+      <section className="w-full p-6 md:p-8 rounded-3xl border border-blue-500/20 brand-bg brand-bg brand-bg">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
             <p className="text-sm font-black uppercase tracking-[0.2em] text-blue-300">
@@ -115,7 +115,7 @@ const PhotographyServicePage: React.FC = () => {
                 key={item.id}
                 type="button"
                 onClick={() => handleServiceClick(item)}
-                className="text-left h-full rounded-2xl border border-white/10 bg-gray-950/40 hover:bg-gray-900/60 hover:border-blue-400/40 transition-all duration-200 p-5 flex flex-col gap-4 shadow-lg"
+                className="text-left h-full rounded-2xl border border-white/10 bg-gray-950/40 hover:bg-gray-900/60 hover:border-blue-400/40 transition-colors duration-200 p-5 flex flex-col gap-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="w-11 h-11 rounded-2xl bg-blue-500/15 text-blue-300 border border-blue-400/20 flex items-center justify-center">
@@ -175,7 +175,7 @@ const PhotographyServicePage: React.FC = () => {
         )}
       </div>
 
-      <section className="w-full mt-8 p-8 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 rounded-3xl border border-white/5">
+      <section className="w-full mt-8 p-8 brand-bg brand-bg rounded-3xl border border-white/5">
         <div className="text-center space-y-3">
           <h2 className="text-2xl font-bold text-white">{t('service.showcase.title')}</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">{t('service.showcase.desc')}</p>
@@ -190,7 +190,7 @@ const PhotographyServicePage: React.FC = () => {
                 setActiveCategoryId(category.id);
                 handleServiceClick(item);
               }}
-              className="text-left rounded-2xl border border-white/10 bg-black/20 hover:bg-black/30 hover:border-white/20 transition-all duration-200 p-5 flex flex-col gap-3"
+              className="text-left rounded-2xl border border-white/10 bg-black/20 hover:bg-black/30 hover:border-white/20 transition-colors duration-200 p-5 flex flex-col gap-3"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-black uppercase tracking-[0.18em] text-blue-300">

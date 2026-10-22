@@ -19,26 +19,22 @@ const CoupleGroupModeTabs: React.FC<CoupleGroupModeTabsProps> = ({ mode, onChang
 
   return (
     <div className="flex justify-center mb-6">
-      <div className="flex bg-gray-900/60 p-1 rounded-full border border-gray-700/50 backdrop-blur-md shadow-inner">
+      <div className="flex bg-gray-900/60 p-1 rounded-full border border-gray-700/50">
         <button
           onClick={() => onChange('couple')}
-          className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
-            mode === 'couple'
-              ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20'
-              : 'text-gray-400 hover:text-gray-200'
+          className={`px-6 py-2 rounded-full text-sm font-bold transition-colors duration-300 ${
+            mode === 'couple' ? 'bg-pink-600 text-white ' : 'text-gray-400 hover:text-gray-200'
           }`}
         >
-          💑 {t('couple_group.mode.couple')}
+          {t('couple_group.mode.couple')}
         </button>
         <button
           onClick={() => onChange('group')}
-          className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
-            mode === 'group'
-              ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
-              : 'text-gray-400 hover:text-gray-200'
+          className={`px-6 py-2 rounded-full text-sm font-bold transition-colors duration-300 ${
+            mode === 'group' ? 'brand-bg-strong text-white ' : 'text-gray-400 hover:text-gray-200'
           }`}
         >
-          👨‍👩‍👧‍👦 {t('couple_group.mode.group')}
+          {t('couple_group.mode.group')}
         </button>
       </div>
     </div>

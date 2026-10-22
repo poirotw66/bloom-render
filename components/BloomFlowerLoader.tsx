@@ -64,7 +64,7 @@ const BloomFlowerLoader: React.FC<BloomFlowerLoaderProps> = ({ className = '', s
         width={size}
         height={size}
         viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
-        className="text-fuchsia-400/90"
+        className="brand-text"
         aria-hidden="true"
       >
         <g>

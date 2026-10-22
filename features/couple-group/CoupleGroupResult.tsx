@@ -38,8 +38,8 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
       : GROUP_STYLES.find((s) => s.id === style);
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full animate-fade-in bg-gray-800/40 p-4 rounded-xl border border-gray-700/50 backdrop-blur-sm">
-      <div className="w-full max-h-[480px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-lg p-2">
+    <div className="flex flex-col items-center gap-4 w-full animate-fade-in bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+      <div className="w-full max-h-[480px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center p-2">
         <ResultImage
           resultUrl={displayResult}
           originalUrl={originalUrl}
@@ -48,19 +48,19 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
         />
       </div>
 
-      <div className="w-full bg-gray-800/60 backdrop-blur-sm p-4 rounded-xl border border-gray-700">
+      <div className="w-full bg-gray-800/60 p-4 rounded-xl border border-gray-700">
         <h3 className="text-sm font-bold text-white mb-3">
           {t('couple_group.result.params_title')}
         </h3>
         <div className="space-y-2 text-sm">
           <div>
-            <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <span className="block text-xs font-medium text-gray-500 tracking-normal">
               {t('couple_group.result.mode')}
             </span>
             <span className="text-gray-200">{t(`couple_group.mode.${mode}`)}</span>
           </div>
           <div>
-            <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <span className="block text-xs font-medium text-gray-500 tracking-normal">
               {t('couple_group.result.style')}
             </span>
             <span className="text-gray-200">{styleConfig ? t(styleConfig.nameKey) : style}</span>
@@ -77,7 +77,7 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
           <button
             type="button"
             onClick={onEditInEditor}
-            className="flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all text-sm border border-gray-600 active:scale-95"
+            className="flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors text-sm border border-gray-600 active:scale-95"
           >
             <EditIcon className="w-4 h-4" />
             {t('couple_group.edit')}

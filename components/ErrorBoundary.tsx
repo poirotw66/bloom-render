@@ -59,7 +59,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback;
       }
       return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-900 text-gray-100">
+        <div className="min-h-svh flex flex-col items-center justify-center p-6 bg-gray-900 text-gray-100">
           <div className="max-w-md w-full text-center space-y-4">
             <h1 className="text-xl font-bold text-red-400">
               {this.translate('error.boundary_title')}

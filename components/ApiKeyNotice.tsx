@@ -10,6 +10,7 @@ import React from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { openSettingsPanel } from '../utils/settingsPanel';
+import { CogIcon } from './icons';
 
 /** Where a Gemini API key comes from. */
 export const API_KEY_CONSOLE_URL = 'https://aistudio.google.com/apikey';
@@ -34,7 +35,10 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
     <div
       className={`w-full max-w-2xl mx-auto rounded-xl bg-amber-500/15 border border-amber-500/50 px-4 py-3 text-left ${className}`}
     >
-      <p className="text-amber-200 text-sm font-bold">⚙️ {t('apikey.notice_title')}</p>
+      <p className="text-amber-200 text-sm font-bold inline-flex items-center gap-1.5">
+        <CogIcon className="w-4 h-4 shrink-0" />
+        {t('apikey.notice_title')}
+      </p>
       <p className="text-amber-200/80 text-xs mt-1">
         {isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}
       </p>
