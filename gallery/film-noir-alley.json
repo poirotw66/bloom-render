@@ -6,7 +6,11 @@
   "settings": {
     "tab": "filters"
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "High-contrast black-and-white film-noir alley at night.",
   "author": "bloom-render",
-  "tags": ["filter", "noir"]
+  "tags": ["filter", "noir"],
+  "titleZh": "黑色電影巷弄",
+  "descriptionZh": "高反差黑白黑色電影風夜間巷弄濾鏡。",
+  "tagsZh": ["濾鏡", "黑色電影"],
+  "thumbnail": "examples/gallery/film-noir-alley.webp"
 }

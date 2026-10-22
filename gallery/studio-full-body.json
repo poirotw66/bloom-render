@@ -10,5 +10,8 @@
   "thumbnail": "examples/portrait-2.webp",
   "description": "Matches the second studio portrait example crop.",
   "author": "bloom-render",
-  "tags": ["generate", "studio", "portrait"]
+  "tags": ["generate", "studio", "portrait"],
+  "titleZh": "棚拍全身人像",
+  "descriptionZh": "對應第二組棚拍人像範例裁切。",
+  "tagsZh": ["生圖", "棚拍", "人像"]
 }

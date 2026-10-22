@@ -7,7 +7,11 @@
     "aspectRatio": "16:9",
     "quantity": 1
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Busy rain-soaked night crossing with neon reflections on wet asphalt.",
   "author": "bloom-render",
-  "tags": ["generate", "city", "night"]
+  "tags": ["generate", "city", "night"],
+  "titleZh": "雨中東京路口",
+  "descriptionZh": "雨夜行人穿越道、霓虹倒影的電影感都會景。",
+  "tagsZh": ["生圖", "都會", "夜景"],
+  "thumbnail": "examples/gallery/tokyo-crossing-rain.webp"
 }

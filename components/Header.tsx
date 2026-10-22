@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const location = useLocation();
 
-  const currentTab: StartTab = useMemo(() => {
+  const currentTab: StartTab | null = useMemo(() => {
     const path = location.pathname;
     if (path.startsWith(ROUTES.PHOTOGRAPHY_SERVICE)) return 'photography-service';
     if (path.startsWith(ROUTES.GENERATE)) return 'generate';
@@ -56,7 +56,9 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
     if (path.startsWith(ROUTES.TRY_ON)) return 'tryon';
     if (path.startsWith(ROUTES.ENHANCE)) return 'enhance';
     if (path.startsWith(ROUTES.RESTORE)) return 'restore';
-    return 'upload';
+    // Home / upload only — do not treat prompt gallery, editor, history, etc. as upload.
+    if (path === ROUTES.HOME || path === '') return 'upload';
+    return null;
   }, [location.pathname]);
 
   return (

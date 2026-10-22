@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/figurine-box.webp",
   "description": "Viral figurine-in-box retouch preset.",
   "author": "bloom-render",
-  "tags": ["retouch", "figurine", "viral"]
+  "tags": ["retouch", "figurine", "viral"],
+  "titleZh": "公仔盒裝收藏",
+  "descriptionZh": "病毒玩法：把人物變成零售盒裝 PVC 公仔。",
+  "tagsZh": ["修飾", "公仔", "病毒"]
 }

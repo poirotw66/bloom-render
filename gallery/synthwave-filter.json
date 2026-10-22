@@ -6,7 +6,11 @@
   "settings": {
     "tab": "filters"
   },
-  "description": "Retro synthwave grade with neon magenta/cyan haze (gradient card — no matching sample asset yet).",
+  "description": "Retro synthwave grade with neon magenta and cyan haze.",
   "author": "bloom-render",
-  "tags": ["filter", "stylize"]
+  "tags": ["filter", "stylize"],
+  "titleZh": "合成波濾鏡",
+  "descriptionZh": "復古合成波色調：洋紅／青色霓虹霧感。",
+  "tagsZh": ["濾鏡", "復古"],
+  "thumbnail": "examples/gallery/synthwave-filter.webp"
 }

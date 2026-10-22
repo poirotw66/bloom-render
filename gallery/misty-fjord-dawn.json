@@ -7,7 +7,11 @@
     "aspectRatio": "16:9",
     "quantity": 1
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Wide misty fjord at dawn with soft pastel sky and still water.",
   "author": "bloom-render",
-  "tags": ["generate", "landscape"]
+  "tags": ["generate", "landscape"],
+  "titleZh": "薄霧峽灣黎明",
+  "descriptionZh": "廣角薄霧峽灣黎明風景，粉彩色天空與靜水。",
+  "tagsZh": ["生圖", "風景"],
+  "thumbnail": "examples/gallery/misty-fjord-dawn.webp"
 }

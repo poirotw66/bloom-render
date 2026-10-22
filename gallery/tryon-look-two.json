@@ -10,5 +10,8 @@
   "thumbnail": "examples/tryon-after-2.webp",
   "description": "Matches try-on result style 2.",
   "author": "bloom-render",
-  "tags": ["retouch", "tryon"]
+  "tags": ["retouch", "tryon"],
+  "titleZh": "虛擬試衣造型 B",
+  "descriptionZh": "對應試衣結果造型 2。",
+  "tagsZh": ["修飾", "試衣"]
 }

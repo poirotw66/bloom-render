@@ -7,7 +7,11 @@
     "aspectRatio": "16:9",
     "quantity": 1
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Empty desert highway under harsh noon sun with heat-shimmer mirage.",
   "author": "bloom-render",
-  "tags": ["generate", "landscape"]
+  "tags": ["generate", "landscape"],
+  "titleZh": "沙漠公路蜃景",
+  "descriptionZh": "正午酷熱沙漠公路與熱浪蜃景，廣角寫實風景。",
+  "tagsZh": ["生圖", "風景"],
+  "thumbnail": "examples/gallery/desert-highway-mirage.webp"
 }

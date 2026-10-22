@@ -4,7 +4,11 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { PROMPT_GALLERY_ENTRIES } from './promptGallery';
+import {
+  PROMPT_GALLERY_ENTRIES,
+  localizedGalleryTitle,
+  localizedGalleryDescription,
+} from './promptGallery';
 
 describe('PROMPT_GALLERY_ENTRIES', () => {
   it('loads ~30 community presets with unique ids', () => {
@@ -16,13 +20,25 @@ describe('PROMPT_GALLERY_ENTRIES', () => {
       expect(entry.prompt.length).toBeGreaterThan(7);
       expect(['generate', 'retouch', 'adjust', 'filter']).toContain(entry.feature);
       if (entry.thumbnail !== undefined) {
-        expect(entry.thumbnail).toMatch(/^examples\/(?:viral\/)?[A-Za-z0-9._-]+\.webp$/);
+        expect(entry.thumbnail).toMatch(
+          /^examples\/(?:(?:viral|gallery)\/)?[A-Za-z0-9._-]+\.webp$/,
+        );
       }
     }
   });
 
-  it('allows gradient-only entries without thumbnails', () => {
-    const missing = PROMPT_GALLERY_ENTRIES.filter((e) => !e.thumbnail);
-    expect(missing.length).toBeGreaterThan(0);
+  it('requires a Traditional Chinese title on every entry', () => {
+    for (const entry of PROMPT_GALLERY_ENTRIES) {
+      expect(entry.titleZh.trim().length, entry.id).toBeGreaterThan(1);
+      expect(entry.titleZh).not.toEqual(entry.title);
+    }
+  });
+
+  it('localizes title and description by language', () => {
+    const entry = PROMPT_GALLERY_ENTRIES.find((e) => e.id === 'era-70s-taiwan');
+    expect(entry).toBeTruthy();
+    expect(localizedGalleryTitle(entry!, 'en')).toBe(entry!.title);
+    expect(localizedGalleryTitle(entry!, 'zh-TW')).toBe(entry!.titleZh);
+    expect(localizedGalleryDescription(entry!, 'zh-TW')).toBe(entry!.descriptionZh);
   });
 });

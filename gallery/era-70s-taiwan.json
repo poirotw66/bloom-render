@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/era-70s-taiwan.webp",
   "description": "Era retouch — 1970s Taiwan look.",
   "author": "bloom-render",
-  "tags": ["retouch", "era", "taiwan"]
+  "tags": ["retouch", "era", "taiwan"],
+  "titleZh": "1970 年代台灣人像",
+  "descriptionZh": "時代穿越修飾：1970 年代台灣紀實感。",
+  "tagsZh": ["修飾", "年代", "台灣"]
 }

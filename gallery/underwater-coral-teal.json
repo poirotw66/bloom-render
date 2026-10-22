@@ -7,7 +7,11 @@
     "aspectRatio": "3:4",
     "quantity": 1
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Underwater teal water and soft coral with gentle god rays.",
   "author": "bloom-render",
-  "tags": ["generate", "nature"]
+  "tags": ["generate", "nature"],
+  "titleZh": "青綠珊瑚海底",
+  "descriptionZh": "青綠海水與柔和珊瑚、水面光柱的潛水寫實感。",
+  "tagsZh": ["生圖", "自然"],
+  "thumbnail": "examples/gallery/underwater-coral-teal.webp"
 }

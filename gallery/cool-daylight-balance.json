@@ -6,7 +6,11 @@
   "settings": {
     "tab": "adjust"
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Cool the global white balance toward clean daylight; before|after composite preview.",
   "author": "bloom-render",
-  "tags": ["adjust", "color"]
+  "tags": ["adjust", "color"],
+  "titleZh": "冷調日光白平衡",
+  "descriptionZh": "全圖白平衡偏冷日光：陰影略藍、壓低黃偏，膚色仍自然。",
+  "tagsZh": ["調整", "色溫"],
+  "thumbnail": "examples/gallery/cool-daylight-balance.webp"
 }

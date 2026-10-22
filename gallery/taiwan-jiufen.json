@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/taiwan-jiufen.webp",
   "description": "Travel retouch on Jiufen Old Street.",
   "author": "bloom-render",
-  "tags": ["retouch", "taiwan", "jiufen"]
+  "tags": ["retouch", "taiwan", "jiufen"],
+  "titleZh": "九份燈籠階梯",
+  "descriptionZh": "旅遊修飾：九份老街燈籠與霧氣階梯。",
+  "tagsZh": ["修飾", "台灣", "九份"]
 }

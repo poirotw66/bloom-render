@@ -10,5 +10,8 @@
   "thumbnail": "examples/travel-2.webp",
   "description": "Couple travel scene inspired by the Yehliu example.",
   "author": "bloom-render",
-  "tags": ["generate", "travel", "couple"]
+  "tags": ["generate", "travel", "couple"],
+  "titleZh": "野柳黎明雙人",
+  "descriptionZh": "旅遊照範例：野柳地質公園黎明雙人。",
+  "tagsZh": ["生圖", "旅遊", "野柳"]
 }

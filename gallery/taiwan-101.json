@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/taiwan-101.webp",
   "description": "Travel retouch with Taipei 101 skyline.",
   "author": "bloom-render",
-  "tags": ["retouch", "taiwan", "skyline"]
+  "tags": ["retouch", "taiwan", "skyline"],
+  "titleZh": "台北 101 藍調時刻",
+  "descriptionZh": "旅遊修飾：藍調時刻台北 101 天際線。",
+  "tagsZh": ["修飾", "台灣", "天際線"]
 }

@@ -16,6 +16,10 @@ misty-fjord-dawn
 
 Misty fjord dawn
 
+### titleZh
+
+薄霧峽灣黎明
+
 ### prompt
 
 Wide misty fjord at dawn
@@ -33,6 +37,7 @@ _No response_
     expect(sections.thumbnail).toBe('');
     const entry = entryFromIssueSections(sections);
     expect(entry.id).toBe('misty-fjord-dawn');
+    expect(entry.titleZh).toBe('薄霧峽灣黎明');
     expect(entry.thumbnail).toBeUndefined();
     expect(entry.feature).toBe('generate');
   });
