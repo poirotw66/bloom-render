@@ -29,6 +29,11 @@ interface CompareSliderProps {
    * Honors `prefers-reduced-motion: reduce` (stays at 50%).
    */
   autoPlay?: boolean;
+  /**
+   * When true, shifts the “before” (原圖) label down so a top-left Demo badge
+   * does not cover it.
+   */
+  offsetBeforeLabel?: boolean;
 }
 
 const KEYBOARD_STEP = 2;
@@ -58,6 +63,7 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
   imageClassName = '',
   className = '',
   autoPlay = false,
+  offsetBeforeLabel = false,
 }) => {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -191,7 +197,9 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
       </div>
 
       <span
-        className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 text-white text-sm font-semibold pointer-events-none"
+        className={`absolute left-3 px-2.5 py-1 rounded-md bg-black/70 text-white text-sm font-semibold pointer-events-none ${
+          offsetBeforeLabel ? 'top-12' : 'top-3'
+        }`}
         style={{ opacity: position > 12 ? 1 : 0 }}
       >
         {t('main.compare_before')}

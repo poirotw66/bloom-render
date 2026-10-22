@@ -51,11 +51,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
     <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto ${className}`}>
       {isDemoMode && <DemoModeBanner />}
       <div className="relative w-full rounded-xl overflow-hidden border-2 theme-border p-2 theme-raised">
-        {isDemoMode && (
-          <div className="absolute top-4 left-4 z-10">
-            <DemoModeBanner compact />
-          </div>
-        )}
+        {/* Demo compact badge lives inside ResultImage (offsets 原圖 when comparing). */}
         <ResultImage resultUrl={displayResult} originalUrl={originalUrl} />
       </div>
 

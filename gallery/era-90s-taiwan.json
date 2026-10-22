@@ -1,0 +1,14 @@
+{
+  "id": "era-90s-taiwan",
+  "title": "1990s Taiwan flash nostalgia",
+  "prompt": "Time-travel the portrait to 1990s Taiwan: disposable-camera look, school uniform or casual 90s streetwear, karaoke or night market glow, slightly overexposed flash, millennial nostalgia.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/era-90s-taiwan.webp",
+  "description": "Era retouch — 1990s Taiwan look.",
+  "author": "bloom-render",
+  "tags": ["retouch", "era", "taiwan"]
+}

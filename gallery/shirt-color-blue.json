@@ -6,8 +6,7 @@
   "settings": {
     "tab": "retouch"
   },
-  "thumbnail": "examples/editor-after.webp",
-  "description": "Classic localized retouch prompt for the editor point or brush mask.",
+  "description": "Recolor the subject's shirt to a clean medium blue (gradient card — no matching sample asset yet).",
   "author": "bloom-render",
   "tags": ["retouch", "clothing", "color"]
 }

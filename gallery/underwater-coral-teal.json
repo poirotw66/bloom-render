@@ -1,0 +1,13 @@
+{
+  "id": "underwater-coral-teal",
+  "title": "Underwater coral teal",
+  "prompt": "Underwater scene with teal water and soft coral formations, gentle god rays from the surface, small fish silhouettes, serene photorealistic dive photo",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "3:4",
+    "quantity": 1
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["generate", "nature"]
+}

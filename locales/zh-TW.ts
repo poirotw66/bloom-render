@@ -53,7 +53,7 @@ export const zhTWMessages: Record<string, string> = {
   'prompt_gallery.apply_failed': '無法開啟此預設，請再試一次。',
   'prompt_gallery.empty': '此篩選下沒有預設。',
   'prompt_gallery.contribute_hint':
-    '想新增一筆？在 gallery/ 新增檔案並開 PR — 詳見 CONTRIBUTING.md。',
+    '想新增一筆？用「Prompt gallery submission」Issue 表單，或在 gallery/ 開 PR — 詳見 CONTRIBUTING.md。',
   'common.selected': '已選取',
   'common.none': '無',
   'common.output_quantity': '產出數量',

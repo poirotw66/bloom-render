@@ -1,0 +1,14 @@
+{
+  "id": "era-80s-taiwan",
+  "title": "1980s Taiwan night snapshot",
+  "prompt": "Time-travel the portrait to 1980s Taiwan: neon night markets, big hair, pastel windbreaker vibes, flash-lit night snapshot, VHS softness, nostalgic Taipei evening atmosphere.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/era-80s-taiwan.webp",
+  "description": "Era retouch — 1980s Taiwan look.",
+  "author": "bloom-render",
+  "tags": ["retouch", "era", "taiwan"]
+}

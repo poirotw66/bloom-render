@@ -1,0 +1,14 @@
+{
+  "id": "studio-full-body",
+  "title": "Studio full-body portrait",
+  "prompt": "Full-body studio portrait, soft key light from camera left, subtle rim light, charcoal seamless backdrop, natural pose, photorealistic fashion lookbook",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "3:4",
+    "quantity": 1
+  },
+  "thumbnail": "examples/portrait-2.webp",
+  "description": "Matches the second studio portrait example crop.",
+  "author": "bloom-render",
+  "tags": ["generate", "studio", "portrait"]
+}

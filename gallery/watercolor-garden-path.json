@@ -1,0 +1,13 @@
+{
+  "id": "watercolor-garden-path",
+  "title": "Watercolor garden path",
+  "prompt": "Soft watercolor illustration of a winding garden path lined with wildflowers, loose wet-on-wet edges, pastel paper texture, gentle spring light",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "3:4",
+    "quantity": 1
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["generate", "illustration"]
+}

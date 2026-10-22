@@ -6,8 +6,7 @@
   "settings": {
     "tab": "adjust"
   },
-  "thumbnail": "examples/editor-before.webp",
-  "description": "Global adjustment prompt for the editor Adjust tab.",
+  "description": "Warm the whole frame toward late-afternoon golden hour (gradient card — no matching sample asset yet).",
   "author": "bloom-render",
   "tags": ["adjust", "color", "mood"]
 }

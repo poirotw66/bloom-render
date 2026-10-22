@@ -19,7 +19,8 @@ export interface PromptGalleryEntry {
   prompt: string;
   feature: PromptGalleryFeature;
   settings: PromptGallerySettings;
-  thumbnail: string;
+  /** Optional; omit when no title-matching asset exists (UI uses a gradient card). */
+  thumbnail?: string;
   description?: string;
   author?: string;
   tags?: string[];
@@ -38,9 +39,9 @@ function isEntry(value: unknown): value is PromptGalleryEntry {
     typeof v.title === 'string' &&
     typeof v.prompt === 'string' &&
     typeof v.feature === 'string' &&
-    typeof v.thumbnail === 'string' &&
     !!v.settings &&
-    typeof v.settings === 'object'
+    typeof v.settings === 'object' &&
+    (v.thumbnail === undefined || typeof v.thumbnail === 'string')
   );
 }
 

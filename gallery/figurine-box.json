@@ -1,0 +1,14 @@
+{
+  "id": "figurine-box",
+  "title": "Collectible figurine box",
+  "prompt": "Transform the person into a collectible 1/7 scale PVC figure in a window retail box. Clear plastic blister, cardboard backing with brand logo and character name, studio product lighting, sharp focus, photoreal toy photography.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/figurine-box.webp",
+  "description": "Viral figurine-in-box retouch preset.",
+  "author": "bloom-render",
+  "tags": ["retouch", "figurine", "viral"]
+}

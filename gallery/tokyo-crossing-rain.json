@@ -1,0 +1,13 @@
+{
+  "id": "tokyo-crossing-rain",
+  "title": "Tokyo crossing in rain",
+  "prompt": "Busy Shibuya-style pedestrian crossing in heavy rain at night, neon reflections on wet asphalt, umbrellas, cinematic teal and magenta, photorealistic",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "16:9",
+    "quantity": 1
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["generate", "city", "night"]
+}

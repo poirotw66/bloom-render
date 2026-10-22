@@ -39,6 +39,10 @@ npm run gallery:validate
 
 The in-app **Prompt gallery** (`/prompt-gallery`) is seeded from JSON files in [`gallery/`](./gallery/). Each entry is one preset visitors can apply in a single click.
 
+### Suggest an entry via GitHub issue
+
+Use the **Prompt gallery submission** issue form (label `gallery-submission`). A workflow validates the fields against [`gallery/schema.json`](./gallery/schema.json) and comments pass/fail. Maintainers can then add `gallery/<id>.json` from a valid submission.
+
 ### Add an entry by PR
 
 1. Copy an existing file in `gallery/` (not `schema.json`).
@@ -47,12 +51,12 @@ The in-app **Prompt gallery** (`/prompt-gallery`) is seeded from JSON files in [
    - `id` — must match the filename without `.json`
    - `title`, `prompt`, `feature` (`generate` | `retouch` | `adjust` | `filter`)
    - `settings` — optional `aspectRatio` / `quantity` for generate, or `tab` for editor surfaces
-   - `thumbnail` — path under `public/`, usually an existing `examples/*.webp`
+   - `thumbnail` — **optional** path under `public/` that **matches the title** (e.g. `examples/travel-1.webp` or `examples/viral/figurine-box.webp`). Omit it when no matching asset exists — the UI shows a gradient card.
 4. Optionally set `description`, `author`, and `tags`.
 5. Run `npm run gallery:validate` locally (CI runs the same check).
 6. Open a PR that only adds/updates gallery JSON unless the schema itself needs a change.
 
-Thumbnails should reuse files already in `public/examples/` when possible so we do not bloat the repo. If you must add a new image, keep it small WebP (see `public/examples/README.md`).
+Do **not** reuse an unrelated example image just to fill the thumbnail field. Prefer a gradient card over a mismatched preview. If you must add a new image, keep it small WebP (see `public/examples/README.md`).
 
 ### Personal saved prompts
 

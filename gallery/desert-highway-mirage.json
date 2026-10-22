@@ -1,0 +1,13 @@
+{
+  "id": "desert-highway-mirage",
+  "title": "Desert highway mirage",
+  "prompt": "Empty desert highway under harsh noon sun, heat shimmer mirage on the asphalt, distant mountains, dusty atmosphere, photorealistic wide shot",
+  "feature": "generate",
+  "settings": {
+    "aspectRatio": "16:9",
+    "quantity": 1
+  },
+  "description": "Gradient card — no matching sample asset yet.",
+  "author": "bloom-render",
+  "tags": ["generate", "landscape"]
+}

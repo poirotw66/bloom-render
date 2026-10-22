@@ -1,0 +1,14 @@
+{
+  "id": "tryon-look-one",
+  "title": "Virtual try-on look A",
+  "prompt": "Dress the person in the uploaded garment naturally: correct fabric drape and fit, matching lighting and shadows, photorealistic virtual try-on",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/tryon-after.webp",
+  "description": "Matches try-on result style 1.",
+  "author": "bloom-render",
+  "tags": ["retouch", "tryon"]
+}

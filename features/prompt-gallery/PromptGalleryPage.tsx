@@ -8,7 +8,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SavedPromptsImportExport from '../../components/SavedPromptsImportExport';
-import { PROMPT_GALLERY_ENTRIES, type PromptGalleryFeature } from '../../constants/promptGallery';
+import {
+  PROMPT_GALLERY_ENTRIES,
+  type PromptGalleryEntry,
+  type PromptGalleryFeature,
+} from '../../constants/promptGallery';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { applyPromptGalleryPreset } from '../../utils/applyPromptGalleryPreset';
@@ -32,6 +36,45 @@ const FEATURE_FILTERS: Array<PromptGalleryFeature | 'all'> = [
   'adjust',
   'filter',
 ];
+
+/** Title-matching gradient fallback when no thumbnail asset is available. */
+function GalleryThumb({ entry }: { entry: PromptGalleryEntry }) {
+  if (entry.thumbnail) {
+    return (
+      <img
+        src={publicAssetUrl(entry.thumbnail)}
+        alt=""
+        className="w-full aspect-[4/3] object-cover theme-raised"
+        loading="lazy"
+      />
+    );
+  }
+
+  const featureTint: Record<PromptGalleryFeature, string> = {
+    generate: 'from-fuchsia-700/80 via-rose-800/70 to-indigo-900/90',
+    retouch: 'from-sky-700/80 via-cyan-800/70 to-slate-900/90',
+    adjust: 'from-amber-700/70 via-orange-900/60 to-stone-900/90',
+    filter: 'from-violet-700/80 via-purple-900/70 to-zinc-900/90',
+  };
+
+  return (
+    <div
+      className={`w-full aspect-[4/3] flex flex-col justify-end p-4 bg-gradient-to-br ${featureTint[entry.feature]}`}
+      role="img"
+      aria-label={entry.title}
+      data-testid="gallery-gradient-card"
+    >
+      <p className="text-white text-lg font-semibold leading-snug drop-shadow-sm line-clamp-3">
+        {entry.title}
+      </p>
+      {entry.tags && entry.tags.length > 0 && (
+        <p className="mt-1 text-white/80 text-xs tracking-wide">
+          {entry.tags.slice(0, 3).join(' · ')}
+        </p>
+      )}
+    </div>
+  );
+}
 
 const PromptGalleryPage: React.FC = () => {
   const { t } = useLanguage();
@@ -68,7 +111,7 @@ const PromptGalleryPage: React.FC = () => {
   );
 
   return (
-    <div className={`${UI_PAGE} ${surface}`}>
+    <div className={`${UI_PAGE} ${surface}`} data-testid="prompt-gallery-page">
       <header className="text-center mb-8">
         <h1 className={UI_TITLE}>
           <span className={getTitleAccent(theme)}>{t('prompt_gallery.title')}</span>
@@ -110,12 +153,7 @@ const PromptGalleryPage: React.FC = () => {
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
         {entries.map((entry) => (
           <li key={entry.id} className={`flex flex-col ${UI_CARD_SOFT}`}>
-            <img
-              src={publicAssetUrl(entry.thumbnail)}
-              alt=""
-              className="w-full aspect-[4/3] object-cover theme-raised"
-              loading="lazy"
-            />
+            <GalleryThumb entry={entry} />
             <div className="flex flex-col gap-2 p-4 flex-1">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-base font-semibold theme-ink">{entry.title}</h3>

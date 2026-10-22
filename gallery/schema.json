@@ -5,7 +5,7 @@
   "description": "One community prompt preset. Validated in CI by scripts/validate-gallery.mjs.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "title", "prompt", "feature", "settings", "thumbnail"],
+  "required": ["id", "title", "prompt", "feature", "settings"],
   "properties": {
     "id": {
       "type": "string",
@@ -51,8 +51,8 @@
     },
     "thumbnail": {
       "type": "string",
-      "pattern": "^examples/[A-Za-z0-9._-]+\\.webp$",
-      "description": "Path under public/, e.g. examples/generate-1.webp"
+      "pattern": "^examples/(?:viral/)?[A-Za-z0-9._-]+\\.webp$",
+      "description": "Optional path under public/ that matches the title (e.g. examples/generate-1.webp or examples/viral/figurine-box.webp). Omit when no matching asset exists — the UI shows a gradient card."
     },
     "description": {
       "type": "string",

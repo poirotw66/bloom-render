@@ -1,0 +1,14 @@
+{
+  "id": "era-70s-taiwan",
+  "title": "1970s Taiwan portrait",
+  "prompt": "Time-travel the portrait to 1970s Taiwan: Kodachrome warmth, soft flash, period clothing and hair, modest apartment or street backdrop of that era, nostalgic documentary photo, subtle film grain.",
+  "feature": "retouch",
+  "settings": {
+    "aspectRatio": "3:4",
+    "tab": "retouch"
+  },
+  "thumbnail": "examples/viral/era-70s-taiwan.webp",
+  "description": "Era retouch — 1970s Taiwan look.",
+  "author": "bloom-render",
+  "tags": ["retouch", "era", "taiwan"]
+}

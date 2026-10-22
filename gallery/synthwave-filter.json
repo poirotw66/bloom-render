@@ -6,8 +6,7 @@
   "settings": {
     "tab": "filters"
   },
-  "thumbnail": "examples/portrait-2.webp",
-  "description": "Whole-image filter preset matching the built-in Synthwave style.",
+  "description": "Retro synthwave grade with neon magenta/cyan haze (gradient card — no matching sample asset yet).",
   "author": "bloom-render",
   "tags": ["filter", "stylize"]
 }
