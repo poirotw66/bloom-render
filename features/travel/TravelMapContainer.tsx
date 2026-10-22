@@ -99,7 +99,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
       {/* Header with toggle */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-bold text-gray-300 tracking-wide uppercase">
+          <label className="text-sm font-bold text-gray-300 tracking-normal ">
             {t('travel.map_mode_label')}
           </label>
           <p className="text-xs text-gray-500">{t('travel.map_instruction')}</p>
@@ -140,7 +140,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-colors duration-200 cursor-pointer ${
+              className={`px-4 py-1.5 text-sm font-bold rounded-md transition-colors duration-200 cursor-pointer ${
                 categoryFilter === cat
                   ? cat === 'food'
                     ? 'bg-orange-600/80 text-white '
@@ -221,7 +221,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                   <div className="flex flex-col gap-4">
                     {/* Weather */}
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-sm font-bold text-gray-400 tracking-normal flex items-center gap-2">
                         <span>{t('travel.label.weather')}</span>
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -235,7 +235,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                            <span className="text-sm font-bold tracking-normal opacity-80">
                               {opt.icon}
                             </span>
                             <span>{t(opt.nameKey)}</span>
@@ -246,7 +246,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
 
                     {/* Time */}
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <label className="text-sm font-bold text-gray-400 tracking-normal flex items-center gap-2">
                         <span>{t('travel.label.time')}</span>
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -260,7 +260,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                            <span className="text-sm font-bold tracking-normal opacity-80">
                               {opt.icon}
                             </span>
                             <span>{t(opt.nameKey)}</span>
@@ -277,7 +277,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                     {/* Outfit & Color */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <label className="text-sm font-bold text-gray-400 tracking-normal flex items-center gap-2">
                           <span>{t('travel.label.outfit')}</span>
                         </label>
                         <div className="flex gap-1.5">
@@ -314,7 +314,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                            <span className="text-sm font-bold tracking-normal opacity-80">
                               {opt.icon}
                             </span>
                             <span>{t(opt.nameKey)}</span>
@@ -337,7 +337,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                     {/* Pose & Framing */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <label className="text-sm font-bold text-gray-400 tracking-normal">
                           {t('travel.label.pose')}
                         </label>
                         <select
@@ -347,7 +347,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         >
                           {TRAVEL_POSE_OPTIONS.map((p) => (
                             <option key={p.id} value={p.id}>
-                              <span className="text-[10px] font-bold uppercase tracking-wide opacity-80 mr-1">
+                              <span className="text-sm font-bold tracking-normal opacity-80 mr-1">
                                 {p.icon}
                               </span>
                               {t(p.nameKey)}
@@ -367,7 +367,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         )}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <label className="text-sm font-bold text-gray-400 tracking-normal">
                           {t('travel.label.framing')}
                         </label>
                         <select
@@ -377,7 +377,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         >
                           {TRAVEL_FRAMING_OPTIONS.map((f) => (
                             <option key={f.id} value={f.id}>
-                              <span className="text-[10px] font-bold uppercase tracking-wide opacity-80 mr-1">
+                              <span className="text-sm font-bold tracking-normal opacity-80 mr-1">
                                 {f.icon}
                               </span>
                               {t(f.nameKey)}
@@ -393,12 +393,12 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                 <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30 md:col-span-2">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                      <label className="text-sm font-bold text-gray-400 tracking-normal">
                         {t('travel.label.vibe')}
                       </label>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] text-gray-400 uppercase tracking-widest">
+                          <span className="text-sm text-gray-400 tracking-normal">
                             {t('travel.label.clear_background')}
                           </span>
                           <button
@@ -410,7 +410,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                             />
                           </button>
                         </div>
-                        <span className="text-[10px] text-gray-500 italic">
+                        <span className="text-sm text-gray-500 italic">
                           {t('travel.label.vibe_desc')}
                         </span>
                       </div>
@@ -453,7 +453,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                       : 'bg-gray-800/40 border-gray-700/50 text-gray-400'
                                 }`}
                               >
-                                <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                                <span className="text-sm font-bold tracking-normal opacity-80">
                                   {opt.icon}
                                 </span>
                                 <span>{t(opt.nameKey)}</span>

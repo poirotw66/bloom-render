@@ -212,7 +212,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                         if (continentScenes.length === 0) return null;
                         return (
                           <div key={`intl-scenery-${continent}`}>
-                            <h5 className="text-sm font-bold text-gray-500 uppercase mb-1.5 px-1">
+                            <h5 className="text-sm font-bold text-gray-500 mb-1.5 px-1">
                               {t(`travel.continent.${continent}`)}
                             </h5>
                             <div className="flex flex-wrap gap-2">
@@ -244,7 +244,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                         if (continentScenes.length === 0) return null;
                         return (
                           <div key={`intl-food-${continent}`}>
-                            <h5 className="text-sm font-bold text-gray-500 uppercase mb-1.5 px-1">
+                            <h5 className="text-sm font-bold text-gray-500 mb-1.5 px-1">
                               {t(`travel.continent.${continent}`)}
                             </h5>
                             <div className="flex flex-wrap gap-2">
@@ -283,7 +283,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                       if (regionalScenes.length === 0) return null;
                       return (
                         <div key={`scenery-${region}`}>
-                          <h5 className="text-sm font-bold text-gray-500 uppercase mb-1.5 px-1">
+                          <h5 className="text-sm font-bold text-gray-500 mb-1.5 px-1">
                             {t(`travel.region.${region}`)}
                           </h5>
                           <div className="flex flex-wrap gap-2">
@@ -313,7 +313,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
                       if (regionalScenes.length === 0) return null;
                       return (
                         <div key={`food-${region}`}>
-                          <h5 className="text-sm font-bold text-gray-500 uppercase mb-1.5 px-1">
+                          <h5 className="text-sm font-bold text-gray-500 mb-1.5 px-1">
                             {t(`travel.region.${region}`)}
                           </h5>
                           <div className="flex flex-wrap gap-2">
@@ -426,7 +426,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
       {/* Basic Settings Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-white/5 rounded-2xl border border-white/5">
         <div className="space-y-3">
-          <label className="text-sm font-semibold brand-text tracking-wide px-1">
+          <label className="text-sm font-semibold brand-text tracking-normal px-1">
             {t('travel.label.image_size')}
           </label>
           <div className="flex flex-wrap gap-2">
@@ -443,7 +443,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
           </div>
         </div>
         <div className="space-y-3">
-          <label className="text-sm font-semibold brand-text tracking-wide px-1">
+          <label className="text-sm font-semibold brand-text tracking-normal px-1">
             {t('travel.label.aspect_ratio')}
           </label>
           <div className="flex flex-wrap gap-2">

@@ -98,7 +98,7 @@ const PhotographyServicePage: React.FC = () => {
           <p className="text-sm font-semibold tracking-wide brand-text">
             {t('service.featured.eyebrow')}
           </p>
-          <h2 className="text-3xl font-semibold theme-ink">{t('service.featured.title')}</h2>
+          <h2 className="text-2xl font-semibold theme-ink">{t('service.featured.title')}</h2>
           <p className="max-w-2xl theme-ink-muted">{t('service.featured.desc')}</p>
           <p className="max-w-2xl text-sm theme-ink-soft">
             {t('service.featured.quick_turnaround')}, {t('service.featured.multi_scene')},{' '}
@@ -119,9 +119,7 @@ const PhotographyServicePage: React.FC = () => {
                 className="text-left h-full rounded-2xl border theme-border theme-raised hover:opacity-95 transition-opacity duration-200 p-5 flex flex-col gap-4 focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="w-11 h-11 rounded-2xl brand-bg-tint brand-text border theme-border flex items-center justify-center">
-                    <Icon className="w-6 h-6" />
-                  </div>
+                  <Icon className="w-6 h-6 brand-text shrink-0" aria-hidden="true" />
                   {item.badgeKey && (
                     <span className="px-2 py-0.5 brand-bg text-white text-sm font-semibold tracking-wide rounded-md">
                       {t(item.badgeKey)}

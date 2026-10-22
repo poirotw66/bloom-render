@@ -126,7 +126,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               {!isDemoMode && (
                 <>
                   <div className="absolute inset-0 from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                    <span className="text-[10px] text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">
+                    <span className="text-sm text-white font-medium bg-teal-600/80 px-2 py-1 rounded-full">
                       {t('tryon.change_person')}
                     </span>
                   </div>
@@ -139,12 +139,12 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 </>
               )}
               {isDemoMode && (
-                <span className="absolute top-2 left-2 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+                <span className="absolute top-2 left-2 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-[11px] font-bold tracking-normal text-white">
                   {t('demo.sample_input')}
                 </span>
               )}
             </div>
-            <p className="text-[10px] text-teal-500/80 font-medium">{t('common.selected')}</p>
+            <p className="text-sm text-teal-500/80 font-medium">{t('common.selected')}</p>
           </div>
         ) : (
           <label className="flex flex-col items-center justify-center gap-3 py-12 rounded-2xl border-2 border-dashed border-gray-700 bg-gray-900/40 cursor-pointer hover:border-teal-500/50 hover:bg-teal-500/5 transition-colors group">
@@ -155,7 +155,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               <span className="block text-sm font-bold text-gray-300 group-hover:text-teal-400 transition-colors">
                 {t('tryon.upload_person_hint')}
               </span>
-              <span className="text-[10px] text-gray-500 mt-1 uppercase tracking-tighter">
+              <span className="text-sm text-gray-500 mt-1 tracking-normal">
                 {t('start.upload_drag')}
               </span>
             </div>
@@ -167,9 +167,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
       {/* Visual Connector */}
       <div className="flex justify-center -my-3 z-10">
         <div className="bg-gray-900 px-3 py-1 rounded-full border border-gray-700 flex items-center gap-2">
-          <span className="text-xs text-gray-500 font-bold uppercase tracking-tighter self-center">
-            +
-          </span>
+          <span className="text-xs text-gray-500 font-bold tracking-normal self-center">+</span>
         </div>
       </div>
 
@@ -198,7 +196,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
             </h3>
           </div>
           <span
-            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${clothingCount >= minClothing ? 'text-amber-400 bg-amber-500/10' : 'text-gray-500 bg-gray-800'}`}
+            className={`text-sm font-bold px-2 py-0.5 rounded-full ${clothingCount >= minClothing ? 'text-amber-400 bg-amber-500/10' : 'text-gray-500 bg-gray-800'}`}
           >
             {clothingCount} / {maxClothing}
           </span>
@@ -242,13 +240,13 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               <span className="text-2xl group-hover:scale-125 transition-transform duration-300">
                 +
               </span>
-              <span className="text-[8px] font-black uppercase tracking-tighter opacity-70">
+              <span className="text-[8px] font-black tracking-normal opacity-70">
                 {t('tryon.add_clothing')}
               </span>
             </label>
           )}
         </div>
-        <p className="text-[10px] text-gray-500 mt-4 italic text-center leading-tight">
+        <p className="text-sm text-gray-500 mt-4 italic text-center leading-tight">
           {t('tryon.clothing_hint')}
         </p>
       </div>

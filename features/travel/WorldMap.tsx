@@ -161,12 +161,12 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
                 {/* Tooltip */}
                 <div
-                  className="absolute bottom-full left-1/2 mb-3 px-3 py-2 rounded-lg whitespace-nowrap pointer-events-none"
+                  className="absolute bottom-full left-1/2 mb-3 px-3 py-2 rounded-lg pointer-events-none max-w-[min(220px,calc(100vw-2rem))]"
                   style={{
                     transform: 'translateX(-50%)',
                     background: '#1f2937',
                     border: `1px solid ${isFood ? 'rgba(249, 115, 22, 0.3)' : 'rgba(251, 191, 36, 0.3)'}`,
-                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
                     opacity: isHovered || isSelected ? 1 : 0,
                     visibility: isHovered || isSelected ? 'visible' : 'hidden',
                     transition: 'opacity 0.2s ease, visibility 0.2s ease',

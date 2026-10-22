@@ -36,9 +36,7 @@ const TryOnResult: React.FC<TryOnResultProps> = ({
 
   return (
     <div className="flex flex-col items-center gap-4 w-full animate-fade-in bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-      {label && (
-        <span className="text-sm font-bold text-teal-400 uppercase tracking-wider">{label}</span>
-      )}
+      {label && <span className="text-sm font-bold text-teal-400 tracking-normal">{label}</span>}
       <div className="w-full max-h-[480px] rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center p-2">
         <ResultImage
           resultUrl={displayResult}

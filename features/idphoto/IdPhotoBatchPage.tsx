@@ -162,7 +162,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
     <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-6">
         <h1 className={UI_TITLE}>
-          {t('start.title_part1')} <span className={getTitleAccent(theme)}>{t('batch.title')}</span>
+          <span className={getTitleAccent(theme)}>{t('batch.title')}</span>
         </h1>
         <p className={UI_SUBTITLE}>{t('batch.upload_hint', { min: 1, max: 10 })}</p>
 

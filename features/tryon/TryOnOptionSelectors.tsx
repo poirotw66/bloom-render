@@ -61,12 +61,12 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
                 <span
-                  className={`text-[11px] font-bold uppercase tracking-wide transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                  className={`text-sm font-bold tracking-normal transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
                 >
                   {opt.emoji}
                 </span>
                 <span
-                  className={`text-[10px] font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}
+                  className={`text-sm font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}
                 >
                   {t(opt.nameKey).split(' ').pop()}
                 </span>
@@ -80,7 +80,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
           })}
         </div>
         {selectedBg && (
-          <p className="text-[11px] text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
+          <p className="text-sm text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
             {selectedBg.promptHint.split('.')[0]}.
           </p>
         )}
@@ -114,12 +114,12 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
                 <span
-                  className={`text-[11px] font-bold uppercase tracking-wide transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                  className={`text-sm font-bold tracking-normal transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
                 >
                   {opt.emoji}
                 </span>
                 <span
-                  className={`text-[10px] font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}
+                  className={`text-sm font-bold truncate w-full text-center ${isActive ? 'text-white' : 'text-gray-500'}`}
                 >
                   {t(opt.nameKey).split(' ').pop()}
                 </span>
@@ -133,7 +133,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
           })}
         </div>
         {selectedStyle && (
-          <p className="text-[11px] text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
+          <p className="text-sm text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
             {selectedStyle.promptHint.split('.')[0]}.
           </p>
         )}
