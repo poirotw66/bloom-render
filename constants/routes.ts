@@ -20,6 +20,8 @@ export const ROUTES = {
   PHOTOGRAPHY_SERVICE: '/photography-service',
   ENHANCE: '/enhance',
   PROMPT_GALLERY: '/prompt-gallery',
+  /** Remix deep link — payload lives in the URL hash only. */
+  REMIX: '/r',
 } as const;
 
 export type AppRoutePath = (typeof ROUTES)[keyof typeof ROUTES];

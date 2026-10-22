@@ -1,0 +1,139 @@
+/**
+ * @license
+ * SPDX-License-Identifier: MIT
+ *
+ * Discoverable viral “玩法” template picker (landing + generate).
+ */
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { VIRAL_TEMPLATES, type ViralTemplateCategory } from '../constants/viralTemplates';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
+import { publicAssetUrl } from '../utils/publicAsset';
+import { applyViralTemplate, remixUrlForTemplate } from '../utils/applyViralTemplate';
+import { UI_BTN_SECONDARY, UI_CHIP_ACTIVE, UI_CHIP_INACTIVE } from '../utils/uiClasses';
+
+const CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
+  'all',
+  'figurine',
+  'polaroid',
+  'era',
+  'taiwan',
+];
+
+interface ViralTemplatesSectionProps {
+  className?: string;
+  /** Compact layout for generate / travel feature pages. */
+  compact?: boolean;
+  /** Optional starting category filter (e.g. Taiwan scenes on Travel). */
+  initialCategory?: ViralTemplateCategory | 'all';
+}
+
+const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
+  className = '',
+  compact = false,
+  initialCategory = 'all',
+}) => {
+  const { t } = useLanguage();
+  const { isDemoMode } = useSettings();
+  const navigate = useNavigate();
+  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(initialCategory);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const entries =
+    category === 'all'
+      ? VIRAL_TEMPLATES
+      : VIRAL_TEMPLATES.filter((entry) => entry.category === category);
+
+  const onApply = async (id: string) => {
+    const template = VIRAL_TEMPLATES.find((entry) => entry.id === id);
+    if (!template) return;
+    setBusyId(id);
+    try {
+      await applyViralTemplate(template, navigate, { demoMode: isDemoMode });
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <section
+      className={`w-full text-left ${className}`}
+      aria-labelledby="viral-templates-heading"
+      data-testid="viral-templates"
+    >
+      <div className="mb-4 space-y-1">
+        <h2 id="viral-templates-heading" className="text-2xl font-semibold theme-ink">
+          {t('viral.section_title')}
+        </h2>
+        <p className="text-base theme-ink-muted max-w-2xl">{t('viral.section_subtitle')}</p>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label={t('viral.filter_label')}>
+        {CATEGORIES.map((value) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={category === value}
+            onClick={() => setCategory(value)}
+            className={category === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
+          >
+            {t(`viral.filter_${value}`)}
+          </button>
+        ))}
+      </div>
+
+      <ul
+        className={`grid gap-4 list-none p-0 m-0 ${
+          compact ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+        }`}
+      >
+        {entries.map((entry) => (
+          <li
+            key={entry.id}
+            className="theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col"
+          >
+            <img
+              src={publicAssetUrl(entry.thumbnail)}
+              alt=""
+              className="w-full aspect-[4/3] object-cover bg-black/30"
+              loading="lazy"
+            />
+            <div className="flex flex-col gap-2 p-4 flex-1">
+              <h3 className="text-base font-semibold theme-ink">{t(entry.titleKey)}</h3>
+              <p className="text-sm theme-ink-muted line-clamp-3">{t(entry.descriptionKey)}</p>
+              <div className="mt-auto flex flex-col gap-2 pt-2">
+                <button
+                  type="button"
+                  disabled={busyId === entry.id}
+                  data-testid={`viral-apply-${entry.id}`}
+                  onClick={() => void onApply(entry.id)}
+                  className="w-full rounded-xl brand-bg text-white font-semibold py-2.5 text-sm hover:opacity-95 transition-opacity cursor-pointer focus:outline-none focus-visible:brand-ring disabled:opacity-60"
+                >
+                  {busyId === entry.id ? t('viral.applying') : t('viral.try_this')}
+                </button>
+                <button
+                  type="button"
+                  className={`${UI_BTN_SECONDARY} w-full text-sm`}
+                  onClick={async () => {
+                    const url = remixUrlForTemplate(entry);
+                    try {
+                      await navigator.clipboard.writeText(url);
+                    } catch {
+                      window.prompt(t('viral.copy_link'), url);
+                    }
+                  }}
+                >
+                  {t('viral.copy_remix')}
+                </button>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
+export default ViralTemplatesSection;

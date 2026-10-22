@@ -1377,4 +1377,48 @@ export const enMessages: Record<string, string> = {
   'validation.warn_resolution_low':
     'Image resolution is low; results may look softer than with a higher-resolution photo.',
   'validation.warn_will_compress': 'Large image will be compressed before upload.',
+
+  'viral.section_title': 'One-tap viral styles',
+  'viral.section_subtitle':
+    'Figurine boxes, Polaroids, era time-travel, and Taiwan scenes — tap to try, then share “Use this style”.',
+  'viral.filter_label': 'Filter styles',
+  'viral.filter_all': 'All',
+  'viral.filter_figurine': 'Figurine',
+  'viral.filter_polaroid': 'Polaroid',
+  'viral.filter_era': 'Era travel',
+  'viral.filter_taiwan': 'Taiwan',
+  'viral.try_this': 'Try this',
+  'viral.applying': 'Opening…',
+  'viral.copy_remix': 'Copy style link',
+  'viral.copy_link': 'Copy this style link',
+  'viral.use_this_style': 'Use this style',
+  'viral.remix_copied': 'Style link copied',
+  'viral.remix_ready': 'Style ready — upload a photo to apply it.',
+  'viral.remix_loading': 'Opening shared style…',
+  'viral.remix_invalid': 'This style link is invalid or expired.',
+  'viral.remix_unknown': 'Unknown style. Pick a template from the home page.',
+  'viral.remix_home': 'Back to home',
+  'viral.figurine_box.title': 'Collectible figure box',
+  'viral.figurine_box.desc':
+    'Turn a portrait into a 1/7 PVC figure in a clear retail blister box — product-shot lighting.',
+  'viral.polaroid.title': 'Polaroid',
+  'viral.polaroid.desc':
+    'Instant-film frame with soft flash, vintage cast, and a handwritten date margin.',
+  'viral.era_70s.title': '1970s Taiwan',
+  'viral.era_70s.desc':
+    'Kodachrome warmth, period hair and clothes, modest street or apartment nostalgia.',
+  'viral.era_80s.title': '1980s Taiwan',
+  'viral.era_80s.desc':
+    'Neon night markets, pastel windbreakers, flash-lit evenings with VHS softness.',
+  'viral.era_90s.title': '1990s Taiwan',
+  'viral.era_90s.desc':
+    'Disposable-camera look, school or streetwear, karaoke and night-market glow.',
+  'viral.taiwan_night_market.title': 'Taiwan night market',
+  'viral.taiwan_night_market.desc':
+    'Lanterns, steam, neon stalls — candid travel photo in a bustling aisle.',
+  'viral.taiwan_jiufen.title': 'Jiufen Old Street',
+  'viral.taiwan_jiufen.desc':
+    'Misty lantern steps, tea-house rooftops, cool dusk cinematic portrait.',
+  'viral.taiwan_101.title': 'Taipei 101 skyline',
+  'viral.taiwan_101.desc': 'Blue-hour viewpoint with Taipei 101 glowing behind clean city bokeh.',
 };

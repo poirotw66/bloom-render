@@ -74,6 +74,7 @@ test.describe('Wave N — route HTML build output', () => {
       'photography-service',
       'enhance',
       'prompt-gallery',
+      'r',
     ];
     for (const route of routes) {
       const file = path.join(dist, route, 'index.html');

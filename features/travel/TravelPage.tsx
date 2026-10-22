@@ -10,6 +10,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
 import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
+import ViralTemplatesSection from '../../components/ViralTemplatesSection';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { DownloadIcon } from '../../components/icons';
 import { useTravel } from './useTravel';
@@ -297,7 +298,12 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
           </div>
         )}
 
-        {isEmptyState && <ExampleShowcase feature="travel" />}
+        {isEmptyState && (
+          <>
+            <ViralTemplatesSection className="mt-4" compact initialCategory="taiwan" />
+            <ExampleShowcase feature="travel" />
+          </>
+        )}
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ import ApiKeyNotice from './ApiKeyNotice';
 import DemoModeBanner from './DemoModeBanner';
 import ExampleShowcase from './ExampleShowcase';
 import HomeGallery from './HomeGallery';
+import ViralTemplatesSection from './ViralTemplatesSection';
 import GenerationFailureNotice from './GenerationFailureNotice';
 import ProgressIndicator from './ProgressIndicator';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -425,6 +426,19 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             gallery pushes it below the fold. */}
         <ApiKeyNotice />
         <DemoModeBanner />
+
+        {(location.state as { remixReady?: boolean } | null)?.remixReady && (
+          <p
+            className="w-full max-w-2xl text-sm theme-ink rounded-xl border theme-border theme-raised px-4 py-3"
+            role="status"
+            data-testid="remix-ready-banner"
+          >
+            {t('viral.remix_ready')}
+          </p>
+        )}
+
+        {/* Viral one-tap 玩法 — discoverable above the fold on landing. */}
+        {tab === 'upload' && <ViralTemplatesSection className="mt-2" />}
 
         {/* Results first. Landing straight on an empty upload box asks the
             visitor to commit a photo before seeing a single thing the models
@@ -887,7 +901,10 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           generatedImages.length === 0 &&
           !isGenerating &&
           !(compareEnabled && (compareRun.isRunning || compareResults.length > 0)) && (
-            <ExampleShowcase feature="generate" />
+            <>
+              <ViralTemplatesSection className="mt-6" compact />
+              <ExampleShowcase feature="generate" />
+            </>
           )}
 
         {tab === 'upload' && (
