@@ -70,11 +70,14 @@ export async function shareBrandedCard(options: {
   aspect?: ShareCardAspect;
   fileName?: string;
   title?: string;
+  /** Optional “用同款” remix URL drawn as a QR on the card footer. */
+  remixUrl?: string;
 }): Promise<ShareOutcome> {
   const blob = await renderShareCard({
     result: options.result,
     before: options.before,
     aspect: options.aspect,
+    remixUrl: options.remixUrl,
   });
   const fileName = options.fileName ?? `bloomrender-card-${options.aspect ?? '1x1'}.png`;
   const title = options.title ?? 'BloomRender';

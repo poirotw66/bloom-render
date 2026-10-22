@@ -15,6 +15,8 @@ import type { EditorLocationState } from './features/editor/EditorPage';
 import { ROUTES, isEditRoutePath } from './constants/routes';
 import { useLanguage } from './contexts/LanguageContext';
 import { applyValidatedImageFile } from './utils/applyValidatedImageFile';
+import { consumePendingRemix } from './utils/pendingRemix';
+import { remixToEditorPreset } from './utils/applyViralTemplate';
 
 const HistoryPage = lazy(() => import('./features/history/HistoryPage'));
 const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
@@ -30,6 +32,7 @@ const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
 const EnhancePage = lazy(() => import('./features/enhance/EnhancePage'));
 const EditorPage = lazy(() => import('./features/editor/EditorPage'));
 const PromptGalleryPage = lazy(() => import('./features/prompt-gallery/PromptGalleryPage'));
+const RemixPage = lazy(() => import('./features/remix/RemixPage'));
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -46,7 +49,12 @@ const App: React.FC = () => {
         t,
         (validFile) => {
           setUploadError(null);
-          const state: EditorLocationState = { initialFile: validFile };
+          const pending = consumePendingRemix();
+          const editorPreset = pending ? remixToEditorPreset(pending) : null;
+          const state: EditorLocationState = {
+            initialFile: validFile,
+            ...(editorPreset ? { galleryPreset: editorPreset } : {}),
+          };
           navigate(ROUTES.EDIT, { state });
         },
         setUploadError,
@@ -134,6 +142,7 @@ const App: React.FC = () => {
             <Route path={ROUTES.PHOTOGRAPHY_SERVICE} element={<PhotographyServicePage />} />
             <Route path={ROUTES.EDIT} element={<EditorPage />} />
             <Route path={ROUTES.PROMPT_GALLERY} element={<PromptGalleryPage />} />
+            <Route path={ROUTES.REMIX} element={<RemixPage />} />
             <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
           </Routes>
         </Suspense>

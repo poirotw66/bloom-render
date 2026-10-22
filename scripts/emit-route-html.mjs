@@ -91,6 +91,11 @@ export const ROUTE_SEO = {
     description:
       'Community prompt presets for generate, retouch, filters, and adjustments. 提示詞藝廊：一鍵套用社群精選提示。',
   },
+  '/r': {
+    title: 'Use this style — BloomRender',
+    description:
+      'Open a shared style link to pre-fill the same viral template or prompt settings (no photo in the link). 用同款：開啟分享連結即可套用相同玩法與設定（不含照片）。',
+  },
 };
 
 /** Ordered route paths (same set as Object.values(ROUTES)). */

@@ -12,6 +12,10 @@ import { shareBrandedCard, shareResultImage, type ShareOutcome } from '../utils/
 import { UI_BTN_SECONDARY, UI_BTN_SUCCESS } from '../utils/uiClasses';
 import { logger } from '../utils/logger';
 import LocalEnhanceActions from './LocalEnhanceActions';
+import { peekPendingRemix } from '../utils/pendingRemix';
+import { buildRemixUrl } from '../utils/remixLink';
+import { remixUrlForTemplate } from '../utils/applyViralTemplate';
+import { getViralTemplateById } from '../constants/viralTemplates';
 
 interface ResultActionsProps {
   result: string | Blob;
@@ -23,6 +27,8 @@ interface ResultActionsProps {
   onEnhanced?: (dataUrl: string) => void;
   /** Hide local enhance buttons (e.g. when the parent page owns them). */
   hideLocalEnhance?: boolean;
+  /** Optional remix URL for “用同款” + share-card QR. */
+  remixUrl?: string;
 }
 
 const FORMATS: ImageExportFormat[] = ['png', 'jpeg', 'webp'];
@@ -33,6 +39,21 @@ function outcomeMessageKey(outcome: ShareOutcome): string {
   return 'result.share_ok_downloaded';
 }
 
+function resolveRemixUrl(explicit?: string): string | undefined {
+  if (explicit) return explicit;
+  const pending = peekPendingRemix();
+  if (!pending) return undefined;
+  if ('id' in pending) {
+    const template = getViralTemplateById(pending.id);
+    if (template) return remixUrlForTemplate(template);
+  }
+  try {
+    return buildRemixUrl(pending);
+  } catch {
+    return undefined;
+  }
+}
+
 const ResultActions: React.FC<ResultActionsProps> = ({
   result,
   originalUrl,
@@ -41,12 +62,14 @@ const ResultActions: React.FC<ResultActionsProps> = ({
   extraActions,
   onEnhanced,
   hideLocalEnhance = false,
+  remixUrl: remixUrlProp,
 }) => {
   const { t } = useLanguage();
   const [format, setFormat] = useState<ImageExportFormat>('png');
   const [quality, setQuality] = useState(0.92);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const remixUrl = resolveRemixUrl(remixUrlProp);
 
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
@@ -144,6 +167,7 @@ const ResultActions: React.FC<ResultActionsProps> = ({
                 before: originalUrl,
                 aspect: '1:1',
                 fileName: `${fileBaseName}-card-1x1.png`,
+                remixUrl,
               });
               setStatus(t(outcomeMessageKey(outcome)));
             })
@@ -163,6 +187,7 @@ const ResultActions: React.FC<ResultActionsProps> = ({
                 before: originalUrl,
                 aspect: '9:16',
                 fileName: `${fileBaseName}-card-9x16.png`,
+                remixUrl,
               });
               setStatus(t(outcomeMessageKey(outcome)));
             })
@@ -170,6 +195,27 @@ const ResultActions: React.FC<ResultActionsProps> = ({
         >
           {t('result.share_card_story')}
         </button>
+
+        {remixUrl && (
+          <button
+            type="button"
+            disabled={busy}
+            data-testid="use-this-style"
+            className={UI_BTN_SECONDARY}
+            onClick={() =>
+              run(async () => {
+                try {
+                  await navigator.clipboard.writeText(remixUrl);
+                  setStatus(t('viral.remix_copied'));
+                } catch {
+                  window.prompt(t('viral.copy_link'), remixUrl);
+                }
+              })
+            }
+          >
+            {t('viral.use_this_style')}
+          </button>
+        )}
 
         {extraActions}
       </div>
