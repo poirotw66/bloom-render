@@ -47,9 +47,9 @@ for (const theme of THEMES) {
     });
     const page = await context.newPage();
     await page.addInitScript((t) => {
-      localStorage.setItem('pixshop_theme', t);
-      localStorage.removeItem('pixshop_api_key');
-      localStorage.removeItem('pixshop_openrouter_api_key');
+      localStorage.setItem('bloom_theme', t);
+      localStorage.removeItem('bloom_api_key');
+      localStorage.removeItem('bloom_openrouter_api_key');
     }, theme);
 
     for (const route of PAGES) {

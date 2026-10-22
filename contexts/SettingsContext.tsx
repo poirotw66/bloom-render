@@ -23,7 +23,13 @@ import {
   type OpenRouterModel,
 } from '../services/imageProviders';
 import type { ServiceSettings } from '../services/gemini/shared';
-import { migrateAllApiKeysFromLocalStorage, writeApiKey } from '../utils/credentialStorage';
+import {
+  hydrateApiKeys,
+  isRememberApiKeyEnabled,
+  setRememberApiKeyEnabled,
+  writeApiKey,
+} from '../utils/credentialStorage';
+import { migratePixshopToBloomKeys } from '../utils/storageMigration';
 
 export type { ModelType } from '../constants/models';
 export type { ImageProviderId, OpenRouterModel };
@@ -47,6 +53,9 @@ interface SettingsContextType {
   isDemoMode: boolean;
   /** Switch to the offline demo provider (Try demo). */
   enableDemoMode: () => void;
+  /** Opt-in: mirror Gemini / OpenRouter keys into localStorage. */
+  rememberApiKey: boolean;
+  setRememberApiKey: (enabled: boolean) => void;
   enableImageCompression: boolean;
   setEnableImageCompression: (enabled: boolean) => void;
   compressionThresholdMB: number;
@@ -59,12 +68,12 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-const STORAGE_KEY_MODEL = 'pixshop_model';
-const STORAGE_KEY_PROVIDER = 'pixshop_image_provider';
-const STORAGE_KEY_OPENROUTER_MODEL = 'pixshop_openrouter_model';
-const STORAGE_KEY_COMPRESSION_ENABLED = 'pixshop_compression_enabled';
-const STORAGE_KEY_COMPRESSION_THRESHOLD = 'pixshop_compression_threshold';
-const STORAGE_KEY_BACKGROUND_MOTION = 'pixshop_background_motion';
+const STORAGE_KEY_MODEL = 'bloom_model';
+const STORAGE_KEY_PROVIDER = 'bloom_image_provider';
+const STORAGE_KEY_OPENROUTER_MODEL = 'bloom_openrouter_model';
+const STORAGE_KEY_COMPRESSION_ENABLED = 'bloom_compression_enabled';
+const STORAGE_KEY_COMPRESSION_THRESHOLD = 'bloom_compression_threshold';
+const STORAGE_KEY_BACKGROUND_MOTION = 'bloom_background_motion';
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [imageProvider, setImageProviderState] = useState<ImageProviderId>('gemini');
@@ -73,17 +82,18 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [openRouterApiKey, setOpenRouterApiKeyState] = useState<string>('');
   const [openRouterModel, setOpenRouterModelState] =
     useState<OpenRouterModel>(DEFAULT_OPENROUTER_MODEL);
+  const [rememberApiKey, setRememberApiKeyState] = useState<boolean>(false);
   const [enableImageCompression, setEnableImageCompressionState] = useState<boolean>(true);
   const [compressionThresholdMB, setCompressionThresholdMBState] = useState<number>(5);
   const [enableBackgroundMotion, setEnableBackgroundMotionState] = useState<boolean>(false);
 
   useEffect(() => {
-    // Secrets: sessionStorage (+ one-time localStorage → sessionStorage migration).
-    const migrated = migrateAllApiKeysFromLocalStorage();
-    if (migrated.gemini) setApiKeyState(migrated.gemini);
-    if (migrated.openrouter) setOpenRouterApiKeyState(migrated.openrouter);
+    migratePixshopToBloomKeys();
+    const hydrated = hydrateApiKeys();
+    if (hydrated.gemini) setApiKeyState(hydrated.gemini);
+    if (hydrated.openrouter) setOpenRouterApiKeyState(hydrated.openrouter);
+    setRememberApiKeyState(isRememberApiKeyEnabled());
 
-    // Non-secret prefs stay in localStorage.
     const storedModel = localStorage.getItem(STORAGE_KEY_MODEL);
     const storedProvider = localStorage.getItem(STORAGE_KEY_PROVIDER);
     const storedOpenRouterModel = localStorage.getItem(STORAGE_KEY_OPENROUTER_MODEL);
@@ -150,6 +160,11 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(STORAGE_KEY_OPENROUTER_MODEL, m);
   };
 
+  const setRememberApiKey = useCallback((enabled: boolean) => {
+    setRememberApiKeyEnabled(enabled);
+    setRememberApiKeyState(enabled);
+  }, []);
+
   const setEnableImageCompression = (enabled: boolean) => {
     setEnableImageCompressionState(enabled);
     localStorage.setItem(STORAGE_KEY_COMPRESSION_ENABLED, String(enabled));
@@ -203,6 +218,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       effectiveModel,
       isDemoMode,
       enableDemoMode,
+      rememberApiKey,
+      setRememberApiKey,
       enableImageCompression,
       setEnableImageCompression,
       compressionThresholdMB,
@@ -222,6 +239,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       effectiveModel,
       isDemoMode,
       enableDemoMode,
+      rememberApiKey,
+      setRememberApiKey,
       enableImageCompression,
       compressionThresholdMB,
       enableBackgroundMotion,

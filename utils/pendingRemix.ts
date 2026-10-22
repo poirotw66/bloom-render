@@ -8,7 +8,7 @@
 import type { RemixPayload } from './remixLink';
 import { decodeRemixPayload, encodeRemixPayload } from './remixLink';
 
-export const STORAGE_KEY_PENDING_REMIX = 'pixshop_pending_remix';
+export const STORAGE_KEY_PENDING_REMIX = 'bloom_pending_remix';
 
 export function setPendingRemix(payload: RemixPayload): void {
   try {

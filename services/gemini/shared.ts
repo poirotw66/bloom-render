@@ -231,8 +231,8 @@ export const fileToPart = async (
  */
 export const getCompressionFunction = (): ((file: File) => Promise<File>) => {
   // Check settings from localStorage (non-React way to access settings)
-  const compressionEnabled = localStorage.getItem('pixshop_compression_enabled') !== 'false'; // Default to true
-  const thresholdStr = localStorage.getItem('pixshop_compression_threshold') || '5';
+  const compressionEnabled = localStorage.getItem('bloom_compression_enabled') !== 'false'; // Default to true
+  const thresholdStr = localStorage.getItem('bloom_compression_threshold') || '5';
   const thresholdMB = parseFloat(thresholdStr) || 5;
 
   if (!compressionEnabled) {

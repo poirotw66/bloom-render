@@ -113,6 +113,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     setOpenRouterApiKey,
     openRouterModel,
     setOpenRouterModel,
+    rememberApiKey,
+    setRememberApiKey,
     enableImageCompression,
     setEnableImageCompression,
     compressionThresholdMB,
@@ -443,6 +445,32 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
                   <p className={`text-sm ${s.hint}`}>{t('settings.openrouter.gemini_only_note')}</p>
                 </>
+              )}
+
+              {!isDemo && (
+                <div className={`pt-2 border-t ${s.divider}`}>
+                  <label
+                    htmlFor={`${baseId}-remember-key`}
+                    className="flex items-start gap-3 cursor-pointer"
+                  >
+                    <input
+                      id={`${baseId}-remember-key`}
+                      data-testid="remember-api-key"
+                      type="checkbox"
+                      checked={rememberApiKey}
+                      onChange={(e) => setRememberApiKey(e.target.checked)}
+                      className={`mt-1 h-4 w-4 rounded border cursor-pointer ${s.checkbox}`}
+                    />
+                    <span>
+                      <span className={`block text-sm font-medium ${s.label}`}>
+                        {t('settings.remember_api_key')}
+                      </span>
+                      <span className={`block text-sm mt-1 ${s.hint}`}>
+                        {t('settings.remember_api_key_desc')}
+                      </span>
+                    </span>
+                  </label>
+                </div>
               )}
             </div>,
           )}

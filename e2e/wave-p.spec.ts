@@ -10,12 +10,12 @@ import { test, expect } from '@playwright/test';
 test.describe('Wave P — OpenRouter OAuth', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'zh-TW');
-      localStorage.removeItem('pixshop_image_provider');
-      sessionStorage.removeItem('pixshop_api_key');
-      sessionStorage.removeItem('pixshop_openrouter_api_key');
-      sessionStorage.removeItem('pixshop_or_oauth_verifier');
-      sessionStorage.removeItem('pixshop_or_oauth_state');
+      localStorage.setItem('bloom_language', 'zh-TW');
+      localStorage.removeItem('bloom_image_provider');
+      sessionStorage.removeItem('bloom_api_key');
+      sessionStorage.removeItem('bloom_openrouter_api_key');
+      sessionStorage.removeItem('bloom_or_oauth_verifier');
+      sessionStorage.removeItem('bloom_or_oauth_state');
     });
   });
 
@@ -57,8 +57,8 @@ test.describe('Wave P — OpenRouter OAuth', () => {
     expect(u.searchParams.get('key_label')).toBe('BloomRender');
 
     const session = await page.evaluate(() => ({
-      verifier: sessionStorage.getItem('pixshop_or_oauth_verifier'),
-      state: sessionStorage.getItem('pixshop_or_oauth_state'),
+      verifier: sessionStorage.getItem('bloom_or_oauth_verifier'),
+      state: sessionStorage.getItem('bloom_or_oauth_state'),
     }));
     expect(session.verifier).toBeTruthy();
     expect(session.state).toBe(u.searchParams.get('state'));
@@ -66,8 +66,8 @@ test.describe('Wave P — OpenRouter OAuth', () => {
 
   test('callback exchanges code (mocked fetch) and stores OpenRouter key', async ({ page }) => {
     await page.addInitScript(() => {
-      sessionStorage.setItem('pixshop_or_oauth_verifier', 'a'.repeat(43));
-      sessionStorage.setItem('pixshop_or_oauth_state', 'e2e-state');
+      sessionStorage.setItem('bloom_or_oauth_verifier', 'a'.repeat(43));
+      sessionStorage.setItem('bloom_or_oauth_state', 'e2e-state');
     });
 
     await page.route('https://openrouter.ai/api/v1/auth/keys', async (route) => {
@@ -89,21 +89,21 @@ test.describe('Wave P — OpenRouter OAuth', () => {
     await page.goto('/oauth/openrouter?code=e2e-code&state=e2e-state');
     await expect(page).toHaveURL(/\/?$/);
     await expect
-      .poll(async () => page.evaluate(() => sessionStorage.getItem('pixshop_openrouter_api_key')))
+      .poll(async () => page.evaluate(() => sessionStorage.getItem('bloom_openrouter_api_key')))
       .toBe('sk-or-v1-e2e-mock');
     await expect
-      .poll(async () => page.evaluate(() => localStorage.getItem('pixshop_image_provider')))
+      .poll(async () => page.evaluate(() => localStorage.getItem('bloom_image_provider')))
       .toBe('openrouter');
     await expect
-      .poll(async () => page.evaluate(() => sessionStorage.getItem('pixshop_or_oauth_verifier')))
+      .poll(async () => page.evaluate(() => sessionStorage.getItem('bloom_or_oauth_verifier')))
       .toBeNull();
     await expect(page.getByTestId('api-key-notice')).toHaveCount(0);
   });
 
   test('callback error path shows message when denied', async ({ page }) => {
     await page.addInitScript(() => {
-      sessionStorage.setItem('pixshop_or_oauth_verifier', 'a'.repeat(43));
-      sessionStorage.setItem('pixshop_or_oauth_state', 'st');
+      sessionStorage.setItem('bloom_or_oauth_verifier', 'a'.repeat(43));
+      sessionStorage.setItem('bloom_or_oauth_state', 'st');
     });
     await page.goto('/oauth/openrouter?error=access_denied');
     await expect(page.getByTestId('openrouter-oauth-error')).toBeVisible();

@@ -12,7 +12,7 @@ test.describe('Wave N — i18n + star nudge', () => {
     // Seed once; addInitScript re-runs on reload so use a guard.
     await page.addInitScript(() => {
       if (!sessionStorage.getItem('wave_n_lang_seeded')) {
-        localStorage.setItem('pixshop_language', 'en');
+        localStorage.setItem('bloom_language', 'en');
         sessionStorage.setItem('wave_n_lang_seeded', '1');
       }
     });
@@ -21,7 +21,7 @@ test.describe('Wave N — i18n + star nudge', () => {
     await page.getByTestId('lang-toggle-zh').click();
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-TW');
     await expect
-      .poll(async () => page.evaluate(() => localStorage.getItem('pixshop_language')))
+      .poll(async () => page.evaluate(() => localStorage.getItem('bloom_language')))
       .toBe('zh-TW');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-TW');
@@ -32,7 +32,7 @@ test.describe('Wave N — i18n + star nudge', () => {
     const context = await browser.newContext({ locale: 'zh-TW' });
     const page = await context.newPage();
     await page.addInitScript(() => {
-      localStorage.removeItem('pixshop_language');
+      localStorage.removeItem('bloom_language');
     });
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-TW');
@@ -41,9 +41,9 @@ test.describe('Wave N — i18n + star nudge', () => {
 
   test('star nudge shows once after first success and stays dismissed', async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'zh-TW');
-      localStorage.setItem('pixshop_image_provider', 'demo');
-      localStorage.removeItem('pixshop_star_nudge_dismissed');
+      localStorage.setItem('bloom_language', 'zh-TW');
+      localStorage.setItem('bloom_image_provider', 'demo');
+      localStorage.removeItem('bloom_star_nudge_dismissed');
     });
     await page.goto('/idphoto');
     await page.getByRole('button', { name: /Generate ID Photo|生成證件照/i }).click();
@@ -52,7 +52,7 @@ test.describe('Wave N — i18n + star nudge', () => {
     await page.getByRole('button', { name: /關閉|Dismiss/i }).click();
     await expect(page.getByTestId('star-nudge')).toHaveCount(0);
     await expect
-      .poll(async () => page.evaluate(() => localStorage.getItem('pixshop_star_nudge_dismissed')))
+      .poll(async () => page.evaluate(() => localStorage.getItem('bloom_star_nudge_dismissed')))
       .toBe('1');
     // Second demo generate must not show the nudge again.
     await page.getByRole('button', { name: /再生成一張|Generate Another/i }).click();

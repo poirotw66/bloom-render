@@ -6,6 +6,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
+import { CONTENT_SECURITY_POLICY } from '../constants/csp.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
@@ -147,6 +148,18 @@ function upsertMetaByName(html, name, content) {
   return html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
 }
 
+function upsertMetaHttpEquiv(html, httpEquiv, content) {
+  const re = new RegExp(
+    `<meta\\s+[^>]*http-equiv=["']${httpEquiv}["'][^>]*>`,
+    'i',
+  );
+  const tag = `<meta http-equiv="${httpEquiv}" content="${escapeAttr(content)}" />`;
+  if (re.test(html)) {
+    return html.replace(re, tag);
+  }
+  return html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
+}
+
 function upsertMetaByProperty(html, property, content) {
   const re = new RegExp(`<meta\\s+[^>]*property=["']${property}["'][^>]*>`, 'i');
   const tag = `<meta property="${property}" content="${escapeAttr(content)}" />`;
@@ -182,6 +195,9 @@ export function applySeoMeta(html, meta) {
   out = upsertMetaByName(out, 'twitter:description', meta.description);
   out = upsertMetaByName(out, 'twitter:image', meta.image);
   out = upsertLinkRel(out, 'canonical', meta.url);
+  // Security + PWA chrome color (Bloom default; client updates theme-color at runtime).
+  out = upsertMetaHttpEquiv(out, 'Content-Security-Policy', CONTENT_SECURITY_POLICY);
+  out = upsertMetaByName(out, 'theme-color', '#1a1216');
   return out;
 }
 

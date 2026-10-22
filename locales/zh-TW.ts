@@ -1283,7 +1283,7 @@ export const zhTWMessages: Record<string, string> = {
   'settings.openrouter.api_key': 'OpenRouter API 金鑰',
   'settings.openrouter.api_key_placeholder': '輸入您的 OpenRouter API Key',
   'settings.openrouter.api_key_desc':
-    '僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包或送到我們的伺服器。',
+    '預設僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包或送到我們的伺服器。',
   'settings.openrouter.gemini_only_note':
     '注意：旅遊照「自訂場景」的提示詞優化僅支援 Gemini；選 OpenRouter 時會略過優化並使用你輸入的原文。首頁模型比較也僅支援 Gemini。',
   'settings.theme': '主題',
@@ -1294,7 +1294,10 @@ export const zhTWMessages: Record<string, string> = {
   'settings.language.zh': '繁體中文',
   'settings.api_key': 'API 金鑰',
   'settings.api_key_placeholder': '輸入您的 Google GenAI API Key',
-  'settings.api_key_desc': '僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包。',
+  'settings.api_key_desc': '預設僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包。',
+  'settings.remember_api_key': '在此裝置記住金鑰',
+  'settings.remember_api_key_desc':
+    '額外把 Gemini 或 OpenRouter 金鑰存在此瀏覽器的 localStorage，關閉分頁後仍保留。若有人能使用這台裝置或其備份，就可能讀到金鑰。公用電腦請維持關閉。',
   'settings.api_key_show': '顯示',
   'settings.api_key_hide': '隱藏',
   'settings.autosave_hint': '設定會自動儲存。',

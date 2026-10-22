@@ -50,7 +50,9 @@ export const MAX_HISTORY_ITEMS = 150;
 const DB_NAME = 'bloomrender';
 const DB_VERSION = 1;
 const STORE_NAME = 'history';
-const LEGACY_STORAGE_KEY = 'pixshop_generation_history';
+const LEGACY_STORAGE_KEY = 'bloom_generation_history';
+/** Pre-Wave-T localStorage history blob (migrated via storageMigration + this reader). */
+const VERY_LEGACY_STORAGE_KEY = 'pixshop_generation_history';
 
 /** Newest first, matching how history has always been displayed. */
 export function sortHistoryItems<T extends { timestamp: number }>(items: T[]): T[] {
@@ -235,7 +237,9 @@ export async function clearHistoryItems(): Promise<void> {
  * load: it's a no-op once the legacy key is gone.
  */
 export async function migrateLegacyHistoryIfNeeded(): Promise<void> {
-  const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+  // Prefer bloom_ key; fall back to pre-rename pixshop_ blob if still present.
+  const raw =
+    localStorage.getItem(LEGACY_STORAGE_KEY) ?? localStorage.getItem(VERY_LEGACY_STORAGE_KEY);
   if (raw === null) return;
 
   try {
@@ -244,6 +248,7 @@ export async function migrateLegacyHistoryIfNeeded(): Promise<void> {
       if (normalized) await putHistoryItem(normalized.item);
     }
     localStorage.removeItem(LEGACY_STORAGE_KEY);
+    localStorage.removeItem(VERY_LEGACY_STORAGE_KEY);
   } catch (err) {
     logger.error('Failed to migrate legacy history into IndexedDB:', err);
     // Leave the legacy key in place so migration can retry on next load.

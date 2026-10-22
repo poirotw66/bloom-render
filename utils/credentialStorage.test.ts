@@ -5,10 +5,12 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   GEMINI_API_KEY_STORAGE_KEY,
   OPENROUTER_API_KEY_STORAGE_KEY,
+  REMEMBER_API_KEY_STORAGE_KEY,
   clearApiKey,
-  migrateAllApiKeysFromLocalStorage,
-  migrateApiKeyFromLocalStorage,
+  hydrateApiKeys,
+  isRememberApiKeyEnabled,
   readApiKey,
+  setRememberApiKeyEnabled,
   writeApiKey,
 } from './credentialStorage';
 
@@ -23,68 +25,62 @@ describe('credentialStorage', () => {
     sessionStorage.clear();
   });
 
-  it('writes and reads Gemini keys from sessionStorage only', () => {
+  it('defaults to sessionStorage-only (remember off)', () => {
+    expect(isRememberApiKeyEnabled()).toBe(false);
     writeApiKey('gemini', 'AIza-test');
     expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('AIza-test');
     expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
     expect(readApiKey('gemini')).toBe('AIza-test');
   });
 
-  it('writes and reads OpenRouter keys from sessionStorage only', () => {
+  it('mirrors keys into localStorage when remember is on', () => {
+    setRememberApiKeyEnabled(true);
     writeApiKey('openrouter', 'sk-or-test');
     expect(sessionStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('sk-or-test');
+    expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('sk-or-test');
+  });
+
+  it('wipes localStorage copies when remember is turned off', () => {
+    setRememberApiKeyEnabled(true);
+    writeApiKey('gemini', 'AIza-keep');
+    writeApiKey('openrouter', 'sk-or-keep');
+    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('AIza-keep');
+    setRememberApiKeyEnabled(false);
+    expect(localStorage.getItem(REMEMBER_API_KEY_STORAGE_KEY)).toBe('false');
+    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBeNull();
-    expect(readApiKey('openrouter')).toBe('sk-or-test');
+    // Session copies remain so the current tab keeps working.
+    expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('AIza-keep');
+    expect(sessionStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('sk-or-keep');
+  });
+
+  it('hydrate restores from localStorage into session when remember is on', () => {
+    localStorage.setItem(REMEMBER_API_KEY_STORAGE_KEY, 'true');
+    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'AIza-persisted');
+    const result = hydrateApiKeys();
+    expect(result.gemini).toBe('AIza-persisted');
+    expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('AIza-persisted');
+  });
+
+  it('hydrate strips local leftovers when remember is off', () => {
+    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'stale-local');
+    const result = hydrateApiKeys();
+    expect(result.gemini).toBe('stale-local'); // moved into session for this tab
+    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
+    expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('stale-local');
   });
 
   it('clears both session and local copies', () => {
-    sessionStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'session-key');
-    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'local-key');
+    setRememberApiKeyEnabled(true);
+    writeApiKey('gemini', 'both');
     clearApiKey('gemini');
     expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
   });
 
-  it('migrates a Gemini key from localStorage into sessionStorage and deletes local', () => {
-    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'legacy-gemini');
-    const value = migrateApiKeyFromLocalStorage('gemini');
-    expect(value).toBe('legacy-gemini');
-    expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('legacy-gemini');
-    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
-  });
-
-  it('migrates an OpenRouter key from localStorage into sessionStorage and deletes local', () => {
-    localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, 'legacy-or');
-    const value = migrateApiKeyFromLocalStorage('openrouter');
-    expect(value).toBe('legacy-or');
-    expect(sessionStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('legacy-or');
-    expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBeNull();
-  });
-
-  it('prefers an existing sessionStorage key and still deletes localStorage leftover', () => {
-    sessionStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'session-wins');
-    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'local-stale');
-    const value = migrateApiKeyFromLocalStorage('gemini');
-    expect(value).toBe('session-wins');
-    expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('session-wins');
-    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
-  });
-
-  it('migrateAll moves both keys', () => {
-    localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, 'g');
-    localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, 'o');
-    const result = migrateAllApiKeysFromLocalStorage();
-    expect(result).toEqual({ gemini: 'g', openrouter: 'o' });
-    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
-    expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBeNull();
-    expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('g');
-    expect(sessionStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('o');
-  });
-
-  it('writeApiKey removes any leftover localStorage value', () => {
-    localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, 'stale');
-    writeApiKey('openrouter', 'fresh');
-    expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBeNull();
-    expect(sessionStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('fresh');
+  it('enabling remember mirrors existing session keys', () => {
+    writeApiKey('gemini', 'session-only');
+    setRememberApiKeyEnabled(true);
+    expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('session-only');
   });
 });

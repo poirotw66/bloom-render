@@ -7,6 +7,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ROUTES } from '../constants/routes';
+import { CONTENT_SECURITY_POLICY } from '../constants/csp';
 import {
   ROUTE_SEO,
   absoluteUrlForRoute,
@@ -109,6 +110,8 @@ describe('route SEO helpers', () => {
     const travelHtml = readFileSync(join(distDir, 'travel/index.html'), 'utf8');
     expect(travelHtml).toContain(`<title>${ROUTE_SEO['/travel'].title}</title>`);
     expect(travelHtml).not.toContain(`<title>${ROUTE_SEO['/'].title}</title>`);
+    expect(travelHtml).toContain(`content="${CONTENT_SECURITY_POLICY}"`);
+    expect(travelHtml).toContain('name="theme-color" content="#1a1216"');
 
     const homeHtml = readFileSync(join(distDir, 'index.html'), 'utf8');
     const fallbackHtml = readFileSync(join(distDir, '404.html'), 'utf8');
