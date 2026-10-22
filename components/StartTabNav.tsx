@@ -163,10 +163,14 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
   }, [currentTab]);
 
   return (
-    <nav className="w-full min-w-0 relative" aria-label="Primary">
+    <nav
+      data-ui="primary-tabs"
+      className="w-full min-w-0 relative px-1 sm:px-0"
+      aria-label="Primary"
+    >
       <div
         ref={scrollerRef}
-        className={`${trackByTheme[theme]} p-1.5 rounded-xl flex items-center gap-1.5 overflow-x-auto overflow-y-hidden md:flex-wrap md:justify-center md:overflow-visible scroll-smooth touch-pan-x no-scrollbar`}
+        className={`${trackByTheme[theme]} p-1.5 pl-3 pr-3 rounded-xl flex items-center gap-1.5 overflow-x-auto overflow-y-hidden md:flex-wrap md:justify-center md:overflow-visible scroll-smooth touch-pan-x no-scrollbar`}
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {tabs.map((item) => {

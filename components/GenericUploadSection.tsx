@@ -98,12 +98,12 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
         tabIndex={isDemoMode ? undefined : 0}
         role="group"
         aria-label={t(uploadHintKey)}
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:brand-ring ${
           isDraggingOver && !isDemoMode
-            ? 'border-blue-400 bg-blue-500/10 scale-[1.02]'
+            ? 'theme-border-strong brand-bg-tint scale-[1.02]'
             : previewUrl
-              ? 'border-gray-700 bg-gray-800/20'
-              : 'border-gray-700 hover:border-gray-600 bg-gray-800/10'
+              ? 'theme-border theme-raised'
+              : 'theme-border hover:theme-border-strong theme-raised'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={isDemoMode ? undefined : onDragLeave}
@@ -114,7 +114,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
             <div className="relative w-full max-w-md">
               <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-xl" />
               {isDemoMode && (
-                <span className="absolute top-2 left-2 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+                <span className="absolute top-2 left-2 inline-flex items-center rounded-md brand-bg px-2 py-0.5 text-sm font-semibold tracking-wide text-white">
                   {t('demo.sample_input')}
                 </span>
               )}
@@ -161,7 +161,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
               </div>
             </div>
             {isDemoMode && (
-              <p className="text-xs text-sky-200/80 text-center max-w-sm">
+              <p className="text-sm brand-text-soft text-center max-w-sm">
                 {t('demo.sample_only_hint')}
               </p>
             )}
@@ -169,17 +169,17 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
         ) : (
           <div className="flex flex-col items-center gap-6 py-4">
             {icon ? (
-              <div className="w-20 h-20 rounded-3xl flex items-center justify-center bg-blue-600/20 text-blue-400 border border-blue-500/30">
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center brand-bg-tint brand-text border theme-border">
                 <span className="text-sm font-bold uppercase tracking-wide">{icon}</span>
               </div>
             ) : (
-              <div className="w-20 h-20 rounded-3xl flex items-center justify-center bg-blue-600/20 text-blue-400 border border-blue-500/30">
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center brand-bg-tint brand-text border theme-border">
                 <span className="text-sm font-bold uppercase tracking-wide">img</span>
               </div>
             )}
 
             <div className="text-center">
-              <p className="text-sm text-gray-400 max-w-xs">
+              <p className="text-sm theme-ink-muted max-w-xs">
                 {isDemoMode ? t('demo.loading_sample') : t(uploadHintKey)}
               </p>
             </div>

@@ -141,7 +141,7 @@ export const enMessages: Record<string, string> = {
     'Experience the quality and artistry of our professional photography services.',
   'service.showcase.cta': 'Open service',
   'service.featured.eyebrow': 'Featured Services',
-  'service.featured.title': 'Start from the most requested looks',
+  'service.featured.title': 'Most requested looks',
   'service.featured.desc':
     'Quickly jump into the service combinations customers use most often for resumes, branding, themed shoots, and family moments.',
   'service.featured.quick_turnaround': 'Fast turnaround',

@@ -8,6 +8,7 @@
 import React from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
 import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
@@ -24,6 +25,8 @@ import {
   UI_PAGE,
   UI_SUBTITLE,
   UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
 } from '../../utils/uiClasses';
 
 interface TryOnPageProps {
@@ -32,17 +35,19 @@ interface TryOnPageProps {
 
 const TryOnPage: React.FC<TryOnPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const tryOn = useTryOn();
 
   const resultList = tryOn.results.length > 0 ? tryOn.results : tryOn.result ? [tryOn.result] : [];
   const hasMultipleResults = resultList.length > 1;
 
   return (
-    <div className={`${UI_PAGE} border-transparent `}>
+    <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-8 animate-fade-in">
         <header className="flex flex-col items-center gap-3">
           <h1 className={UI_TITLE}>
-            {t('tryon.title_part1')} <span className="text-teal-400">{t('tryon.title_part2')}</span>
+            {t('tryon.title_part1')}{' '}
+            <span className={getTitleAccent(theme)}>{t('tryon.title_part2')}</span>
           </h1>
           <p className={UI_SUBTITLE}>{t('tryon.subtitle')}</p>
         </header>

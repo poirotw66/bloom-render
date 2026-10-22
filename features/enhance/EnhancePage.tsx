@@ -43,8 +43,8 @@ const EnhancePage: React.FC<EnhancePageProps> = ({ onImageSelected }) => {
           {t('enhance.no_api_key_banner')}
         </p>
 
-        <div className="w-full max-w-xl rounded-xl border border-gray-700/60 bg-gray-900/40 p-4 text-left text-xs text-gray-400 space-y-2">
-          <p className="font-semibold text-gray-300">{t('enhance.models_heading')}</p>
+        <div className="w-full max-w-xl rounded-xl border theme-border theme-raised p-4 text-left text-sm theme-ink-muted space-y-2">
+          <p className="font-semibold theme-ink-soft">{t('enhance.models_heading')}</p>
           <ul className="list-disc pl-5 space-y-1">
             {LOCAL_ENHANCE_MODELS.map((m) => (
               <li key={m.modelId}>
@@ -52,11 +52,11 @@ const EnhancePage: React.FC<EnhancePageProps> = ({ onImageSelected }) => {
                   href={m.modelCardUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sky-400 hover:underline"
+                  className="brand-text hover:underline"
                 >
                   {m.label}
                 </a>
-                {' — '}
+                {', '}
                 {t('enhance.model_meta', {
                   size: String(m.approxSizeMb),
                   license: m.license,

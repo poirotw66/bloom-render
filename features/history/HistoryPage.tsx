@@ -141,14 +141,18 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
           })}
         </div>
 
-        <p className="text-sm text-gray-400">
+        <p className="text-sm theme-ink-muted">
           {t('history.count', { count: filteredHistory.length, total: history.length })}
         </p>
 
         {history.length === 0 ? (
-          <div className="py-16 text-gray-400">{t('history.empty')}</div>
+          <div className="py-16 rounded-2xl border theme-border theme-raised theme-ink-muted">
+            {t('history.empty')}
+          </div>
         ) : filteredHistory.length === 0 ? (
-          <div className="py-16 text-gray-400">{t('history.no_results')}</div>
+          <div className="py-16 rounded-2xl border theme-border theme-raised theme-ink-muted">
+            {t('history.no_results')}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
             {filteredHistory.map((item, index) => (

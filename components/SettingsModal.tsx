@@ -51,42 +51,40 @@ const themeStyles = {
     confirm: 'brand-bg-strong hover:opacity-95 text-white focus-visible:brand-ring',
   },
   night: {
-    dialog: 'bg-gray-800 border border-gray-700',
-    section: 'border-gray-700 bg-gray-900/40',
-    divider: 'border-gray-700',
-    heading: 'text-white',
-    sectionTitle: 'text-white',
-    chevron: 'text-gray-200',
-    iconBtn: 'text-gray-400 hover:text-white focus-visible:ring-blue-500',
-    choiceActive: 'border-cyan-400 text-white focus-visible:ring-cyan-400',
+    dialog: 'theme-surface border theme-border',
+    section: 'theme-border theme-raised',
+    divider: 'theme-border',
+    heading: 'theme-ink',
+    sectionTitle: 'theme-ink',
+    chevron: 'theme-ink-soft',
+    iconBtn: 'theme-ink-muted hover:text-white focus-visible:brand-ring',
+    choiceActive: 'theme-border-strong theme-ink focus-visible:brand-ring',
     choiceIdle:
-      'border-gray-700 text-gray-200 hover:border-cyan-300/60 hover:text-white focus-visible:ring-cyan-400',
-    selectedTag: 'text-cyan-300',
-    label: 'text-gray-300',
-    hint: 'text-gray-500',
-    field:
-      'bg-gray-900 border-gray-600 text-white placeholder-gray-500 focus-visible:ring-blue-500',
-    checkbox: 'text-blue-600 bg-gray-900 border-gray-600 focus-visible:ring-blue-500',
-    confirm: 'bg-blue-600 hover:bg-blue-500 text-white focus-visible:ring-blue-400',
+      'theme-border theme-ink-soft hover:theme-border-strong hover:text-white focus-visible:brand-ring',
+    selectedTag: 'brand-text-soft',
+    label: 'theme-ink-soft',
+    hint: 'theme-ink-muted',
+    field: 'theme-raised theme-border theme-ink focus-visible:brand-ring',
+    checkbox: 'brand-text-strong theme-raised theme-border focus-visible:brand-ring',
+    confirm: 'brand-bg-strong hover:opacity-95 text-white focus-visible:brand-ring',
   },
   newyear: {
     dialog: 'theme-surface border theme-border',
     section: 'theme-border theme-raised',
     divider: 'theme-border',
-    heading: 'text-red-50',
-    sectionTitle: 'text-red-50',
-    chevron: 'text-yellow-200',
-    iconBtn: 'text-red-400 hover:text-red-100 focus-visible:ring-red-500',
-    choiceActive: 'border-yellow-400/80 text-yellow-200 focus-visible:ring-yellow-400',
+    heading: 'theme-ink',
+    sectionTitle: 'theme-ink',
+    chevron: 'theme-ink-soft',
+    iconBtn: 'theme-ink-muted hover:text-white focus-visible:brand-ring',
+    choiceActive: 'theme-border-strong theme-ink focus-visible:brand-ring',
     choiceIdle:
-      'border-red-800/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200 focus-visible:ring-yellow-400',
-    selectedTag: 'text-yellow-300',
-    label: 'text-red-200',
-    hint: 'text-red-300',
-    field:
-      'bg-red-950/50 border-red-800/50 text-red-50 placeholder-red-300 focus-visible:ring-red-500',
-    checkbox: 'text-red-600 bg-red-950/50 border-red-700 focus-visible:ring-red-500',
-    confirm: 'bg-red-600 hover:bg-red-500 text-white focus-visible:ring-red-400',
+      'theme-border theme-ink-soft hover:theme-border-strong hover:text-white focus-visible:brand-ring',
+    selectedTag: 'brand-text-soft',
+    label: 'theme-ink-soft',
+    hint: 'theme-ink-muted',
+    field: 'theme-raised theme-border theme-ink focus-visible:brand-ring',
+    checkbox: 'brand-text-strong theme-raised theme-border focus-visible:brand-ring',
+    confirm: 'brand-bg-strong hover:opacity-95 text-white focus-visible:brand-ring',
   },
 } as const satisfies Record<ThemeType, Record<string, string>>;
 
@@ -234,7 +232,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-sm font-medium">{option.label}</span>
                       {option.id === theme && (
-                        <span className={`text-xs tracking-normal ${s.selectedTag}`}>
+                        <span className={`text-sm tracking-normal ${s.selectedTag}`}>
                           {t('common.selected')}
                         </span>
                       )}
@@ -258,7 +256,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   >
                     {t('settings.motion.enable')}
                   </label>
-                  <p className={`text-xs ${s.hint}`}>{t('settings.motion.enable_desc')}</p>
+                  <p className={`text-sm ${s.hint}`}>{t('settings.motion.enable_desc')}</p>
                 </div>
               </div>
             </div>,
@@ -310,7 +308,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   <option value="openrouter">{t('settings.provider.openrouter')}</option>
                   <option value="demo">{t('settings.provider.demo')}</option>
                 </select>
-                <p className={`text-xs mt-2 ${s.hint}`}>
+                <p className={`text-sm mt-2 ${s.hint}`}>
                   {isDemo ? t('settings.provider_desc_demo') : t('settings.provider_desc')}
                 </p>
               </div>
@@ -362,12 +360,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         type="button"
                         onClick={() => setShowApiKey((prev) => !prev)}
                         aria-pressed={showApiKey}
-                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-xs font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
+                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-sm font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
                       >
                         {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
                       </button>
                     </div>
-                    <p className={`text-xs mt-2 ${s.hint}`}>{t('settings.api_key_desc')}</p>
+                    <p className={`text-sm mt-2 ${s.hint}`}>{t('settings.api_key_desc')}</p>
                   </div>
                 </>
               ) : (
@@ -415,17 +413,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         type="button"
                         onClick={() => setShowApiKey((prev) => !prev)}
                         aria-pressed={showApiKey}
-                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-xs font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
+                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-sm font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
                       >
                         {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
                       </button>
                     </div>
-                    <p className={`text-xs mt-2 ${s.hint}`}>
+                    <p className={`text-sm mt-2 ${s.hint}`}>
                       {t('settings.openrouter.api_key_desc')}
                     </p>
                   </div>
 
-                  <p className={`text-xs ${s.hint}`}>{t('settings.openrouter.gemini_only_note')}</p>
+                  <p className={`text-sm ${s.hint}`}>{t('settings.openrouter.gemini_only_note')}</p>
                 </>
               )}
             </div>,
@@ -450,7 +448,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   >
                     {t('settings.compression.enable')}
                   </label>
-                  <p className={`text-xs ${s.hint}`}>{t('settings.compression.enable_desc')}</p>
+                  <p className={`text-sm ${s.hint}`}>{t('settings.compression.enable_desc')}</p>
                 </div>
               </div>
 
@@ -477,7 +475,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     }}
                     className={`${FIELD_BASE} ${s.field}`}
                   />
-                  <p className={`text-xs mt-2 ${s.hint}`}>
+                  <p className={`text-sm mt-2 ${s.hint}`}>
                     {t('settings.compression.threshold_desc')}
                   </p>
                 </div>
@@ -492,7 +490,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               <p className={`text-sm ${s.label}`}>
                 {t('settings.spend_total', { amount: formatUsd(sessionSpend) })}
               </p>
-              <p className={`text-xs ${s.hint}`}>
+              <p className={`text-sm ${s.hint}`}>
                 {t('settings.spend_desc', { date: IMAGE_PRICING_LAST_UPDATED })}
               </p>
               <button
@@ -513,7 +511,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         {/* Settings persist as soon as they change, so a single dismiss action is
             honest here — a "Cancel" button that discarded nothing was misleading. */}
         <div className="mt-8 flex items-center justify-between gap-3">
-          <p className={`text-xs ${s.hint}`}>{t('settings.autosave_hint')}</p>
+          <p className={`text-sm ${s.hint}`}>{t('settings.autosave_hint')}</p>
           <button
             type="button"
             onClick={onClose}

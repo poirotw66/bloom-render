@@ -62,7 +62,7 @@ const App: React.FC = () => {
       <main
         id="main-content"
         tabIndex={-1}
-        className={`flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none ${isEditRoute ? 'items-start' : 'items-center'}`}
+        className={`flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none ${isEditRoute ? 'items-start' : 'items-center'}`}
       >
         {uploadError && !isEditRoute && (
           <div className="w-full max-w-2xl mb-4">

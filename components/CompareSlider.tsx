@@ -152,13 +152,13 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
       </div>
 
       <span
-        className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/70 text-white text-xs font-bold pointer-events-none"
+        className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 text-white text-sm font-semibold pointer-events-none"
         style={{ opacity: position > 12 ? 1 : 0 }}
       >
         {t('main.compare_before')}
       </span>
       <span
-        className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/70 text-white text-xs font-bold pointer-events-none"
+        className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-black/70 text-white text-sm font-semibold pointer-events-none"
         style={{ opacity: position < 88 ? 1 : 0 }}
       >
         {t('main.compare_after')}
@@ -179,7 +179,7 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
         aria-valuenow={Math.round(position)}
         aria-valuetext={`${Math.round(position)}%`}
         onKeyDown={handleKeyDown}
-        className="absolute top-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white flex items-center justify-center cursor-ew-resize focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400/70"
+        className="absolute top-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white flex items-center justify-center cursor-ew-resize focus:outline-none focus-visible:ring-4 focus-visible:brand-ring"
         style={{ left: `${position}%` }}
       >
         <svg

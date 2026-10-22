@@ -51,7 +51,7 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
   const { isDemoMode } = useSettings();
   const zoneRef = useRef<HTMLDivElement>(null);
 
-  const modeActive = 'bg-sky-600 text-white  ';
+  const modeActive = 'bg-sky-600 text-white ';
   const modeIdle = 'text-slate-500 hover:text-slate-300';
 
   const emitFile = useCallback(
@@ -141,7 +141,7 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                       <XMarkIcon className="w-4 h-4" />
                     </button>
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/50 py-0.5 text-[10px] text-white text-center font-semibold">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/50 py-0.5 text-sm text-white text-center font-semibold">
                     #{idx + 1}
                   </div>
                 </div>
@@ -151,7 +151,7 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                 <label className="w-32 h-32 rounded-xl border-2 border-dashed border-slate-600 bg-slate-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-sky-500 hover:bg-sky-500/5 transition-colors duration-200 text-slate-500 hover:text-sky-300">
                   <input type="file" className="hidden" accept="image/*" onChange={onFileChange} />
                   <span className="text-2xl font-light">+</span>
-                  <span className="text-[10px] uppercase font-bold tracking-tight text-center px-1">
+                  <span className="text-sm font-bold tracking-tight text-center px-1">
                     {t('travel.add_person')}
                   </span>
                 </label>
