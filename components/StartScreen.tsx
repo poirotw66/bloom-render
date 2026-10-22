@@ -891,9 +891,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         {tab === 'upload' && (
           <section
             className="mt-16 w-full max-w-3xl mx-auto text-left animate-fade-in"
-            aria-label={t('start.subtitle')}
+            aria-label={`${t('start.feature_retouch_title')}, ${t('start.feature_filter_title')}, ${t('start.feature_adjust_title')}`}
           >
-            <h2 className="text-2xl font-semibold text-gray-100 mb-8">{t('start.title_part1')}</h2>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8 list-none p-0 m-0">
               <li>
                 <p className={`text-base font-semibold ${s.cardIconText}`}>

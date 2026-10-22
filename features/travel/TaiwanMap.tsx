@@ -56,7 +56,7 @@ const TaiwanMap: React.FC<TaiwanMapProps> = ({
           const isFood = scene.category === 'food';
 
           // Style constants based on type
-          const primaryColor = isFood ? '#f97316' : '#fbbf24'; // Orange for food, Amber for scenery
+          const _primaryColor = isFood ? '#f97316' : '#fbbf24'; // Orange for food, Amber for scenery
           const pulseColor = isFood ? 'rgba(249, 115, 22, 0.3)' : 'rgba(251, 191, 36, 0.3)';
           const glowColor = isFood ? 'rgba(249, 115, 22, 0.5)' : 'rgba(251, 191, 36, 0.5)';
           const markerFill = isFood
