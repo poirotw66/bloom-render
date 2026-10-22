@@ -75,6 +75,7 @@ test.describe('Wave N — route HTML build output', () => {
       'enhance',
       'prompt-gallery',
       'r',
+      'oauth/openrouter',
     ];
     for (const route of routes) {
       const file = path.join(dist, route, 'index.html');

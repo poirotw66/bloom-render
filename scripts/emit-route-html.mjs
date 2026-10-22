@@ -96,6 +96,11 @@ export const ROUTE_SEO = {
     description:
       'Open a shared style link to pre-fill the same viral template or prompt settings (no photo in the link). 用同款：開啟分享連結即可套用相同玩法與設定（不含照片）。',
   },
+  '/oauth/openrouter': {
+    title: 'OpenRouter Sign-in — BloomRender',
+    description:
+      'Complete OpenRouter OAuth PKCE sign-in and return to BloomRender. 完成 OpenRouter 登入並返回 BloomRender。',
+  },
 };
 
 /** Ordered route paths (same set as Object.values(ROUTES)). */

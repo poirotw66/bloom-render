@@ -27,6 +27,7 @@ const ROUTES: { path: string; expectText: RegExp | string }[] = [
   { path: '/photography-service', expectText: /Photography/i },
   { path: '/prompt-gallery', expectText: /Prompt gallery/i },
   { path: '/r', expectText: /invalid or expired|Unknown style|Opening shared style/i },
+  { path: '/oauth/openrouter', expectText: /OpenRouter|登入|sign-in|cancelled|授權/i },
 ];
 
 test.describe('smoke', () => {

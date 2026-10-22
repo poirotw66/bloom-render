@@ -12,6 +12,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, type ThemeType } from '../contexts/ThemeContext';
 import { openSettingsPanel } from '../utils/settingsPanel';
 import { CogIcon } from './icons';
+import OpenRouterSignInButton from './OpenRouterSignInButton';
 
 /** Where a Gemini API key comes from. */
 export const API_KEY_CONSOLE_URL = 'https://aistudio.google.com/apikey';
@@ -85,6 +86,7 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
         {isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
+        <OpenRouterSignInButton compact />
         <button
           type="button"
           data-testid="try-demo-button"

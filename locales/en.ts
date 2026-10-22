@@ -1378,6 +1378,22 @@ export const enMessages: Record<string, string> = {
     'Image resolution is low; results may look softer than with a higher-resolution photo.',
   'validation.warn_will_compress': 'Large image will be compressed before upload.',
 
+  'openrouter.sign_in': 'Sign in with OpenRouter',
+  'openrouter.sign_out': 'Sign out of OpenRouter',
+  'openrouter.signing_in': 'Redirecting…',
+  'openrouter.signed_in_hint': 'OpenRouter key is stored in this browser tab only.',
+  'openrouter.oauth_section': 'One-click OpenRouter',
+  'openrouter.oauth_or_paste': 'Or paste an API key manually below.',
+  'openrouter.oauth_start_failed': 'Could not start OpenRouter sign-in. Try again.',
+  'openrouter.oauth_exchanging': 'Finishing OpenRouter sign-in…',
+  'openrouter.oauth_denied': 'OpenRouter sign-in was cancelled.',
+  'openrouter.oauth_missing_code': 'OpenRouter did not return an authorization code.',
+  'openrouter.oauth_missing_verifier':
+    'Sign-in session expired. Start again from Settings or the home notice.',
+  'openrouter.oauth_state_mismatch': 'OpenRouter sign-in could not be verified. Please try again.',
+  'openrouter.oauth_exchange_failed': 'Could not finish OpenRouter sign-in. Please try again.',
+  'openrouter.oauth_home': 'Back to home',
+
   'viral.section_title': 'One-tap viral styles',
   'viral.section_subtitle':
     'Figurine boxes, Polaroids, era time-travel, and Taiwan scenes — tap to try, then share “Use this style”.',

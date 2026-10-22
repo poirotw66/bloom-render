@@ -33,6 +33,7 @@ const EnhancePage = lazy(() => import('./features/enhance/EnhancePage'));
 const EditorPage = lazy(() => import('./features/editor/EditorPage'));
 const PromptGalleryPage = lazy(() => import('./features/prompt-gallery/PromptGalleryPage'));
 const RemixPage = lazy(() => import('./features/remix/RemixPage'));
+const OpenRouterCallbackPage = lazy(() => import('./features/oauth/OpenRouterCallbackPage'));
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -143,6 +144,7 @@ const App: React.FC = () => {
             <Route path={ROUTES.EDIT} element={<EditorPage />} />
             <Route path={ROUTES.PROMPT_GALLERY} element={<PromptGalleryPage />} />
             <Route path={ROUTES.REMIX} element={<RemixPage />} />
+            <Route path={ROUTES.OPENROUTER_OAUTH} element={<OpenRouterCallbackPage />} />
             <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
           </Routes>
         </Suspense>
