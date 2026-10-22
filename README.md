@@ -2,75 +2,70 @@
 
 [English](./README.md) | [繁體中文](./README.zh-TW.md)
 
+**AI photo studio in your browser — BYO Gemini / OpenRouter key, or try the offline demo with no key.**
+
 [![CI](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml/badge.svg)](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-bloss0m.com-e23d2f)](https://www.bloss0m.com/bloom-render/)
 
-**BloomRender — Let your ideas bloom.**
+**[Live demo → https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)** · Tap **Try demo** for bundled samples (no API key, no AI network call). Keys you paste stay in this tab’s `sessionStorage` only.
 
-AI-powered photo editing and generation studio with bring-your-own-key **Google Gemini** or **OpenRouter**: retouch, filters, ID photos, portraits, travel shots, themed shoots, couple/group photos, and virtual try-on.
+![BloomRender core flow: Try demo → ID photo → before/after](docs/showcase/core-flow.gif)
 
-**Try demo, no key needed:** Open [the live site](https://www.bloss0m.com/bloom-render/) and tap **Try demo** (or choose **Live demo (no key)** in Settings). Generate on each feature with bundled sample photos — no API key and no call to an AI provider. Results are marked **Demo**. Add a Gemini or OpenRouter key in Settings when you want to generate with your own photos.
+### Themes · 繁花 Bloom · 深夜 Night · 新年 New Year
 
-### Preview
+| Bloom                                             | Night                                             | New Year                                               |
+| ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| ![Landing · Bloom](docs/showcase/hero-bloom.webp) | ![Landing · Night](docs/showcase/hero-night.webp) | ![Landing · New Year](docs/showcase/hero-newyear.webp) |
 
-| Text to image                                         | AI ID photo                                   | Image editor                                |
-| ----------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
-| ![Text to image result](images/generate_2_image.webp) | ![ID photo result](images/idphoto_5_idp.webp) | ![Editor retouch](images/edit_2_image.webp) |
+### Features at a glance
 
-| AI travel photo                                         | AI virtual try-on                              |
-| ------------------------------------------------------- | ---------------------------------------------- |
-| ![Travel photo result](images/travel_5_couple_img.webp) | ![Try-on result](images/tryon_4_girl_img.webp) |
+| Generate                                       | ID photo + 4×6″ print sheet                                       | Photography Studio                                                  |
+| ---------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
+| ![Generate](docs/showcase/generate-night.webp) | ![ID photo print sheet](docs/showcase/idphoto-print-newyear.webp) | ![Photography Studio](docs/showcase/photography-service-bloom.webp) |
+
+| Local Enhance                                | Editor mask brush                                    | Prompt gallery                                             |
+| -------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
+| ![Enhance](docs/showcase/enhance-night.webp) | ![Editor mask](docs/showcase/editor-mask-bloom.webp) | ![Prompt gallery](docs/showcase/prompt-gallery-bloom.webp) |
 
 ---
 
 ## Features
 
-Start-screen tabs, in order: **Upload** → **Text to image** → **Photography service** → **ID photo** → **Portrait** → **Travel** → **Themed** → **Couple / group** → **Try-on**.
+Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID photo** → **Portrait** → **Travel** → **Themed** → **Couple / group** → **Try-on** → **Enhance**.
 
-- **Upload** — Drop or pick a file and open the editor.
-- **Text to image** — Describe a scene, pick aspect ratio (1:1, 4:3, 3:4, 16:9, 9:16) and count (1–4); download singles or a ZIP, or send one result to the editor.
-- **Image editor** — Point-and-prompt retouch, style filters, global adjustments, free/ID-spec crop; undo, redo, compare, reset, download.
-- **AI ID photo** — Document type, retouch level, output size, clothing (text or reference); single and batch ZIP download.
-- **AI portrait** — Professional headshots from a portrait upload.
-- **AI travel photo** — World / Taiwan map scene picks with weather, time, outfit, and framing; solo, couple, or group.
-- **AI themed shoot** — Theme, size, and aspect ratio from a portrait.
-- **AI couple / group** — 2 portraits (couple) or 3–6 (group) into one composite.
-- **AI virtual try-on** — One person photo + 1–5 garment photos; multi-style results with single or bulk download.
-- **Settings** — Image provider (Gemini / OpenRouter), matching API key + model, language, theme (browser-only).
-- **i18n** — English and Traditional Chinese.
-- **Themes** — Bloom, Night, New Year.
-- **History** — Browse, filter, and batch-download past generations.
+- **Upload / editor** — Point-and-prompt retouch, **brush mask**, filters, adjustments, free/ID crop; undo, redo, compare, download.
+- **Text to image** — Prompt, aspect ratio, 1–4 images; download or send to the editor.
+- **Photography Studio** — Hub into ID, portrait, themed, couple/group, and promo looks (no prices).
+- **AI ID photo** — Specs, retouch, clothing; before/after; **4×6″ print sheet** (JPG/PDF); single + batch ZIP.
+- **Portrait / travel / themed / couple·group / try-on** — Dedicated generators with demo samples.
+- **Local Enhance** — On-device background removal & 2× upscale (no API key).
+- **Prompt gallery** — Community presets; apply into generate / retouch / adjust / filter.
+- **History · share · compare** — Browse past runs; share cards; before/after slider.
+- **Settings** — Gemini / OpenRouter / Live demo; language; themes (**Bloom**, **Night**, **New Year**).
+- **i18n** — English & Traditional Chinese. **PWA**-ready static build.
 
 ---
 
 ## Quick start
 
-Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfile).
+**Node.js 20+**, npm (`npm ci` from the lockfile).
 
-1. **Install**
+```bash
+npm ci
+npm run dev
+```
 
-   ```bash
-   npm ci
-   ```
+Open the URL in the terminal (default [http://localhost:3002](http://localhost:3002)).
 
-2. **API key (BYOK) or Try demo** — Open **Settings**, choose **Image provider** (`Google Gemini`, `OpenRouter (BYOK)`, or `Live demo (no key)`). For real generation, paste the matching key. Keys stay in the browser tab (`sessionStorage`) only and are cleared when the tab closes. They are never committed, never read from env files, and never baked into the production bundle. Or tap **Try demo** to explore with bundled samples without a key. See [`.env.example`](./.env.example).
+1. Tap **Try demo** (or Settings → **Live demo (no key)**) to explore with bundled samples.
+2. For real generation: Settings → **Google Gemini** or **OpenRouter (BYOK)** → paste key (tab-scoped `sessionStorage` only; never committed or bundled). See [`.env.example`](./.env.example).
 
-3. **Run**
-
-   ```bash
-   npm run dev
-   ```
-
-   Open the URL shown in the terminal (default [http://localhost:3002](http://localhost:3002)).
-
-4. **Optional static assets**
-   - Maps for Travel: `public/images/world-map.webp`, `public/images/taiwan-map.webp` (see `public/images/README.md`). Convert PNG → WebP with `node scripts/convert-public-images-to-webp.mjs` if needed.
-   - Scene reference images under `public/images/scenes/` are optional; follow [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md). Text-only generation still works without them.
+Optional Travel maps: `public/images/world-map.webp`, `public/images/taiwan-map.webp` ([public/images/README.md](public/images/README.md)). Scene refs: [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md).
 
 ---
 
-## API keys
+## Privacy / BYO key
 
 | Context              | How                                                                                                                                                                                                       |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -85,10 +80,9 @@ Requirements: **Node.js 20+**, npm (use `npm ci` when installing from the lockfi
 | Text-to-image, editor (retouch / filter / adjust), ID photo, portrait, travel, themed, couple/group, try-on | Selected provider (`services/imageProviders/`)                   |
 | Travel **custom-scene prompt optimization** (text)                                                          | **Gemini-only** — skipped on OpenRouter; your raw prompt is used |
 | Home-screen **model compare**                                                                               | **Gemini-only** (compares Gemini model ids)                      |
+| **Local Enhance** (bg remove / 2× upscale)                                                                  | On-device — no provider key                                      |
 
-Prefer image-capable OpenRouter models (e.g. `google/gemini-2.5-flash-image`). Models without image-reference support may fail on edit / try-on / multi-photo flows.
-
-Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and billing limits on the provider side.
+Prefer image-capable OpenRouter models (e.g. `google/gemini-2.5-flash-image`). Do not commit `.env` / `.env.local` or paste keys into issues.
 
 ---
 
@@ -98,29 +92,23 @@ Do not commit `.env` / `.env.local` or paste keys into issues. Set quotas and bi
 - **Routing** — React Router 7
 - **Editing** — react-image-crop
 - **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini) + OpenRouter Images API via `services/imageProviders/`
-- **On-device enhance** — [@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers) (WebGPU + WASM) for background removal and 2× upscaling — no API key
+- **On-device enhance** — [@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers) (WebGPU + WASM)
 - **Batch download** — JSZip
-- **Styles** — Tailwind CSS 4 via `@tailwindcss/vite` (build-time; not CDN) + custom CSS
+- **Styles** — Tailwind CSS 4 via `@tailwindcss/vite` + custom CSS
 - **Tooling** — ESLint, Prettier, Vitest, Husky, lint-staged
 
 ### Client-side models (Enhance)
 
-Lazy-loaded on first use, cached by the browser. Approximate first-download sizes:
-
 | Task               | Model                                                                                         | ~Size | License    |
 | ------------------ | --------------------------------------------------------------------------------------------- | ----- | ---------- |
-| Background removal | [Xenova/modnet](https://huggingface.co/Xenova/modnet) (MODNet / RMBG-class matting)           | 25 MB | Apache-2.0 |
+| Background removal | [Xenova/modnet](https://huggingface.co/Xenova/modnet)                                         | 25 MB | Apache-2.0 |
 | 2× upscaling       | [Xenova/swin2SR-classical-sr-x2-64](https://huggingface.co/Xenova/swin2SR-classical-sr-x2-64) | 45 MB | Apache-2.0 |
-
-Runtime: ONNX via transformers.js (prefers WebGPU, falls back to WASM). See `/enhance` in the app and `services/localEnhance/`.
 
 ---
 
 ## Architecture
 
-Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface (`generateImage`, `validateApiKey`) with Gemini, OpenRouter, and offline demo implementations selected via `getImageProvider()`. Feature modules call `runImageGeneration`, which resolves the active provider from Settings and returns a data URL. BYOK API keys are stored only in `sessionStorage` (tab-scoped; cleared when the tab closes) via `utils/credentialStorage.ts` — never in `localStorage` for ongoing use, env files, or the production bundle.
-
-Local enhance (background removal / 2× upscale) is separate: `@huggingface/transformers` pipelines in `services/localEnhance/`, lazy-loaded and browser-cached, exposed on the Enhance page and as actions on generation result pages.
+Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface with Gemini, OpenRouter, and offline demo implementations. Feature modules call `runImageGeneration`. BYOK keys: `sessionStorage` only via `utils/credentialStorage.ts`. Local enhance lives in `services/localEnhance/`.
 
 ---
 
@@ -140,24 +128,25 @@ Local enhance (background removal / 2× upscale) is separate: `@huggingface/tran
 
 ## Deploy
 
-- Ship the `dist/` folder to any static host.
-- **GitHub Pages**: set `GITHUB_PAGES=true` so `base` is `/bloom-render/`. See [.github/workflows/deploy.yml](.github/workflows/deploy.yml) (runs on `main` only, after the CI quality gate).
+- Ship `dist/` to any static host.
+- **GitHub Pages**: `GITHUB_PAGES=true` → `base` `/bloom-render/`. See [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
 ---
 
 ## Docs
 
-See [docs/README.md](docs/README.md) for the full index. Highlights:
+See [docs/README.md](docs/README.md). Highlights:
 
-- **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese) — walkthroughs for generate, ID photo, portrait, travel, try-on, and the editor
-- **[Scene image sources](docs/SCENE_IMAGES_SOURCES.md)** / **[status](docs/SCENE_IMAGES_STATUS.md)** — optional travel reference images
-- **[Type layout](docs/TYPES.md)** — where shared vs feature-local TypeScript types live
+- **[Showcase assets](docs/showcase/README.md)** — README screenshots & core-flow GIF (Wave K/L UI)
+- **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese)
+- **[Scene image sources](docs/SCENE_IMAGES_SOURCES.md)** / **[status](docs/SCENE_IMAGES_STATUS.md)**
+- **[Type layout](docs/TYPES.md)**
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md). This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). Security reports: [SECURITY.md](./SECURITY.md).
+See [CONTRIBUTING.md](./CONTRIBUTING.md). [Code of Conduct](./CODE_OF_CONDUCT.md). Security: [SECURITY.md](./SECURITY.md).
 
 ---
 
