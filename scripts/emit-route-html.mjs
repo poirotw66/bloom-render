@@ -6,7 +6,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { CONTENT_SECURITY_POLICY } from '../constants/csp.ts';
+import { CONTENT_SECURITY_POLICY } from '../constants/csp.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
@@ -149,10 +149,7 @@ function upsertMetaByName(html, name, content) {
 }
 
 function upsertMetaHttpEquiv(html, httpEquiv, content) {
-  const re = new RegExp(
-    `<meta\\s+[^>]*http-equiv=["']${httpEquiv}["'][^>]*>`,
-    'i',
-  );
+  const re = new RegExp(`<meta\\s+[^>]*http-equiv=["']${httpEquiv}["'][^>]*>`, 'i');
   const tag = `<meta http-equiv="${httpEquiv}" content="${escapeAttr(content)}" />`;
   if (re.test(html)) {
     return html.replace(re, tag);
