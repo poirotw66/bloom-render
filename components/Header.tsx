@@ -60,12 +60,12 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   return (
     <>
       <header
-        className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 rounded-2xl backdrop-blur-md transition-colors duration-300 ${
+        className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 rounded-2xl border backdrop-blur-md transition-colors duration-300 ${
           theme === 'newyear'
-            ? 'bg-red-950/70'
+            ? 'theme-surface theme-border'
             : theme === 'bloom'
-              ? 'bg-gray-800/70'
-              : 'bg-gray-800/70'
+              ? 'theme-surface theme-border'
+              : 'theme-surface theme-border'
         }`}
         role="banner"
         aria-label="Main navigation"

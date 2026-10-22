@@ -15,40 +15,46 @@
   --radius-panel: 1rem;
   --font-sans: 'Work Sans', system-ui, sans-serif;
 
-  /* Default = Bloom (繁花): dark base, fuchsia → pink */
-  --bg-main: #121016;
-  --bg-surface: #1c1822;
-  --bg-raised: #26202c;
-  --ink: #f4f0f5;
-  --ink-soft: #c9c0ce;
-  --ink-muted: #9a919f;
+  /* Default = Bloom (繁花): warm off-black, fuchsia → pink */
+  --bg-main: #1a1216;
+  --bg-surface: #241820;
+  --bg-raised: #2e2028;
+  --ink: #faf4f6;
+  --ink-soft: #e2cfd6;
+  --ink-muted: #b89aa6;
   --brand-primary: #d946ef;
   --brand-primary-strong: #c026d3;
   --brand-primary-soft: #e879f9;
   --brand-accent: #f472b6;
-  --brand-tint: rgba(217, 70, 239, 0.14);
-  --brand-border: rgba(217, 70, 239, 0.35);
-  --brand-border-soft: rgba(217, 70, 239, 0.2);
-  --star-color: rgba(244, 240, 245, 0.55);
+  --brand-tint: rgba(244, 114, 182, 0.16);
+  --brand-border: rgba(232, 121, 249, 0.45);
+  --brand-border-soft: rgba(244, 114, 182, 0.32);
+  --star-color: rgba(255, 220, 210, 0.55);
   --shooting-star-color: #e879f9;
+  --nav-track: rgba(36, 24, 32, 0.85);
+  --notice-bg: rgba(60, 28, 40, 0.92);
+  --notice-ink: #fde8ef;
 }
 
 [data-theme='bloom'] {
-  --bg-main: #121016;
-  --bg-surface: #1c1822;
-  --bg-raised: #26202c;
-  --ink: #f4f0f5;
-  --ink-soft: #c9c0ce;
-  --ink-muted: #9a919f;
+  --bg-main: #1a1216;
+  --bg-surface: #241820;
+  --bg-raised: #2e2028;
+  --ink: #faf4f6;
+  --ink-soft: #e2cfd6;
+  --ink-muted: #b89aa6;
   --brand-primary: #d946ef;
   --brand-primary-strong: #c026d3;
   --brand-primary-soft: #e879f9;
   --brand-accent: #f472b6;
-  --brand-tint: rgba(217, 70, 239, 0.14);
-  --brand-border: rgba(217, 70, 239, 0.35);
-  --brand-border-soft: rgba(217, 70, 239, 0.2);
-  --star-color: rgba(244, 220, 235, 0.5);
+  --brand-tint: rgba(244, 114, 182, 0.16);
+  --brand-border: rgba(232, 121, 249, 0.45);
+  --brand-border-soft: rgba(244, 114, 182, 0.32);
+  --star-color: rgba(255, 220, 210, 0.55);
   --shooting-star-color: #e879f9;
+  --nav-track: rgba(36, 24, 32, 0.85);
+  --notice-bg: rgba(60, 28, 40, 0.92);
+  --notice-ink: #fde8ef;
 }
 
 /* 深夜 Night: cool near-black, blue → cyan */
@@ -68,13 +74,16 @@
   --brand-border-soft: rgba(34, 211, 238, 0.22);
   --star-color: rgba(238, 242, 247, 0.7);
   --shooting-star-color: #67e8f9;
+  --nav-track: rgba(18, 21, 28, 0.9);
+  --notice-bg: rgba(15, 23, 42, 0.95);
+  --notice-ink: #e0f2fe;
 }
 
 /* 新年 New Year: deep red, gold/yellow */
 [data-theme='newyear'] {
   --bg-main: #160808;
-  --bg-surface: #241010;
-  --bg-raised: #321818;
+  --bg-surface: #2a1010;
+  --bg-raised: #3a1818;
   --ink: #fff5f5;
   --ink-soft: #f0cfcf;
   --ink-muted: #d4a0a0;
@@ -82,11 +91,40 @@
   --brand-primary-strong: #b91c1c;
   --brand-primary-soft: #f87171;
   --brand-accent: #fbbf24;
-  --brand-tint: rgba(220, 38, 38, 0.16);
-  --brand-border: rgba(220, 38, 38, 0.4);
-  --brand-border-soft: rgba(251, 191, 36, 0.28);
+  --brand-tint: rgba(220, 38, 38, 0.2);
+  --brand-border: rgba(220, 38, 38, 0.45);
+  --brand-border-soft: rgba(251, 191, 36, 0.35);
   --star-color: rgba(254, 243, 199, 0.55);
   --shooting-star-color: #fbbf24;
+  --nav-track: rgba(42, 16, 16, 0.92);
+  --notice-bg: rgba(64, 16, 16, 0.95);
+  --notice-ink: #fef3c7;
+}
+
+/* Theme surfaces for shared chrome (avoid leftover navy/gray on New Year) */
+.theme-surface {
+  background-color: var(--bg-surface);
+}
+.theme-raised {
+  background-color: var(--bg-raised);
+}
+.theme-nav-track {
+  background-color: var(--nav-track);
+}
+.theme-border {
+  border-color: var(--brand-border-soft);
+}
+.theme-border-strong {
+  border-color: var(--brand-border);
+}
+.theme-ink {
+  color: var(--ink);
+}
+.theme-ink-soft {
+  color: var(--ink-soft);
+}
+.theme-ink-muted {
+  color: var(--ink-muted);
 }
 
 /* Brand utility classes — keep hue identity without banned Tailwind purple tokens */

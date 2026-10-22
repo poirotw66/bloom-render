@@ -45,8 +45,8 @@
         --shooting-star-color: #e879f9;
       }
       [data-theme='bloom'] {
-        --bg-main: #121016;
-        --star-color: rgba(244, 220, 235, 0.5);
+        --bg-main: #1a1216;
+        --star-color: rgba(255, 220, 210, 0.55);
         --shooting-star-color: #e879f9;
       }
       [data-theme='night'] {
@@ -200,55 +200,55 @@
       .bloom-petal-orb {
         position: absolute;
         border-radius: 50%;
-        filter: blur(72px);
-        opacity: 0.22;
+        filter: blur(80px);
+        opacity: 0.38;
         animation: bloom-float 28s ease-in-out infinite;
       }
       .bloom-petal-orb:nth-child(1) {
-        width: 240px;
-        height: 240px;
-        background: #d946ef;
-        top: 12%;
-        left: 6%;
+        width: 320px;
+        height: 320px;
+        background: #fd7979;
+        top: 8%;
+        left: 4%;
       }
       .bloom-petal-orb:nth-child(2) {
-        width: 180px;
-        height: 180px;
-        background: #f472b6;
-        top: 58%;
-        right: 8%;
+        width: 280px;
+        height: 280px;
+        background: #ffcdc9;
+        top: 50%;
+        right: 4%;
         animation-delay: -6s;
       }
       .bloom-petal-orb:nth-child(3) {
-        width: 200px;
-        height: 200px;
-        background: #e879f9;
-        bottom: 18%;
-        left: 18%;
+        width: 260px;
+        height: 260px;
+        background: #fdacac;
+        bottom: 12%;
+        left: 14%;
         animation-delay: -12s;
       }
       .bloom-petal-orb:nth-child(4) {
-        width: 160px;
-        height: 160px;
-        background: #f9a8d4;
-        top: 36%;
-        left: 48%;
+        width: 220px;
+        height: 220px;
+        background: #feeac9;
+        top: 28%;
+        left: 46%;
         animation-delay: -8s;
       }
       .bloom-petal-orb:nth-child(5) {
-        width: 190px;
-        height: 190px;
-        background: #c026d3;
-        top: 72%;
-        left: 40%;
+        width: 240px;
+        height: 240px;
+        background: #e879f9;
+        top: 68%;
+        left: 38%;
         animation-delay: -14s;
       }
       .bloom-petal-orb:nth-child(6) {
-        width: 140px;
-        height: 140px;
+        width: 200px;
+        height: 200px;
         background: #f472b6;
-        top: 22%;
-        right: 22%;
+        top: 18%;
+        right: 18%;
         animation-delay: -4s;
       }
 
@@ -395,10 +395,9 @@
       html.background-motion-off .falling-petal {
         animation: none !important;
       }
+      /* Falling petals need motion; soft ambient orbs stay for Bloom identity. */
       html.background-motion-off #bloom-falling-petals,
-      html.background-motion-off #bloom-petals,
       html.reduce-motion #bloom-falling-petals,
-      html.reduce-motion #bloom-petals,
       html.animations-paused #bloom-falling-petals {
         display: none !important;
       }
@@ -411,8 +410,7 @@
         .falling-petal {
           animation: none !important;
         }
-        #bloom-falling-petals,
-        #bloom-petals {
+        #bloom-falling-petals {
           display: none !important;
         }
       }

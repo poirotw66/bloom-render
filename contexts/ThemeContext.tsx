@@ -58,7 +58,7 @@ const bloomColors: ThemeColors = {
   primaryHover: 'brand',
   primaryLight: 'brand',
   primaryDark: 'brand',
-  bgMain: '#121016',
+  bgMain: '#1a1216',
   bgCard: 'gray-800',
   bgCardHover: 'white/10',
   bgOverlay: 'black/20',

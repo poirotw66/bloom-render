@@ -421,14 +421,16 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         </p>
         <p className={UI_SUBTITLE}>{t('start.subtitle')}</p>
 
+        {/* No-key visitors need the API notice in the first viewport, before the
+            gallery pushes it below the fold. */}
+        <ApiKeyNotice />
+        <DemoModeBanner />
+
         {/* Results first. Landing straight on an empty upload box asks the
             visitor to commit a photo before seeing a single thing the models
             can do; the gallery answers that question up front and doubles as
             navigation into each feature. */}
         {tab === 'upload' && <HomeGallery className="mt-4" />}
-
-        <ApiKeyNotice />
-        <DemoModeBanner />
 
         {tab === 'upload' ? (
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">

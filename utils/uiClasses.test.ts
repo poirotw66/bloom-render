@@ -21,9 +21,9 @@ import {
 
 describe('uiClasses', () => {
   it('returns theme-specific page surfaces', () => {
-    expect(getPageSurface('bloom')).toContain('bg-gray-900');
-    expect(getPageSurface('newyear')).toContain('red');
-    expect(getPageSurface('night')).toContain('black');
+    expect(getPageSurface('bloom')).toContain('theme-surface');
+    expect(getPageSurface('newyear')).toContain('theme-border');
+    expect(getPageSurface('night')).toContain('theme-surface');
   });
 
   it('keeps shared success button focus and hover classes', () => {
@@ -34,15 +34,15 @@ describe('uiClasses', () => {
 
   it('returns theme-specific title accents', () => {
     expect(getTitleAccent('bloom')).toBe('brand-text-soft');
-    expect(getTitleAccent('newyear')).toBe('text-red-200');
-    expect(getTitleAccent('night')).toBe('text-blue-200');
+    expect(getTitleAccent('newyear')).toBe('text-yellow-300');
+    expect(getTitleAccent('night')).toBe('text-cyan-300');
   });
 
   it('shares select and option chip focus styles', () => {
     expect(UI_SELECT).toContain('rounded-xl');
-    expect(UI_SELECT).toContain('focus-visible:ring-blue-500');
+    expect(UI_SELECT).toContain('focus-visible:brand-ring');
     expect(uiOption(true)).toBe(UI_OPTION_ACTIVE);
-    expect(uiOption(false)).toContain('bg-gray-800');
+    expect(uiOption(false)).toContain('theme-raised');
   });
 
   it('shows focus rings only for keyboard focus', () => {
@@ -60,8 +60,8 @@ describe('uiClasses', () => {
   });
 
   it('shares upload and generate CTA styles', () => {
-    expect(UI_BTN_GENERATE).toContain('bg-blue-600');
+    expect(UI_BTN_GENERATE).toContain('brand-bg');
     expect(UI_BTN_GENERATE).toContain('px-8');
-    expect(UI_FILE_PICKER).toContain('border-gray-600');
+    expect(UI_FILE_PICKER).toContain('theme-border');
   });
 });
