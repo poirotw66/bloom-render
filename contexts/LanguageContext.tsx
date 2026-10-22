@@ -17,7 +17,7 @@ import { zhTWMessages } from '../locales/zh-TW';
 
 export type Language = 'en' | 'zh-TW';
 
-export const STORAGE_KEY_LANGUAGE = 'pixshop_language';
+export const STORAGE_KEY_LANGUAGE = 'bloom_language';
 
 const translations: Record<Language, Record<string, string>> = {
   en: enMessages,

@@ -50,7 +50,24 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const STORAGE_KEY_THEME = 'pixshop_theme';
+const STORAGE_KEY_THEME = 'bloom_theme';
+
+const THEME_COLOR_META: Record<ThemeType, string> = {
+  bloom: '#1a1216',
+  night: '#0a0c10',
+  newyear: '#160808',
+};
+
+function applyThemeColorMeta(theme: ThemeType): void {
+  if (typeof document === 'undefined') return;
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', THEME_COLOR_META[theme]);
+}
 
 /** 繁花 (Bloom): dark base with fuchsia → pink */
 const bloomColors: ThemeColors = {
@@ -152,11 +169,13 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Apply theme to document root for CSS variables
     document.documentElement.setAttribute('data-theme', newTheme);
+    applyThemeColorMeta(newTheme);
   };
 
   // Apply theme on mount and when theme changes
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    applyThemeColorMeta(theme);
   }, [theme]);
 
   const colors = themeColorMap[theme];

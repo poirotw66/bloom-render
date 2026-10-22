@@ -27,8 +27,8 @@ export default defineConfig(({ mode }) => {
           short_name: 'BloomRender',
           description:
             'Browser-based AI photo studio for ID photos, portraits, travel shots, try-on, and edits.',
-          theme_color: '#111827',
-          background_color: '#111827',
+          theme_color: '#1a1216',
+          background_color: '#1a1216',
           display: 'standalone',
           // Relative to Vite `base` so GitHub Pages (`/bloom-render/`) stays correct.
           start_url: './',

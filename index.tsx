@@ -16,6 +16,10 @@ import { SettingsProvider } from './contexts/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useBackgroundMotionPause } from './hooks/useBackgroundMotionPause';
 import PwaUpdatePrompt from './components/PwaUpdatePrompt';
+import { migratePixshopToBloomKeys } from './utils/storageMigration';
+
+// Rename legacy pixshop_* keys before any provider reads storage.
+migratePixshopToBloomKeys();
 
 function AppWithMotionPause() {
   useBackgroundMotionPause();

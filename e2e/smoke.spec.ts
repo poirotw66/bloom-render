@@ -35,7 +35,7 @@ test.describe('smoke', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        localStorage.setItem('pixshop_language', 'en');
+        localStorage.setItem('bloom_language', 'en');
       } catch {
         /* ignore */
       }
@@ -52,11 +52,11 @@ test.describe('smoke', () => {
     // Fresh visitor: no session/local keys, not in demo mode.
     await page.addInitScript(() => {
       try {
-        sessionStorage.removeItem('pixshop_api_key');
-        sessionStorage.removeItem('pixshop_openrouter_api_key');
-        localStorage.removeItem('pixshop_api_key');
-        localStorage.removeItem('pixshop_openrouter_api_key');
-        localStorage.removeItem('pixshop_image_provider');
+        sessionStorage.removeItem('bloom_api_key');
+        sessionStorage.removeItem('bloom_openrouter_api_key');
+        localStorage.removeItem('bloom_api_key');
+        localStorage.removeItem('bloom_openrouter_api_key');
+        localStorage.removeItem('bloom_image_provider');
       } catch {
         /* ignore */
       }

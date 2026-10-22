@@ -11,10 +11,10 @@ test.describe('Wave Q — mobile first screen', () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'zh-TW');
-      localStorage.removeItem('pixshop_image_provider');
-      sessionStorage.removeItem('pixshop_api_key');
-      sessionStorage.removeItem('pixshop_openrouter_api_key');
+      localStorage.setItem('bloom_language', 'zh-TW');
+      localStorage.removeItem('bloom_image_provider');
+      sessionStorage.removeItem('bloom_api_key');
+      sessionStorage.removeItem('bloom_openrouter_api_key');
     });
   });
 
@@ -32,7 +32,7 @@ test.describe('Wave Q — mobile first screen', () => {
     await page.getByTestId('sticky-try-demo-button').click();
     await expect(page.getByTestId('sticky-demo-cta')).toHaveCount(0);
     await expect
-      .poll(async () => page.evaluate(() => localStorage.getItem('pixshop_image_provider')))
+      .poll(async () => page.evaluate(() => localStorage.getItem('bloom_image_provider')))
       .toBe('demo');
   });
 
@@ -48,9 +48,9 @@ test.describe('Wave Q — desktop unchanged', () => {
   test('hero showcase stays mobile-only at 1440', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'en');
-      localStorage.removeItem('pixshop_image_provider');
-      sessionStorage.removeItem('pixshop_api_key');
+      localStorage.setItem('bloom_language', 'en');
+      localStorage.removeItem('bloom_image_provider');
+      sessionStorage.removeItem('bloom_api_key');
     });
     await page.goto('/');
     // Element may remain in the DOM but must not paint on desktop.

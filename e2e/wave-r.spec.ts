@@ -10,8 +10,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Wave R — restore', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'zh-TW');
-      localStorage.setItem('pixshop_image_provider', 'demo');
+      localStorage.setItem('bloom_language', 'zh-TW');
+      localStorage.setItem('bloom_image_provider', 'demo');
     });
   });
 

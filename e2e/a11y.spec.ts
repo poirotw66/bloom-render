@@ -11,8 +11,8 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe('a11y', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'en');
-      localStorage.setItem('pixshop_image_provider', 'demo');
+      localStorage.setItem('bloom_language', 'en');
+      localStorage.setItem('bloom_image_provider', 'demo');
     });
   });
 

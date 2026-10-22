@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-bloss0m.com-e23d2f)](https://www.bloss0m.com/bloom-render/)
 
-**[Live demo → https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)** · Tap **Try demo** for bundled samples (no API key, no AI network call). Keys you paste stay in this tab’s `sessionStorage` only.
+**[Live demo → https://www.bloss0m.com/bloom-render/](https://www.bloss0m.com/bloom-render/)** · Tap **Try demo** for bundled samples (no API key, no AI network call). Keys default to this tab’s `sessionStorage` only; optional **Remember key on this device** uses `localStorage` (see Privacy).
 
 ![BloomRender core flow: Try demo → ID photo → before/after](docs/showcase/core-flow.gif)
 
@@ -59,7 +59,7 @@ npm run dev
 Open the URL in the terminal (default [http://localhost:3002](http://localhost:3002)).
 
 1. Tap **Try demo** (or Settings → **Live demo (no key)**) to explore with bundled samples.
-2. For real generation: Settings → **Google Gemini** or **OpenRouter (BYOK)** → paste key (tab-scoped `sessionStorage` only; never committed or bundled). See [`.env.example`](./.env.example).
+2. For real generation: Settings → **Google Gemini** or **OpenRouter (BYOK)** → paste key (default: tab-scoped `sessionStorage`; optional remember on device). Never committed or bundled. See [`.env.example`](./.env.example).
 
 Optional Travel maps: `public/images/world-map.webp`, `public/images/taiwan-map.webp` ([public/images/README.md](public/images/README.md)). Scene refs: [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md).
 
@@ -67,11 +67,11 @@ Optional Travel maps: `public/images/world-map.webp`, `public/images/taiwan-map.
 
 ## Privacy / BYO key
 
-| Context              | How                                                                                                                                                                                                       |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Keys live in `sessionStorage` for this tab only (cleared when the tab closes). Never bundled. |
-| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                                                         |
-| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                                                               |
+| Context              | How                                                                                                                                                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Default: `sessionStorage` for this tab only. Opt-in **Remember key on this device** also mirrors keys into `localStorage` (anyone with device/backup access can read them; turning it off wipes the local copy). Never bundled. |
+| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                                                                                                                                                                                           |
+| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                                                                                                                                                                                                 |
 
 ### What each provider covers
 
@@ -110,7 +110,7 @@ Prefer image-capable OpenRouter models that mirror Gemini’s Nano Banana family
 
 ## Architecture
 
-Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface with Gemini, OpenRouter, and offline demo implementations. Feature modules call `runImageGeneration`. BYOK keys: `sessionStorage` only via `utils/credentialStorage.ts`. Local enhance lives in `services/localEnhance/`.
+Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface with Gemini, OpenRouter, and offline demo implementations. Feature modules call `runImageGeneration`. BYOK keys: `utils/credentialStorage.ts` (`sessionStorage` by default; optional `localStorage` remember). Local enhance lives in `services/localEnhance/`.
 
 ---
 

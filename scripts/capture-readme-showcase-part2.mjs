@@ -36,16 +36,16 @@ async function context(theme, { demo = true, record = false } = {}) {
   const ctx = await browser.newContext(opts);
   await ctx.addInitScript(
     ({ theme, demo }) => {
-      localStorage.setItem('pixshop_theme', theme);
+      localStorage.setItem('bloom_theme', theme);
       if (demo) {
-        localStorage.setItem('pixshop_image_provider', 'demo');
+        localStorage.setItem('bloom_image_provider', 'demo');
       } else {
-        localStorage.removeItem('pixshop_image_provider');
+        localStorage.removeItem('bloom_image_provider');
       }
-      sessionStorage.removeItem('pixshop_api_key');
-      sessionStorage.removeItem('pixshop_openrouter_api_key');
-      localStorage.removeItem('pixshop_api_key');
-      localStorage.removeItem('pixshop_openrouter_api_key');
+      sessionStorage.removeItem('bloom_api_key');
+      sessionStorage.removeItem('bloom_openrouter_api_key');
+      localStorage.removeItem('bloom_api_key');
+      localStorage.removeItem('bloom_openrouter_api_key');
     },
     { theme, demo },
   );

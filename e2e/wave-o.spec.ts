@@ -16,8 +16,8 @@ const FIGURINE_HASH = btoa(JSON.stringify({ v: 1, id: 'figurine-box' }))
 test.describe('Wave O — viral templates', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'zh-TW');
-      localStorage.setItem('pixshop_image_provider', 'demo');
+      localStorage.setItem('bloom_language', 'zh-TW');
+      localStorage.setItem('bloom_image_provider', 'demo');
     });
   });
 
@@ -40,8 +40,8 @@ test.describe('Wave O — viral templates', () => {
 test.describe('Wave O — remix deep link prefill', () => {
   test('opening /r#id in demo mode prefills editor retouch prompt', async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'en');
-      localStorage.setItem('pixshop_image_provider', 'demo');
+      localStorage.setItem('bloom_language', 'en');
+      localStorage.setItem('bloom_image_provider', 'demo');
     });
     await page.goto(`/r#${FIGURINE_HASH}`);
     await expect(page).toHaveURL(/\/edit/);
@@ -52,7 +52,7 @@ test.describe('Wave O — remix deep link prefill', () => {
 
   test('invalid remix hash shows error and home CTA', async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('pixshop_language', 'en');
+      localStorage.setItem('bloom_language', 'en');
     });
     await page.goto('/r#not-a-valid-payload');
     await expect(page.getByText(/invalid or expired/i)).toBeVisible();

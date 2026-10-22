@@ -12,7 +12,7 @@ import { useGenerationSuccessCount } from '../utils/generationSuccess';
 import { GITHUB_REPO_URL } from '../constants/site';
 import { XMarkIcon } from './icons';
 
-export const STORAGE_KEY_STAR_NUDGE_DISMISSED = 'pixshop_star_nudge_dismissed';
+export const STORAGE_KEY_STAR_NUDGE_DISMISSED = 'bloom_star_nudge_dismissed';
 
 export function isStarNudgeDismissed(
   storage: Pick<Storage, 'getItem'> | null = typeof localStorage !== 'undefined'
