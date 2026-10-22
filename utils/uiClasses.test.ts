@@ -21,9 +21,9 @@ import {
 
 describe('uiClasses', () => {
   it('returns theme-specific page surfaces', () => {
-    expect(getPageSurface('bloom')).toContain('brand-border');
+    expect(getPageSurface('bloom')).toContain('bg-gray-900');
     expect(getPageSurface('newyear')).toContain('red');
-    expect(getPageSurface('night')).toContain('slate');
+    expect(getPageSurface('night')).toContain('black');
   });
 
   it('keeps shared success button focus and hover classes', () => {

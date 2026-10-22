@@ -132,7 +132,7 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
     <nav className="w-full min-w-0 relative" aria-label="Primary">
       <div
         ref={scrollerRef}
-        className="bg-gray-900/40 p-1.5 rounded-xl border border-gray-700/60 flex items-center gap-1.5 overflow-x-auto overflow-y-hidden md:flex-wrap md:justify-center md:overflow-visible scroll-smooth touch-pan-x no-scrollbar"
+        className="bg-gray-900/70 p-1.5 rounded-xl flex items-center gap-1.5 overflow-x-auto overflow-y-hidden md:flex-wrap md:justify-center md:overflow-visible scroll-smooth touch-pan-x no-scrollbar"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {tabs.map(({ tab, path, i18nKey, activeClass, focusRing }) => {
@@ -151,14 +151,14 @@ const StartTabNav: React.FC<StartTabNavProps> = ({ currentTab }) => {
                 }
               }}
               className={`
- px-4 py-3 min-h-[44px] rounded-lg text-sm sm:text-base font-semibold
- inline-flex items-center whitespace-nowrap
- transition-colors duration-200 cursor-pointer
- focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
- focus-visible:ring-offset-gray-900 ${focusRing}
- shrink-0
- ${isActive ? activeClass : 'text-gray-400 hover:text-white hover:bg-white/10'}
- `}
+                px-4 py-3 min-h-[44px] rounded-lg text-base font-semibold
+                inline-flex items-center whitespace-nowrap
+                transition-colors duration-200 cursor-pointer
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+                focus-visible:ring-offset-gray-900 ${focusRing}
+                shrink-0
+                ${isActive ? activeClass : 'text-gray-300 hover:text-white hover:bg-white/10'}
+              `}
             >
               {t(i18nKey)}
             </NavLink>

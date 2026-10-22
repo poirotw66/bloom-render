@@ -33,27 +33,27 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
 
   return (
     <div
-      className={`w-full max-w-2xl mx-auto rounded-xl bg-amber-500/15 border border-amber-500/50 px-4 py-3 text-left ${className}`}
+      className={`w-full max-w-2xl mx-auto rounded-xl bg-sky-950 px-4 py-3 text-left ${className}`}
     >
-      <p className="text-amber-200 text-sm font-bold inline-flex items-center gap-1.5">
+      <p className="text-sky-100 text-base font-semibold inline-flex items-center gap-1.5">
         <CogIcon className="w-4 h-4 shrink-0" />
         {t('apikey.notice_title')}
       </p>
-      <p className="text-amber-200/80 text-xs mt-1">
+      <p className="text-sky-100/90 text-base mt-1">
         {isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={() => settings.enableDemoMode()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-400 text-sky-950 hover:bg-sky-300 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-sky-300"
+          className="px-3 py-1.5 rounded-lg text-base font-semibold bg-sky-400 text-sky-950 hover:bg-sky-300 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-sky-300"
         >
           {t('demo.try_demo')}
         </button>
         <button
           type="button"
           onClick={openSettingsPanel}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-amber-950 hover:bg-amber-400 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-amber-400"
+          className="px-3 py-1.5 rounded-lg text-base font-semibold bg-white text-sky-950 hover:bg-sky-100 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-sky-300"
         >
           {t('apikey.open_settings')}
         </button>
@@ -61,9 +61,9 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
           href={getKeyUrl}
           target="_blank"
           rel="noreferrer noopener"
-          className="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-200 border border-amber-500/50 hover:bg-amber-500/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-amber-400"
+          className="px-3 py-1.5 rounded-lg text-base font-semibold text-sky-50 bg-sky-800 hover:bg-sky-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:ring-sky-300"
         >
-          {t('apikey.get_key')} ↗
+          {t('apikey.get_key')}
         </a>
       </div>
     </div>

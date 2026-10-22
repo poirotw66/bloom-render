@@ -5,15 +5,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  UploadIcon,
-  MagicWandIcon,
-  PaletteIcon,
-  SunIcon,
-  BullseyeIcon,
-  DownloadIcon,
-  EditIcon,
-} from './icons';
+import { UploadIcon, MagicWandIcon, DownloadIcon, EditIcon } from './icons';
 import { generateImageFromText } from '../services/geminiService';
 import { formatApiErrorMessage } from '../services/gemini/shared';
 import { logger } from '../utils/logger';
@@ -429,14 +421,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         </p>
         <p className={UI_SUBTITLE}>{t('start.subtitle')}</p>
 
-        <ApiKeyNotice />
-        <DemoModeBanner />
-
         {/* Results first. Landing straight on an empty upload box asks the
             visitor to commit a photo before seeing a single thing the models
             can do; the gallery answers that question up front and doubles as
             navigation into each feature. */}
         {tab === 'upload' && <HomeGallery className="mt-4" />}
+
+        <ApiKeyNotice />
+        <DemoModeBanner />
 
         {tab === 'upload' ? (
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
@@ -446,7 +438,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               tabIndex={settings.isDemoMode ? undefined : 0}
               role="group"
               aria-label={t('start.upload_drag')}
-              className={`p-12 border-2 border-dashed rounded-2xl bg-gray-800/30 w-full max-w-2xl flex flex-col items-center justify-center gap-4 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${s.border}`}
+              className={`p-12 border-2 border-dashed rounded-2xl bg-gray-800/50 w-full max-w-2xl flex flex-col items-center justify-center gap-4 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${s.border}`}
             >
               {settings.isDemoMode ? (
                 <>
@@ -586,7 +578,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                   className="w-full"
                 />
 
-                <p className="text-xs text-gray-400 -mt-2">{t('start.compare_timing_caveat')}</p>
+                <p className="text-sm text-gray-300 -mt-2">{t('start.compare_timing_caveat')}</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                   {compareRunModels.map((model, slotIndex) => {
@@ -608,7 +600,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                             {t(MODEL_LABEL_KEYS[model])}
                           </span>
                           {result && (
-                            <span className="text-xs text-gray-400 shrink-0">
+                            <span className="text-sm text-gray-300 shrink-0">
                               {t('start.compare_elapsed', {
                                 seconds: (result.elapsedMs / 1000).toFixed(1),
                               })}
@@ -693,7 +685,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
             <div className="w-full text-left">
               <span className={UI_LABEL_HINT}>{t('start.reference_image_label')}</span>
-              <p className="text-xs text-gray-500 mb-2">{t('start.reference_image_hint')}</p>
+              <p className="text-sm text-gray-400 mb-2">{t('start.reference_image_hint')}</p>
               {referenceFile ? (
                 <div className="flex items-center gap-3">
                   <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-600 bg-gray-900 flex-shrink-0">
@@ -819,7 +811,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                     >
                       {t('start.compare_toggle_label')}
                     </label>
-                    <p className="text-xs text-gray-400 mt-1">{t('start.compare_cost_note')}</p>
+                    <p className="text-sm text-gray-300 mt-1">{t('start.compare_cost_note')}</p>
 
                     {compareEnabled && (
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
@@ -857,7 +849,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
             {(settings.model === 'gemini-3-pro-image' ||
               (compareEnabled && effectiveCompareModel === 'gemini-3-pro-image')) && (
-              <p className="text-xs text-gray-300">{t('start.generate_pro_slow_hint')}</p>
+              <p className="text-sm text-gray-300">{t('start.generate_pro_slow_hint')}</p>
             )}
 
             <button
@@ -897,43 +889,38 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           )}
 
         {tab === 'upload' && (
-          <div className="mt-16 w-full animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div
-                className={`bg-gray-800/30 p-6 rounded-2xl border flex flex-col items-center text-center hover:bg-gray-800/50 transition-colors duration-200 cursor-default ${s.borderCard}`}
-              >
-                <div
-                  className={`flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${s.cardIcon}`}
-                >
-                  <BullseyeIcon className={`w-6 h-6 ${s.cardIconText}`} />
-                </div>
-                <h3 className="text-xl font-bold text-white">{t('start.feature_retouch_title')}</h3>
-                <p className="mt-2 text-gray-300">{t('start.feature_retouch_desc')}</p>
-              </div>
-              <div
-                className={`bg-gray-800/30 p-6 rounded-2xl border flex flex-col items-center text-center hover:bg-gray-800/50 transition-colors duration-200 cursor-default ${s.borderCard}`}
-              >
-                <div
-                  className={`flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${s.cardIcon}`}
-                >
-                  <PaletteIcon className={`w-6 h-6 ${s.cardIconText}`} />
-                </div>
-                <h3 className="text-xl font-bold text-white">{t('start.feature_filter_title')}</h3>
-                <p className="mt-2 text-gray-300">{t('start.feature_filter_desc')}</p>
-              </div>
-              <div
-                className={`bg-gray-800/30 p-6 rounded-2xl border flex flex-col items-center text-center hover:bg-gray-800/50 transition-colors duration-200 cursor-default ${s.borderCard}`}
-              >
-                <div
-                  className={`flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${s.cardIcon}`}
-                >
-                  <SunIcon className={`w-6 h-6 ${s.cardIconText}`} />
-                </div>
-                <h3 className="text-xl font-bold text-white">{t('start.feature_adjust_title')}</h3>
-                <p className="mt-2 text-gray-300">{t('start.feature_adjust_desc')}</p>
-              </div>
-            </div>
-          </div>
+          <section
+            className="mt-16 w-full max-w-3xl mx-auto text-left animate-fade-in"
+            aria-label={t('start.subtitle')}
+          >
+            <h2 className="text-2xl font-semibold text-gray-100 mb-8">{t('start.title_part1')}</h2>
+            <ul className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8 list-none p-0 m-0">
+              <li>
+                <p className={`text-base font-semibold ${s.cardIconText}`}>
+                  {t('start.feature_retouch_title')}
+                </p>
+                <p className="mt-2 text-base text-gray-300 leading-relaxed">
+                  {t('start.feature_retouch_desc')}
+                </p>
+              </li>
+              <li>
+                <p className={`text-base font-semibold ${s.cardIconText}`}>
+                  {t('start.feature_filter_title')}
+                </p>
+                <p className="mt-2 text-base text-gray-300 leading-relaxed">
+                  {t('start.feature_filter_desc')}
+                </p>
+              </li>
+              <li>
+                <p className={`text-base font-semibold ${s.cardIconText}`}>
+                  {t('start.feature_adjust_title')}
+                </p>
+                <p className="mt-2 text-base text-gray-300 leading-relaxed">
+                  {t('start.feature_adjust_desc')}
+                </p>
+              </li>
+            </ul>
+          </section>
         )}
       </div>
     </div>

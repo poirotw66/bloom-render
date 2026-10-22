@@ -60,12 +60,12 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   return (
     <>
       <header
-        className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 border rounded-2xl backdrop-blur-md transition-colors duration-300 ${
+        className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 rounded-2xl backdrop-blur-md transition-colors duration-300 ${
           theme === 'newyear'
-            ? 'border-red-700/50 bg-red-900/40 '
+            ? 'bg-red-950/70'
             : theme === 'bloom'
-              ? 'brand-border-soft bg-gray-800/50 '
-              : 'border-slate-600/40 bg-gray-800/50 '
+              ? 'bg-gray-800/70'
+              : 'bg-gray-800/70'
         }`}
         role="banner"
         aria-label="Main navigation"
@@ -85,8 +85,8 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
               <LogoIcon className="w-full h-full object-contain" />
             </span>
             <div className="flex flex-col">
-              <h1
-                className={`text-xl font-bold tracking-tight ${
+              <p
+                className={`text-xl font-semibold tracking-tight ${
                   theme === 'newyear'
                     ? 'text-red-50'
                     : theme === 'bloom'
@@ -95,9 +95,9 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                 }`}
               >
                 {t('app.title')}
-              </h1>
+              </p>
               <span
-                className={`text-xs font-normal ${
+                className={`text-sm font-normal ${
                   theme === 'newyear'
                     ? 'text-red-200'
                     : theme === 'bloom'

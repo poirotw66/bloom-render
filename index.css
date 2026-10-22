@@ -228,9 +228,10 @@
   z-index: 100;
   padding: 0.625rem 1rem;
   border-radius: var(--radius-control);
-  background: var(--brand-primary);
-  color: #fff;
+  background: #0f172a;
+  color: #f8fafc;
   font-weight: 600;
+  border: 2px solid #f8fafc;
 }
 .skip-link:focus {
   top: 1rem;

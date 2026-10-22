@@ -10,16 +10,17 @@ import type { ThemeType } from '../contexts/ThemeContext';
 
 /** Standard feature page shell (padding + radius + border). Append theme surface. */
 export const UI_PAGE =
-  'w-full max-w-5xl mx-auto text-center px-4 py-6 sm:p-8 transition-colors duration-300 rounded-2xl border';
+  'w-full max-w-5xl mx-auto text-center px-4 py-6 sm:p-8 transition-colors duration-300 rounded-2xl';
 
 /** Wider page shell (history / photography service). */
 export const UI_PAGE_WIDE =
-  'w-full max-w-6xl mx-auto text-center px-4 py-6 sm:p-8 transition-colors duration-300 rounded-2xl border';
+  'w-full max-w-6xl mx-auto text-center px-4 py-6 sm:p-8 transition-colors duration-300 rounded-2xl';
 
 export const UI_TITLE =
   'text-4xl font-semibold tracking-tight text-gray-100 sm:text-5xl md:text-6xl';
 
-export const UI_SUBTITLE = 'max-w-3xl mx-auto text-lg text-gray-300 md:text-xl leading-relaxed';
+export const UI_SUBTITLE =
+  'mx-auto max-w-[60ch] text-base md:text-lg text-gray-200 leading-relaxed';
 
 export const UI_CARD = 'bg-gray-800/50 border border-gray-700/60 rounded-2xl';
 
@@ -81,12 +82,12 @@ export function uiOption(active: boolean): string {
 /** Theme-aware page surface (bg + border). Pair with UI_PAGE. */
 export function getPageSurface(theme: ThemeType): string {
   if (theme === 'newyear') {
-    return 'bg-red-950/40 border-red-800/50';
+    return 'bg-red-950/40';
   }
   if (theme === 'bloom') {
-    return 'bg-gray-900/55 brand-border-soft';
+    return 'bg-gray-900/55';
   }
-  return 'bg-black/50 border-slate-700/50';
+  return 'bg-black/50';
 }
 
 /** Theme-aware title accent color. */
