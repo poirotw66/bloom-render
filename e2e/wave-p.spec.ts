@@ -14,29 +14,35 @@ test.describe('Wave P — OpenRouter OAuth', () => {
       localStorage.removeItem('pixshop_image_provider');
       sessionStorage.removeItem('pixshop_api_key');
       sessionStorage.removeItem('pixshop_openrouter_api_key');
+      sessionStorage.removeItem('pixshop_or_oauth_verifier');
+      sessionStorage.removeItem('pixshop_or_oauth_state');
     });
   });
 
   test('hero notice shows Sign in with OpenRouter and starts PKCE redirect', async ({ page }) => {
+    await page.addInitScript(() => {
+      (
+        window as unknown as {
+          __orAuthUrl?: string;
+          __BLOOM_OAUTH_ASSIGN__?: (url: string) => void;
+        }
+      ).__orAuthUrl = '';
+      (
+        window as unknown as { __BLOOM_OAUTH_ASSIGN__?: (url: string) => void }
+      ).__BLOOM_OAUTH_ASSIGN__ = (url: string) => {
+        (window as unknown as { __orAuthUrl?: string }).__orAuthUrl = url;
+      };
+    });
+
     await page.goto('/');
     const signIn = page.getByTestId('openrouter-sign-in');
     await expect(signIn).toBeVisible();
     await expect(signIn).toHaveText(/用 OpenRouter 登入|Sign in with OpenRouter/);
 
-    // Intercept navigation instead of leaving the app.
-    await page.evaluate(() => {
-      (window as unknown as { __orAuthUrl?: string }).__orAuthUrl = '';
-      const original = window.location.assign.bind(window.location);
-      (window.location as Location & { assign: (url: string) => void }).assign = (url: string) => {
-        (window as unknown as { __orAuthUrl?: string }).__orAuthUrl = url;
-        if (!url.includes('openrouter.ai/auth')) original(url);
-      };
-    });
-
     await signIn.click();
     await expect
       .poll(async () =>
-        page.evaluate(() => (window as unknown as { __orAuthUrl?: string }).__orAuthUrl),
+        page.evaluate(() => (window as unknown as { __orAuthUrl?: string }).__orAuthUrl ?? ''),
       )
       .toMatch(/openrouter\.ai\/auth/);
 
@@ -91,9 +97,10 @@ test.describe('Wave P — OpenRouter OAuth', () => {
     await expect
       .poll(async () => page.evaluate(() => sessionStorage.getItem('pixshop_or_oauth_verifier')))
       .toBeNull();
+    await expect(page.getByTestId('api-key-notice')).toHaveCount(0);
   });
 
-  test('callback error path shows message when code missing', async ({ page }) => {
+  test('callback error path shows message when denied', async ({ page }) => {
     await page.addInitScript(() => {
       sessionStorage.setItem('pixshop_or_oauth_verifier', 'a'.repeat(43));
       sessionStorage.setItem('pixshop_or_oauth_state', 'st');

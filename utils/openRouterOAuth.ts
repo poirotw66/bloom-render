@@ -129,8 +129,14 @@ export async function beginOpenRouterOAuth(options?: {
     state,
     callbackUrl,
   });
+  const testAssign =
+    typeof window !== 'undefined'
+      ? (window as unknown as { __BLOOM_OAUTH_ASSIGN__?: (url: string) => void })
+          .__BLOOM_OAUTH_ASSIGN__
+      : undefined;
   const assign =
     options?.assign ??
+    testAssign ??
     ((url: string) => {
       window.location.assign(url);
     });
