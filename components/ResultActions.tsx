@@ -64,15 +64,15 @@ const ResultActions: React.FC<ResultActionsProps> = ({
   return (
     <div className={`flex flex-col items-center gap-3 w-full ${className}`}>
       <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
-        <label className="flex items-center gap-2">
+        <label htmlFor="result-download-format" className="flex items-center gap-2">
           <span className="text-xs tracking-normal text-gray-500">
             {t('result.download_format')}
           </span>
           <select
+            id="result-download-format"
             value={format}
             onChange={(e) => setFormat(e.target.value as ImageExportFormat)}
             className="bg-gray-900 border border-gray-600 rounded-lg px-2 py-1 text-white"
-            aria-label={t('result.download_format')}
           >
             {FORMATS.map((f) => (
               <option key={f} value={f}>

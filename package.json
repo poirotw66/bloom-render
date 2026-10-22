@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/copy-404.mjs",
+    "build": "vite build && node scripts/emit-route-html.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest run",
@@ -28,6 +28,7 @@
     "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.3.0",
     "@testing-library/react": "^16.3.2",

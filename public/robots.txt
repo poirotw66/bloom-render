@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /bloom-render/
+
+Sitemap: https://www.bloss0m.com/bloom-render/sitemap.xml

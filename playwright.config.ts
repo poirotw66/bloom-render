@@ -22,6 +22,7 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   use: {
     baseURL: BASE_URL,
+    locale: 'en-US',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

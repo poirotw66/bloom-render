@@ -6,6 +6,8 @@
 import React, { useCallback, Suspense, lazy, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
+import SiteFooter from './components/SiteFooter';
+import StarNudge from './components/StarNudge';
 import Spinner from './components/Spinner';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import StartScreen from './components/StartScreen';
@@ -136,6 +138,8 @@ const App: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
+      <SiteFooter />
+      <StarNudge />
     </div>
   );
 };

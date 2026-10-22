@@ -21,8 +21,11 @@ const ThemedForm: React.FC<ThemedFormProps> = ({ themeType, setThemeType, disabl
   return (
     <div className="flex flex-col gap-4 w-full animate-fade-in">
       <div>
-        <label className={UI_LABEL}>{t('themed.label.type')}</label>
+        <label htmlFor="themed-type" className={UI_LABEL}>
+          {t('themed.label.type')}
+        </label>
         <select
+          id="themed-type"
           value={themeType}
           onChange={(e) => setThemeType(e.target.value as ThemedType)}
           disabled={disabled}

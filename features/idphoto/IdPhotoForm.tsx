@@ -70,8 +70,11 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
   return (
     <div className={UI_FORM_CARD}>
       <div>
-        <label className={UI_LABEL}>{t('idphoto.label.type')}</label>
+        <label htmlFor="idphoto-type" className={UI_LABEL}>
+          {t('idphoto.label.type')}
+        </label>
         <select
+          id="idphoto-type"
           value={idPhotoType}
           onChange={(e) => setIdPhotoType(e.target.value as IdPhotoType)}
           disabled={disabled}
@@ -117,8 +120,11 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
         </div>
       </div>
       <div>
-        <label className={UI_LABEL}>{t('idphoto.label.print_size')}</label>
+        <label htmlFor="idphoto-print-size" className={UI_LABEL}>
+          {t('idphoto.label.print_size')}
+        </label>
         <select
+          id="idphoto-print-size"
           value={idPhotoSizeId}
           onChange={(e) => setIdPhotoSizeId(e.target.value as IdPhotoSizeId)}
           disabled={disabled}
@@ -133,8 +139,11 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
         <p className={`mt-1 ${UI_LABEL_HINT}`}>{t('idphoto.print_size_hint')}</p>
       </div>
       <div>
-        <label className={UI_LABEL}>{t('idphoto.label.clothing')}</label>
+        <label htmlFor="idphoto-clothing" className={UI_LABEL}>
+          {t('idphoto.label.clothing')}
+        </label>
         <select
+          id="idphoto-clothing"
           value={idPhotoClothingOption}
           onChange={(e) => setIdPhotoClothingOption(e.target.value as ClothingOption)}
           disabled={disabled}
