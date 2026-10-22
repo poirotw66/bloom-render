@@ -40,8 +40,11 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
   return (
     <div className={UI_FORM_CARD}>
       <div>
-        <label className={UI_LABEL}>{t('portrait.label.type')}</label>
+        <label htmlFor="portrait-type" className={UI_LABEL}>
+          {t('portrait.label.type')}
+        </label>
         <select
+          id="portrait-type"
           value={portraitType}
           onChange={(e) => setPortraitType(e.target.value as PortraitType)}
           disabled={disabled}

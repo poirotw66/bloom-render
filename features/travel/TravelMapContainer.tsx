@@ -337,10 +337,14 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                     {/* Pose & Framing */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-400 tracking-normal">
+                        <label
+                          htmlFor="travel-pose"
+                          className="text-sm font-bold text-gray-400 tracking-normal"
+                        >
                           {t('travel.label.pose')}
                         </label>
                         <select
+                          id="travel-pose"
                           value={pose}
                           onChange={(e) => setPose(e.target.value as TravelPose)}
                           className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
@@ -367,10 +371,14 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         )}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-400 tracking-normal">
+                        <label
+                          htmlFor="travel-framing"
+                          className="text-sm font-bold text-gray-400 tracking-normal"
+                        >
                           {t('travel.label.framing')}
                         </label>
                         <select
+                          id="travel-framing"
                           value={framing}
                           onChange={(e) => setFraming(e.target.value as TravelFraming)}
                           className="w-full bg-gray-800/60 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-gray-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-500"
@@ -402,7 +410,10 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                             {t('travel.label.clear_background')}
                           </span>
                           <button
+                            type="button"
                             onClick={() => setClearBackground(!clearBackground)}
+                            aria-label={t('travel.label.clear_background')}
+                            aria-pressed={clearBackground}
                             className={`w-8 h-4 rounded-full relative transition-colors ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
                           >
                             <div
