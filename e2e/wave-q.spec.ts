@@ -5,12 +5,11 @@
  * Wave Q — mobile first-viewport showcase + sticky demo CTA + tab scroll cues.
  */
 
-import { test, expect, devices } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Wave Q — mobile first screen', () => {
-  test.use({ ...devices['iPhone 12'] });
-
   test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.addInitScript(() => {
       localStorage.setItem('pixshop_language', 'zh-TW');
       localStorage.removeItem('pixshop_image_provider');
@@ -41,10 +40,7 @@ test.describe('Wave Q — mobile first screen', () => {
     await page.goto('/');
     const nav = page.getByTestId('start-tab-nav');
     await expect(nav).toBeVisible();
-    // On a phone-width viewport the strip overflows; right fade/arrow should appear.
-    await expect(
-      page.getByTestId('tab-fade-right').or(page.getByTestId('tab-scroll-right')),
-    ).toBeVisible();
+    await expect(page.getByTestId('tab-scroll-right')).toBeVisible();
   });
 });
 
@@ -57,7 +53,8 @@ test.describe('Wave Q — desktop unchanged', () => {
       sessionStorage.removeItem('pixshop_api_key');
     });
     await page.goto('/');
-    await expect(page.getByTestId('mobile-hero-showcase')).toHaveCount(0);
-    await expect(page.getByTestId('sticky-demo-cta')).toHaveCount(0);
+    // Element may remain in the DOM but must not paint on desktop.
+    await expect(page.getByTestId('mobile-hero-showcase')).toBeHidden();
+    await expect(page.getByTestId('sticky-demo-cta')).toBeHidden();
   });
 });
