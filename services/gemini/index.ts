@@ -27,6 +27,8 @@ export { generateOptimizedPrompt } from './optimizePrompt';
 
 export { generateVirtualTryOn, type GenerateTryOnOptions } from './tryOn';
 
+export { generateRestoredPhoto, type RestoreOptions } from './restore';
+
 // Re-export domain types from root for consumers that import from geminiService
 export type {
   RetouchLevel,

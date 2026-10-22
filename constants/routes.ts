@@ -19,6 +19,7 @@ export const ROUTES = {
   TRY_ON: '/try-on',
   PHOTOGRAPHY_SERVICE: '/photography-service',
   ENHANCE: '/enhance',
+  RESTORE: '/restore',
   PROMPT_GALLERY: '/prompt-gallery',
   /** Remix deep link — payload lives in the URL hash only. */
   REMIX: '/r',

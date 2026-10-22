@@ -24,6 +24,7 @@ const ROUTES: { path: string; expectText: RegExp | string }[] = [
   { path: '/couple-group', expectText: /Couple & Group/i },
   { path: '/try-on', expectText: /Try-On/i },
   { path: '/enhance', expectText: /Local Enhance/i },
+  { path: '/restore', expectText: /Old Photo Restoration|老照片修復/i },
   { path: '/photography-service', expectText: /Photography/i },
   { path: '/prompt-gallery', expectText: /Prompt gallery/i },
   { path: '/r', expectText: /invalid or expired|Unknown style|Opening shared style/i },

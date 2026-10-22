@@ -73,6 +73,7 @@ test.describe('Wave N — route HTML build output', () => {
       'try-on',
       'photography-service',
       'enhance',
+      'restore',
       'prompt-gallery',
       'r',
       'oauth/openrouter',

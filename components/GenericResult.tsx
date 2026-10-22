@@ -26,6 +26,8 @@ interface GenericResultProps {
   againKey?: string;
   fileBaseName?: string;
   className?: string;
+  /** Optional “用同款” remix URL for share-card QR + copy link. */
+  remixUrl?: string;
 }
 
 const GenericResult: React.FC<GenericResultProps> = ({
@@ -39,6 +41,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
   againKey = 'start.idphoto_again',
   fileBaseName = 'bloomrender-result',
   className = '',
+  remixUrl,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
@@ -79,6 +82,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
         originalUrl={originalUrl}
         fileBaseName={fileBaseName}
         onEnhanced={onEnhanced}
+        remixUrl={remixUrl}
       />
 
       <div className="flex flex-wrap items-center justify-center gap-4">
