@@ -84,7 +84,7 @@ export const zhTWMessages: Record<string, string> = {
   'start.image_count': '圖片數量',
   'start.generate_button': '生成圖片',
   'start.generating': '生成中...',
-  'start.generate_pro_slow_hint': '使用 Gemini 3 Pro 生成圖片可能需要 1～2 分鐘，請耐心等候。',
+  'start.generate_pro_slow_hint': '使用 Nano Banana 2.1 處理複雜提示時可能較久，請耐心等候。',
   'start.feature_retouch_title': '精準修圖',
   'start.feature_retouch_desc': '點擊圖片上的任意點以精確去除瑕疵、更改顏色或添加元素。',
   'start.feature_filter_title': '創意濾鏡',
@@ -1265,12 +1265,19 @@ export const zhTWMessages: Record<string, string> = {
   'settings.demo_note':
     'Demo 模式會回傳 public/examples 的預製範例。若要用自己的照片生成，請切換到 Gemini 或 OpenRouter 並貼上金鑰。',
   'settings.model': '模型',
-  'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
-  'settings.model.flash31': 'Gemini 3.1 Flash',
-  'settings.model.pro': 'Gemini 3 Pro',
+  'settings.model.nanoBanana21': 'Nano Banana 2.1（新品 · 付費）',
+  'settings.model.nanoBanana2Lite': 'Nano Banana 2 Lite（預設）',
+  'settings.model.nanoBanana2': 'Nano Banana 2（付費）',
+  'settings.model.nanoBanana21_desc':
+    '高品質影像生成與編輯，在 Flash 規模下強化真實性、視覺保真與多輪一致性。文字輸入／輸出每百萬 token $1.50／$7.50；影像輸入每百萬 token $1.50；輸出約每張 $0.0336。',
+  'settings.model.nanoBanana2Lite_desc':
+    '最小、最具成本效益的影像生成／編輯模型，適合大規模使用。文字輸入／輸出每百萬 token $0.25／$1.50；影像輸入每百萬 token $0.25；輸出約每張 $0.0336。',
+  'settings.model.nanoBanana2_desc':
+    '專業級視覺智慧，兼具 Flash 速度與貼近真實的生成。文字輸入／輸出每百萬 token $0.50／$3.00；影像輸入每百萬 token $0.50；輸出約每張 $0.0672。',
   'settings.openrouter.model': 'OpenRouter 模型',
-  'settings.openrouter.model.flash25': 'Google Gemini 2.5 Flash Image',
-  'settings.openrouter.model.pro3': 'Google Gemini 3 Pro Image',
+  'settings.openrouter.model.nanoBanana21': 'Google Nano Banana 2.1（新品 · 付費）',
+  'settings.openrouter.model.nanoBanana2Lite': 'Google Nano Banana 2 Lite（預設）',
+  'settings.openrouter.model.nanoBanana2': 'Google Nano Banana 2（付費）',
   'settings.openrouter.model.gptImage1': 'OpenAI GPT Image 1',
   'settings.openrouter.model.flux2pro': 'Black Forest Labs FLUX.2 Pro',
   'settings.openrouter.api_key': 'OpenRouter API 金鑰',

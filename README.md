@@ -82,7 +82,9 @@ Optional Travel maps: `public/images/world-map.webp`, `public/images/taiwan-map.
 | Home-screen **model compare**                                                                               | **Gemini-only** (compares Gemini model ids)                      |
 | **Local Enhance** (bg remove / 2× upscale)                                                                  | On-device — no provider key                                      |
 
-Prefer image-capable OpenRouter models (e.g. `google/gemini-2.5-flash-image`). Do not commit `.env` / `.env.local` or paste keys into issues.
+Prefer image-capable OpenRouter models that mirror Gemini’s Nano Banana family
+(`google/gemini-nano-banana-2.1`, `google/gemini-3.1-flash-lite-image`,
+`google/gemini-3.1-flash-image`). Do not commit `.env` / `.env.local` or paste keys into issues.
 
 ---
 
