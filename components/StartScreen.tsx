@@ -422,6 +422,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         </p>
         <p className={UI_SUBTITLE}>{t('start.subtitle')}</p>
 
+        {/* Mobile first viewport: show a real before/after result immediately
+            (≤640px). Desktop keeps the fuller showcase below the fold. */}
+        {tab === 'upload' && (
+          <div className="w-full max-[640px]:block min-[641px]:hidden">
+            <ExampleShowcase feature="editor" variant="hero" autoPlay className="mt-1" />
+          </div>
+        )}
+
         {/* No-key visitors need the API notice in the first viewport, before the
             gallery pushes it below the fold. */}
         <ApiKeyNotice />
@@ -895,7 +903,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           </div>
         )}
 
-        {tab === 'upload' && <ExampleShowcase feature="editor" />}
+        {tab === 'upload' && (
+          <div className="max-[640px]:hidden">
+            <ExampleShowcase feature="editor" />
+          </div>
+        )}
 
         {tab === 'generate' &&
           generatedImages.length === 0 &&
