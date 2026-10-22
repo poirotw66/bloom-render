@@ -548,10 +548,10 @@ const EditorPage: React.FC = () => {
             activeTab === 'retouch' &&
             retouchMode === 'point' && (
               <div
-                className="absolute rounded-full w-6 h-6 bg-blue-500/50 border-2 border-white pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
+                className="absolute rounded-full w-6 h-6 brand-bg opacity-50 border-2 border-white pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
                 style={{ left: `${displayHotspot.x}px`, top: `${displayHotspot.y}px` }}
               >
-                <div className="absolute inset-0 rounded-full w-6 h-6 bg-blue-400"></div>
+                <div className="absolute inset-0 rounded-full w-6 h-6 brand-bg"></div>
               </div>
             )}
         </div>
@@ -672,7 +672,7 @@ const EditorPage: React.FC = () => {
           <button
             onClick={handleUndo}
             disabled={!canUndo}
-            className="flex items-center justify-center text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="flex items-center justify-center text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
             aria-label="Undo last action"
           >
             <UndoIcon className="w-5 h-5 mr-2" />
@@ -681,7 +681,7 @@ const EditorPage: React.FC = () => {
           <button
             onClick={handleRedo}
             disabled={!canRedo}
-            className="flex items-center justify-center text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="flex items-center justify-center text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
             aria-label="Redo last action"
           >
             <RedoIcon className="w-5 h-5 mr-2" />
@@ -695,9 +695,9 @@ const EditorPage: React.FC = () => {
               type="button"
               onClick={() => setIsComparing((prev) => !prev)}
               aria-pressed={isComparing}
-              className={`flex items-center justify-center text-center border font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out active:scale-95 text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${
+              className={`flex items-center justify-center text-center border font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out active:scale-95 text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)] ${
                 isComparing
-                  ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500'
+                  ? 'brand-bg theme-border-strong text-white hover:opacity-95'
                   : 'bg-white/10 border-white/20 text-gray-200 hover:bg-white/20 hover:border-white/30'
               }`}
             >
@@ -709,13 +709,13 @@ const EditorPage: React.FC = () => {
           <button
             onClick={handleReset}
             disabled={!canUndo}
-            className="text-center bg-transparent border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/10 hover:border-white/30 active:scale-95 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="text-center bg-transparent border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/10 hover:border-white/30 active:scale-95 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
           >
             {t('main.btn_reset')}
           </button>
           <button
             onClick={handleUploadNew}
-            className="text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="text-center bg-white/10 border border-white/20 text-gray-200 font-semibold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:bg-white/20 hover:border-white/30 active:scale-95 text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
           >
             {t('main.btn_start_over')}
           </button>

@@ -47,7 +47,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
   return (
     <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto ${className}`}>
       {isDemoMode && <DemoModeBanner />}
-      <div className="relative w-full rounded-xl overflow-hidden border-2 border-gray-700 p-2 bg-gray-950/40">
+      <div className="relative w-full rounded-xl overflow-hidden border-2 theme-border p-2 theme-raised">
         {isDemoMode && (
           <div className="absolute top-4 left-4 z-10">
             <DemoModeBanner compact />
@@ -58,14 +58,14 @@ const GenericResult: React.FC<GenericResultProps> = ({
 
       {params.length > 0 && paramsTitleKey && (
         <div className={`w-full p-6 ${UI_CARD}`}>
-          <h3 className="text-xl font-bold text-white mb-4">{t(paramsTitleKey)}</h3>
+          <h3 className="text-xl font-semibold theme-ink mb-4">{t(paramsTitleKey)}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {params.map((param, idx) => (
               <div key={idx}>
-                <span className="block text-xs font-medium text-gray-500 tracking-normal">
+                <span className="block text-sm font-medium theme-ink-muted tracking-normal">
                   {t(param.labelKey)}
                 </span>
-                <span className="text-base text-gray-200 leading-relaxed">
+                <span className="text-base theme-ink-soft leading-relaxed">
                   {typeof param.value === 'string' ? param.value : param.value}
                 </span>
               </div>

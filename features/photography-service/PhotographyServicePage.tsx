@@ -6,6 +6,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { SparklesIcon, UserIcon, UsersIcon, GiftIcon } from '../../components/icons';
 import {
   PHOTOGRAPHY_SERVICE_CATEGORIES,
@@ -13,7 +14,15 @@ import {
 } from '../../constants/photographyService';
 import ServiceCard from './ServiceCard';
 import { PhotographyServiceItem } from './types';
-import { UI_CHIP_ACTIVE, UI_CHIP_INACTIVE, UI_SUBTITLE, UI_TITLE } from '../../utils/uiClasses';
+import {
+  UI_CHIP_ACTIVE,
+  UI_CHIP_INACTIVE,
+  UI_PAGE_WIDE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
+} from '../../utils/uiClasses';
 
 const FEATURED_SERVICE_IDS = [
   'id-photo-natural',
@@ -31,6 +40,7 @@ const FEATURED_SERVICE_ICONS = {
 
 const PhotographyServicePage: React.FC = () => {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [activeCategoryId, setActiveCategoryId] = useState<string>(
     PHOTOGRAPHY_SERVICE_CATEGORIES[0].id,
@@ -74,35 +84,26 @@ const PhotographyServicePage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col items-center gap-8 animate-fade-in px-4 py-6 sm:px-0">
+    <div className={`${UI_PAGE_WIDE} ${getPageSurface(theme)} flex flex-col items-center gap-8`}>
       <div className="text-center space-y-4">
         <h1 className={UI_TITLE}>
           {t('service.title_part1')}{' '}
-          <span className="text-blue-400">{t('service.title_part2')}</span>
+          <span className={getTitleAccent(theme)}>{t('service.title_part2')}</span>
         </h1>
         <p className={UI_SUBTITLE}>{t('service.subtitle')}</p>
       </div>
 
-      <section className="w-full p-6 md:p-8 rounded-3xl border border-blue-500/20 brand-bg brand-bg brand-bg">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-blue-300">
-              {t('service.featured.eyebrow')}
-            </p>
-            <h2 className="text-3xl font-extrabold text-white">{t('service.featured.title')}</h2>
-            <p className="max-w-2xl text-gray-300">{t('service.featured.desc')}</p>
-          </div>
-          <div className="flex flex-wrap gap-2 text-sm text-gray-200">
-            <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5">
-              {t('service.featured.quick_turnaround')}
-            </span>
-            <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5">
-              {t('service.featured.multi_scene')}
-            </span>
-            <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5">
-              {t('service.featured.ai_polish')}
-            </span>
-          </div>
+      <section className="w-full p-6 md:p-8 rounded-2xl border theme-border theme-raised">
+        <div className="space-y-2 text-left md:text-left">
+          <p className="text-sm font-semibold tracking-wide brand-text">
+            {t('service.featured.eyebrow')}
+          </p>
+          <h2 className="text-3xl font-semibold theme-ink">{t('service.featured.title')}</h2>
+          <p className="max-w-2xl theme-ink-muted">{t('service.featured.desc')}</p>
+          <p className="max-w-2xl text-sm theme-ink-soft">
+            {t('service.featured.quick_turnaround')}, {t('service.featured.multi_scene')},{' '}
+            {t('service.featured.ai_polish')}
+          </p>
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -115,24 +116,24 @@ const PhotographyServicePage: React.FC = () => {
                 key={item.id}
                 type="button"
                 onClick={() => handleServiceClick(item)}
-                className="text-left h-full rounded-2xl border border-white/10 bg-gray-950/40 hover:bg-gray-900/60 hover:border-blue-400/40 transition-colors duration-200 p-5 flex flex-col gap-4"
+                className="text-left h-full rounded-2xl border theme-border theme-raised hover:opacity-95 transition-opacity duration-200 p-5 flex flex-col gap-4 focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-blue-500/15 text-blue-300 border border-blue-400/20 flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-2xl brand-bg-tint brand-text border theme-border flex items-center justify-center">
                     <Icon className="w-6 h-6" />
                   </div>
                   {item.badgeKey && (
-                    <span className="px-2 py-0.5 bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
+                    <span className="px-2 py-0.5 brand-bg text-white text-sm font-semibold tracking-wide rounded-md">
                       {t(item.badgeKey)}
                     </span>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-white">{t(item.nameKey)}</h3>
-                  <p className="text-sm text-gray-400 line-clamp-3">{t(item.descriptionKey)}</p>
+                  <h3 className="text-lg font-semibold theme-ink">{t(item.nameKey)}</h3>
+                  <p className="text-sm theme-ink-muted line-clamp-3">{t(item.descriptionKey)}</p>
                 </div>
                 <div className="mt-auto flex items-end justify-end">
-                  <span className="text-sm font-semibold text-blue-300">
+                  <span className="text-sm font-semibold brand-text">
                     {t(item.actionLabelKey)} →
                   </span>
                 </div>
@@ -142,8 +143,7 @@ const PhotographyServicePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Category Tabs */}
-      <div className="w-full flex flex-wrap justify-center gap-2 mb-4">
+      <div className="w-full flex flex-wrap justify-center gap-2">
         {PHOTOGRAPHY_SERVICE_CATEGORIES.map((category) => (
           <button
             key={category.id}
@@ -156,7 +156,6 @@ const PhotographyServicePage: React.FC = () => {
         ))}
       </div>
 
-      {/* Service Grid */}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredItems.length > 0 ? (
           filteredItems.map((item) => (
@@ -164,15 +163,15 @@ const PhotographyServicePage: React.FC = () => {
           ))
         ) : (
           <div className="col-span-full py-20 text-center">
-            <p className="text-gray-500 italic">{t('service.empty_category')}</p>
+            <p className="theme-ink-muted italic">{t('service.empty_category')}</p>
           </div>
         )}
       </div>
 
-      <section className="w-full mt-8 p-8 brand-bg brand-bg rounded-3xl border border-white/5">
+      <section className="w-full mt-2 p-6 md:p-8 rounded-2xl border theme-border theme-raised">
         <div className="text-center space-y-3">
-          <h2 className="text-2xl font-bold text-white">{t('service.showcase.title')}</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">{t('service.showcase.desc')}</p>
+          <h2 className="text-2xl font-semibold theme-ink">{t('service.showcase.title')}</h2>
+          <p className="theme-ink-muted max-w-2xl mx-auto">{t('service.showcase.desc')}</p>
         </div>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -184,22 +183,22 @@ const PhotographyServicePage: React.FC = () => {
                 setActiveCategoryId(category.id);
                 handleServiceClick(item);
               }}
-              className="text-left rounded-2xl border border-white/10 bg-black/20 hover:bg-black/30 hover:border-white/20 transition-colors duration-200 p-5 flex flex-col gap-3"
+              className="text-left rounded-2xl border theme-border theme-raised hover:opacity-95 transition-opacity duration-200 p-5 flex flex-col gap-3 focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)]"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-black uppercase tracking-[0.18em] text-blue-300">
+                <span className="text-sm font-semibold tracking-wide brand-text">
                   {t(category.labelKey)}
                 </span>
                 {item.badgeKey && (
-                  <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-gray-200">
+                  <span className="px-2 py-0.5 rounded-md brand-bg text-white text-sm font-semibold">
                     {t(item.badgeKey)}
                   </span>
                 )}
               </div>
-              <h3 className="text-lg font-bold text-white">{t(item.nameKey)}</h3>
-              <p className="text-sm text-gray-400 line-clamp-3">{t(item.descriptionKey)}</p>
+              <h3 className="text-lg font-semibold theme-ink">{t(item.nameKey)}</h3>
+              <p className="text-sm theme-ink-muted line-clamp-3">{t(item.descriptionKey)}</p>
               <div className="mt-auto pt-2 flex items-center justify-end">
-                <span className="text-sm text-gray-200">{t('service.showcase.cta')}</span>
+                <span className="text-sm brand-text">{t('service.showcase.cta')}</span>
               </div>
             </button>
           ))}

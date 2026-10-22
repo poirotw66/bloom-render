@@ -13,7 +13,17 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { applyPromptGalleryPreset } from '../../utils/applyPromptGalleryPreset';
 import { publicAssetUrl } from '../../utils/publicAsset';
-import { UI_PAGE, UI_SUBTITLE, UI_TITLE, getPageSurface } from '../../utils/uiClasses';
+import {
+  UI_BTN_PRIMARY,
+  UI_CARD_SOFT,
+  UI_CHIP_ACTIVE,
+  UI_CHIP_INACTIVE,
+  UI_PAGE,
+  UI_SUBTITLE,
+  UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
+} from '../../utils/uiClasses';
 
 const FEATURE_FILTERS: Array<PromptGalleryFeature | 'all'> = [
   'all',
@@ -58,20 +68,22 @@ const PromptGalleryPage: React.FC = () => {
   );
 
   return (
-    <div className={`${UI_PAGE} w-full max-w-5xl mx-auto ${surface}`}>
+    <div className={`${UI_PAGE} ${surface}`}>
       <header className="text-center mb-8">
-        <h1 className={UI_TITLE}>{t('prompt_gallery.title')}</h1>
+        <h1 className={UI_TITLE}>
+          <span className={getTitleAccent(theme)}>{t('prompt_gallery.title')}</span>
+        </h1>
         <p className={`${UI_SUBTITLE} mt-2`}>{t('prompt_gallery.subtitle')}</p>
       </header>
 
       <section
-        className="mb-8 rounded-2xl border border-white/10 bg-black/20 p-4"
+        className="mb-8 rounded-2xl border theme-border theme-raised p-4"
         aria-labelledby="prompt-gallery-library"
       >
-        <h2 id="prompt-gallery-library" className="text-lg font-semibold text-gray-100 mb-1">
+        <h2 id="prompt-gallery-library" className="text-lg font-semibold theme-ink mb-1">
           {t('prompt_gallery.library_title')}
         </h2>
-        <p className="text-sm text-gray-400 mb-3">{t('prompt_gallery.library_hint')}</p>
+        <p className="text-sm theme-ink-muted mb-3">{t('prompt_gallery.library_hint')}</p>
         <SavedPromptsImportExport />
       </section>
 
@@ -86,11 +98,7 @@ const PromptGalleryPage: React.FC = () => {
             type="button"
             aria-pressed={filter === value}
             onClick={() => setFilter(value)}
-            className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-              filter === value
-                ? 'bg-white/20 text-white'
-                : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'
-            }`}
+            className={filter === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
           >
             {t(`prompt_gallery.filter_${value}`)}
           </button>
@@ -101,32 +109,29 @@ const PromptGalleryPage: React.FC = () => {
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
         {entries.map((entry) => (
-          <li
-            key={entry.id}
-            className="flex flex-col rounded-2xl border border-white/10 bg-gray-900/40 overflow-hidden"
-          >
+          <li key={entry.id} className={`flex flex-col ${UI_CARD_SOFT}`}>
             <img
               src={publicAssetUrl(entry.thumbnail)}
               alt=""
-              className="w-full aspect-[4/3] object-cover bg-black/40"
+              className="w-full aspect-[4/3] object-cover theme-raised"
               loading="lazy"
             />
             <div className="flex flex-col gap-2 p-4 flex-1">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="text-base font-bold text-gray-100">{entry.title}</h3>
-                <span className="shrink-0 text-[10px] uppercase tracking-wide rounded-full px-2 py-0.5 bg-white/10 text-gray-300">
+                <h3 className="text-base font-semibold theme-ink">{entry.title}</h3>
+                <span className="shrink-0 text-sm tracking-wide rounded-md px-2 py-0.5 brand-bg text-white">
                   {t(`prompt_gallery.feature_${entry.feature}`)}
                 </span>
               </div>
               {entry.description && (
-                <p className="text-xs text-gray-400 line-clamp-2">{entry.description}</p>
+                <p className="text-sm theme-ink-muted line-clamp-2">{entry.description}</p>
               )}
-              <p className="text-xs text-gray-500 line-clamp-3 font-sans">{entry.prompt}</p>
+              <p className="text-sm theme-ink-muted line-clamp-3 font-sans">{entry.prompt}</p>
               <button
                 type="button"
                 disabled={applyingId === entry.id}
                 onClick={() => void handleApply(entry.id)}
-                className="mt-auto w-full rounded-lg brand-bg text-white font-bold py-2.5 text-sm hover:opacity-95 transition-opacity cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                className={`mt-auto w-full ${UI_BTN_PRIMARY}`}
               >
                 {applyingId === entry.id ? t('prompt_gallery.applying') : t('prompt_gallery.apply')}
               </button>
@@ -136,10 +141,10 @@ const PromptGalleryPage: React.FC = () => {
       </ul>
 
       {entries.length === 0 && (
-        <p className="text-center text-gray-400 py-12">{t('prompt_gallery.empty')}</p>
+        <p className="text-center theme-ink-muted py-12">{t('prompt_gallery.empty')}</p>
       )}
 
-      <p className="mt-10 text-center text-xs text-gray-500">
+      <p className="mt-10 text-center text-sm theme-ink-muted">
         {t('prompt_gallery.contribute_hint')}
       </p>
     </div>

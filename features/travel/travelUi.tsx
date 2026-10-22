@@ -6,18 +6,17 @@
 import React from 'react';
 import { ListBulletIcon, MapIcon, SparklesIcon, TravelIcon } from '../../components/icons';
 
-export const TRAVEL_PANEL = 'rounded-2xl border border-sky-500/15 bg-slate-950/70';
+export const TRAVEL_PANEL = 'rounded-2xl border theme-border theme-raised';
 
 export const TRAVEL_CHIP =
-  'px-3 py-2 rounded-xl text-xs font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
+  'px-3 py-2 rounded-xl text-sm font-semibold transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:brand-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)] disabled:opacity-50 disabled:cursor-not-allowed border flex items-center justify-center gap-2';
 
-export const TRAVEL_CHIP_ACTIVE = 'bg-sky-600 text-white border-sky-400/60';
+export const TRAVEL_CHIP_ACTIVE = 'brand-bg text-white theme-border-strong';
 
 export const TRAVEL_CHIP_INACTIVE =
-  'bg-slate-800/60 text-slate-400 border-slate-700/80 hover:bg-slate-700/50 hover:border-slate-600 hover:text-slate-200';
+  'theme-raised theme-ink-muted theme-border hover:opacity-90 hover:theme-ink-soft';
 
-export const TRAVEL_SEGMENT_TRACK =
-  'inline-flex p-1 rounded-xl border border-slate-700/80 bg-slate-950/80';
+export const TRAVEL_SEGMENT_TRACK = 'inline-flex p-1 rounded-xl border theme-border theme-raised';
 
 type ViewMode = 'list' | 'map';
 
@@ -36,11 +35,11 @@ export const TravelViewModeToggle: React.FC<TravelViewModeToggleProps> = ({
   listLabel,
   size = 'md',
 }) => {
-  const pad = size === 'sm' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm';
+  const pad = size === 'sm' ? 'px-3 py-1.5 text-sm' : 'px-4 py-2 text-sm';
   const icon = 'w-4 h-4';
 
-  const active = 'bg-sky-600 text-white';
-  const idle = 'text-slate-400 hover:text-slate-200 hover:bg-white/5';
+  const active = 'brand-bg text-white';
+  const idle = 'theme-ink-muted hover:theme-ink-soft hover:opacity-90';
 
   return (
     <div className={TRAVEL_SEGMENT_TRACK} role="group" aria-label={mapLabel}>
@@ -88,11 +87,11 @@ export const TravelToolbar: React.FC<TravelToolbarProps> = ({
   <div className={`w-full flex flex-col gap-3 p-4 ${TRAVEL_PANEL}`}>
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0">
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/25 text-sm font-semibold text-sky-100 max-w-full">
-          <TravelIcon className="w-4 h-4 shrink-0 text-sky-300" aria-hidden />
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl brand-bg-tint border theme-border text-sm font-semibold brand-text max-w-full">
+          <TravelIcon className="w-4 h-4 shrink-0 brand-text" aria-hidden />
           <span className="truncate">{sceneLabel}</span>
         </span>
-        <span className="text-sm text-slate-400 leading-snug">{instruction}</span>
+        <span className="text-sm theme-ink-muted leading-snug">{instruction}</span>
       </div>
       <div className="flex flex-wrap items-center gap-2 shrink-0">
         <TravelViewModeToggle
@@ -102,7 +101,7 @@ export const TravelToolbar: React.FC<TravelToolbarProps> = ({
           listLabel={listLabel}
         />
         {surpriseHint && (
-          <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-orange-500/10 border border-orange-500/25 text-orange-100 text-xs font-semibold">
+          <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl brand-bg-tint border theme-border brand-text text-sm font-semibold">
             <SparklesIcon className="w-3.5 h-3.5" />
             {surpriseHint}
           </span>

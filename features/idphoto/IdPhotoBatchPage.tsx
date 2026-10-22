@@ -8,6 +8,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useBatchProcessing } from '../../hooks/useBatchProcessing';
 import { useDemoSampleFiles } from '../../hooks/useDemoSampleInput';
 import { generateIdPhoto } from '../../services/geminiService';
@@ -22,6 +23,8 @@ import {
   UI_PAGE,
   UI_SUBTITLE,
   UI_TITLE,
+  getPageSurface,
+  getTitleAccent,
 } from '../../utils/uiClasses';
 import {
   DEFAULT_ID_TYPE,
@@ -43,6 +46,7 @@ interface IdPhotoBatchPageProps {
 
 const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const settings = useSettings();
   const batch = useBatchProcessing<
     File,
@@ -155,10 +159,10 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   }, [batch.results]);
 
   return (
-    <div className={`${UI_PAGE} border-transparent `}>
+    <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-6">
         <h1 className={UI_TITLE}>
-          {t('start.title_part1')} <span className="text-emerald-400">{t('batch.title')}</span>
+          {t('start.title_part1')} <span className={getTitleAccent(theme)}>{t('batch.title')}</span>
         </h1>
         <p className={UI_SUBTITLE}>{t('batch.upload_hint', { min: 1, max: 10 })}</p>
 
