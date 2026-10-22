@@ -15,7 +15,14 @@
 
 import { ROUTES } from './routes';
 
-export type ExampleFeature = 'generate' | 'editor' | 'idphoto' | 'portrait' | 'travel' | 'tryon';
+export type ExampleFeature =
+  | 'generate'
+  | 'editor'
+  | 'idphoto'
+  | 'portrait'
+  | 'travel'
+  | 'tryon'
+  | 'restore';
 
 interface ExampleBase {
   /** i18n key for the caption under the item; also used as the alt text. */
@@ -111,6 +118,17 @@ export const FEATURE_EXAMPLES: Record<ExampleFeature, FeatureExampleSet> = {
         captionKey: 'examples.tryon_1',
       },
       { kind: 'single', src: url('tryon-after-2'), captionKey: 'examples.tryon_2' },
+    ],
+  },
+  restore: {
+    titleKey: 'examples.restore_title',
+    items: [
+      {
+        kind: 'compare',
+        beforeSrc: url('restore-before'),
+        afterSrc: url('restore-after'),
+        captionKey: 'examples.restore_1',
+      },
     ],
   },
 };

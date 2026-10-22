@@ -86,6 +86,11 @@ export const ROUTE_SEO = {
     description:
       'Enhance photos locally in the browser without sending them to a cloud AI. 本機影像強化：不上傳雲端 AI 即可提升畫質。',
   },
+  '/restore': {
+    title: 'Old Photo Restoration — BloomRender',
+    description:
+      'Restore scratches, fading, and noise on old photos, with optional colorization and local 2× upscale. 老照片修復：刮痕、褪色與噪點修復，可選上色與本機 2× 放大。',
+  },
   '/prompt-gallery': {
     title: 'Prompt Gallery — BloomRender',
     description:

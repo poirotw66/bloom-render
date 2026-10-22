@@ -12,10 +12,10 @@ import { SITE_BASE_PATH, SITE_ORIGIN } from '../constants/site';
 /** Preferred short form: viral template id. */
 export type RemixIdPayload = { v: 1; id: string };
 
-/** Full prompt form for generate / retouch / adjust / filter flows. */
+/** Full prompt form for generate / retouch / adjust / filter / restore flows. */
 export type RemixPromptPayload = {
   v: 1;
-  f: 'generate' | 'retouch' | 'adjust' | 'filter';
+  f: 'generate' | 'retouch' | 'adjust' | 'filter' | 'restore';
   p: string;
   a?: '1:1' | '3:4' | '4:3' | '16:9' | '9:16';
   q?: 1 | 2 | 3 | 4;
@@ -31,7 +31,7 @@ const MAX_ENCODED_CHARS = 1500;
 
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-const FEATURES = new Set(['generate', 'retouch', 'adjust', 'filter'] as const);
+const FEATURES = new Set(['generate', 'retouch', 'adjust', 'filter', 'restore'] as const);
 const ASPECTS = new Set(['1:1', '3:4', '4:3', '16:9', '9:16'] as const);
 const QUALITIES = new Set([1, 2, 3, 4] as const);
 const TABS = new Set(['retouch', 'adjust', 'filters'] as const);

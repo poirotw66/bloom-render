@@ -51,6 +51,10 @@ export const DEMO_ASSETS_BY_CONTEXT: Record<string, DemoAssetPair> = {
     before: ex('tryon-before'),
     after: [ex('travel-2')],
   },
+  restore: {
+    before: ex('restore-before'),
+    after: [ex('restore-after')],
+  },
 };
 
 export const DEMO_MODEL_ID = 'demo-samples';
@@ -72,7 +76,8 @@ export type DemoFeatureKey =
   | 'themed'
   | 'tryon'
   | 'couple'
-  | 'group';
+  | 'group'
+  | 'restore';
 
 const FEATURE_TO_CONTEXT: Record<DemoFeatureKey, string> = {
   generate: 'generation',
@@ -84,6 +89,7 @@ const FEATURE_TO_CONTEXT: Record<DemoFeatureKey, string> = {
   tryon: 'try-on',
   couple: 'couple',
   group: 'group',
+  restore: 'restore',
 };
 
 export function demoAssetsForFeature(feature: DemoFeatureKey): DemoAssetPair {

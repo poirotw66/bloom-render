@@ -23,7 +23,8 @@ export type StartTab =
   | 'photography-service'
   | 'couple-group'
   | 'tryon'
-  | 'enhance';
+  | 'enhance'
+  | 'restore';
 
 interface TabItem {
   tab: StartTab;
@@ -108,6 +109,14 @@ const tabs: TabItem[] = [
     i18nKey: 'start.tab_enhance',
     accentActive: 'bg-cyan-700 text-white',
     accentFocus: 'focus-visible:ring-cyan-500',
+  },
+  {
+    tab: 'restore',
+    path: ROUTES.RESTORE,
+    i18nKey: 'start.tab_restore',
+    // Theme brand tokens (Bloom fuchsia, Night blue/cyan, New Year red) — not a one-off accent.
+    accentActive: 'brand-bg-strong text-white',
+    accentFocus: 'focus-visible:brand-ring',
   },
 ];
 

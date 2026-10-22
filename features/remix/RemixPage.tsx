@@ -48,6 +48,14 @@ const RemixPage: React.FC = () => {
         return;
       }
 
+      if ('f' in payload && payload.f === 'restore') {
+        navigate(ROUTES.RESTORE, {
+          replace: true,
+          state: { restorePreset: { colorize: payload.p !== 'restore-only' } },
+        });
+        return;
+      }
+
       const generatePreset = remixToGeneratePreset(payload);
       if (generatePreset) {
         const state: GenerateGalleryLocationState = { galleryPreset: generatePreset };

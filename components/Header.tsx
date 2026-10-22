@@ -55,6 +55,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
     if (path.startsWith(ROUTES.COUPLE_GROUP)) return 'couple-group';
     if (path.startsWith(ROUTES.TRY_ON)) return 'tryon';
     if (path.startsWith(ROUTES.ENHANCE)) return 'enhance';
+    if (path.startsWith(ROUTES.RESTORE)) return 'restore';
     return 'upload';
   }, [location.pathname]);
 

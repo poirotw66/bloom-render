@@ -37,6 +37,8 @@ export function routeForHistoryType(type: string): AppRoutePath {
       return ROUTES.COUPLE_GROUP;
     case 'tryon':
       return ROUTES.TRY_ON;
+    case 'restore':
+      return ROUTES.RESTORE;
     default:
       return ROUTES.HOME;
   }

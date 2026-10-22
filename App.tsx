@@ -31,6 +31,7 @@ const PhotographyServicePage = lazy(
 const CoupleGroupPage = lazy(() => import('./features/couple-group/CoupleGroupPage'));
 const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
 const EnhancePage = lazy(() => import('./features/enhance/EnhancePage'));
+const RestorePage = lazy(() => import('./features/restore/RestorePage'));
 const EditorPage = lazy(() => import('./features/editor/EditorPage'));
 const PromptGalleryPage = lazy(() => import('./features/prompt-gallery/PromptGalleryPage'));
 const RemixPage = lazy(() => import('./features/remix/RemixPage'));
@@ -140,6 +141,10 @@ const App: React.FC = () => {
             <Route
               path={ROUTES.ENHANCE}
               element={<EnhancePage onImageSelected={handleImageUpload} />}
+            />
+            <Route
+              path={ROUTES.RESTORE}
+              element={<RestorePage onImageSelected={handleImageUpload} />}
             />
             <Route path={ROUTES.PHOTOGRAPHY_SERVICE} element={<PhotographyServicePage />} />
             <Route path={ROUTES.EDIT} element={<EditorPage />} />
