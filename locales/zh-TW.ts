@@ -1046,6 +1046,11 @@ export const zhTWMessages: Record<string, string> = {
   'apikey.get_key': '取得 API 金鑰',
 
   'demo.try_demo': '試試 Demo',
+  'demo.sticky_try_demo': '免金鑰試玩',
+  'nav.scroll_tabs_left': '向左捲動分頁',
+  'nav.scroll_tabs_right': '向右捲動分頁',
+  'examples.hero_title': '先看看能做出什麼',
+  'examples.hero_subtitle': '拖曳滑桿（或看它自動播放）比較本站實際的前後結果。',
   'demo.badge': 'Demo',
   'demo.banner_title': '目前顯示預製範例結果',
   'demo.banner_hint': '不會使用 API 金鑰，也不會連線到 AI 供應商；結果來自內建範例圖。',

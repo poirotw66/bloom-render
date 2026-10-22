@@ -8,6 +8,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import Header from './components/Header';
 import SiteFooter from './components/SiteFooter';
 import StarNudge from './components/StarNudge';
+import StickyDemoCta from './components/StickyDemoCta';
 import Spinner from './components/Spinner';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import StartScreen from './components/StartScreen';
@@ -73,7 +74,7 @@ const App: React.FC = () => {
       <main
         id="main-content"
         tabIndex={-1}
-        className={`flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none ${isEditRoute ? 'items-start' : 'items-center'}`}
+        className={`flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none max-[640px]:pb-24 ${isEditRoute ? 'items-start' : 'items-center'}`}
       >
         {uploadError && !isEditRoute && (
           <div className="w-full max-w-2xl mb-4">
@@ -150,6 +151,7 @@ const App: React.FC = () => {
         </Suspense>
       </main>
       <SiteFooter />
+      <StickyDemoCta />
       <StarNudge />
     </div>
   );

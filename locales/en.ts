@@ -1113,6 +1113,12 @@ export const enMessages: Record<string, string> = {
   'apikey.get_key': 'Get an API key',
 
   'demo.try_demo': 'Try demo',
+  'demo.sticky_try_demo': 'Try demo — no API key',
+  'nav.scroll_tabs_left': 'Scroll tabs left',
+  'nav.scroll_tabs_right': 'Scroll tabs right',
+  'examples.hero_title': 'See what you can make',
+  'examples.hero_subtitle':
+    'Drag the slider — or watch it wipe — on a real before/after from this app.',
   'demo.badge': 'Demo',
   'demo.banner_title': 'Showing a pre-made sample result',
   'demo.banner_hint': 'No API key or AI network call is used. Outputs come from bundled examples.',

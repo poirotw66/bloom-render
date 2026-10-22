@@ -12,7 +12,10 @@ const SiteFooter: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="w-full max-w-[1600px] mx-auto px-5 pb-6 sm:px-6 md:px-8">
+    <footer
+      data-testid="site-footer"
+      className="w-full max-w-[1600px] mx-auto px-5 pb-6 sm:px-6 md:px-8"
+    >
       <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm theme-ink-muted border-t theme-border pt-4">
         <span>{t('footer.open_source')}</span>
         <a

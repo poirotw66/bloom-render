@@ -24,6 +24,10 @@ import { FEATURE_EXAMPLES, type ExampleFeature, type ExampleItem } from '../cons
 interface ExampleShowcaseProps {
   feature: ExampleFeature;
   className?: string;
+  /** Compact first-viewport layout (mobile hero). */
+  variant?: 'default' | 'hero';
+  /** Auto-play compare wipe when motion is allowed. */
+  autoPlay?: boolean;
 }
 
 /**
@@ -60,7 +64,11 @@ const Caption: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <figcaption className="text-sm text-gray-300 text-center">{children}</figcaption>
 );
 
-const ShowcaseItem: React.FC<{ item: ExampleItem }> = ({ item }) => {
+const ShowcaseItem: React.FC<{
+  item: ExampleItem;
+  autoPlay?: boolean;
+  imageMaxHeightClass?: string;
+}> = ({ item, autoPlay = false, imageMaxHeightClass = 'max-h-72' }) => {
   const { t } = useLanguage();
   const caption = t(item.captionKey);
 
@@ -74,7 +82,8 @@ const ShowcaseItem: React.FC<{ item: ExampleItem }> = ({ item }) => {
           originalUrl={publicAssetUrl(item.beforeSrc)}
           currentUrl={publicAssetUrl(item.afterSrc)}
           className="rounded-xl bg-gray-950"
-          imageClassName="max-h-72 w-auto max-w-full rounded-xl"
+          imageClassName={`${imageMaxHeightClass} w-auto max-w-full rounded-xl`}
+          autoPlay={autoPlay}
         />
         <Caption>{caption}</Caption>
       </figure>
@@ -125,24 +134,46 @@ function spanClass(item: ExampleItem): string {
   return item.kind === 'single' ? '' : 'sm:col-span-2';
 }
 
-const ExampleShowcase: React.FC<ExampleShowcaseProps> = ({ feature, className = '' }) => {
+const ExampleShowcase: React.FC<ExampleShowcaseProps> = ({
+  feature,
+  className = '',
+  variant = 'default',
+  autoPlay = false,
+}) => {
   const { t } = useLanguage();
   const set = FEATURE_EXAMPLES[feature];
   if (!set) return null;
 
+  const isHero = variant === 'hero';
+  const items = isHero ? set.items.slice(0, 1) : set.items;
+
   return (
     <section
-      className={`w-full max-w-3xl mx-auto mt-10 pt-8 border-0 border-gray-700/50 ${className}`}
-      aria-labelledby={`examples-${feature}`}
+      data-testid={isHero ? 'mobile-hero-showcase' : undefined}
+      className={
+        isHero
+          ? `w-full max-w-lg mx-auto ${className}`
+          : `w-full max-w-3xl mx-auto mt-10 pt-8 border-0 border-gray-700/50 ${className}`
+      }
+      aria-labelledby={`examples-${feature}${isHero ? '-hero' : ''}`}
     >
-      <h2 id={`examples-${feature}`} className="text-xl font-semibold text-gray-100 tracking-tight">
-        {t(set.titleKey)}
+      <h2
+        id={`examples-${feature}${isHero ? '-hero' : ''}`}
+        className={`font-semibold text-gray-100 tracking-tight ${isHero ? 'text-lg' : 'text-xl'}`}
+      >
+        {isHero ? t('examples.hero_title') : t(set.titleKey)}
       </h2>
-      <p className="text-base text-gray-300 mt-1">{t('examples.disclaimer')}</p>
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        {set.items.map((item, index) => (
-          <div key={index} className={spanClass(item)}>
-            <ShowcaseItem item={item} />
+      <p className={`text-gray-300 mt-1 ${isHero ? 'text-sm' : 'text-base'}`}>
+        {isHero ? t('examples.hero_subtitle') : t('examples.disclaimer')}
+      </p>
+      <div className={`mt-4 grid gap-5 ${isHero ? 'grid-cols-1' : 'sm:grid-cols-2'}`}>
+        {items.map((item, index) => (
+          <div key={index} className={isHero ? '' : spanClass(item)}>
+            <ShowcaseItem
+              item={item}
+              autoPlay={autoPlay && item.kind === 'compare'}
+              imageMaxHeightClass={isHero ? 'max-h-56' : 'max-h-72'}
+            />
           </div>
         ))}
       </div>

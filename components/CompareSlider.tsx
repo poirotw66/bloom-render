@@ -13,7 +13,7 @@
  * off the edge of the picture while the handle was still mid-track.
  */
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface CompareSliderProps {
@@ -24,6 +24,11 @@ interface CompareSliderProps {
   /** Extra classes for the image layers (sizing is driven by the base image). */
   imageClassName?: string;
   className?: string;
+  /**
+   * Gently animates the wipe when the user is not interacting.
+   * Honors `prefers-reduced-motion: reduce` (stays at 50%).
+   */
+  autoPlay?: boolean;
 }
 
 const KEYBOARD_STEP = 2;
@@ -52,11 +57,14 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
   currentUrl,
   imageClassName = '',
   className = '',
+  autoPlay = false,
 }) => {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const directionRef = useRef(1);
 
   const updateFromClientX = useCallback((clientX: number) => {
     const container = containerRef.current;
@@ -67,12 +75,42 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
     if (next !== null) setPosition(next);
   }, []);
 
+  useEffect(() => {
+    if (!autoPlay || userPaused || isDragging) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduceMotion.matches) return;
+
+    let frame = 0;
+    let last = performance.now();
+    const speed = 22; // percent per second
+
+    const tick = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      setPosition((prev) => {
+        let next = prev + directionRef.current * speed * dt;
+        if (next >= 82) {
+          directionRef.current = -1;
+          next = 82;
+        } else if (next <= 18) {
+          directionRef.current = 1;
+          next = 18;
+        }
+        return next;
+      });
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [autoPlay, userPaused, isDragging]);
+
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
       // Capture on the container so the drag keeps tracking even when the
       // pointer leaves the image bounds.
       event.currentTarget.setPointerCapture(event.pointerId);
       setIsDragging(true);
+      setUserPaused(true);
       updateFromClientX(event.clientX);
     },
     [updateFromClientX],
@@ -95,6 +133,7 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
 
   const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
     const step = event.shiftKey ? KEYBOARD_STEP_LARGE : KEYBOARD_STEP;
+    setUserPaused(true);
 
     switch (event.key) {
       case 'ArrowLeft':
