@@ -131,13 +131,7 @@ const PhotographyServicePage: React.FC = () => {
                   <h3 className="text-lg font-bold text-white">{t(item.nameKey)}</h3>
                   <p className="text-sm text-gray-400 line-clamp-3">{t(item.descriptionKey)}</p>
                 </div>
-                <div className="mt-auto flex items-end justify-between gap-3">
-                  <div className="space-y-1">
-                    {item.originalPrice && (
-                      <p className="text-xs text-gray-500 line-through">{item.originalPrice}</p>
-                    )}
-                    <p className="text-lg font-bold text-amber-400">{item.priceRange}</p>
-                  </div>
+                <div className="mt-auto flex items-end justify-end">
                   <span className="text-sm font-semibold text-blue-300">
                     {t(item.actionLabelKey)} →
                   </span>
@@ -204,8 +198,7 @@ const PhotographyServicePage: React.FC = () => {
               </div>
               <h3 className="text-lg font-bold text-white">{t(item.nameKey)}</h3>
               <p className="text-sm text-gray-400 line-clamp-3">{t(item.descriptionKey)}</p>
-              <div className="mt-auto pt-2 flex items-center justify-between gap-3">
-                <span className="text-amber-400 font-bold">{item.priceRange}</span>
+              <div className="mt-auto pt-2 flex items-center justify-end">
                 <span className="text-sm text-gray-200">{t('service.showcase.cta')}</span>
               </div>
             </button>

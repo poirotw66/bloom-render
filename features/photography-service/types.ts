@@ -14,8 +14,6 @@ export type PhotographyServiceItem = {
   categoryId: string;
   nameKey: string;
   descriptionKey: string;
-  originalPrice?: string;
-  priceRange?: string;
   badgeKey?: string;
   actionLabelKey: string;
   targetRoute: string;

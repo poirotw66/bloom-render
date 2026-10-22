@@ -38,14 +38,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ item, onClick }) => {
         {t(item.descriptionKey)}
       </p>
 
-      <div className="mt-auto pt-4 flex items-center justify-between">
-        <div className="flex flex-col">
-          {item.originalPrice && (
-            <span className="text-xs text-gray-500 line-through">{item.originalPrice}</span>
-          )}
-          <span className="text-lg font-bold text-amber-400">{item.priceRange}</span>
-        </div>
-
+      <div className="mt-auto pt-4 flex items-center justify-end">
         <span className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-xl transition-colors duration-200 group-hover:bg-blue-500">
           {t(item.actionLabelKey)}
         </span>
