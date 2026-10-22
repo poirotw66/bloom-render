@@ -18,7 +18,9 @@ test.describe('Wave R — restore', () => {
   test('feature page loads with options and demo sample', async ({ page }) => {
     await page.goto('/restore');
     await expect(page.getByTestId('restore-page')).toBeVisible();
-    await expect(page.getByRole('heading', { name: /老照片修復|Old Photo/ })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /老照片修復|Old Photo/ }),
+    ).toBeVisible();
     await expect(page.getByTestId('restore-colorize-on')).toBeVisible();
     await expect(page.getByTestId('restore-upscale-toggle')).toBeVisible();
     // Demo mode auto-loads matching sample input.
