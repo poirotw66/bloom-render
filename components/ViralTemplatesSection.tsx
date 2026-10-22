@@ -96,7 +96,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
           >
             <img
               src={publicAssetUrl(entry.thumbnail)}
-              alt=""
+              alt={t(entry.thumbnailAltKey)}
               className="w-full aspect-[4/3] object-cover bg-black/30"
               loading="lazy"
             />

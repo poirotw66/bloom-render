@@ -1417,24 +1417,32 @@ export const enMessages: Record<string, string> = {
   'viral.figurine_box.title': 'Collectible figure box',
   'viral.figurine_box.desc':
     'Turn a portrait into a 1/7 PVC figure in a clear retail blister box — product-shot lighting.',
+  'viral.figurine_box.thumb_alt': 'Preview: collectible figure in a clear retail toy box',
   'viral.polaroid.title': 'Polaroid',
   'viral.polaroid.desc':
     'Instant-film frame with soft flash, vintage cast, and a handwritten date margin.',
+  'viral.polaroid.thumb_alt': 'Preview: instant Polaroid photo with a thick white border',
   'viral.era_70s.title': '1970s Taiwan',
   'viral.era_70s.desc':
     'Kodachrome warmth, period hair and clothes, modest street or apartment nostalgia.',
+  'viral.era_70s.thumb_alt': 'Preview: 1970s Taiwan nostalgic portrait look',
   'viral.era_80s.title': '1980s Taiwan',
   'viral.era_80s.desc':
     'Neon night markets, pastel windbreakers, flash-lit evenings with VHS softness.',
+  'viral.era_80s.thumb_alt': 'Preview: 1980s Taiwan neon night-market portrait look',
   'viral.era_90s.title': '1990s Taiwan',
   'viral.era_90s.desc':
     'Disposable-camera look, school or streetwear, karaoke and night-market glow.',
+  'viral.era_90s.thumb_alt': 'Preview: 1990s Taiwan disposable-camera portrait look',
   'viral.taiwan_night_market.title': 'Taiwan night market',
   'viral.taiwan_night_market.desc':
     'Lanterns, steam, neon stalls — candid travel photo in a bustling aisle.',
+  'viral.taiwan_night_market.thumb_alt': 'Preview: person at a bustling Taiwan night market',
   'viral.taiwan_jiufen.title': 'Jiufen Old Street',
   'viral.taiwan_jiufen.desc':
     'Misty lantern steps, tea-house rooftops, cool dusk cinematic portrait.',
+  'viral.taiwan_jiufen.thumb_alt': 'Preview: misty lantern-lit Jiufen Old Street',
   'viral.taiwan_101.title': 'Taipei 101 skyline',
   'viral.taiwan_101.desc': 'Blue-hour viewpoint with Taipei 101 glowing behind clean city bokeh.',
+  'viral.taiwan_101.thumb_alt': 'Preview: Taipei 101 glowing in the blue-hour skyline',
 };
