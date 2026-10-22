@@ -114,8 +114,9 @@ const tabs: TabItem[] = [
     tab: 'restore',
     path: ROUTES.RESTORE,
     i18nKey: 'start.tab_restore',
-    accentActive: 'bg-amber-800 text-white',
-    accentFocus: 'focus-visible:ring-amber-500',
+    // Theme brand tokens (Bloom fuchsia, Night blue/cyan, New Year red) — not a one-off accent.
+    accentActive: 'brand-bg-strong text-white',
+    accentFocus: 'focus-visible:brand-ring',
   },
 ];
 

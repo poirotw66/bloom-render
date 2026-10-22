@@ -60,7 +60,8 @@ const RestorePage: React.FC<RestorePageProps> = ({ onImageSelected }) => {
         <p className={UI_SUBTITLE}>{t('restore.subtitle')}</p>
 
         <ApiKeyNotice />
-        <DemoModeBanner />
+        {/* GenericResult already shows DemoModeBanner when a result is visible. */}
+        {!restore.result && <DemoModeBanner />}
 
         {restore.result ? (
           <div className="w-full flex flex-col gap-6">

@@ -1083,7 +1083,7 @@ export const zhTWMessages: Record<string, string> = {
   'examples.tryon_1': '你的照片加上一張商品圖，重新安排在花園場景',
   'examples.tryon_2': '同一套服裝的另一種搭配',
   'examples.restore_title': '範例：老照片修復',
-  'examples.restore_1': '受損黑白老照片修復：去除刮痕並自然上色',
+  'examples.restore_1': '1960 年代黑白老照片（刮痕與褪色），修復並自然上色',
   'restore.title': '老照片修復',
   'restore.subtitle': '修復刮痕、褪色與噪點——可選上色，並可選擇本機 2× 放大。',
   'restore.options_heading': '修復選項',

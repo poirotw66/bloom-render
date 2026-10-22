@@ -1153,7 +1153,7 @@ export const enMessages: Record<string, string> = {
   'examples.tryon_2': 'A second styling of the same outfit',
   'examples.restore_title': 'Example: old photo restoration',
   'examples.restore_1':
-    'Damaged black-and-white print restored with scratches removed and natural colorization',
+    '1960s black-and-white photo with scratches and fading, restored and naturally colorized',
   'restore.title': 'Old Photo Restoration',
   'restore.subtitle':
     'Repair scratches, fading, and noise — optionally colorize, then optionally upscale 2× on-device.',
