@@ -120,17 +120,11 @@ export function outputPathForRoute(routePath) {
 }
 
 function escapeAttr(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;');
+  return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
 function upsertMetaByName(html, name, content) {
-  const re = new RegExp(
-    `<meta\\s+[^>]*name=["']${name}["'][^>]*>`,
-    'i',
-  );
+  const re = new RegExp(`<meta\\s+[^>]*name=["']${name}["'][^>]*>`, 'i');
   const tag = `<meta name="${name}" content="${escapeAttr(content)}" />`;
   if (re.test(html)) {
     return html.replace(re, tag);
@@ -139,10 +133,7 @@ function upsertMetaByName(html, name, content) {
 }
 
 function upsertMetaByProperty(html, property, content) {
-  const re = new RegExp(
-    `<meta\\s+[^>]*property=["']${property}["'][^>]*>`,
-    'i',
-  );
+  const re = new RegExp(`<meta\\s+[^>]*property=["']${property}["'][^>]*>`, 'i');
   const tag = `<meta property="${property}" content="${escapeAttr(content)}" />`;
   if (re.test(html)) {
     return html.replace(re, tag);
@@ -181,8 +172,7 @@ export function applySeoMeta(html, meta) {
 
 export function buildRobotsTxt({ pathBase = PATH_BASE, sitemapUrl } = {}) {
   const base = pathBase.endsWith('/') ? pathBase.slice(0, -1) : pathBase;
-  const sitemap =
-    sitemapUrl ?? `${SITE_ORIGIN}${base}/sitemap.xml`;
+  const sitemap = sitemapUrl ?? `${SITE_ORIGIN}${base}/sitemap.xml`;
   return [`User-agent: *`, `Allow: ${base}/`, ``, `Sitemap: ${sitemap}`, ``].join('\n');
 }
 
@@ -215,13 +205,15 @@ export function buildSitemapXml(routePaths = listSeoRoutes(), { siteBase = SITE_
  * }} opts
  * @returns {{ written: string[], titles: Record<string, string> }}
  */
-export function emitRouteHtml({
-  distDir,
-  indexHtml,
-  routes = ROUTE_SEO,
-  ogImage = DEFAULT_OG_IMAGE,
-  writeRobotsAndSitemap = true,
-} = /** @type {{ distDir: string, indexHtml: string, routes?: typeof ROUTE_SEO, ogImage?: string, writeRobotsAndSitemap?: boolean }} */ ({})) {
+export function emitRouteHtml(
+  {
+    distDir,
+    indexHtml,
+    routes = ROUTE_SEO,
+    ogImage = DEFAULT_OG_IMAGE,
+    writeRobotsAndSitemap = true,
+  } = /** @type {{ distDir: string, indexHtml: string, routes?: typeof ROUTE_SEO, ogImage?: string, writeRobotsAndSitemap?: boolean }} */ ({}),
+) {
   if (!indexHtml || typeof indexHtml !== 'string') {
     throw new Error('emitRouteHtml: indexHtml string is required');
   }

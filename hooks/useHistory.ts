@@ -32,6 +32,7 @@ import {
   type StoredHistoryItem,
 } from '../utils/historyDb';
 import { logger } from '../utils/logger';
+import { recordGenerationSuccess } from '../utils/generationSuccess';
 
 export type { HistoryItem };
 
@@ -93,7 +94,9 @@ async function addToHistory(
   source?: Blob | File | string | null,
 ): Promise<string> {
   // Demo mode uses pre-made samples — keep IndexedDB history for real generations only.
+  // Still record a success so one-time UI (e.g. star nudge) can fire once.
   if (options?.provider === 'demo' || options?.demo === true) {
+    recordGenerationSuccess();
     return `demo-skip-${type}`;
   }
 
@@ -131,6 +134,7 @@ async function addToHistory(
       revokeAll(overflow);
       await deleteHistoryItems(overflow.map((evicted) => evicted.id));
     }
+    recordGenerationSuccess();
   } catch (err) {
     logger.error('Failed to save history item:', err);
     // Roll back the optimistic add; the result wasn't actually persisted.

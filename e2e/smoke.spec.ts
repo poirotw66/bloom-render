@@ -29,6 +29,16 @@ const ROUTES: { path: string; expectText: RegExp | string }[] = [
 ];
 
 test.describe('smoke', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem('pixshop_language', 'en');
+      } catch {
+        /* ignore */
+      }
+    });
+  });
+
   test('home page loads', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('BloomRender').first()).toBeVisible();

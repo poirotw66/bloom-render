@@ -22,8 +22,9 @@
   --ink: #faf4f6;
   --ink-soft: #e2cfd6;
   --ink-muted: #b89aa6;
-  --brand-primary: #d946ef;
-  --brand-primary-strong: #c026d3;
+  /* Primary darkened one step vs Wave K for WCAG AA 4.5:1 on white text (was #d946ef @ 3.46). */
+  --brand-primary: #c026d3;
+  --brand-primary-strong: #a21caf;
   --brand-primary-soft: #e879f9;
   --brand-accent: #f472b6;
   --brand-tint: rgba(244, 114, 182, 0.16);
@@ -43,8 +44,8 @@
   --ink: #faf4f6;
   --ink-soft: #e2cfd6;
   --ink-muted: #b89aa6;
-  --brand-primary: #d946ef;
-  --brand-primary-strong: #c026d3;
+  --brand-primary: #c026d3;
+  --brand-primary-strong: #a21caf;
   --brand-primary-soft: #e879f9;
   --brand-accent: #f472b6;
   --brand-tint: rgba(244, 114, 182, 0.16);
@@ -65,8 +66,9 @@
   --ink: #eef2f7;
   --ink-soft: #b8c0cc;
   --ink-muted: #8b95a5;
-  --brand-primary: #3b82f6;
-  --brand-primary-strong: #2563eb;
+  /* Primary darkened one step for AA (was #3b82f6 @ 3.68). */
+  --brand-primary: #2563eb;
+  --brand-primary-strong: #1d4ed8;
   --brand-primary-soft: #60a5fa;
   --brand-accent: #22d3ee;
   --brand-tint: rgba(59, 130, 246, 0.14);
@@ -87,8 +89,9 @@
   --ink: #fff5f5;
   --ink-soft: #f0cfcf;
   --ink-muted: #d4a0a0;
-  --brand-primary: #dc2626;
-  --brand-primary-strong: #b91c1c;
+  /* Primary darkened one step for AA headroom (was #dc2626 @ 4.83). */
+  --brand-primary: #b91c1c;
+  --brand-primary-strong: #991b1b;
   --brand-primary-soft: #f87171;
   --brand-accent: #fbbf24;
   --brand-tint: rgba(220, 38, 38, 0.2);
