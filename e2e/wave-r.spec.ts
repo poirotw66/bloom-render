@@ -23,8 +23,8 @@ test.describe('Wave R — restore', () => {
     ).toBeVisible();
     await expect(page.getByTestId('restore-colorize-on')).toBeVisible();
     await expect(page.getByTestId('restore-upscale-toggle')).toBeVisible();
-    // Demo mode auto-loads matching sample input.
-    await expect(page.locator('#restore-image-upload')).toBeAttached();
+    // Demo mode auto-loads matching sample input (preview + generate).
+    await expect(page.getByText(/範例|Sample/i).first()).toBeVisible({ timeout: 15000 });
     await page.getByRole('button', { name: /開始修復|Restore photo/i }).click();
     await expect(page.getByTestId('use-this-style')).toBeVisible({ timeout: 20000 });
     await expect(page.getByRole('slider')).toBeVisible();
