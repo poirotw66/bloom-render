@@ -875,8 +875,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
 
             {error && <ErrorDisplay message={error} className="mt-2" />}
 
-            {(settings.model === 'gemini-3-pro-image' ||
-              (compareEnabled && effectiveCompareModel === 'gemini-3-pro-image')) && (
+            {(settings.model === 'gemini-nano-banana-2.1' ||
+              (compareEnabled && effectiveCompareModel === 'gemini-nano-banana-2.1')) && (
               <p className="text-sm text-gray-300">{t('start.generate_pro_slow_hint')}</p>
             )}
 

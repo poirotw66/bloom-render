@@ -6,7 +6,12 @@
 import React, { useEffect, useId, useState } from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 import { IMAGE_PRICING_LAST_UPDATED } from '../constants/imagePricing';
-import { MODEL_LABEL_KEYS, SUPPORTED_MODELS, type ModelType } from '../constants/models';
+import {
+  MODEL_DESC_KEYS,
+  MODEL_LABEL_KEYS,
+  SUPPORTED_MODELS,
+  type ModelType,
+} from '../constants/models';
 import {
   OPENROUTER_IMAGE_MODELS,
   OPENROUTER_MODEL_LABEL_KEYS,
@@ -327,6 +332,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     </label>
                     <select
                       id={`${baseId}-model`}
+                      data-testid="gemini-model-select"
                       value={model}
                       onChange={(e) => setModel(e.target.value as ModelType)}
                       className={`${FIELD_BASE} cursor-pointer ${s.field}`}
@@ -337,6 +343,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         </option>
                       ))}
                     </select>
+                    <p className={`text-sm mt-2 ${s.hint}`} data-testid="gemini-model-desc">
+                      {t(MODEL_DESC_KEYS[model])}
+                    </p>
                   </div>
 
                   <div>

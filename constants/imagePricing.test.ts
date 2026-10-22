@@ -11,19 +11,22 @@ describe('imagePricing', () => {
     expect(IMAGE_PRICING_LAST_UPDATED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
-  it('covers Gemini and OpenRouter model ids used in Settings', () => {
+  it('covers Gemini and OpenRouter Nano Banana model ids used in Settings', () => {
     const ids = new Set(IMAGE_PRICE_TABLE.map((e) => e.modelId));
+    expect(ids.has('gemini-nano-banana-2.1')).toBe(true);
     expect(ids.has('gemini-3.1-flash-lite-image')).toBe(true);
     expect(ids.has('gemini-3.1-flash-image')).toBe(true);
-    expect(ids.has('gemini-3-pro-image')).toBe(true);
-    expect(ids.has('google/gemini-2.5-flash-image')).toBe(true);
-    expect(ids.has('google/gemini-3-pro-image')).toBe(true);
+    expect(ids.has('google/gemini-nano-banana-2.1')).toBe(true);
+    expect(ids.has('google/gemini-3.1-flash-lite-image')).toBe(true);
+    expect(ids.has('google/gemini-3.1-flash-image')).toBe(true);
     expect(ids.has('openai/gpt-image-1')).toBe(true);
     expect(ids.has('black-forest-labs/flux.2-pro')).toBe(true);
   });
 
-  it('returns verified Gemini Flash Lite 1K price', () => {
+  it('returns verified Nano Banana Lite / 2.1 / 2 output prices', () => {
     expect(lookupImagePriceUsd('gemini-3.1-flash-lite-image', '1K')).toBe(0.0336);
+    expect(lookupImagePriceUsd('gemini-nano-banana-2.1', '1K')).toBe(0.0336);
+    expect(lookupImagePriceUsd('gemini-3.1-flash-image', '1K')).toBe(0.0672);
   });
 
   it('returns unknown for gpt-image-1 (quality not selected in-app)', () => {

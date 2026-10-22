@@ -89,7 +89,7 @@ export const enMessages: Record<string, string> = {
   'start.generate_button': 'Generate Image',
   'start.generating': 'Generating...',
   'start.generate_pro_slow_hint':
-    'Using Gemini 3 Pro for image generation may take 1–2 minutes. Please wait.',
+    'Generating with Nano Banana 2.1 may take longer on complex prompts. Please be patient.',
   'start.feature_retouch_title': 'Precise Retouching',
   'start.feature_retouch_desc':
     'Click any point on your image to remove blemishes, change colors, or add elements with pinpoint accuracy.',
@@ -1346,12 +1346,19 @@ export const enMessages: Record<string, string> = {
   'settings.demo_note':
     'Demo mode returns pre-made examples from public/examples. Switch to Gemini or OpenRouter and paste a key to generate with your own photos.',
   'settings.model': 'Model',
-  'settings.model.flashLite': 'Gemini 3.1 Flash Lite',
-  'settings.model.flash31': 'Gemini 3.1 Flash',
-  'settings.model.pro': 'Gemini 3 Pro',
+  'settings.model.nanoBanana21': 'Nano Banana 2.1 (New · Paid)',
+  'settings.model.nanoBanana2Lite': 'Nano Banana 2 Lite (Default)',
+  'settings.model.nanoBanana2': 'Nano Banana 2 (Paid)',
+  'settings.model.nanoBanana21_desc':
+    'High-quality image generation and editing with enhanced factuality, visual fidelity and multi-turn consistency at Flash scale. Text in/out $1.50 / $7.50 per 1M tokens; image in $1.50 per 1M tokens; ~$0.0336 per output image.',
+  'settings.model.nanoBanana2Lite_desc':
+    'Smallest, most cost-effective image generation/editing model for at-scale use. Text in/out $0.25 / $1.50 per 1M tokens; image in $0.25 per 1M tokens; ~$0.0336 per output image.',
+  'settings.model.nanoBanana2_desc':
+    'Pro-level visual intelligence with Flash-speed efficiency and reality-grounded generation. Text in/out $0.50 / $3.00 per 1M tokens; image in $0.50 per 1M tokens; ~$0.0672 per output image.',
   'settings.openrouter.model': 'OpenRouter model',
-  'settings.openrouter.model.flash25': 'Google Gemini 2.5 Flash Image',
-  'settings.openrouter.model.pro3': 'Google Gemini 3 Pro Image',
+  'settings.openrouter.model.nanoBanana21': 'Google Nano Banana 2.1 (New · Paid)',
+  'settings.openrouter.model.nanoBanana2Lite': 'Google Nano Banana 2 Lite (Default)',
+  'settings.openrouter.model.nanoBanana2': 'Google Nano Banana 2 (Paid)',
   'settings.openrouter.model.gptImage1': 'OpenAI GPT Image 1',
   'settings.openrouter.model.flux2pro': 'Black Forest Labs FLUX.2 Pro',
   'settings.openrouter.api_key': 'OpenRouter API Key',
