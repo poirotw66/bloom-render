@@ -41,4 +41,26 @@ describe('PROMPT_GALLERY_ENTRIES', () => {
     expect(localizedGalleryTitle(entry!, 'zh-TW')).toBe(entry!.titleZh);
     expect(localizedGalleryDescription(entry!, 'zh-TW')).toBe(entry!.descriptionZh);
   });
+
+  it('does not reuse the same thumbnail path across entries', () => {
+    const thumbs = PROMPT_GALLERY_ENTRIES.map((e) => e.thumbnail).filter(
+      (t): t is string => typeof t === 'string' && t.length > 0,
+    );
+    const seen = new Map<string, string>();
+    for (const entry of PROMPT_GALLERY_ENTRIES) {
+      if (!entry.thumbnail) continue;
+      const prior = seen.get(entry.thumbnail);
+      expect(
+        prior,
+        `thumbnail ${entry.thumbnail} shared by ${prior} and ${entry.id}`,
+      ).toBeUndefined();
+      seen.set(entry.thumbnail, entry.id);
+    }
+    expect(seen.size).toBe(thumbs.length);
+  });
+
+  it('uses a dedicated neon street thumbnail (not generate-2)', () => {
+    const neon = PROMPT_GALLERY_ENTRIES.find((e) => e.id === 'neon-street-portrait');
+    expect(neon?.thumbnail).toBe('examples/gallery/neon-street-portrait.webp');
+  });
 });
