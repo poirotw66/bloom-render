@@ -10,5 +10,8 @@
   "thumbnail": "examples/generate-2.webp",
   "description": "Moody night portrait lighting for text-to-image.",
   "author": "bloom-render",
-  "tags": ["generate", "portrait", "night"]
+  "tags": ["generate", "portrait", "night"],
+  "titleZh": "霓虹街頭人像",
+  "descriptionZh": "潮濕柏油霓虹倒影的夜間街頭人像。",
+  "tagsZh": ["生圖", "人像", "夜景"]
 }

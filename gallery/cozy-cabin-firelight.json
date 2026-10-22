@@ -7,7 +7,11 @@
     "aspectRatio": "4:3",
     "quantity": 1
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Cozy cabin interior with fireplace glow and snow outside the window.",
   "author": "bloom-render",
-  "tags": ["generate", "interior"]
+  "tags": ["generate", "interior"],
+  "titleZh": "溫暖小木屋爐火",
+  "descriptionZh": "夜間小木屋室內、壁爐暖光與窗外雪景的溫馨氣氛。",
+  "tagsZh": ["生圖", "室內"],
+  "thumbnail": "examples/gallery/cozy-cabin-firelight.webp"
 }

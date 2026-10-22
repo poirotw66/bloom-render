@@ -25,7 +25,16 @@ body:
     id: title
     attributes:
       label: title
-      description: Short display title (3–80 characters).
+      description: English display title (3–80 characters).
+    validations:
+      required: true
+
+  - type: input
+    id: titleZh
+    attributes:
+      label: titleZh
+      description: Traditional Chinese (Taiwan) display title (required).
+      placeholder: 薄霧峽灣黎明
     validations:
       required: true
 
@@ -92,7 +101,7 @@ body:
     id: thumbnail
     attributes:
       label: thumbnail (optional)
-      description: Path under public/ that matches the title, e.g. `examples/travel-1.webp` or `examples/viral/figurine-box.webp`. Leave empty for a gradient card.
+      description: Path under public/ that matches the title, e.g. `examples/travel-1.webp`, `examples/viral/figurine-box.webp`, or `examples/gallery/<id>.webp`. Leave empty for a gradient card.
       placeholder: examples/generate-1.webp
     validations:
       required: false
@@ -109,8 +118,17 @@ body:
     id: tags
     attributes:
       label: tags (optional)
-      description: Comma-separated tags (max 8).
+      description: Comma-separated English tags (max 8).
       placeholder: generate, landscape, dawn
+    validations:
+      required: false
+
+  - type: input
+    id: tagsZh
+    attributes:
+      label: tagsZh (optional)
+      description: Comma-separated Traditional Chinese tags (max 8).
+      placeholder: 生圖, 風景, 黎明
     validations:
       required: false
 
@@ -118,6 +136,14 @@ body:
     id: description
     attributes:
       label: description (optional)
-      description: Short blurb shown on the card (max 280 chars).
+      description: English blurb on the card (max 280 chars).
+    validations:
+      required: false
+
+  - type: textarea
+    id: descriptionZh
+    attributes:
+      label: descriptionZh (optional)
+      description: Traditional Chinese blurb on the card (max 280 chars).
     validations:
       required: false

@@ -9,6 +9,9 @@ and to confirm any `thumbnail` exists under `public/`.
 `thumbnail` is optional. Only set it when the image matches the title; otherwise
 omit it and the app renders a feature-colored gradient card.
 
+Every entry needs both `title` (English) and `titleZh` (Traditional Chinese).
+Optional `descriptionZh` / `tagsZh` are shown in the zh-TW UI.
+
 You can also propose entries with the **Prompt gallery submission** GitHub issue
 form (validated by `.github/workflows/validate-gallery-issue.yml`).
 

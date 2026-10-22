@@ -36,7 +36,8 @@ interface TabItem {
 }
 
 interface StartTabNavProps {
-  currentTab: StartTab;
+  /** Active feature tab, or null when the route is not one of these tabs (e.g. prompt gallery). */
+  currentTab: StartTab | null;
 }
 
 const tabs: TabItem[] = [

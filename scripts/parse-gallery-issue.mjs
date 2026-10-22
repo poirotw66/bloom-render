@@ -59,24 +59,30 @@ function noneToEmpty(value) {
  * @returns {{
  *   id: string,
  *   title: string,
+ *   titleZh: string,
  *   prompt: string,
  *   feature: string,
  *   settings: Record<string, string | number>,
  *   thumbnail?: string,
  *   author?: string,
  *   description?: string,
+ *   descriptionZh?: string,
  *   tags?: string[],
+ *   tagsZh?: string[],
  * }}
  */
 export function entryFromIssueSections(sections) {
   const id = (sections.id || sections.Id || '').trim();
   const title = (sections.title || sections.Title || '').trim();
+  const titleZh = (sections.titleZh || sections.TitleZh || '').trim();
   const prompt = (sections.prompt || sections.Prompt || '').trim();
   const feature = (sections.feature || sections.Feature || '').trim();
   const thumbnail = noneToEmpty(sections.thumbnail || sections.Thumbnail || '');
   const author = noneToEmpty(sections.author || sections.Author || '');
   const description = noneToEmpty(sections.description || sections.Description || '');
+  const descriptionZh = noneToEmpty(sections.descriptionZh || sections.DescriptionZh || '');
   const tagsRaw = noneToEmpty(sections.tags || sections.Tags || '');
+  const tagsZhRaw = noneToEmpty(sections.tagsZh || sections.TagsZh || '');
 
   const aspect = noneToEmpty(
     sections['settings.aspectRatio (optional)'] || sections.aspect_ratio || '',
@@ -97,20 +103,30 @@ export function entryFromIssueSections(sections) {
   /** @type {{
    *   id: string,
    *   title: string,
+   *   titleZh: string,
    *   prompt: string,
    *   feature: string,
    *   settings: Record<string, string | number>,
    *   thumbnail?: string,
    *   author?: string,
    *   description?: string,
+   *   descriptionZh?: string,
    *   tags?: string[],
+   *   tagsZh?: string[],
    * }} */
-  const entry = { id, title, prompt, feature, settings };
+  const entry = { id, title, titleZh, prompt, feature, settings };
   if (thumbnail) entry.thumbnail = thumbnail;
   if (author) entry.author = author;
   if (description) entry.description = description;
+  if (descriptionZh) entry.descriptionZh = descriptionZh;
   if (tagsRaw) {
     entry.tags = tagsRaw
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+  }
+  if (tagsZhRaw) {
+    entry.tagsZh = tagsZhRaw
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean);

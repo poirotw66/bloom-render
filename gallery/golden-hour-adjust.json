@@ -6,7 +6,11 @@
   "settings": {
     "tab": "adjust"
   },
-  "description": "Warm the whole frame toward late-afternoon golden hour (gradient card — no matching sample asset yet).",
+  "description": "Warm the whole frame toward late-afternoon golden hour; before|after composite preview.",
   "author": "bloom-render",
-  "tags": ["adjust", "color", "mood"]
+  "tags": ["adjust", "color", "mood"],
+  "titleZh": "金色時光暖調",
+  "descriptionZh": "全圖調成傍晚金色時光的溫暖色溫（左右對比預覽）。",
+  "tagsZh": ["調整", "色溫"],
+  "thumbnail": "examples/gallery/golden-hour-adjust.webp"
 }

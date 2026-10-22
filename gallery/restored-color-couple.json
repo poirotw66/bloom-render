@@ -10,5 +10,8 @@
   "thumbnail": "examples/restore-after.webp",
   "description": "Matches the old-photo restoration colorized example.",
   "author": "bloom-render",
-  "tags": ["generate", "restore", "vintage"]
+  "tags": ["generate", "restore", "vintage"],
+  "titleZh": "修復上色雙人照",
+  "descriptionZh": "對應老照片修復並自然上色的雙人範例。",
+  "tagsZh": ["生圖", "修復", "復古"]
 }

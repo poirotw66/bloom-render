@@ -6,7 +6,11 @@
   "settings": {
     "tab": "retouch"
   },
-  "description": "Recolor the subject's shirt to a clean medium blue (gradient card — no matching sample asset yet).",
+  "description": "Recolor the subject’s shirt to a clean medium blue; before|after composite preview.",
   "author": "bloom-render",
-  "tags": ["retouch", "clothing", "color"]
+  "tags": ["retouch", "clothing", "color"],
+  "titleZh": "襯衫改成藍色",
+  "descriptionZh": "把主體襯衫改成乾淨中藍色（左右對比預覽）。",
+  "tagsZh": ["修飾", "換色"],
+  "thumbnail": "examples/gallery/shirt-color-blue.webp"
 }

@@ -10,5 +10,8 @@
   "thumbnail": "examples/travel-1.webp",
   "description": "Travel-style scene prompt inspired by the Eiffel Tower example.",
   "author": "bloom-render",
-  "tags": ["generate", "travel", "landmark"]
+  "tags": ["generate", "travel", "landmark"],
+  "titleZh": "艾菲爾鐵塔雪景夕照",
+  "descriptionZh": "旅遊照範例：雪中艾菲爾鐵塔與夕色。",
+  "tagsZh": ["生圖", "旅遊", "巴黎"]
 }

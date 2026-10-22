@@ -10,5 +10,8 @@
   "thumbnail": "examples/idphoto-after.webp",
   "description": "Matches the open-collar ID photo example.",
   "author": "bloom-render",
-  "tags": ["generate", "idphoto"]
+  "tags": ["generate", "idphoto"],
+  "titleZh": "證件照開領",
+  "descriptionZh": "對應開領款證件照範例。",
+  "tagsZh": ["生圖", "證件照"]
 }

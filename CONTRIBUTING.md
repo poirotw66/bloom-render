@@ -49,10 +49,10 @@ Use the **Prompt gallery submission** issue form (label `gallery-submission`). A
 2. Rename it to a new kebab-case id, e.g. `misty-harbor.json`.
 3. Fill the fields required by [`gallery/schema.json`](./gallery/schema.json):
    - `id` — must match the filename without `.json`
-   - `title`, `prompt`, `feature` (`generate` | `retouch` | `adjust` | `filter`)
+   - `title` (English), `titleZh` (Traditional Chinese / Taiwan), `prompt`, `feature` (`generate` | `retouch` | `adjust` | `filter`)
    - `settings` — optional `aspectRatio` / `quantity` for generate, or `tab` for editor surfaces
-   - `thumbnail` — **optional** path under `public/` that **matches the title** (e.g. `examples/travel-1.webp` or `examples/viral/figurine-box.webp`). Omit it when no matching asset exists — the UI shows a gradient card.
-4. Optionally set `description`, `author`, and `tags`.
+   - `thumbnail` — **optional** path under `public/` that **matches the title** (e.g. `examples/travel-1.webp`, `examples/viral/figurine-box.webp`, or `examples/gallery/<id>.webp`). Omit it when no matching asset exists — the UI shows a gradient card.
+4. Optionally set `description` / `descriptionZh`, `author`, and `tags` / `tagsZh`.
 5. Run `npm run gallery:validate` locally (CI runs the same check).
 6. Open a PR that only adds/updates gallery JSON unless the schema itself needs a change.
 

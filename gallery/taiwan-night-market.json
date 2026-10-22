@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/taiwan-night-market.webp",
   "description": "Travel retouch at a Taiwan night market.",
   "author": "bloom-render",
-  "tags": ["retouch", "taiwan", "night-market"]
+  "tags": ["retouch", "taiwan", "night-market"],
+  "titleZh": "台灣夜市",
+  "descriptionZh": "旅遊修飾：熱鬧台灣夜市攤位與霓虹。",
+  "tagsZh": ["修飾", "台灣", "夜市"]
 }

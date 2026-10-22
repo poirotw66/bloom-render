@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/era-80s-taiwan.webp",
   "description": "Era retouch — 1980s Taiwan look.",
   "author": "bloom-render",
-  "tags": ["retouch", "era", "taiwan"]
+  "tags": ["retouch", "era", "taiwan"],
+  "titleZh": "1980 年代台灣夜拍",
+  "descriptionZh": "時代穿越修飾：1980 年代台灣夜景快照感。",
+  "tagsZh": ["修飾", "年代", "台灣"]
 }

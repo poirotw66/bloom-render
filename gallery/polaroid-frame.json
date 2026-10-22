@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/polaroid.webp",
   "description": "Viral Polaroid frame retouch preset.",
   "author": "bloom-render",
-  "tags": ["retouch", "polaroid", "viral"]
+  "tags": ["retouch", "polaroid", "viral"],
+  "titleZh": "拍立得相框",
+  "descriptionZh": "病毒玩法：拍立得白邊與手寫日期感。",
+  "tagsZh": ["修飾", "拍立得", "病毒"]
 }

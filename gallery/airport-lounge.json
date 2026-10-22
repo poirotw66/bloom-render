@@ -10,5 +10,8 @@
   "thumbnail": "examples/generate-1.webp",
   "description": "Text-to-image scene matching the home gallery airport lounge example.",
   "author": "bloom-render",
-  "tags": ["generate", "people", "interior"]
+  "tags": ["generate", "people", "interior"],
+  "titleZh": "機場貴賓室同事",
+  "descriptionZh": "文字生圖場景，對應首頁藝廊的機場貴賓室範例。",
+  "tagsZh": ["生圖", "人物", "室內"]
 }

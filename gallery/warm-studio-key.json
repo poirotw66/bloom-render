@@ -9,5 +9,8 @@
   "thumbnail": "examples/portrait-1.webp",
   "description": "Lighting retouch for portraits.",
   "author": "bloom-render",
-  "tags": ["retouch", "lighting", "portrait"]
+  "tags": ["retouch", "lighting", "portrait"],
+  "titleZh": "溫暖棚拍主光",
+  "descriptionZh": "溫暖棚拍主光的修飾預設。",
+  "tagsZh": ["修飾", "棚拍", "人像"]
 }

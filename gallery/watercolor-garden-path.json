@@ -7,7 +7,11 @@
     "aspectRatio": "3:4",
     "quantity": 1
   },
-  "description": "Gradient card — no matching sample asset yet.",
+  "description": "Soft watercolor garden path with loose wet-on-wet edges.",
   "author": "bloom-render",
-  "tags": ["generate", "illustration"]
+  "tags": ["generate", "illustration"],
+  "titleZh": "水彩花園小徑",
+  "descriptionZh": "濕畫法水彩花園小徑插畫風。",
+  "tagsZh": ["生圖", "插畫"],
+  "thumbnail": "examples/gallery/watercolor-garden-path.webp"
 }

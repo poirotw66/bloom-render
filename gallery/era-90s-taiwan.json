@@ -10,5 +10,8 @@
   "thumbnail": "examples/viral/era-90s-taiwan.webp",
   "description": "Era retouch — 1990s Taiwan look.",
   "author": "bloom-render",
-  "tags": ["retouch", "era", "taiwan"]
+  "tags": ["retouch", "era", "taiwan"],
+  "titleZh": "1990 年代台灣閃光懷舊",
+  "descriptionZh": "時代穿越修飾：1990 年代台灣拋棄式相機感。",
+  "tagsZh": ["修飾", "年代", "台灣"]
 }

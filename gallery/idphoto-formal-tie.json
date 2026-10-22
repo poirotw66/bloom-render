@@ -10,5 +10,8 @@
   "thumbnail": "examples/idphoto-after-2.webp",
   "description": "Matches the shirt-and-tie ID photo example.",
   "author": "bloom-render",
-  "tags": ["generate", "idphoto"]
+  "tags": ["generate", "idphoto"],
+  "titleZh": "證件照襯衫領帶",
+  "descriptionZh": "對應襯衫領帶款證件照範例。",
+  "tagsZh": ["生圖", "證件照"]
 }
