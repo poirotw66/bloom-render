@@ -40,4 +40,9 @@ dist-ssr
 public/images/scenes/*.jpg
 public/images/scenes/*.jpeg
 public/images/scenes/*.png
+
+# Taste Skill (installed locally; do not commit)
+.agents/
+.taste-skill/
+**/design-taste-frontend/
 skills-lock.json
