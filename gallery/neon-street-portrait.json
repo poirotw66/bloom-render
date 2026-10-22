@@ -7,7 +7,7 @@
     "aspectRatio": "3:4",
     "quantity": 1
   },
-  "thumbnail": "examples/generate-2.webp",
+  "thumbnail": "examples/gallery/neon-street-portrait.webp",
   "description": "Moody night portrait lighting for text-to-image.",
   "author": "bloom-render",
   "tags": ["generate", "portrait", "night"],
