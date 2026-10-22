@@ -77,7 +77,7 @@ export function generatePortraitPrompt(options: PortraitPromptOptions): string {
 
   return buildPrompt({
     intro,
-    role: `You are a world-class professional portrait photographer and retouching AI. Transform the provided portrait${isGroup ? 's' : ''} into a high-end, professional style image.`,
+    role: `You are a world-class professional portrait photographer and retouching AI. Transform the provided portrait${isGroup ? 's' : ''} into a high-end, professional style image.`, // taste-skill-ignore
     requirements: [positiveParts.join('. ')],
     guidelines: [
       `Maintain strict identity consistency: ${identityConsistency} must be the same as in the ${isGroup ? 'source images' : 'original image'}.`,

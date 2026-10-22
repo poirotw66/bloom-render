@@ -60,12 +60,12 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   return (
     <>
       <header
-        className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 border rounded-2xl backdrop-blur-md shadow-lg transition-colors duration-300 ${
+        className={`w-full max-w-[1600px] mx-auto mt-4 mb-6 px-4 sm:px-6 md:px-8 py-4 rounded-2xl border backdrop-blur-md transition-colors duration-300 ${
           theme === 'newyear'
-            ? 'border-red-700/50 bg-red-900/40 shadow-red-900/20'
+            ? 'theme-surface theme-border'
             : theme === 'bloom'
-              ? 'border-fuchsia-500/20 bg-gray-800/50 shadow-fuchsia-500/5'
-              : 'border-slate-600/40 bg-gray-800/50 shadow-slate-500/5'
+              ? 'theme-surface theme-border'
+              : 'theme-surface theme-border'
         }`}
         role="banner"
         aria-label="Main navigation"
@@ -85,8 +85,8 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
               <LogoIcon className="w-full h-full object-contain" />
             </span>
             <div className="flex flex-col">
-              <h1
-                className={`text-xl font-bold tracking-tight ${
+              <p
+                className={`text-xl font-semibold tracking-tight ${
                   theme === 'newyear'
                     ? 'text-red-50'
                     : theme === 'bloom'
@@ -95,13 +95,13 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                 }`}
               >
                 {t('app.title')}
-              </h1>
+              </p>
               <span
-                className={`text-xs font-normal ${
+                className={`text-sm font-normal ${
                   theme === 'newyear'
                     ? 'text-red-200'
                     : theme === 'bloom'
-                      ? 'text-fuchsia-200'
+                      ? 'brand-text-soft'
                       : 'text-slate-300'
                 }`}
               >
@@ -121,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                 theme === 'newyear'
                   ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'text-gray-300 hover:text-white focus-visible:ring-fuchsia-500'
+                    ? 'text-gray-300 hover:text-white focus-visible:brand-ring'
                     : 'text-slate-300 hover:text-white focus-visible:ring-blue-500'
               } ${location.pathname.startsWith(ROUTES.PROMPT_GALLERY) ? 'bg-white/10' : ''}`}
               aria-label={t('prompt_gallery.title')}
@@ -136,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                 theme === 'newyear'
                   ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'text-gray-300 hover:text-white focus-visible:ring-fuchsia-500'
+                    ? 'text-gray-300 hover:text-white focus-visible:brand-ring'
                     : 'text-slate-300 hover:text-white focus-visible:ring-blue-500'
               }`}
               aria-label={t('history.title')}
@@ -153,7 +153,7 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
                 theme === 'newyear'
                   ? 'text-red-200 hover:text-red-50 focus-visible:ring-red-500'
                   : theme === 'bloom'
-                    ? 'text-gray-300 hover:text-white focus-visible:ring-fuchsia-500'
+                    ? 'text-gray-300 hover:text-white focus-visible:brand-ring'
                     : 'text-slate-300 hover:text-white focus-visible:ring-blue-500'
               }`}
               aria-label={t('settings.title')}

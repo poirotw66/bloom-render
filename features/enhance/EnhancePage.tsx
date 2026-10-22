@@ -129,7 +129,7 @@ const EnhancePage: React.FC<EnhancePageProps> = ({ onImageSelected }) => {
               uploadHintKey="enhance.upload_hint"
               generateButtonKey="enhance.run"
               changePhotoKey="enhance.change_photo"
-              icon="✨"
+              icon=""
               canGenerate={Boolean(enhance.file)}
               uploadInputId="enhance-image-upload"
               showCostEstimate={false}

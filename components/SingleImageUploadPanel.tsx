@@ -30,9 +30,9 @@ interface SingleImageUploadPanelProps {
 }
 
 const accentIcon: Record<Accent, string> = {
-  blue: '📘',
-  purple: '🎨',
-  emerald: '🪪',
+  blue: '',
+  purple: '',
+  emerald: '',
 };
 
 export function SingleImageUploadPanel({

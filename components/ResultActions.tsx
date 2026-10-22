@@ -65,7 +65,7 @@ const ResultActions: React.FC<ResultActionsProps> = ({
     <div className={`flex flex-col items-center gap-3 w-full ${className}`}>
       <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
         <label className="flex items-center gap-2">
-          <span className="text-xs uppercase tracking-wider text-gray-500">
+          <span className="text-xs tracking-normal text-gray-500">
             {t('result.download_format')}
           </span>
           <select
@@ -83,7 +83,7 @@ const ResultActions: React.FC<ResultActionsProps> = ({
         </label>
         {format !== 'png' && (
           <label className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-wider text-gray-500">
+            <span className="text-xs tracking-normal text-gray-500">
               {t('result.download_quality')}
             </span>
             <input

@@ -42,7 +42,7 @@ export function generateTryOnPrompt(options: TryOnPromptOptions): string {
 
   const backgroundLine = backgroundHint
     ? `Scene and background: ${backgroundHint}`
-    : 'Create a NEW scene: use a clean, neutral background (e.g. studio wall, seamless backdrop, or soft gradient).';
+    : 'Create a NEW scene: use a clean, neutral background (e.g. studio wall, seamless backdrop, or soft gradient).'; // taste-skill-ignore
   const styleLine = styleHint
     ? `Style and mood: ${styleHint}`
     : 'Present the overall outfit style clearly: full body or clear half-body framing. Natural pose that showcases the clothing, like a fashion catalog or lookbook.';

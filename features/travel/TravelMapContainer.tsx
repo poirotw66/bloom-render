@@ -111,7 +111,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             onClick={() => setMapType('world')}
             className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
               mapType === 'world'
-                ? 'bg-gradient-to-br from-sky-600 to-cyan-600 text-white shadow-md shadow-sky-600/30'
+                ? ' brand-bg text-white '
                 : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
@@ -123,7 +123,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             onClick={() => setMapType('taiwan')}
             className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
               mapType === 'taiwan'
-                ? 'bg-gradient-to-br from-sky-600 to-cyan-600 text-white shadow-md shadow-sky-600/30'
+                ? ' brand-bg text-white '
                 : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
@@ -143,8 +143,8 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
               className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-colors duration-200 cursor-pointer ${
                 categoryFilter === cat
                   ? cat === 'food'
-                    ? 'bg-orange-600/80 text-white shadow-sm'
-                    : 'bg-indigo-600/80 text-white shadow-sm'
+                    ? 'bg-orange-600/80 text-white '
+                    : 'brand-bg-tint text-white '
                   : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
               }`}
             >
@@ -204,7 +204,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             <div className="flex flex-col gap-6">
               <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500/5 border border-amber-500/20 rounded-xl">
                 <div
-                  className={`w-2 h-2 rounded-full ${isFood ? 'bg-orange-500' : 'bg-amber-500'} animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.5)]`}
+                  className={`w-2 h-2 rounded-full ${isFood ? 'bg-orange-500' : 'bg-amber-500'} `}
                 />
                 <span className="text-sm font-medium text-amber-100/90">
                   {t('travel.result_scene_label')}{' '}
@@ -217,7 +217,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
               {/* Prompt Enhancements (Weather, Time, Vibe) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up">
                 {/* Weather & Time */}
-                <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30 backdrop-blur-sm">
+                <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30">
                   <div className="flex flex-col gap-4">
                     {/* Weather */}
                     <div className="space-y-2">
@@ -229,13 +229,15 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                           <button
                             key={opt.id}
                             onClick={() => setWeather(opt.id)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 border ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center gap-2 border ${
                               weather === opt.id
-                                ? 'bg-blue-600/20 border-blue-500/50 text-blue-200 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                                ? 'bg-blue-600/20 border-blue-500/50 text-blue-200 '
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span>{opt.icon}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                              {opt.icon}
+                            </span>
                             <span>{t(opt.nameKey)}</span>
                           </button>
                         ))}
@@ -252,13 +254,15 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                           <button
                             key={opt.id}
                             onClick={() => setTimeOfDay(opt.id)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 border ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center gap-2 border ${
                               timeOfDay === opt.id
-                                ? 'bg-amber-600/20 border-amber-500/50 text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                                ? 'bg-amber-600/20 border-amber-500/50 text-amber-200 '
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span>{opt.icon}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                              {opt.icon}
+                            </span>
                             <span>{t(opt.nameKey)}</span>
                           </button>
                         ))}
@@ -268,7 +272,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                 </div>
 
                 {/* Character & Framing */}
-                <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30 backdrop-blur-sm">
+                <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30">
                   <div className="flex flex-col gap-4">
                     {/* Outfit & Color */}
                     <div className="space-y-2">
@@ -281,7 +285,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                             <button
                               key={c.id}
                               onClick={() => setOutfitColor(c.id)}
-                              className={`w-4 h-4 rounded-full border border-white/20 transition-all ${outfitColor === c.id ? 'scale-125 ring-1 ring-white' : 'opacity-40 hover:opacity-100'}`}
+                              className={`w-4 h-4 rounded-full border border-white/20 transition-colors ${outfitColor === c.id ? 'scale-125 ring-1 ring-white' : 'opacity-40 hover:opacity-100'}`}
                               style={{
                                 backgroundColor:
                                   c.id === 'white'
@@ -304,13 +308,15 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                           <button
                             key={opt.id}
                             onClick={() => setOutfit(opt.id)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 border ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center gap-2 border ${
                               outfit === opt.id
-                                ? 'bg-green-600/20 border-green-500/50 text-green-200 shadow-[0_0_10px_rgba(34,197,94,0.2)]'
+                                ? 'bg-green-600/20 border-green-500/50 text-green-200 '
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span>{opt.icon}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                              {opt.icon}
+                            </span>
                             <span>{t(opt.nameKey)}</span>
                           </button>
                         ))}
@@ -341,7 +347,10 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         >
                           {TRAVEL_POSE_OPTIONS.map((p) => (
                             <option key={p.id} value={p.id}>
-                              {p.icon} {t(p.nameKey)}
+                              <span className="text-[10px] font-bold uppercase tracking-wide opacity-80 mr-1">
+                                {p.icon}
+                              </span>
+                              {t(p.nameKey)}
                             </option>
                           ))}
                         </select>
@@ -368,7 +377,10 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         >
                           {TRAVEL_FRAMING_OPTIONS.map((f) => (
                             <option key={f.id} value={f.id}>
-                              {f.icon} {t(f.nameKey)}
+                              <span className="text-[10px] font-bold uppercase tracking-wide opacity-80 mr-1">
+                                {f.icon}
+                              </span>
+                              {t(f.nameKey)}
                             </option>
                           ))}
                         </select>
@@ -378,7 +390,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                 </div>
 
                 {/* Vibes */}
-                <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30 backdrop-blur-sm md:col-span-2">
+                <div className="flex flex-col gap-3 bg-gray-900/40 p-4 rounded-xl border border-gray-700/30 md:col-span-2">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -391,10 +403,10 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                           </span>
                           <button
                             onClick={() => setClearBackground(!clearBackground)}
-                            className={`w-8 h-4 rounded-full relative transition-all ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
+                            className={`w-8 h-4 rounded-full relative transition-colors ${clearBackground ? 'bg-blue-600' : 'bg-gray-700'}`}
                           >
                             <div
-                              className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${clearBackground ? 'left-4.5' : 'left-0.5'}`}
+                              className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-colors ${clearBackground ? 'left-4.5' : 'left-0.5'}`}
                             />
                           </button>
                         </div>
@@ -420,7 +432,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                           <>
                             <button
                               onClick={() => setVibe('none')}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 border ${
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center gap-2 border ${
                                 vibe === 'none'
                                   ? 'bg-gray-600/20 border-gray-500/50 text-gray-200'
                                   : 'bg-gray-800/40 border-gray-700/50 text-gray-400'
@@ -433,18 +445,20 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                               <button
                                 key={opt.id}
                                 onClick={() => setVibe(opt.id)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 border ${
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center gap-2 border ${
                                   vibe === opt.id
-                                    ? 'bg-purple-600/20 border-purple-500/50 text-purple-200 shadow-[0_0_10px_rgba(147,51,234,0.2)]'
+                                    ? 'brand-bg-tint brand-border-soft brand-text-soft '
                                     : recommendedIds.includes(opt.id)
-                                      ? 'bg-indigo-900/20 border-indigo-700/30 text-indigo-300'
+                                      ? 'brand-bg-tint brand-border-soft brand-text-soft'
                                       : 'bg-gray-800/40 border-gray-700/50 text-gray-400'
                                 }`}
                               >
-                                <span>{opt.icon}</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wide opacity-80">
+                                  {opt.icon}
+                                </span>
                                 <span>{t(opt.nameKey)}</span>
                                 {recommendedIds.includes(opt.id) && (
-                                  <span className="w-1 h-1 rounded-full bg-indigo-400 ml-0.5" />
+                                  <span className="w-1 h-1 rounded-full brand-bg-tint ml-0.5" />
                                 )}
                               </button>
                             ))}
@@ -470,11 +484,11 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                 const CategoryIcon = isScenery ? TravelIcon : FoodBowlIcon;
                 return (
                   <div
-                    className={`animate-slide-up flex flex-col sm:flex-row gap-4 p-4 ${cardBg} border rounded-xl backdrop-blur-md`}
+                    className={`animate-slide-up flex flex-col sm:flex-row gap-4 p-4 ${cardBg} border rounded-xl`}
                   >
                     {scene.referenceImagePath && (
                       <div
-                        className={`w-full sm:w-32 aspect-square rounded-lg overflow-hidden border ${borderCls} shadow-lg flex-shrink-0 bg-gray-900`}
+                        className={`w-full sm:w-32 aspect-square rounded-lg overflow-hidden border ${borderCls} flex-shrink-0 bg-gray-900`}
                       >
                         <img
                           src={publicAssetUrl(sceneThumbPath(scene.referenceImagePath, 256))}

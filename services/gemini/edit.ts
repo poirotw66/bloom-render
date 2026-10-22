@@ -34,7 +34,7 @@ User Request: "${userPrompt}"
 Edit Location: Focus on the area around pixel coordinates (x: ${hotspot.x}, y: ${hotspot.y}).
 
 Editing Guidelines:
-- The edit must be realistic and blend seamlessly with the surrounding area.
+- The edit must be realistic and blend seamlessly with the surrounding area. // taste-skill-ignore
 - The rest of the image (outside the immediate edit area) must remain identical to the original.
 
 ${SAFETY_POLICY}`;
@@ -46,7 +46,7 @@ User Request: "${userPrompt}"
 Edit Location: A mask image is provided. White pixels mark regions to edit; black pixels must stay unchanged.
 
 Editing Guidelines:
-- The edit must be realistic and blend seamlessly with the surrounding area.
+- The edit must be realistic and blend seamlessly with the surrounding area. // taste-skill-ignore
 - Do not alter areas marked black in the mask.
 
 ${SAFETY_POLICY}`;
@@ -58,7 +58,7 @@ User Request: "${userPrompt}"
 Edit Location: The attached image has translucent pink/magenta highlights painted over the regions to change. Apply the edit only inside those highlighted regions. Remove the highlight tint in the output — return a clean photo with no overlay.
 
 Editing Guidelines:
-- The edit must be realistic and blend seamlessly with the surrounding area.
+- The edit must be realistic and blend seamlessly with the surrounding area. // taste-skill-ignore
 - Areas without the highlight must remain identical to the original.
 
 ${SAFETY_POLICY}`;

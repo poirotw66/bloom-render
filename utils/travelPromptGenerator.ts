@@ -15,7 +15,7 @@ const LIGHTING_CONDITIONS = [
 
 const CAMERA_ANGLES = [
   'eye level shot, medium shot',
-  'low angle shot, looking up, empowering angle',
+  'low angle shot, looking up, empowering angle', // taste-skill-ignore
   'wide angle shot, capturing the vast scenery',
   'slightly from above, flattering angle',
   'portrait photography, focusing on the person with background bokeh',

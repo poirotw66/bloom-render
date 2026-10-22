@@ -12,6 +12,7 @@ import { usePasteImage } from '../../hooks/usePasteImage';
 import CostEstimateBadge from '../../components/CostEstimateBadge';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import type { CoupleGroupMode } from './types';
+import { UserIcon, UsersIcon, XMarkIcon } from '../../components/icons';
 import { UI_BTN, UI_FILE_PICKER } from '../../utils/uiClasses';
 
 interface CoupleGroupUploadSectionProps {
@@ -78,7 +79,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
         tabIndex={isDemoMode ? undefined : 0}
         role="group"
         aria-label={t(`couple_group.mode.${mode}`)}
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 ${
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-pink-400 bg-pink-500/10 scale-[1.02]'
             : files.length > 0
@@ -92,14 +93,14 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              {mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'} {t(`couple_group.mode.${mode}`)}
+              {t(`couple_group.mode.${mode}`)}
             </h3>
 
             <div className="flex flex-wrap justify-center gap-4">
               {previewUrls.map((url, idx) => (
                 <div
                   key={idx}
-                  className="group relative w-32 h-32 rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 shadow-xl transition-transform hover:scale-105"
+                  className="group relative w-32 h-32 rounded-xl overflow-hidden border-2 border-gray-700 bg-gray-900 transition-transform hover:scale-105"
                 >
                   <img src={url} alt={`Person ${idx + 1}`} className="w-full h-full object-cover" />
                   {!isDemoMode && (
@@ -108,17 +109,17 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                       className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                       aria-label={t('couple_group.remove_photo')}
                     >
-                      ✕
+                      <XMarkIcon className="w-3.5 h-3.5" />
                     </button>
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm py-0.5 text-[8px] text-white text-center font-bold">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/40 py-0.5 text-[8px] text-white text-center font-bold">
                     #{idx + 1}
                   </div>
                 </div>
               ))}
 
               {canAddMore && (
-                <label className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-pink-500 hover:bg-pink-500/5 transition-all text-gray-500 hover:text-pink-400 group">
+                <label className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-pink-500 hover:bg-pink-500/5 transition-colors text-gray-500 hover:text-pink-400 group">
                   <input
                     type="file"
                     className="hidden"
@@ -164,10 +165,10 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                     (mode === 'couple' && files.length !== 2) ||
                     (mode === 'group' && (files.length < minFiles || files.length > maxFiles))
                   }
-                  className={`${UI_BTN} px-8 py-3.5 font-black text-white shadow-lg ${
+                  className={`${UI_BTN} px-8 py-3.5 font-black text-white ${
                     mode === 'couple'
-                      ? 'bg-pink-600 hover:bg-pink-500 focus-visible:ring-pink-500 shadow-pink-600/20'
-                      : 'bg-purple-600 hover:bg-purple-500 focus-visible:ring-purple-500 shadow-purple-600/20'
+                      ? 'bg-pink-600 hover:bg-pink-500 focus-visible:ring-pink-500 '
+                      : 'brand-bg-strong hover:brand-bg focus-visible:brand-ring '
                   }`}
                 >
                   {loading ? (
@@ -176,10 +177,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                       {t('couple_group.generating')}
                     </>
                   ) : (
-                    <>
-                      <span>{mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'}</span>
-                      {t('couple_group.generate_btn')}
-                    </>
+                    <>{t('couple_group.generate_btn')}</>
                   )}
                 </button>
                 <CostEstimateBadge quantity={quantity} imageSize={imageSize} />
@@ -189,13 +187,17 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
         ) : (
           <div className="flex flex-col items-center gap-6 py-4">
             <div
-              className={`w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl ${
+              className={`w-20 h-20 rounded-3xl flex items-center justify-center ${
                 mode === 'couple'
                   ? 'bg-pink-600/20 text-pink-400 border border-pink-500/30'
-                  : 'bg-purple-600/20 text-purple-400 border border-purple-500/30'
+                  : 'brand-bg-tint brand-text border brand-border-soft'
               }`}
             >
-              <span className="text-4xl">{mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'}</span>
+              {mode === 'couple' ? (
+                <UserIcon className="w-10 h-10" />
+              ) : (
+                <UsersIcon className="w-10 h-10" />
+              )}
             </div>
 
             <div className="text-center">
@@ -211,13 +213,12 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
 
             <label
               htmlFor="image-upload-couple-group"
-              className={`relative inline-flex items-center justify-center px-10 py-5 text-xl font-black text-white rounded-2xl cursor-pointer transition-all duration-300 shadow-2xl hover:-translate-y-1 active:scale-95 ${
+              className={`relative inline-flex items-center justify-center px-10 py-5 text-xl font-black text-white rounded-2xl cursor-pointer transition-colors duration-300 hover:-translate-y-1 active:scale-95 ${
                 mode === 'couple'
-                  ? 'bg-pink-600 hover:bg-pink-500 shadow-pink-600/30'
-                  : 'bg-purple-600 hover:bg-purple-500 shadow-purple-600/30'
+                  ? 'bg-pink-600 hover:bg-pink-500 '
+                  : 'brand-bg-strong hover:brand-bg '
               }`}
             >
-              <span className="mr-3">{mode === 'couple' ? '💑' : '👨‍👩‍👧‍👦'}</span>
               {t('start.upload_button')}
             </label>
             <input

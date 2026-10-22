@@ -52,13 +52,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY_THEME = 'pixshop_theme';
 
-/** 繁花 (Bloom): warm fuchsia/pink gradients, flower petals */
+/** 繁花 (Bloom): dark base with fuchsia → pink */
 const bloomColors: ThemeColors = {
-  primary: 'fuchsia',
-  primaryHover: 'fuchsia-500',
-  primaryLight: 'fuchsia-400',
-  primaryDark: 'fuchsia-600',
-  bgMain: '#0c0a0f',
+  primary: 'brand',
+  primaryHover: 'brand',
+  primaryLight: 'brand',
+  primaryDark: 'brand',
+  bgMain: '#1a1216',
   bgCard: 'gray-800',
   bgCardHover: 'white/10',
   bgOverlay: 'black/20',
@@ -71,19 +71,19 @@ const bloomColors: ThemeColors = {
   accentHover: 'pink-500',
   success: 'green',
   successHover: 'green-500',
-  bgGradient1: 'rgba(236, 72, 153, 0.25)',
-  bgGradient2: 'rgba(168, 85, 247, 0.2)',
-  bgGradient3: 'rgba(217, 70, 239, 0.22)',
-  bgGradient4: '#1B2735',
+  bgGradient1: 'rgba(217, 70, 239, 0.14)',
+  bgGradient2: 'rgba(244, 114, 182, 0.12)',
+  bgGradient3: 'rgba(232, 121, 249, 0.1)',
+  bgGradient4: '#121016',
 };
 
-/** 深夜 (Night): dark blue/slate, minimal, star-focused */
+/** 深夜 (Night): cool near-black, blue → cyan */
 const nightColors: ThemeColors = {
   primary: 'blue',
   primaryHover: 'blue-500',
   primaryLight: 'blue-400',
   primaryDark: 'blue-600',
-  bgMain: '#000000',
+  bgMain: '#0a0c10',
   bgCard: 'gray-800',
   bgCardHover: 'white/10',
   bgOverlay: 'black/20',
@@ -99,15 +99,16 @@ const nightColors: ThemeColors = {
   bgGradient1: 'transparent',
   bgGradient2: 'transparent',
   bgGradient3: 'transparent',
-  bgGradient4: '#000000',
+  bgGradient4: '#0a0c10',
 };
 
+/** 新年 (New Year): deep red with gold/yellow */
 const newyearColors: ThemeColors = {
   primary: 'red',
   primaryHover: 'red-500',
   primaryLight: 'red-400',
   primaryDark: 'red-600',
-  bgMain: '#1a0000',
+  bgMain: '#160808',
   bgCard: 'red-900/30',
   bgCardHover: 'red-500/20',
   bgOverlay: 'red-900/40',
@@ -120,10 +121,10 @@ const newyearColors: ThemeColors = {
   accentHover: 'yellow-500',
   success: 'green',
   successHover: 'green-500',
-  bgGradient1: 'rgba(220, 38, 38, 0.3)',
-  bgGradient2: 'rgba(234, 179, 8, 0.25)',
-  bgGradient3: 'rgba(220, 38, 38, 0.2)',
-  bgGradient4: '#2a0000',
+  bgGradient1: 'rgba(220, 38, 38, 0.16)',
+  bgGradient2: 'rgba(251, 191, 36, 0.12)',
+  bgGradient3: 'rgba(220, 38, 38, 0.1)',
+  bgGradient4: '#160808',
 };
 
 const themeColorMap: Record<ThemeType, ThemeColors> = {

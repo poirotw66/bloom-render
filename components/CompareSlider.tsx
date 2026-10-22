@@ -166,7 +166,7 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
 
       {/* Divider line + grab handle. */}
       <div
-        className="absolute inset-y-0 w-0.5 bg-white/90 shadow-[0_0_8px_rgba(0,0,0,0.6)] pointer-events-none"
+        className="absolute inset-y-0 w-0.5 bg-white/90 pointer-events-none"
         style={{ left: `${position}%` }}
         aria-hidden="true"
       />
@@ -179,7 +179,7 @@ const CompareSlider: React.FC<CompareSliderProps> = ({
         aria-valuenow={Math.round(position)}
         aria-valuetext={`${Math.round(position)}%`}
         onKeyDown={handleKeyDown}
-        className="absolute top-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-lg flex items-center justify-center cursor-ew-resize focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400/70"
+        className="absolute top-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white flex items-center justify-center cursor-ew-resize focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400/70"
         style={{ left: `${position}%` }}
       >
         <svg

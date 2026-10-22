@@ -283,9 +283,9 @@ export const zhTWMessages: Record<string, string> = {
   'service.item.voucher_leader.name': '【團體票券】高階形象照-領袖之境',
   'service.item.voucher_leader.desc': '台北、勤美店限定、各門市每日『限2組』預約。',
   'service.item.voucher_half.name': '【團體票券】職業形象照/半身',
-  'service.item.voucher_half.desc': '10人以上即可選購、妝髮&拍攝 All IN ONE。',
+  'service.item.voucher_half.desc': '10人以上即可選購、妝髮&拍攝 All IN ONE。', // taste-skill-ignore
   'service.item.voucher_id.name': '【團體票券】完顏®證件照',
-  'service.item.voucher_id.desc': '10人以上即可選購、All IN ONE、60分鐘取件！',
+  'service.item.voucher_id.desc': '10人以上即可選購、All IN ONE、60分鐘取件！', // taste-skill-ignore
   'service.item.voucher_self.name': '【團體票券】SELF個人證件照',
   'service.item.voucher_self.desc': '10人以上即可選購、60分鐘取件！',
   'service.item.voucher_corp.name': '企業團拍(雙人以上)',

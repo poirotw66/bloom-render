@@ -35,6 +35,30 @@ test.describe('smoke', () => {
     await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
   });
 
+  test('landing shows API-key notice and Try demo with no key', async ({ page }) => {
+    // Fresh visitor: no session/local keys, not in demo mode.
+    await page.addInitScript(() => {
+      try {
+        sessionStorage.removeItem('pixshop_api_key');
+        sessionStorage.removeItem('pixshop_openrouter_api_key');
+        localStorage.removeItem('pixshop_api_key');
+        localStorage.removeItem('pixshop_openrouter_api_key');
+        localStorage.removeItem('pixshop_image_provider');
+      } catch {
+        /* ignore */
+      }
+    });
+    await page.goto('/');
+    const notice = page.getByTestId('api-key-notice');
+    await expect(notice).toBeVisible();
+    await expect(notice.getByText(/Add an API key/i)).toBeVisible();
+    const tryDemo = page.getByTestId('try-demo-button');
+    await expect(tryDemo).toBeVisible();
+    await tryDemo.click();
+    await expect(page.getByTestId('api-key-notice')).toHaveCount(0);
+    await expect(page.getByText(/Demo|Showing a pre-made sample/i).first()).toBeVisible();
+  });
+
   for (const route of ROUTES) {
     test(`route ${route.path} loads`, async ({ page }) => {
       await page.goto(route.path);

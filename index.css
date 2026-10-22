@@ -1,58 +1,201 @@
 @import 'tailwindcss';
 
-/* Typography scale (consistent across features): page title = text-4xl→6xl, section = text-xl, body = text-base, label = text-sm, caption = text-xs. Body text uses leading-relaxed for readability. */
-#root {
-  font-size: 16px;
-}
-#root .text-body {
-  font-size: 1rem;
-  line-height: 1.625;
+/*
+  BloomRender design tokens — Taste PRESERVE restyle.
+  Quiet instrument + Work Sans; brand hues via CSS vars (fuchsia/pink, blue/cyan, red/gold).
+  Flat fills only: no gradient utilities, no resting shadows.
+*/
+
+:root {
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+  --radius-control: 0.75rem;
+  --radius-panel: 1rem;
+  --font-sans: 'Work Sans', system-ui, sans-serif;
+
+  /* Default = Bloom (繁花): warm off-black, fuchsia → pink */
+  --bg-main: #1a1216;
+  --bg-surface: #241820;
+  --bg-raised: #2e2028;
+  --ink: #faf4f6;
+  --ink-soft: #e2cfd6;
+  --ink-muted: #b89aa6;
+  --brand-primary: #d946ef;
+  --brand-primary-strong: #c026d3;
+  --brand-primary-soft: #e879f9;
+  --brand-accent: #f472b6;
+  --brand-tint: rgba(244, 114, 182, 0.16);
+  --brand-border: rgba(232, 121, 249, 0.45);
+  --brand-border-soft: rgba(244, 114, 182, 0.32);
+  --star-color: rgba(255, 220, 210, 0.55);
+  --shooting-star-color: #e879f9;
+  --nav-track: rgba(36, 24, 32, 0.85);
+  --notice-bg: rgba(60, 28, 40, 0.92);
+  --notice-ink: #fde8ef;
 }
 
-/* BloomRender: ensure sufficient text contrast on dark bloom background */
+[data-theme='bloom'] {
+  --bg-main: #1a1216;
+  --bg-surface: #241820;
+  --bg-raised: #2e2028;
+  --ink: #faf4f6;
+  --ink-soft: #e2cfd6;
+  --ink-muted: #b89aa6;
+  --brand-primary: #d946ef;
+  --brand-primary-strong: #c026d3;
+  --brand-primary-soft: #e879f9;
+  --brand-accent: #f472b6;
+  --brand-tint: rgba(244, 114, 182, 0.16);
+  --brand-border: rgba(232, 121, 249, 0.45);
+  --brand-border-soft: rgba(244, 114, 182, 0.32);
+  --star-color: rgba(255, 220, 210, 0.55);
+  --shooting-star-color: #e879f9;
+  --nav-track: rgba(36, 24, 32, 0.85);
+  --notice-bg: rgba(60, 28, 40, 0.92);
+  --notice-ink: #fde8ef;
+}
+
+/* 深夜 Night: cool near-black, blue → cyan */
+[data-theme='night'] {
+  --bg-main: #0a0c10;
+  --bg-surface: #12151c;
+  --bg-raised: #1a1f2a;
+  --ink: #eef2f7;
+  --ink-soft: #b8c0cc;
+  --ink-muted: #8b95a5;
+  --brand-primary: #3b82f6;
+  --brand-primary-strong: #2563eb;
+  --brand-primary-soft: #60a5fa;
+  --brand-accent: #22d3ee;
+  --brand-tint: rgba(59, 130, 246, 0.14);
+  --brand-border: rgba(59, 130, 246, 0.35);
+  --brand-border-soft: rgba(34, 211, 238, 0.22);
+  --star-color: rgba(238, 242, 247, 0.7);
+  --shooting-star-color: #67e8f9;
+  --nav-track: rgba(18, 21, 28, 0.9);
+  --notice-bg: rgba(15, 23, 42, 0.95);
+  --notice-ink: #e0f2fe;
+}
+
+/* 新年 New Year: deep red, gold/yellow */
+[data-theme='newyear'] {
+  --bg-main: #160808;
+  --bg-surface: #2a1010;
+  --bg-raised: #3a1818;
+  --ink: #fff5f5;
+  --ink-soft: #f0cfcf;
+  --ink-muted: #d4a0a0;
+  --brand-primary: #dc2626;
+  --brand-primary-strong: #b91c1c;
+  --brand-primary-soft: #f87171;
+  --brand-accent: #fbbf24;
+  --brand-tint: rgba(220, 38, 38, 0.2);
+  --brand-border: rgba(220, 38, 38, 0.45);
+  --brand-border-soft: rgba(251, 191, 36, 0.35);
+  --star-color: rgba(254, 243, 199, 0.55);
+  --shooting-star-color: #fbbf24;
+  --nav-track: rgba(42, 16, 16, 0.92);
+  --notice-bg: rgba(64, 16, 16, 0.95);
+  --notice-ink: #fef3c7;
+}
+
+/* Theme surfaces for shared chrome (avoid leftover navy/gray on New Year) */
+.theme-surface {
+  background-color: var(--bg-surface);
+}
+.theme-raised {
+  background-color: var(--bg-raised);
+}
+.theme-nav-track {
+  background-color: var(--nav-track);
+}
+.theme-border {
+  border-color: var(--brand-border-soft);
+}
+.theme-border-strong {
+  border-color: var(--brand-border);
+}
+.theme-ink {
+  color: var(--ink);
+}
+.theme-ink-soft {
+  color: var(--ink-soft);
+}
+.theme-ink-muted {
+  color: var(--ink-muted);
+}
+
+/* Brand utility classes — keep hue identity without banned Tailwind purple tokens */
+.brand-bg {
+  background-color: var(--brand-primary);
+}
+.brand-bg-strong {
+  background-color: var(--brand-primary-strong);
+}
+.brand-bg-tint {
+  background-color: var(--brand-tint);
+}
+.brand-text {
+  color: var(--brand-primary-soft);
+}
+.brand-text-soft {
+  color: var(--brand-accent);
+}
+.brand-text-strong {
+  color: var(--brand-primary);
+}
+.brand-border {
+  border-color: var(--brand-border);
+}
+.brand-border-soft {
+  border-color: var(--brand-border-soft);
+}
+.brand-ring {
+  --tw-ring-color: var(--brand-primary);
+}
+.focus-visible\:brand-ring:focus-visible {
+  --tw-ring-color: var(--brand-primary);
+}
+
+#root {
+  font-size: 16px;
+  font-family: var(--font-sans);
+  color: var(--ink);
+}
+#root .text-body {
+  font-size: var(--step-body);
+  line-height: 1.55;
+}
+
 #root .text-muted-contrast {
-  color: rgb(203 213 225);
+  color: var(--ink-soft);
 }
 #root input::placeholder,
 #root textarea::placeholder {
-  color: rgb(148 163 184);
+  color: var(--ink-muted);
 }
 
-/* BloomRender design tokens (logo-aligned gradient) */
-.bg-bloom-gradient {
-  background: linear-gradient(
-    135deg,
-    rgb(249 115 22 / 0.9) 0%,
-    rgb(236 72 153 / 0.9) 35%,
-    rgb(168 85 247 / 0.9) 65%,
-    rgb(59 130 246 / 0.9) 100%
-  );
+/* Flat brand fills (no gradient / clip-text) */
+.bg-bloom-flat {
+  background-color: var(--brand-primary);
 }
-.text-bloom-gradient {
-  background: linear-gradient(135deg, #f97316, #ec4899, #a855f7, #3b82f6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.text-bloom-accent {
+  color: var(--brand-accent);
 }
 .border-bloom {
-  border-image: linear-gradient(
-      135deg,
-      rgba(249, 115, 22, 0.5),
-      rgba(236, 72, 153, 0.5),
-      rgba(168, 85, 247, 0.5),
-      rgba(59, 130, 246, 0.5)
-    )
-    1;
+  border-color: var(--brand-border);
 }
 .ring-bloom:focus-within,
-.ring-bloom:focus {
-  --tw-ring-color: rgba(168, 85, 247, 0.5);
+.ring-bloom:focus-visible {
+  --tw-ring-color: var(--brand-primary);
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -63,9 +206,8 @@
 @keyframes slide-down {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -75,9 +217,8 @@
 @keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(12px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -87,9 +228,8 @@
 @keyframes slide-in-right {
   from {
     opacity: 0;
-    transform: translateX(24px);
+    transform: translateX(16px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -97,23 +237,21 @@
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
+  animation: fade-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slide-down {
-  animation: slide-down 0.3s ease-out forwards;
+  animation: slide-down 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slide-up {
-  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Side panels (history) enter from the edge they're anchored to. */
 .animate-slide-in-right {
   animation: slide-in-right 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Horizontal tab strip scrolls on narrow screens; the edge fade is the affordance. */
 .no-scrollbar {
   scrollbar-width: none;
 }
@@ -121,25 +259,22 @@
   display: none;
 }
 
-/* Keyboard-only shortcut past the header straight into page content. */
 .skip-link {
   position: absolute;
   left: 1rem;
   top: -100%;
   z-index: 100;
   padding: 0.625rem 1rem;
-  border-radius: 0.75rem;
-  background: rgb(37 99 235);
-  color: #fff;
+  border-radius: var(--radius-control);
+  background: #0f172a;
+  color: #f8fafc;
   font-weight: 600;
-  box-shadow: 0 10px 25px rgb(0 0 0 / 0.35);
+  border: 2px solid #f8fafc;
 }
 .skip-link:focus {
   top: 1rem;
 }
 
-/* Respect the OS "reduce motion" preference for in-app transitions too; the
-   decorative background layers are handled separately in index.html. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-slide-down,

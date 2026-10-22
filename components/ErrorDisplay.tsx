@@ -30,8 +30,8 @@ export function ErrorDisplay({
   return (
     <p className={classes} role="alert">
       {showIcon && (
-        <span className="mr-1" aria-hidden>
-          ⚠️
+        <span className="mr-1 font-bold" aria-hidden>
+          !
         </span>
       )}
       {message}

@@ -47,7 +47,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
   return (
     <div className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto ${className}`}>
       {isDemoMode && <DemoModeBanner />}
-      <div className="relative w-full rounded-xl overflow-hidden shadow-2xl border-2 border-gray-700 p-2 bg-gray-950/40">
+      <div className="relative w-full rounded-xl overflow-hidden border-2 border-gray-700 p-2 bg-gray-950/40">
         {isDemoMode && (
           <div className="absolute top-4 left-4 z-10">
             <DemoModeBanner compact />
@@ -62,7 +62,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {params.map((param, idx) => (
               <div key={idx}>
-                <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <span className="block text-xs font-medium text-gray-500 tracking-normal">
                   {t(param.labelKey)}
                 </span>
                 <span className="text-base text-gray-200 leading-relaxed">

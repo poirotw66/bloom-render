@@ -75,7 +75,7 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
                 onClick={portrait.handlePortraitBatchDownload}
                 className={UI_BTN_SUCCESS}
               >
-                💾 {t('history.batch_download')} ({portrait.portraitResults.length})
+                {t('history.batch_download')} ({portrait.portraitResults.length})
               </button>
               <button
                 type="button"

@@ -30,7 +30,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
   return (
     <div
-      className={`flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-8 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}
+      className={`flex flex-col items-center gap-4 w-full max-w-md animate-fade-in bg-gray-800/40 p-8 rounded-xl border border-gray-700/50 ${className}`}
     >
       <div className="relative">
         <BloomFlowerLoader size={80} />
@@ -48,7 +48,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
           {progress !== undefined && (
             <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ease-out"
+                className="h-full brand-bg brand-bg transition-colors duration-300 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>

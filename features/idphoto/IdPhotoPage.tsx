@@ -91,7 +91,7 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
                 onClick={id.handleIdPhotoBatchDownload}
                 className={UI_BTN_SUCCESS}
               >
-                💾 {t('history.batch_download')} ({id.idPhotoResults.length})
+                {t('history.batch_download')} ({id.idPhotoResults.length})
               </button>
               <button type="button" onClick={id.clearIdPhotoResult} className={UI_BTN_SECONDARY}>
                 {t('start.idphoto_again')}

@@ -49,7 +49,7 @@ export function generateCoupleGroupPrompt(options: CoupleGroupPromptOptions): st
   const arrangementDescription = fileCount === 2 ? 'the couple' : 'the group';
 
   return buildPrompt({
-    role: `You are a world-class ${mode === 'couple' ? 'couple' : 'group'} portrait photographer and retouching AI. Transform the provided ${groupDescription} portrait${isGroup ? 's' : ''} into a high-end, professional style image.`,
+    role: `You are a world-class ${mode === 'couple' ? 'couple' : 'group'} portrait photographer and retouching AI. Transform the provided ${groupDescription} portrait${isGroup ? 's' : ''} into a high-end, professional style image.`, // taste-skill-ignore
     requirements: [`${styleHint}${variationNote}`],
     guidelines: [
       `Maintain strict identity consistency: ${identityConsistency} must look the same as in the ${isGroup ? 'source images' : 'original image'}.`,

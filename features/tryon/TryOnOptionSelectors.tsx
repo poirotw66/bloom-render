@@ -54,14 +54,14 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 type="button"
                 onClick={() => !disabled && onBackgroundChange(opt.id)}
                 disabled={disabled}
-                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all duration-300 ${
+                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-colors duration-300 ${
                   isActive
-                    ? 'bg-teal-600 text-white shadow-xl shadow-teal-600/20 scale-105 z-10'
+                    ? 'bg-teal-600 text-white scale-105 z-10'
                     : 'bg-gray-800/40 text-gray-400 border border-gray-700/50 hover:bg-gray-700/60 hover:border-teal-500/30'
                 } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
                 <span
-                  className={`text-2xl transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                  className={`text-[11px] font-bold uppercase tracking-wide transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
                 >
                   {opt.emoji}
                 </span>
@@ -72,7 +72,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 </span>
                 {isActive && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-pulse"></span>
+                    <span className="w-1.5 h-1.5 bg-teal-600 rounded-full"></span>
                   </span>
                 )}
               </button>
@@ -81,7 +81,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
         </div>
         {selectedBg && (
           <p className="text-[11px] text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
-            ✨ {selectedBg.promptHint.split('.')[0]}.
+            {selectedBg.promptHint.split('.')[0]}.
           </p>
         )}
       </div>
@@ -107,14 +107,14 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 type="button"
                 onClick={() => !disabled && onStyleChange(opt.id)}
                 disabled={disabled}
-                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all duration-300 ${
+                className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-colors duration-300 ${
                   isActive
-                    ? 'bg-amber-600 text-white shadow-xl shadow-amber-600/20 scale-105 z-10'
+                    ? 'bg-amber-600 text-white scale-105 z-10'
                     : 'bg-gray-800/40 text-gray-400 border border-gray-700/50 hover:bg-gray-700/60 hover:border-amber-500/30'
                 } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
                 <span
-                  className={`text-2xl transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                  className={`text-[11px] font-bold uppercase tracking-wide transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
                 >
                   {opt.emoji}
                 </span>
@@ -125,7 +125,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
                 </span>
                 {isActive && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 bg-amber-600 rounded-full animate-pulse"></span>
+                    <span className="w-1.5 h-1.5 bg-amber-600 rounded-full"></span>
                   </span>
                 )}
               </button>
@@ -134,7 +134,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
         </div>
         {selectedStyle && (
           <p className="text-[11px] text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
-            🎨 {selectedStyle.promptHint.split('.')[0]}.
+            {selectedStyle.promptHint.split('.')[0]}.
           </p>
         )}
       </div>

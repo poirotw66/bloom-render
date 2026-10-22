@@ -155,7 +155,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
   }, [batch.results]);
 
   return (
-    <div className={`${UI_PAGE} border-transparent shadow-none`}>
+    <div className={`${UI_PAGE} border-transparent `}>
       <div className="flex flex-col items-center gap-6">
         <h1 className={UI_TITLE}>
           {t('start.title_part1')} <span className="text-emerald-400">{t('batch.title')}</span>
@@ -177,7 +177,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
           <div className="w-full flex flex-col gap-6">
             <div className="flex items-center justify-center gap-4">
               <button type="button" onClick={handleBatchDownload} className={UI_BTN_SUCCESS}>
-                💾 {t('history.batch_download')} ({batch.results.length})
+                {t('history.batch_download')} ({batch.results.length})
               </button>
               <button
                 type="button"
@@ -227,7 +227,7 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
               onDrop={handleDrop}
               maxFiles={10}
               minFiles={1}
-              icon="🪪"
+              icon="id"
             />
           </>
         )}

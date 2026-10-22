@@ -75,7 +75,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
       <div className="text-center w-full">
         <h3 className="text-xl font-bold text-white">{t('travel.title')}</h3>
       </div>
-      <div className="w-full max-h-[480px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center shadow-2xl p-2">
+      <div className="w-full max-h-[480px] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 flex items-center justify-center p-2">
         <ResultImage
           resultUrl={displayResult}
           originalUrl={originalUrl}
@@ -87,8 +87,8 @@ const TravelResult: React.FC<TravelResultProps> = ({
       {m && (
         <div className="w-full bg-black/20 rounded-2xl p-5 border border-white/5 space-y-6">
           {/* Top Row: Scene Information */}
-          <div className="flex items-start gap-4 border-b border-gray-700/30 pb-4">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shadow-inner shrink-0">
+          <div className="flex items-start gap-4 border-0 border-gray-700/30 pb-4">
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shrink-0">
               <TravelIcon className="w-5 h-5 text-sky-300" />
             </div>
             <div className="space-y-0.5">
@@ -105,15 +105,15 @@ const TravelResult: React.FC<TravelResultProps> = ({
             {/* Subject & Pose Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-1 h-3 bg-indigo-500 rounded-full" />
-                <h4 className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
+                <div className="w-1 h-3 brand-bg rounded-full" />
+                <h4 className="text-[10px] font-bold brand-text tracking-normal">
                   {t('travel.label.group_subject')} & {t('travel.label.pose')}
                 </h4>
               </div>
               <div className="space-y-2.5 ml-3">
                 <div className="flex items-center gap-3 text-base text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    👗
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-[9px] font-bold uppercase text-gray-400 group-hover:bg-white/10 transition-colors">
+                    out
                   </span>
                   <span className="text-gray-500 text-xs min-w-[60px]">
                     {t('travel.label.outfit')}
@@ -129,8 +129,8 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-base text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    🧘
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-[9px] font-bold uppercase text-gray-400 group-hover:bg-white/10 transition-colors">
+                    pose
                   </span>
                   <span className="text-gray-500 text-xs min-w-[60px]">
                     {t('travel.label.pose')}
@@ -163,14 +163,14 @@ const TravelResult: React.FC<TravelResultProps> = ({
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-3 bg-teal-500 rounded-full" />
-                <h4 className="text-[10px] font-bold text-teal-400 uppercase tracking-widest">
+                <h4 className="text-[10px] font-bold text-teal-400 tracking-normal">
                   {t('travel.label.group_environment')} & {t('travel.label.group_aesthetics')}
                 </h4>
               </div>
               <div className="space-y-2.5 ml-3">
                 <div className="flex items-center gap-3 text-base text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    {TRAVEL_WEATHER_OPTIONS.find((w) => w.id === m.weather)?.icon || '☁️'}
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-[9px] font-bold uppercase text-gray-400 group-hover:bg-white/10 transition-colors">
+                    {TRAVEL_WEATHER_OPTIONS.find((w) => w.id === m.weather)?.icon || 'cld'}
                   </span>
                   <span className="text-gray-500 text-xs min-w-[60px]">
                     {t('travel.label.weather')}
@@ -180,8 +180,8 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-base text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    {TRAVEL_TIME_OPTIONS.find((t_) => t_.id === m.time)?.icon || '🕒'}
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-[9px] font-bold uppercase text-gray-400 group-hover:bg-white/10 transition-colors">
+                    {TRAVEL_TIME_OPTIONS.find((t_) => t_.id === m.time)?.icon || 'time'}
                   </span>
                   <span className="text-gray-500 text-xs min-w-[60px]">
                     {t('travel.label.time')}
@@ -191,8 +191,8 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-base text-gray-200 group">
-                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
-                    🎨
+                  <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-[9px] font-bold uppercase text-gray-400 group-hover:bg-white/10 transition-colors">
+                    sty
                   </span>
                   <span className="text-gray-500 text-xs min-w-[60px]">
                     {t('travel.label.style')}
@@ -203,7 +203,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                 </div>
                 {m.clearBackground && (
                   <div className="pt-1">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded uppercase tracking-widest w-fit">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded tracking-normal w-fit">
                       <SparklesIcon className="w-3 h-3" />
                       <span>{t('travel.label.clear_background')}</span>
                     </div>
@@ -215,7 +215,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
         </div>
       )}
 
-      <div className="flex flex-col items-center gap-4 w-full border-t border-gray-700/50 pt-6">
+      <div className="flex flex-col items-center gap-4 w-full border-0 border-gray-700/50 pt-6">
         <ResultActions
           result={displayResult}
           originalUrl={originalUrl}

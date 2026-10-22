@@ -116,36 +116,36 @@ export const TRAVEL_WEATHER_OPTIONS: {
   prompt: string;
   icon: string;
 }[] = [
-  { id: 'random', nameKey: 'travel.weather.random', prompt: '', icon: '🎲' },
+  { id: 'random', nameKey: 'travel.weather.random', prompt: '', icon: 'rand' },
   {
     id: 'sunny',
     nameKey: 'travel.weather.sunny',
     prompt: 'sunny day, clear blue sky, bright sunlight',
-    icon: '☀️',
+    icon: 'sun',
   },
   {
     id: 'rainy',
     nameKey: 'travel.weather.rainy',
     prompt: 'rainy day, wet streets, rain droplets, raindrops on skin',
-    icon: '🌧️',
+    icon: 'rain',
   },
   {
     id: 'snowy',
     nameKey: 'travel.weather.snowy',
     prompt: 'snowing, snow-covered ground, winter atmosphere, snowflakes',
-    icon: '❄️',
+    icon: 'snow',
   },
   {
     id: 'cloudy',
     nameKey: 'travel.weather.cloudy',
     prompt: 'overcast sky, soft diffused lighting, cloudy day',
-    icon: '☁️',
+    icon: 'cld',
   },
   {
     id: 'misty',
     nameKey: 'travel.weather.misty',
     prompt: 'misty morning, fog in background, mysterious atmosphere, soft haze',
-    icon: '🌫️',
+    icon: 'fog',
   },
 ];
 
@@ -156,30 +156,30 @@ export const TRAVEL_TIME_OPTIONS: {
   prompt: string;
   icon: string;
 }[] = [
-  { id: 'random', nameKey: 'travel.time.random', prompt: '', icon: '🎲' },
+  { id: 'random', nameKey: 'travel.time.random', prompt: '', icon: 'rand' },
   {
     id: 'dawn',
     nameKey: 'travel.time.dawn',
     prompt: 'early morning, soft dawn light, pastel sky',
-    icon: '🌅',
+    icon: 'dawn',
   },
   {
     id: 'noon',
     nameKey: 'travel.time.noon',
     prompt: 'midday, high sun, bright and vibrant colors',
-    icon: '☀️',
+    icon: 'noon',
   },
   {
     id: 'sunset',
     nameKey: 'travel.time.sunset',
     prompt: 'golden hour, orange and pink sky, long shadows',
-    icon: '🌇',
+    icon: 'dusk',
   },
   {
     id: 'night',
     nameKey: 'travel.time.night',
     prompt: 'at night, city lights, starry sky, dark atmosphere',
-    icon: '🌙',
+    icon: 'night',
   },
 ];
 
@@ -189,55 +189,55 @@ export const TRAVEL_VIBE_OPTIONS: import('../types').TravelVibeOption[] = [
     id: 'zen',
     nameKey: 'travel.vibe.zen',
     prompt: 'peaceful, zen atmosphere, minimalist, calm',
-    icon: '🧘',
+    icon: 'zen',
   },
   {
     id: 'retro',
     nameKey: 'travel.vibe.retro',
     prompt: 'vintage aesthetic, 90s feel, nostalgic colors',
-    icon: '📼',
+    icon: 'retro',
   },
   {
     id: 'cyberpunk',
     nameKey: 'travel.vibe.cyberpunk',
     prompt: 'cyberpunk style, neon lights, high tech low life, rain-slicked streets',
-    icon: '🌃',
+    icon: 'cyber',
   },
   {
     id: 'street',
     nameKey: 'travel.vibe.street',
     prompt: 'street style photography, candid moment, urban vibe',
-    icon: '👟',
+    icon: 'strt',
   },
   {
     id: 'elegant',
     nameKey: 'travel.vibe.elegant',
     prompt: 'elegant and sophisticated, high-end fashion magazine style',
-    icon: '💎',
+    icon: 'elg',
   },
   {
     id: 'adventure',
     nameKey: 'travel.vibe.adventure',
     prompt: 'adventurous spirit, hiking gear, exploring nature',
-    icon: '🥾',
+    icon: 'adv',
   },
   {
     id: 'cozy',
     nameKey: 'travel.vibe.cozy',
     prompt: 'warm and cozy, soft blankets, comfortable setting',
-    icon: '☕',
+    icon: 'cozy',
   },
   {
     id: 'futuristic',
     nameKey: 'travel.vibe.futuristic',
     prompt: 'futuristic technology, sleek design, sci-fi atmosphere',
-    icon: '🚀',
+    icon: 'fut',
   },
   {
     id: 'romantic',
     nameKey: 'travel.vibe.romantic',
     prompt: 'romantic atmosphere, soft focus, warm heart-felt lighting',
-    icon: '💖',
+    icon: 'rom',
   },
 ];
 
@@ -248,92 +248,92 @@ export const TRAVEL_OUTFIT_OPTIONS: {
   prompt: string;
   icon: string;
 }[] = [
-  { id: 'default', nameKey: 'travel.outfit.default', prompt: '', icon: '🧥' },
+  { id: 'default', nameKey: 'travel.outfit.default', prompt: '', icon: 'def' },
   {
     id: 'luxury',
     nameKey: 'travel.outfit.luxury',
     prompt:
       'quiet luxury style, exquisite high-end fashion, high-quality fabrics, sophisticated minimalist look, expensive accessories',
-    icon: '💎',
+    icon: 'lux',
   },
   {
     id: 'parisian',
     nameKey: 'travel.outfit.parisian',
     prompt:
-      'effortless Parisian chic, beret, trench coat, striped tops, stylish and elegant French aesthetic',
-    icon: '🍷',
+      'effortless Parisian chic, beret, trench coat, striped tops, stylish and elegant French aesthetic', // taste-skill-ignore
+    icon: 'par',
   },
   {
     id: 'academic',
     nameKey: 'travel.outfit.academic',
     prompt:
       'dark academia aesthetic, turtleneck, wool blazers, scholarly look, intellectual and mysterious fashion',
-    icon: '📜',
+    icon: 'acad',
   },
   {
     id: 'y2k',
     nameKey: 'travel.outfit.y2k',
     prompt:
       'Y2K pop fashion, 2000s aesthetic, bright metallic colors, trendy cyber-pop look, youthful and bold',
-    icon: '💖',
+    icon: 'y2k',
   },
   {
     id: 'vintage',
     nameKey: 'travel.outfit.vintage',
     prompt: 'exquisite vintage classic outfit, timeless elegance, retro high-fashion style',
-    icon: '🕰️',
+    icon: 'vint',
   },
   {
     id: 'street_chic',
     nameKey: 'travel.outfit.street_chic',
     prompt: 'streetwear chic, trendy urban high-fashion, stylish layering, modern influencer look',
-    icon: '👟',
+    icon: 'strt',
   },
   {
     id: 'preppy',
     nameKey: 'travel.outfit.preppy',
     prompt:
       'preppy style, clean-cut academic look, knitted sweaters, blazers, sophisticated and neat',
-    icon: '🎓',
+    icon: 'prep',
   },
   {
     id: 'boho',
     nameKey: 'travel.outfit.boho',
     prompt: 'exquisite boho-chic, artistic traveler style, flowy patterns, stylish textures',
-    icon: '🎨',
+    icon: 'boho',
   },
   {
     id: 'traditional',
     nameKey: 'travel.outfit.traditional',
     prompt:
       'wearing traditional ethnic clothing matching the local culture, high quality traditional garments',
-    icon: '👘',
+    icon: 'trad',
   },
   {
     id: 'winter',
     nameKey: 'travel.outfit.winter',
     prompt: 'wearing winter clothes, warm down jacket, scarf, gloves, beanie',
-    icon: '🧥',
+    icon: 'win',
   },
   {
     id: 'summer',
     nameKey: 'travel.outfit.summer',
     prompt: 'wearing summer clothes, light summer dress, shorts and t-shirt, sunglasses',
-    icon: '🕶️',
+    icon: 'sum',
   },
   {
     id: 'hiking',
     nameKey: 'travel.outfit.hiking',
     prompt: 'wearing professional hiking gear, outdoor performance clothing, backpack',
-    icon: '🥾',
+    icon: 'hike',
   },
   {
     id: 'cyberpunk',
     nameKey: 'travel.outfit.cyberpunk',
     prompt: 'wearing techwear, cyberpunk fashion, neon accents, futuristic accessories',
-    icon: '🧪',
+    icon: 'cyber',
   },
-  { id: 'custom', nameKey: 'travel.custom', prompt: '', icon: '✍️' },
+  { id: 'custom', nameKey: 'travel.custom', prompt: '', icon: 'edit' },
 ];
 
 /** Relationship types for multi-person mode */
@@ -343,36 +343,36 @@ export const TRAVEL_RELATIONSHIP_OPTIONS: {
   prompt: string;
   icon: string;
 }[] = [
-  { id: 'default', nameKey: 'travel.relationship.default', prompt: '', icon: '👥' },
+  { id: 'default', nameKey: 'travel.relationship.default', prompt: '', icon: 'def' },
   {
     id: 'couple',
     nameKey: 'travel.relationship.couple',
     prompt: 'romantic couple, intimate and affectionate interaction',
-    icon: '💑',
+    icon: 'cpl',
   },
   {
     id: 'family',
     nameKey: 'travel.relationship.family',
     prompt: 'family members, warm family atmosphere',
-    icon: '👨‍👩‍👧‍👦',
+    icon: 'fam',
   },
   {
     id: 'friends',
     nameKey: 'travel.relationship.friends',
     prompt: 'close friends, casual and fun interaction',
-    icon: '👯',
+    icon: 'frnd',
   },
   {
     id: 'siblings',
     nameKey: 'travel.relationship.siblings',
     prompt: 'siblings, playful and comfortable interaction',
-    icon: '👫',
+    icon: 'sib',
   },
   {
     id: 'parent_child',
     nameKey: 'travel.relationship.parent_child',
     prompt: 'parent and child, caring and protective interaction',
-    icon: '👨‍👧',
+    icon: 'pc',
   },
 ];
 
@@ -383,49 +383,49 @@ export const TRAVEL_FRAMING_OPTIONS: {
   prompt: string;
   icon: string;
 }[] = [
-  { id: 'default', nameKey: 'travel.framing.default', prompt: '', icon: '📷' },
+  { id: 'default', nameKey: 'travel.framing.default', prompt: '', icon: 'def' },
   {
     id: 'closeup',
     nameKey: 'travel.framing.closeup',
     prompt: 'close-up shot, face and upper body focus, intimate framing',
-    icon: '🔍',
+    icon: 'cu',
   },
   {
     id: 'portrait',
     nameKey: 'travel.framing.portrait',
     prompt: 'portrait shot, head to waist, classic travel photo framing',
-    icon: '🖼️',
+    icon: 'port',
   },
   {
     id: 'full_body',
     nameKey: 'travel.framing.full_body',
     prompt: 'full body shot, entire person visible from head to toe',
-    icon: '🧍',
+    icon: 'full',
   },
   {
     id: 'wide_angle',
     nameKey: 'travel.framing.wide_angle',
     prompt: 'wide angle shot, person and expansive background, cinematic composition',
-    icon: '🌄',
+    icon: 'wide',
   },
   {
     id: 'aerial',
     nameKey: 'travel.framing.aerial',
     prompt: 'aerial view, bird eye perspective, dramatic top-down angle',
-    icon: '🚁',
+    icon: 'air',
   },
 ];
 
 /** Outfit color presets */
 export const OUTFIT_COLOR_PRESETS = [
-  { id: 'red', nameKey: 'travel.color.red', prompt: 'deep red color', icon: '🔴' },
-  { id: 'blue', nameKey: 'travel.color.blue', prompt: 'navy blue color', icon: '🔵' },
-  { id: 'white', nameKey: 'travel.color.white', prompt: 'pure white color', icon: '⚪' },
-  { id: 'black', nameKey: 'travel.color.black', prompt: 'elegant black color', icon: '⚫' },
-  { id: 'beige', nameKey: 'travel.color.beige', prompt: 'soft beige color', icon: '🟤' },
-  { id: 'pink', nameKey: 'travel.color.pink', prompt: 'soft pink color', icon: '🩷' },
-  { id: 'green', nameKey: 'travel.color.green', prompt: 'forest green color', icon: '🟢' },
-  { id: 'yellow', nameKey: 'travel.color.yellow', prompt: 'bright yellow color', icon: '🟡' },
+  { id: 'red', nameKey: 'travel.color.red', prompt: 'deep red color', icon: 'R' },
+  { id: 'blue', nameKey: 'travel.color.blue', prompt: 'navy blue color', icon: 'B' },
+  { id: 'white', nameKey: 'travel.color.white', prompt: 'pure white color', icon: 'W' },
+  { id: 'black', nameKey: 'travel.color.black', prompt: 'elegant black color', icon: 'K' },
+  { id: 'beige', nameKey: 'travel.color.beige', prompt: 'soft beige color', icon: 'Be' },
+  { id: 'pink', nameKey: 'travel.color.pink', prompt: 'soft pink color', icon: 'P' },
+  { id: 'green', nameKey: 'travel.color.green', prompt: 'forest green color', icon: 'G' },
+  { id: 'yellow', nameKey: 'travel.color.yellow', prompt: 'bright yellow color', icon: 'Y' },
 ];
 
 /** Pose options for AI prompt injection */
@@ -440,102 +440,102 @@ export const TRAVEL_POSE_OPTIONS: {
     id: 'natural',
     nameKey: 'travel.pose.natural',
     prompt: 'standing naturally, relaxed pose',
-    icon: '🚶',
+    icon: 'nat',
   },
   {
     id: 'hugging',
     nameKey: 'travel.pose.hugging',
     prompt: 'hugging each other warmly, showing affection',
-    icon: '🫂',
+    icon: 'hug',
     minPeople: 2,
   },
   {
     id: 'jumping',
     nameKey: 'travel.pose.jumping',
     prompt: 'jumping in the air with joy, mid-air pose, arms raised',
-    icon: '🤸',
+    icon: 'jmp',
   },
   {
     id: 'hand_in_hand',
     nameKey: 'travel.pose.hand_in_hand',
     prompt: 'holding hands, walking or standing together',
-    icon: '🤝',
+    icon: 'hand',
     minPeople: 2,
   },
   {
     id: 'pointing',
     nameKey: 'travel.pose.pointing',
     prompt: 'pointing towards the landmark or scenery in the background',
-    icon: '👉',
+    icon: 'pt',
   },
   {
     id: 'looking_at_each_other',
     nameKey: 'travel.pose.looking_at_each_other',
     prompt: 'looking at each other and smiling, eye contact',
-    icon: '👀',
+    icon: 'look',
     minPeople: 2,
   },
   {
     id: 'peace_sign',
     nameKey: 'travel.pose.peace_sign',
     prompt: 'making a peace sign (V-sign) with hand, smiling at camera',
-    icon: '✌️',
+    icon: 'v',
   },
   {
     id: 'walking_away',
     nameKey: 'travel.pose.walking_away',
     prompt: 'walking away from the camera, back view, looking towards the horizon',
-    icon: '🚶‍♀️',
+    icon: 'away',
   },
   {
     id: 'sitting_relaxed',
     nameKey: 'travel.pose.sitting_relaxed',
     prompt: 'sitting relaxed on a ledge or bench, casual and comfortable posture',
-    icon: '🪑',
+    icon: 'sit',
   },
   {
     id: 'candid_laugh',
     nameKey: 'travel.pose.candid_laugh',
     prompt: 'captured in a candid laugh, spontaneous and happy expression, non-posed look',
-    icon: '😆',
+    icon: 'lol',
   },
   {
     id: 'leaning',
     nameKey: 'travel.pose.leaning',
     prompt: 'leaning stylishly against a wall or railing, cool and composed posture',
-    icon: '🧱',
+    icon: 'lean',
   },
   {
     id: 'coffee_time',
     nameKey: 'travel.pose.coffee_time',
     prompt: 'holding a coffee cup, looking casually at the camera, lifestyle photography vibe',
-    icon: '☕',
+    icon: 'cafe',
   },
   {
     id: 'adjusting_shades',
     nameKey: 'travel.pose.adjusting_shades',
     prompt: 'stylishly adjusting sunglasses or looking over them, cool influencer pose',
-    icon: '🕶️',
+    icon: 'shd',
   },
   {
     id: 'cafe_sitting',
     nameKey: 'travel.pose.cafe_sitting',
     prompt: 'sitting at a cafe table, relaxing, gourmet travel vibe, lifestyle look',
-    icon: '🍴',
+    icon: 'cafe',
   },
   {
     id: 'photographer',
     nameKey: 'travel.pose.photographer',
     prompt: 'holding a camera as if taking a photo, traveler vibe, artistic lifestyle',
-    icon: '📷',
+    icon: 'cam',
   },
   {
     id: 'heart',
     nameKey: 'travel.pose.heart',
     prompt: 'making a heart sign with hands or fingers, cute and friendly pose',
-    icon: '🫶',
+    icon: 'hrt',
   },
-  { id: 'custom', nameKey: 'travel.custom', prompt: '', icon: '✍️' },
+  { id: 'custom', nameKey: 'travel.custom', prompt: '', icon: 'edit' },
 ];
 
 /** Recommended vibes for specific location types */

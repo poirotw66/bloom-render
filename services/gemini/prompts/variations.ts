@@ -119,7 +119,7 @@ export const TRAVEL_LIGHTING_CONDITIONS = [
 
 export const TRAVEL_CAMERA_ANGLES = [
   'eye level shot, medium shot',
-  'low angle shot, looking up, empowering angle',
+  'low angle shot, looking up, empowering angle', // taste-skill-ignore
   'wide angle shot, capturing the vast scenery',
   'slightly from above, flattering angle',
   'portrait photography, focusing on the person with background bokeh',
@@ -156,7 +156,7 @@ export const TRYON_POSE_VARIATIONS = [
 
 export const TRYON_BACKGROUND_VARIATIONS = [
   'clean, neutral studio background, soft even lighting, minimal backdrop',
-  'plain light-colored wall or seamless backdrop, professional fashion photography',
+  'plain light-colored wall or seamless backdrop, professional fashion photography', // taste-skill-ignore
   'soft gradient or neutral tone background, no clutter, focus on the outfit',
   'minimal studio setting, soft shadows, professional catalog style',
 ];

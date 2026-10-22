@@ -37,10 +37,10 @@ interface ExampleShowcaseProps {
  * Only the single-image case, whose frame is a block in a grid cell, adds it.
  */
 const FRAME =
-  'rounded-xl overflow-hidden border border-gray-700/60 bg-gray-950 flex items-center justify-center w-fit max-w-full';
+  'rounded-xl overflow-hidden bg-gray-950 flex items-center justify-center w-fit max-w-full';
 
 const BADGE =
-  'absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-bold';
+  'absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-black/80 text-white text-sm font-semibold';
 
 const ExampleImage: React.FC<{ src: string; alt: string; heightClass: string }> = ({
   src,
@@ -57,7 +57,7 @@ const ExampleImage: React.FC<{ src: string; alt: string; heightClass: string }> 
 );
 
 const Caption: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <figcaption className="text-xs text-gray-400 text-center">{children}</figcaption>
+  <figcaption className="text-sm text-gray-300 text-center">{children}</figcaption>
 );
 
 const ShowcaseItem: React.FC<{ item: ExampleItem }> = ({ item }) => {
@@ -73,7 +73,7 @@ const ShowcaseItem: React.FC<{ item: ExampleItem }> = ({ item }) => {
         <CompareSlider
           originalUrl={publicAssetUrl(item.beforeSrc)}
           currentUrl={publicAssetUrl(item.afterSrc)}
-          className="rounded-xl border border-gray-700/60 bg-gray-950"
+          className="rounded-xl bg-gray-950"
           imageClassName="max-h-72 w-auto max-w-full rounded-xl"
         />
         <Caption>{caption}</Caption>
@@ -132,13 +132,13 @@ const ExampleShowcase: React.FC<ExampleShowcaseProps> = ({ feature, className = 
 
   return (
     <section
-      className={`w-full max-w-3xl mx-auto mt-10 pt-8 border-t border-gray-700/50 ${className}`}
+      className={`w-full max-w-3xl mx-auto mt-10 pt-8 border-0 border-gray-700/50 ${className}`}
       aria-labelledby={`examples-${feature}`}
     >
-      <h2 id={`examples-${feature}`} className="text-sm font-bold text-gray-300 tracking-wide">
+      <h2 id={`examples-${feature}`} className="text-xl font-semibold text-gray-100 tracking-tight">
         {t(set.titleKey)}
       </h2>
-      <p className="text-xs text-gray-500 mt-1">{t('examples.disclaimer')}</p>
+      <p className="text-base text-gray-300 mt-1">{t('examples.disclaimer')}</p>
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
         {set.items.map((item, index) => (
           <div key={index} className={spanClass(item)}>

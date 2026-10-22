@@ -49,7 +49,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
   uploadHintKey = 'start.upload_drag',
   generateButtonKey = 'start.idphoto_generate_btn',
   changePhotoKey = 'start.idphoto_change_photo',
-  icon = '📸',
+  icon = '',
   canGenerate = true,
   className = '',
   uploadInputId = 'generic-image-upload',
@@ -98,7 +98,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
         tabIndex={isDemoMode ? undefined : 0}
         role="group"
         aria-label={t(uploadHintKey)}
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-all duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
           isDraggingOver && !isDemoMode
             ? 'border-blue-400 bg-blue-500/10 scale-[1.02]'
             : previewUrl
@@ -112,9 +112,9 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
         {previewUrl ? (
           <div className="w-full flex flex-col items-center gap-6">
             <div className="relative w-full max-w-md">
-              <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-xl shadow-xl" />
+              <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-xl" />
               {isDemoMode && (
-                <span className="absolute top-2 left-2 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white shadow">
+                <span className="absolute top-2 left-2 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
                   {t('demo.sample_input')}
                 </span>
               )}
@@ -150,7 +150,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
                     </>
                   ) : (
                     <>
-                      <span>{icon}</span>
+                      {icon ? <span>{icon}</span> : null}
                       {t(generateButtonKey)}
                     </>
                   )}
@@ -168,9 +168,15 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
           </div>
         ) : (
           <div className="flex flex-col items-center gap-6 py-4">
-            <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30">
-              <span className="text-4xl">{icon}</span>
-            </div>
+            {icon ? (
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center bg-blue-600/20 text-blue-400 border border-blue-500/30">
+                <span className="text-sm font-bold uppercase tracking-wide">{icon}</span>
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center bg-blue-600/20 text-blue-400 border border-blue-500/30">
+                <span className="text-sm font-bold uppercase tracking-wide">img</span>
+              </div>
+            )}
 
             <div className="text-center">
               <p className="text-sm text-gray-400 max-w-xs">
@@ -183,7 +189,6 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
             {!isDemoMode && (
               <>
                 <label htmlFor={uploadInputId} className={UI_BTN_UPLOAD}>
-                  <span className="mr-3">{icon}</span>
                   {t('start.upload_button')}
                 </label>
                 <input

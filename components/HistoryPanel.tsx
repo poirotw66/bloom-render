@@ -67,7 +67,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
     theme === 'newyear'
       ? 'bg-red-900/95 border-red-700/50'
       : theme === 'bloom'
-        ? 'bg-gray-900/95 border-fuchsia-500/20'
+        ? 'bg-gray-900/95 brand-border-soft'
         : 'bg-gray-900/95 border-gray-700/60';
 
   const accent = getTitleAccent(theme);
@@ -114,21 +114,17 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
 
   return (
     <div className="fixed inset-0 z-50">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-        role="presentation"
-      />
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} role="presentation" />
 
       <aside
         ref={panelRef}
         tabIndex={-1}
-        className={`absolute right-0 top-0 h-full w-full max-w-lg border-l shadow-2xl flex flex-col focus:outline-none ${surface} animate-slide-in-right`}
+        className={`absolute right-0 top-0 h-full w-full max-w-lg border-l flex flex-col focus:outline-none ${surface} animate-slide-in-right`}
         role="dialog"
         aria-modal="true"
         aria-label={t('history.title')}
       >
-        <div className="shrink-0 p-5 border-b border-white/10 flex items-start justify-between gap-4">
+        <div className="shrink-0 p-5 border-0 border-white/10 flex items-start justify-between gap-4">
           <div className="space-y-1">
             <h2 className={`text-xl font-extrabold ${accent}`}>{t('history.title')}</h2>
             <p className="text-sm text-gray-300">{t('history.subtitle')}</p>
@@ -145,7 +141,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
           </button>
         </div>
 
-        <div className="shrink-0 p-5 border-b border-white/10 space-y-4">
+        <div className="shrink-0 p-5 border-0 border-white/10 space-y-4">
           <input
             type="search"
             value={searchQuery}

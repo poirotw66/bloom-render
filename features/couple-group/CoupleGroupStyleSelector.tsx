@@ -46,7 +46,7 @@ const CoupleGroupStyleSelector: React.FC<CoupleGroupStyleSelectorProps> = ({
                 isActive
                   ? mode === 'couple'
                     ? 'bg-pink-600 text-white border-pink-500 focus-visible:ring-pink-500'
-                    : 'bg-purple-600 text-white border-purple-500 focus-visible:ring-purple-500'
+                    : 'brand-bg-strong text-white brand-border focus-visible:brand-ring'
                   : 'bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700 hover:border-gray-500 focus-visible:ring-gray-500'
               }`}
             >

@@ -34,13 +34,13 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
 
   return (
     <div
-      className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto p-8 bg-gray-800/40 rounded-xl border border-gray-700/50 backdrop-blur-sm ${className}`}
+      className={`flex flex-col items-center gap-6 w-full max-w-2xl mx-auto p-8 bg-gray-800/40 rounded-xl border border-gray-700/50 ${className}`}
     >
       <div className="relative w-full">
         {/* Progress Bar */}
         <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ease-out flex items-center justify-center"
+            className="h-full brand-bg brand-bg transition-colors duration-300 ease-out flex items-center justify-center"
             style={{ width: `${progress}%` }}
           >
             {progress > 10 && <span className="text-xs font-bold text-white">{progress}%</span>}

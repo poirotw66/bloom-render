@@ -75,7 +75,7 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
                   onClick={themed.handleThemedBatchDownload}
                   className={UI_BTN_SUCCESS}
                 >
-                  💾 {t('history.batch_download')} ({resultCount})
+                  {t('history.batch_download')} ({resultCount})
                 </button>
               )}
               <button type="button" onClick={themed.clearThemedResult} className={UI_BTN_SECONDARY}>

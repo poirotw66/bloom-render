@@ -54,7 +54,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen text-gray-100 flex flex-col">
+    <div className="min-h-svh text-gray-100 flex flex-col">
       <a href="#main-content" className="skip-link">
         {t('a11y.skip_to_content')}
       </a>

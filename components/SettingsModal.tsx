@@ -33,23 +33,22 @@ interface SettingsModalProps {
 /** Theme-derived class snippets, so markup below stays readable. */
 const themeStyles = {
   bloom: {
-    dialog: 'bg-gray-800 border border-fuchsia-500/30',
-    section: 'border-fuchsia-500/20 bg-gray-900/40',
-    divider: 'border-fuchsia-500/20',
-    heading: 'text-white',
-    sectionTitle: 'text-white',
-    chevron: 'text-gray-200',
-    iconBtn: 'text-gray-400 hover:text-white focus-visible:ring-fuchsia-500',
-    choiceActive: 'border-fuchsia-400 text-white focus-visible:ring-fuchsia-400',
+    dialog: 'theme-surface border theme-border',
+    section: 'theme-border theme-raised',
+    divider: 'theme-border',
+    heading: 'theme-ink',
+    sectionTitle: 'theme-ink',
+    chevron: 'theme-ink-soft',
+    iconBtn: 'theme-ink-muted hover:text-white focus-visible:brand-ring',
+    choiceActive: 'theme-border-strong theme-ink focus-visible:brand-ring',
     choiceIdle:
-      'border-gray-700 text-gray-200 hover:border-fuchsia-300/60 hover:text-white focus-visible:ring-fuchsia-400',
-    selectedTag: 'text-cyan-300',
-    label: 'text-gray-300',
-    hint: 'text-gray-500',
-    field:
-      'bg-gray-900 border-gray-600 text-white placeholder-gray-500 focus-visible:ring-fuchsia-500',
-    checkbox: 'text-fuchsia-600 bg-gray-900 border-gray-600 focus-visible:ring-fuchsia-500',
-    confirm: 'bg-fuchsia-600 hover:bg-fuchsia-500 text-white focus-visible:ring-fuchsia-400',
+      'theme-border theme-ink-soft hover:theme-border-strong hover:text-white focus-visible:brand-ring',
+    selectedTag: 'brand-text-soft',
+    label: 'theme-ink-soft',
+    hint: 'theme-ink-muted',
+    field: 'theme-raised theme-border theme-ink focus-visible:brand-ring',
+    checkbox: 'brand-text-strong theme-raised theme-border focus-visible:brand-ring',
+    confirm: 'brand-bg-strong hover:opacity-95 text-white focus-visible:brand-ring',
   },
   night: {
     dialog: 'bg-gray-800 border border-gray-700',
@@ -71,22 +70,22 @@ const themeStyles = {
     confirm: 'bg-blue-600 hover:bg-blue-500 text-white focus-visible:ring-blue-400',
   },
   newyear: {
-    dialog: 'bg-red-900/90 border border-red-700/50',
-    section: 'border-red-700/60 bg-red-900/30',
-    divider: 'border-red-700/50',
+    dialog: 'theme-surface border theme-border',
+    section: 'theme-border theme-raised',
+    divider: 'theme-border',
     heading: 'text-red-50',
     sectionTitle: 'text-red-50',
     chevron: 'text-yellow-200',
     iconBtn: 'text-red-400 hover:text-red-100 focus-visible:ring-red-500',
     choiceActive: 'border-yellow-400/80 text-yellow-200 focus-visible:ring-yellow-400',
     choiceIdle:
-      'border-red-700/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200 focus-visible:ring-yellow-400',
+      'border-red-800/50 text-red-100 hover:border-yellow-300/60 hover:text-yellow-200 focus-visible:ring-yellow-400',
     selectedTag: 'text-yellow-300',
     label: 'text-red-200',
     hint: 'text-red-300',
     field:
-      'bg-red-900/50 border-red-700/50 text-red-50 placeholder-red-300 focus-visible:ring-red-500',
-    checkbox: 'text-red-600 bg-red-900/50 border-red-700 focus-visible:ring-red-500',
+      'bg-red-950/50 border-red-800/50 text-red-50 placeholder-red-300 focus-visible:ring-red-500',
+    checkbox: 'text-red-600 bg-red-950/50 border-red-700 focus-visible:ring-red-500',
     confirm: 'bg-red-600 hover:bg-red-500 text-white focus-visible:ring-red-400',
   },
 } as const satisfies Record<ThemeType, Record<string, string>>;
@@ -183,7 +182,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-fade-in"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -194,7 +193,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${baseId}-title`}
-        className={`rounded-xl p-6 w-full max-w-md md:max-w-lg shadow-2xl relative max-h-[90vh] overflow-y-auto focus:outline-none ${s.dialog}`}
+        className={`rounded-xl p-6 w-full max-w-md md:max-w-lg relative max-h-[90vh] overflow-y-auto focus:outline-none ${s.dialog}`}
       >
         <button
           type="button"
@@ -235,7 +234,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-sm font-medium">{option.label}</span>
                       {option.id === theme && (
-                        <span className={`text-xs uppercase tracking-wide ${s.selectedTag}`}>
+                        <span className={`text-xs tracking-normal ${s.selectedTag}`}>
                           {t('common.selected')}
                         </span>
                       )}
@@ -244,7 +243,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                 ))}
               </div>
 
-              <div className={`mt-4 pt-4 border-t flex items-start gap-3 ${s.divider}`}>
+              <div className={`mt-4 pt-4 border-0 flex items-start gap-3 ${s.divider}`}>
                 <input
                   type="checkbox"
                   id="enable-background-motion"

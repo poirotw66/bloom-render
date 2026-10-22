@@ -515,7 +515,7 @@ const EditorPage: React.FC = () => {
         {settings.isDemoMode && <DemoModeBanner />}
         {errorBanner}
 
-        <div className="relative w-full shadow-2xl rounded-xl overflow-hidden bg-black/20">
+        <div className="relative w-full rounded-xl overflow-hidden bg-black/20">
           {settings.isDemoMode && (
             <div className="absolute top-3 left-3 z-20">
               <DemoModeBanner compact />
@@ -551,7 +551,7 @@ const EditorPage: React.FC = () => {
                 className="absolute rounded-full w-6 h-6 bg-blue-500/50 border-2 border-white pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
                 style={{ left: `${displayHotspot.x}px`, top: `${displayHotspot.y}px` }}
               >
-                <div className="absolute inset-0 rounded-full w-6 h-6 animate-ping bg-blue-400"></div>
+                <div className="absolute inset-0 rounded-full w-6 h-6 bg-blue-400"></div>
               </div>
             )}
         </div>
@@ -559,7 +559,7 @@ const EditorPage: React.FC = () => {
         {isComparing && <p className="text-sm text-gray-400">{t('main.compare_hint')}</p>}
 
         <div
-          className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 backdrop-blur-sm transition-colors duration-300 ${editorTheme.tabContainer}`}
+          className={`w-full border rounded-lg p-2 flex items-center justify-center gap-2 transition-colors duration-300 ${editorTheme.tabContainer}`}
         >
           {(['retouch', 'crop', 'adjust', 'filters'] as Tab[]).map((tab) => (
             <button
@@ -623,7 +623,7 @@ const EditorPage: React.FC = () => {
                 <div className="flex flex-col items-stretch gap-1.5">
                   <button
                     type="submit"
-                    className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-all duration-200 ease-in-out hover:-translate-y-px active:scale-95 active:shadow-inner disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${editorTheme.submitButton}`}
+                    className={`text-white font-bold py-5 px-8 text-lg rounded-lg transition-colors duration-200 ease-in-out hover:-translate-y-px active:scale-95 active: disabled:cursor-not-allowed disabled:transform-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 ${editorTheme.submitButton}`}
                     disabled={isLoading || !prompt.trim() || !retouchTargetReady}
                   >
                     {t('main.btn_generate')}
@@ -722,7 +722,7 @@ const EditorPage: React.FC = () => {
 
           <button
             onClick={handleDownload}
-            className="flex-grow sm:flex-grow-0 ml-auto bg-gradient-to-br from-green-600 to-green-500 text-white font-bold py-3 px-5 rounded-md transition-all duration-200 ease-in-out shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-px active:scale-95 active:shadow-inner text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="flex-grow sm:flex-grow-0 ml-auto brand-bg text-white font-bold py-3 px-5 rounded-md transition-colors duration-200 ease-in-out hover:-translate-y-px active:scale-95 active: text-base cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
           >
             {t('main.btn_download')}
           </button>
