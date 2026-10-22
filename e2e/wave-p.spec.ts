@@ -1,0 +1,105 @@
+/**
+ * @license
+ * SPDX-License-Identifier: MIT
+ *
+ * Wave P — OpenRouter OAuth PKCE button + mocked redirect / callback.
+ */
+
+import { test, expect } from '@playwright/test';
+
+test.describe('Wave P — OpenRouter OAuth', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('pixshop_language', 'zh-TW');
+      localStorage.removeItem('pixshop_image_provider');
+      sessionStorage.removeItem('pixshop_api_key');
+      sessionStorage.removeItem('pixshop_openrouter_api_key');
+    });
+  });
+
+  test('hero notice shows Sign in with OpenRouter and starts PKCE redirect', async ({ page }) => {
+    await page.goto('/');
+    const signIn = page.getByTestId('openrouter-sign-in');
+    await expect(signIn).toBeVisible();
+    await expect(signIn).toHaveText(/用 OpenRouter 登入|Sign in with OpenRouter/);
+
+    // Intercept navigation instead of leaving the app.
+    await page.evaluate(() => {
+      (window as unknown as { __orAuthUrl?: string }).__orAuthUrl = '';
+      const original = window.location.assign.bind(window.location);
+      (window.location as Location & { assign: (url: string) => void }).assign = (url: string) => {
+        (window as unknown as { __orAuthUrl?: string }).__orAuthUrl = url;
+        if (!url.includes('openrouter.ai/auth')) original(url);
+      };
+    });
+
+    await signIn.click();
+    await expect
+      .poll(async () =>
+        page.evaluate(() => (window as unknown as { __orAuthUrl?: string }).__orAuthUrl),
+      )
+      .toMatch(/openrouter\.ai\/auth/);
+
+    const authUrl = await page.evaluate(
+      () => (window as unknown as { __orAuthUrl?: string }).__orAuthUrl ?? '',
+    );
+    const u = new URL(authUrl);
+    expect(u.searchParams.get('code_challenge_method')).toBe('S256');
+    expect(u.searchParams.get('code_challenge')).toBeTruthy();
+    expect(u.searchParams.get('state')).toBeTruthy();
+    expect(u.searchParams.get('callback_url')).toMatch(/\/oauth\/openrouter$/);
+    expect(u.searchParams.get('key_label')).toBe('BloomRender');
+
+    const session = await page.evaluate(() => ({
+      verifier: sessionStorage.getItem('pixshop_or_oauth_verifier'),
+      state: sessionStorage.getItem('pixshop_or_oauth_state'),
+    }));
+    expect(session.verifier).toBeTruthy();
+    expect(session.state).toBe(u.searchParams.get('state'));
+  });
+
+  test('callback exchanges code (mocked fetch) and stores OpenRouter key', async ({ page }) => {
+    await page.addInitScript(() => {
+      sessionStorage.setItem('pixshop_or_oauth_verifier', 'a'.repeat(43));
+      sessionStorage.setItem('pixshop_or_oauth_state', 'e2e-state');
+    });
+
+    await page.route('https://openrouter.ai/api/v1/auth/keys', async (route) => {
+      const body = route.request().postDataJSON() as {
+        code?: string;
+        code_verifier?: string;
+        code_challenge_method?: string;
+      };
+      expect(body.code).toBe('e2e-code');
+      expect(body.code_verifier).toBe('a'.repeat(43));
+      expect(body.code_challenge_method).toBe('S256');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ key: 'sk-or-v1-e2e-mock' }),
+      });
+    });
+
+    await page.goto('/oauth/openrouter?code=e2e-code&state=e2e-state');
+    await expect(page).toHaveURL(/\/?$/);
+    await expect
+      .poll(async () => page.evaluate(() => sessionStorage.getItem('pixshop_openrouter_api_key')))
+      .toBe('sk-or-v1-e2e-mock');
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem('pixshop_image_provider')))
+      .toBe('openrouter');
+    await expect
+      .poll(async () => page.evaluate(() => sessionStorage.getItem('pixshop_or_oauth_verifier')))
+      .toBeNull();
+  });
+
+  test('callback error path shows message when code missing', async ({ page }) => {
+    await page.addInitScript(() => {
+      sessionStorage.setItem('pixshop_or_oauth_verifier', 'a'.repeat(43));
+      sessionStorage.setItem('pixshop_or_oauth_state', 'st');
+    });
+    await page.goto('/oauth/openrouter?error=access_denied');
+    await expect(page.getByTestId('openrouter-oauth-error')).toBeVisible();
+    await expect(page.getByText(/取消|cancelled/i)).toBeVisible();
+  });
+});

@@ -1296,6 +1296,21 @@ export const zhTWMessages: Record<string, string> = {
   'validation.warn_resolution_low': '圖片解析度偏低，生成結果可能較不清晰。',
   'validation.warn_will_compress': '圖片尺寸較大，上傳前將自動壓縮。',
 
+  'openrouter.sign_in': '用 OpenRouter 登入',
+  'openrouter.sign_out': '登出 OpenRouter',
+  'openrouter.signing_in': '正在導向…',
+  'openrouter.signed_in_hint': 'OpenRouter 金鑰僅保存在此瀏覽器分頁。',
+  'openrouter.oauth_section': '一鍵 OpenRouter 登入',
+  'openrouter.oauth_or_paste': '或在下方手動貼上 API 金鑰。',
+  'openrouter.oauth_start_failed': '無法開始 OpenRouter 登入，請再試一次。',
+  'openrouter.oauth_exchanging': '正在完成 OpenRouter 登入…',
+  'openrouter.oauth_denied': '已取消 OpenRouter 登入。',
+  'openrouter.oauth_missing_code': 'OpenRouter 未回傳授權碼。',
+  'openrouter.oauth_missing_verifier': '登入工作階段已過期，請從設定或首頁通知重新開始。',
+  'openrouter.oauth_state_mismatch': '無法驗證 OpenRouter 登入，請再試一次。',
+  'openrouter.oauth_exchange_failed': '無法完成 OpenRouter 登入，請再試一次。',
+  'openrouter.oauth_home': '回首頁',
+
   'viral.section_title': '一鍵玩法',
   'viral.section_subtitle':
     '公仔盒玩、拍立得、年代穿越與台灣在地場景——點一下就能試，再分享「用同款」。',

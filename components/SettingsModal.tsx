@@ -24,6 +24,7 @@ import {
   notifySessionSpendChanged,
 } from '../utils/sessionSpend';
 import { ChevronDownIcon, XMarkIcon } from './icons';
+import OpenRouterSignInButton from './OpenRouterSignInButton';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -389,6 +390,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className={`text-sm font-medium ${s.label}`}>
+                      {t('openrouter.oauth_section')}
+                    </p>
+                    <OpenRouterSignInButton />
+                    <p className={`text-sm ${s.hint}`}>{t('openrouter.oauth_or_paste')}</p>
                   </div>
 
                   <div>

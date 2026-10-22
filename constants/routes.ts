@@ -22,6 +22,8 @@ export const ROUTES = {
   PROMPT_GALLERY: '/prompt-gallery',
   /** Remix deep link — payload lives in the URL hash only. */
   REMIX: '/r',
+  /** OpenRouter OAuth PKCE callback (query: code, state). */
+  OPENROUTER_OAUTH: '/oauth/openrouter',
 } as const;
 
 export type AppRoutePath = (typeof ROUTES)[keyof typeof ROUTES];
