@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { enMessages } from '../locales/en';
 import { zhTWMessages } from '../locales/zh-TW';
+import { averageHashFromFile } from '../utils/imageAverageHash';
 import {
   GENERIC_EXAMPLE_THUMBNAILS,
   getMultiPersonViralTemplates,
@@ -157,6 +158,31 @@ describe('viralTemplates', () => {
       expect(tmpl, id).toBeTruthy();
       expect(tmpl!.prompt.toLowerCase()).toMatch(/identity|likeness|facial|face|recogniz/);
     }
+  });
+
+  it('Wave Y multi-person thumbs are id-named and perceptually unique', async () => {
+    const packHashes = new Map<string, string>();
+    for (const template of VIRAL_TEMPLATES) {
+      const onDisk = join(process.cwd(), 'public', template.thumbnail);
+      const hash = await averageHashFromFile(onDisk);
+      const key = hash.toString(16);
+      expect(
+        packHashes.has(key),
+        `${template.thumbnail} aHash matches ${packHashes.get(key)}`,
+      ).toBe(false);
+      packHashes.set(key, template.thumbnail);
+    }
+
+    for (const id of WAVE_Y_MULTI_IDS) {
+      const tmpl = getViralTemplateById(id);
+      expect(tmpl, id).toBeTruthy();
+      expect(tmpl!.thumbnail).toBe(`examples/viral/${id}.webp`);
+      expect(existsSync(join(process.cwd(), 'public', tmpl!.thumbnail))).toBe(true);
+    }
+
+    // polaroid-frame thumbnail basename must match the template id.
+    const polaroid = getViralTemplateById('polaroid-frame');
+    expect(polaroid?.thumbnail).toBe('examples/viral/polaroid-frame.webp');
   });
 
   it('avoids trademarked brand/game names in sensitive templates', () => {

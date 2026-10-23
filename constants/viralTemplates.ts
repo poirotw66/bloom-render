@@ -87,7 +87,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
       'Restyle as an instant Polaroid photo: thick white border, soft flash lighting, slight vintage color cast, handwritten date in the bottom margin, intimate snapshot feel, film grain.',
     aspectRatio: '1:1',
     tab: 'retouch',
-    thumbnail: 'examples/viral/polaroid.webp',
+    thumbnail: 'examples/viral/polaroid-frame.webp',
     tags: ['polaroid', 'viral', 'frame'],
   },
   {
