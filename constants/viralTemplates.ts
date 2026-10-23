@@ -2,11 +2,19 @@
  * @license
  * SPDX-License-Identifier: MIT
  *
- * Wave O viral one-tap templates (玩法). Titles/descriptions live in i18n;
+ * Viral one-tap templates (玩法). Titles/descriptions live in i18n;
  * prompts stay English for model quality, with zh notes in locale files.
  */
 
-export type ViralTemplateCategory = 'figurine' | 'polaroid' | 'era' | 'taiwan';
+export type ViralTemplateCategory =
+  | 'figurine'
+  | 'polaroid'
+  | 'era'
+  | 'taiwan'
+  | 'toy'
+  | 'art'
+  | 'retro'
+  | 'social';
 
 export type ViralTemplateFeature = 'generate' | 'retouch';
 
@@ -158,6 +166,174 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     tab: 'retouch',
     thumbnail: 'examples/viral/taiwan-101.webp',
     tags: ['taiwan', 'taipei-101', 'skyline'],
+  },
+  {
+    id: 'chibi-3d',
+    category: 'toy',
+    feature: 'retouch',
+    titleKey: 'viral.chibi_3d.title',
+    descriptionKey: 'viral.chibi_3d.desc',
+    thumbnailAltKey: 'viral.chibi_3d.thumb_alt',
+    prompt:
+      'Transform the person into a cute 3D chibi vinyl figure with an oversized head and short body, standing on a simple round base. Soft pastel studio backdrop, clean product lighting, smooth toy plastic material, charming collectible look, photoreal toy photography.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/chibi-3d.webp',
+    tags: ['toy', 'chibi', '3d', 'viral'],
+  },
+  {
+    id: 'line-stickers',
+    category: 'social',
+    feature: 'retouch',
+    titleKey: 'viral.line_stickers.title',
+    descriptionKey: 'viral.line_stickers.desc',
+    thumbnailAltKey: 'viral.line_stickers.thumb_alt',
+    prompt:
+      'Turn the person into a 3x3 messenger sticker sheet: nine cartoon expressions of the same character (happy, sad, angry, surprised, love, sleepy, cheering, wink, shy), thick white outline, flat pastel colors, clean white background, no readable text or logos, sticker-pack product layout.',
+    aspectRatio: '1:1',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/line-stickers.webp',
+    tags: ['social', 'stickers', 'cartoon', 'viral'],
+  },
+  {
+    id: 'acrylic-standee',
+    category: 'toy',
+    feature: 'retouch',
+    titleKey: 'viral.acrylic_standee.title',
+    descriptionKey: 'viral.acrylic_standee.desc',
+    thumbnailAltKey: 'viral.acrylic_standee.thumb_alt',
+    prompt:
+      'Transform the person into an anime-styled die-cut acrylic standee on a clear plastic base, standing on a desk. Glossy transparent acrylic edges, colorful character art of the subject, soft room lighting, shallow depth of field, product photography.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/acrylic-standee.webp',
+    tags: ['toy', 'acrylic', 'anime', 'viral'],
+  },
+  {
+    id: 'pixel-art',
+    category: 'retro',
+    feature: 'retouch',
+    titleKey: 'viral.pixel_art.title',
+    descriptionKey: 'viral.pixel_art.desc',
+    thumbnailAltKey: 'viral.pixel_art.thumb_alt',
+    prompt:
+      'Restyle the person as a 16-bit pixel-art game character sprite sheet: clear walk-cycle frames side by side, limited retro color palette, chunky pixels, placed in a simple side-scrolling retro game scene background, nostalgic console-era look, no readable UI text.',
+    aspectRatio: '1:1',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/pixel-art.webp',
+    tags: ['retro', 'pixel', 'game', 'viral'],
+  },
+  {
+    id: 'claymation',
+    category: 'art',
+    feature: 'retouch',
+    titleKey: 'viral.claymation.title',
+    descriptionKey: 'viral.claymation.desc',
+    thumbnailAltKey: 'viral.claymation.thumb_alt',
+    prompt:
+      'Restyle the portrait as plasticine stop-motion claymation: visible fingerprint texture in the clay, soft handmade facial features, miniature set with crafts-table lighting, whimsical stop-motion film still, tactile material detail.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/claymation.webp',
+    tags: ['art', 'clay', 'stop-motion', 'viral'],
+  },
+  {
+    id: 'ukiyo-e',
+    category: 'art',
+    feature: 'retouch',
+    titleKey: 'viral.ukiyo_e.title',
+    descriptionKey: 'viral.ukiyo_e.desc',
+    thumbnailAltKey: 'viral.ukiyo_e.thumb_alt',
+    prompt:
+      'Restyle the portrait as a Japanese ukiyo-e woodblock print: bold outlines, flat color fields, the Great Wave and Mount Fuji in the background, washi paper texture, Edo-period print aesthetic, refined traditional composition.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/ukiyo-e.webp',
+    tags: ['art', 'ukiyo-e', 'print', 'viral'],
+  },
+  {
+    id: 'hk-90s-film',
+    category: 'retro',
+    feature: 'retouch',
+    titleKey: 'viral.hk_90s_film.title',
+    descriptionKey: 'viral.hk_90s_film.desc',
+    thumbnailAltKey: 'viral.hk_90s_film.thumb_alt',
+    prompt:
+      'Restyle as a 1990s Hong Kong film still: rainy neon street at night, saturated green and red neon reflections on wet asphalt, heavy film grain, dramatic cinematic lighting, period fashion, moody crime-drama atmosphere, photoreal movie frame.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/hk-90s-film.webp',
+    tags: ['retro', 'hong-kong', 'film', 'viral'],
+  },
+  {
+    id: 'magazine-cover',
+    category: 'social',
+    feature: 'retouch',
+    titleKey: 'viral.magazine_cover.title',
+    descriptionKey: 'viral.magazine_cover.desc',
+    thumbnailAltKey: 'viral.magazine_cover.thumb_alt',
+    prompt:
+      "Transform into a glossy fashion magazine cover: confident editorial pose, studio beauty lighting, sharp retouch. Use a clearly fictional masthead name and invented cover lines only — do not use real magazine brands, real celebrities' names, barcodes, QR codes, or trademarks. Clean magazine layout, 3:4 cover crop.",
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/magazine-cover.webp',
+    tags: ['social', 'magazine', 'fashion', 'viral'],
+  },
+  {
+    id: 'purikura',
+    category: 'social',
+    feature: 'retouch',
+    titleKey: 'viral.purikura.title',
+    descriptionKey: 'viral.purikura.desc',
+    thumbnailAltKey: 'viral.purikura.thumb_alt',
+    prompt:
+      'Restyle as a Japanese purikura photo-booth strip: cute close-up faces, sparkles and heart stickers, pink decorative frame, soft beauty filter, playful kawaii decorations, multi-frame booth layout feel, bright pastel colors.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/purikura.webp',
+    tags: ['social', 'purikura', 'kawaii', 'viral'],
+  },
+  {
+    id: 'brick-minifig',
+    category: 'toy',
+    feature: 'retouch',
+    titleKey: 'viral.brick_minifig.title',
+    descriptionKey: 'viral.brick_minifig.desc',
+    thumbnailAltKey: 'viral.brick_minifig.thumb_alt',
+    prompt:
+      'Transform the person into a plastic building-brick minifigure toy: cylindrical head, C-shaped hands, blocky torso printed with a simplified face and outfit inspired by the subject, standing on a studded baseplate, bright studio product shot, clean toy plastic materials. Do not use any trademarked brand names or logos.',
+    aspectRatio: '1:1',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/brick-minifig.webp',
+    tags: ['toy', 'brick', 'minifigure', 'viral'],
+  },
+  {
+    id: 'pro-headshot',
+    category: 'social',
+    feature: 'retouch',
+    titleKey: 'viral.pro_headshot.title',
+    descriptionKey: 'viral.pro_headshot.desc',
+    thumbnailAltKey: 'viral.pro_headshot.thumb_alt',
+    prompt:
+      'Create a polished corporate headshot of the person: navy business suit, neat grooming, soft professional studio lighting, gently blurred modern office background, confident friendly expression, LinkedIn-ready portrait, photorealistic.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/pro-headshot.webp',
+    tags: ['social', 'headshot', 'professional', 'viral'],
+  },
+  {
+    id: 'anime-handpainted',
+    category: 'art',
+    feature: 'retouch',
+    titleKey: 'viral.anime_handpainted.title',
+    descriptionKey: 'viral.anime_handpainted.desc',
+    thumbnailAltKey: 'viral.anime_handpainted.thumb_alt',
+    prompt:
+      'Restyle the person as a hand-painted anime-film illustration in a countryside scene: soft watercolor backgrounds, gentle cel-shaded character rendering, warm afternoon light, pastoral hills and sky, painterly traditional animation look. Do not reference any real animation studio or film title.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/anime-handpainted.webp',
+    tags: ['art', 'anime', 'handpainted', 'viral'],
   },
 ];
 

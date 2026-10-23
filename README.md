@@ -41,6 +41,7 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 - **Portrait / travel / themed / couple·group / try-on** — Dedicated generators with demo samples.
 - **Local Enhance** — On-device background removal & 2× upscale (no API key).
 - **Prompt gallery** — Community presets; apply into generate / retouch / adjust / filter.
+- **One-tap 玩法** — Viral style templates (figurine, era travel, Taiwan scenes, toys, art, retro, social); filter chips + remix deep links (`/r#…`).
 - **History · share · compare** — Browse past runs; share cards; before/after slider.
 - **Settings** — Gemini / OpenRouter / Live demo; language; themes (**Bloom**, **Night**, **New Year**).
 - **i18n** — English & Traditional Chinese. **PWA**-ready static build.
