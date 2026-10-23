@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  *
  * Discoverable viral “玩法” template picker (landing + generate).
+ * Taste PRESERVE: keep theme hues; tighten rhythm, chips, and card density.
  */
 
 import React, { useState } from 'react';
@@ -81,15 +82,20 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
       aria-labelledby="viral-templates-heading"
       data-testid="viral-templates"
     >
-      <div className="mb-4 space-y-1">
-        <h2 id="viral-templates-heading" className="text-2xl font-semibold theme-ink">
+      <div className="mb-3 sm:mb-4 space-y-1.5">
+        <h2
+          id="viral-templates-heading"
+          className="text-xl sm:text-2xl font-semibold tracking-tight theme-ink"
+        >
           {t('viral.section_title')}
         </h2>
-        <p className="text-base theme-ink-muted max-w-2xl">{t('viral.section_subtitle')}</p>
+        <p className="text-sm sm:text-base theme-ink-muted max-w-2xl leading-relaxed">
+          {t('viral.section_subtitle')}
+        </p>
       </div>
 
       <div
-        className="flex flex-nowrap gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:thin]"
+        className="sticky top-0 z-10 -mx-1 px-1 py-2 mb-3 sm:mb-4 flex flex-nowrap gap-2 overflow-x-auto [scrollbar-width:thin] bg-[color:var(--bg-main)]/92 backdrop-blur-sm"
         role="group"
         aria-label={t('viral.filter_label')}
       >
@@ -109,28 +115,33 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
       <ul
         className={
           compact
-            ? 'grid gap-4 list-none p-0 m-0 grid-cols-1 sm:grid-cols-2'
+            ? 'grid gap-3 sm:gap-4 list-none p-0 m-0 grid-cols-1 sm:grid-cols-2'
             : 'flex gap-3 list-none p-0 m-0 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 sm:gap-4'
         }
       >
-        {visibleEntries.map((entry) => (
+        {visibleEntries.map((entry, index) => (
           <li
             key={entry.id}
             className={
               compact
                 ? 'theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col'
-                : 'theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col min-w-[min(78vw,280px)] snap-start sm:min-w-0'
+                : 'theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col min-w-[min(72vw,260px)] snap-start sm:min-w-0'
             }
           >
             <img
               src={publicAssetUrl(entry.thumbnail)}
               alt={t(entry.thumbnailAltKey)}
               className="w-full aspect-[4/3] object-cover bg-black/30"
-              loading="lazy"
+              loading={index < 4 ? 'eager' : 'lazy'}
+              decoding="async"
             />
-            <div className="flex flex-col gap-2 p-4 flex-1">
-              <h3 className="text-base font-semibold theme-ink">{t(entry.titleKey)}</h3>
-              <p className="text-sm theme-ink-muted line-clamp-3">{t(entry.descriptionKey)}</p>
+            <div className="flex flex-col gap-1.5 p-3.5 sm:p-4 flex-1">
+              <h3 className="text-sm sm:text-base font-semibold theme-ink leading-snug">
+                {t(entry.titleKey)}
+              </h3>
+              <p className="text-xs sm:text-sm theme-ink-muted line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                {t(entry.descriptionKey)}
+              </p>
               <div className="mt-auto flex flex-col gap-2 pt-2">
                 <button
                   type="button"

@@ -10,11 +10,14 @@ import type { ThemeType } from '../contexts/ThemeContext';
 
 /** Standard feature page shell (padding + radius + border). Append theme surface. */
 export const UI_PAGE =
-  'w-full max-w-5xl mx-auto text-center px-4 py-6 sm:p-8 transition-colors duration-300 rounded-2xl border';
+  'w-full max-w-5xl mx-auto text-center px-4 py-6 sm:px-8 sm:py-8 transition-colors duration-300 rounded-2xl border';
 
 /** Wider page shell (history / photography service). */
 export const UI_PAGE_WIDE =
-  'w-full max-w-6xl mx-auto text-center px-4 py-6 sm:p-8 transition-colors duration-300 rounded-2xl border';
+  'w-full max-w-6xl mx-auto text-center px-4 py-6 sm:px-8 sm:py-8 transition-colors duration-300 rounded-2xl border';
+
+/** Vertical rhythm between major landing sections. */
+export const UI_SECTION_STACK = 'flex flex-col gap-8 sm:gap-10';
 
 export const UI_TITLE =
   'text-4xl font-semibold tracking-tight text-gray-100 sm:text-5xl md:text-6xl';
