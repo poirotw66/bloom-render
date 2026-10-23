@@ -29,7 +29,6 @@ type SharpInstance = {
 type SharpFn = (input: string) => SharpInstance;
 
 function loadSharp(): SharpFn {
-   
   return require('sharp') as SharpFn;
 }
 
