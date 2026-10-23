@@ -23,11 +23,11 @@ test.describe('Wave Y — style collage + multi-person', () => {
     await expect(page.getByTestId('viral-open-multi-person')).toBeVisible();
 
     await page.getByTestId('viral-collage-mode').click();
-    await expect(page.getByTestId('viral-collage-toggle-figurine-box')).toBeVisible();
-    await page.getByTestId('viral-collage-toggle-figurine-box').click();
-    await page.getByTestId('viral-collage-toggle-polaroid-frame').click();
-    await page.getByTestId('viral-collage-toggle-taiwan-101').click();
-    await page.getByTestId('viral-collage-toggle-yearbook-90s').click();
+    // First desktop “All” preview only shows 8; stick to early pack ids.
+    for (const id of ['figurine-box', 'polaroid-frame', 'era-70s-taiwan', 'taiwan-night-market']) {
+      await expect(page.getByTestId(`viral-collage-toggle-${id}`)).toBeVisible();
+      await page.getByTestId(`viral-collage-toggle-${id}`).click();
+    }
     await expect(page.getByTestId('viral-collage-start')).toBeEnabled();
     await page.getByTestId('viral-collage-start').click();
     await expect(page).toHaveURL(/\/style-collage/);
