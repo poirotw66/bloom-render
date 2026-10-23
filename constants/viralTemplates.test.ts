@@ -103,6 +103,17 @@ const EXPECTED_IDS = [
 
 const WAVE_Y_MULTI_IDS = ['couple-portrait', 'family-portrait', 'friends-group'];
 
+const WAVE_Z_SCENE_IDS = [
+  'graduation-group',
+  'camping-friends',
+  'birthday-party',
+  'cafe-meetup',
+  'airport-travel',
+  'sports-team',
+  'wedding-guests',
+  'christmas-party',
+];
+
 const WAVE_Z_IDS = [
   'low-poly-portrait',
   'risograph-poster',
@@ -203,7 +214,7 @@ describe('viralTemplates', () => {
     }
   });
 
-  it('Wave Y multi-person thumbs are id-named and perceptually unique', async () => {
+  it('all viral thumbs are perceptually unique (incl. Wave Y multi + Wave Z scenes)', async () => {
     const packHashes = new Map<string, string>();
     for (const template of VIRAL_TEMPLATES) {
       const onDisk = join(process.cwd(), 'public', template.thumbnail);
@@ -216,9 +227,10 @@ describe('viralTemplates', () => {
       packHashes.set(key, template.thumbnail);
     }
 
-    for (const id of WAVE_Y_MULTI_IDS) {
+    for (const id of [...WAVE_Y_MULTI_IDS, ...WAVE_Z_SCENE_IDS]) {
       const tmpl = getViralTemplateById(id);
       expect(tmpl, id).toBeTruthy();
+      expect(tmpl!.supportsMultiPerson, id).toBe(true);
       expect(tmpl!.thumbnail).toBe(`examples/viral/${id}.webp`);
       expect(existsSync(join(process.cwd(), 'public', tmpl!.thumbnail))).toBe(true);
     }
