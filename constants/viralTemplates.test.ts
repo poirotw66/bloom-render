@@ -20,25 +20,36 @@ import {
 const EXPECTED_IDS = [
   'acrylic-standee',
   'anime-handpainted',
+  'anime-sky-poster',
   'astronaut',
+  'autumn-cafe',
+  'book-nook',
   'brick-minifig',
+  'chalk-caricature',
   'chibi-3d',
+  'city-pop-cover',
   'classical-oil-painting',
   'claymation',
   'cny-portrait',
   'comic-pop-art',
+  'crochet-amigurumi',
   'cyberpunk-neon',
+  'double-exposure',
   'embroidery',
   'era-70s-taiwan',
   'era-80s-taiwan',
   'era-90s-taiwan',
+  'fantasy-rpg-hero',
   'felt-plush',
   'figurine-box',
   'film-noir',
+  'flat-vector-avatar',
   'hk-90s-film',
   'iso-diorama',
+  'korean-studio-portrait',
   'line-stickers',
   'magazine-cover',
+  'mermaid-underwater',
   'paper-cut',
   'pencil-sketch',
   'pet-human',
@@ -52,6 +63,7 @@ const EXPECTED_IDS = [
   'taiwan-jiufen',
   'taiwan-night-market',
   'tarot-card',
+  'temple-festival',
   'trading-card',
   'ukiyo-e',
   'vaporwave',
@@ -64,19 +76,19 @@ const EXPECTED_IDS = [
   'yukata-festival',
 ].sort();
 
-const WAVE_W_IDS = [
-  'watercolor-illustration',
-  'cyberpunk-neon',
-  'classical-oil-painting',
-  'felt-plush',
-  'paper-cut',
-  'embroidery',
-  'pencil-sketch',
-  'vaporwave',
-  'film-noir',
-  'snow-globe',
-  'cny-portrait',
-  'wedding-photo',
+const WAVE_X_IDS = [
+  'book-nook',
+  'anime-sky-poster',
+  'fantasy-rpg-hero',
+  'korean-studio-portrait',
+  'chalk-caricature',
+  'mermaid-underwater',
+  'autumn-cafe',
+  'temple-festival',
+  'flat-vector-avatar',
+  'double-exposure',
+  'city-pop-cover',
+  'crochet-amigurumi',
 ];
 
 const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
@@ -93,13 +105,13 @@ const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
 ];
 
 describe('viralTemplates', () => {
-  it('ships the expected viral pack ids (44)', () => {
-    expect(VIRAL_TEMPLATES).toHaveLength(44);
+  it('ships the expected viral pack ids (56)', () => {
+    expect(VIRAL_TEMPLATES).toHaveLength(56);
     expect([...VIRAL_TEMPLATE_IDS].sort()).toEqual(EXPECTED_IDS);
   });
 
-  it('includes the Wave W twelve new template ids', () => {
-    for (const id of WAVE_W_IDS) {
+  it('includes the Wave X twelve new template ids', () => {
+    for (const id of WAVE_X_IDS) {
       expect(VIRAL_TEMPLATE_IDS.has(id), id).toBe(true);
     }
   });
@@ -144,8 +156,8 @@ describe('viralTemplates', () => {
     }
   });
 
-  it('Wave W prompts ask to preserve facial identity', () => {
-    for (const id of WAVE_W_IDS) {
+  it('Wave X prompts ask to preserve facial identity', () => {
+    for (const id of WAVE_X_IDS) {
       const t = getViralTemplateById(id);
       expect(t, id).toBeTruthy();
       expect(t!.prompt.toLowerCase()).toMatch(/identity|likeness|facial|face|recogniz/);
@@ -156,15 +168,21 @@ describe('viralTemplates', () => {
     const brick = getViralTemplateById('brick-minifig');
     const trading = getViralTemplateById('trading-card');
     const astronaut = getViralTemplateById('astronaut');
-    expect(brick && trading && astronaut).toBeTruthy();
+    const fantasy = getViralTemplateById('fantasy-rpg-hero');
+    const cityPop = getViralTemplateById('city-pop-cover');
+    const crochet = getViralTemplateById('crochet-amigurumi');
+    expect(brick && trading && astronaut && fantasy && cityPop && crochet).toBeTruthy();
     const brandRe =
-      /\b(lego|pokemon|yu-?gi-?oh|magic:? the gathering|nasa|spacex|disney|ghibli)\b/i;
-    for (const t of [brick!, trading!, astronaut!]) {
+      /\b(lego|pokemon|yu-?gi-?oh|magic:? the gathering|nasa|spacex|disney|ghibli|final fantasy|zelda|nintendo)\b/i;
+    for (const t of [brick!, trading!, astronaut!, fantasy!, cityPop!, crochet!]) {
       expect(t.prompt).not.toMatch(brandRe);
       expect(enMessages[t.titleKey]).not.toMatch(brandRe);
     }
     expect(zhTWMessages[brick!.titleKey]).not.toMatch(/樂高/);
     expect(astronaut!.prompt).toMatch(/no agency logos/i);
+    expect(fantasy!.prompt).toMatch(/real game titles|brand logos/i);
+    expect(cityPop!.prompt).toMatch(/real artist names|album titles/i);
+    expect(crochet!.prompt).toMatch(/trademarked toy brand/i);
   });
 
   it('exposes zh-TW and EN title/description/alt keys for every template', () => {
