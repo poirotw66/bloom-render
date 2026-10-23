@@ -55,6 +55,14 @@ export const DEMO_ASSETS_BY_CONTEXT: Record<string, DemoAssetPair> = {
     before: ex('restore-before'),
     after: [ex('restore-after')],
   },
+  'viral-style': {
+    before: ex('editor-before'),
+    after: [ex('editor-after'), ex('portrait-1'), ex('portrait-2')],
+  },
+  'multi-person': {
+    before: ex('tryon-before'),
+    after: [ex('travel-2'), ex('portrait-1')],
+  },
 };
 
 export const DEMO_MODEL_ID = 'demo-samples';
@@ -77,7 +85,9 @@ export type DemoFeatureKey =
   | 'tryon'
   | 'couple'
   | 'group'
-  | 'restore';
+  | 'restore'
+  | 'style-collage'
+  | 'multi-person';
 
 const FEATURE_TO_CONTEXT: Record<DemoFeatureKey, string> = {
   generate: 'generation',
@@ -90,6 +100,8 @@ const FEATURE_TO_CONTEXT: Record<DemoFeatureKey, string> = {
   couple: 'couple',
   group: 'group',
   restore: 'restore',
+  'style-collage': 'viral-style',
+  'multi-person': 'multi-person',
 };
 
 export function demoAssetsForFeature(feature: DemoFeatureKey): DemoAssetPair {

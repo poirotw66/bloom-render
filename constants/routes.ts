@@ -16,6 +16,10 @@ export const ROUTES = {
   TRAVEL: '/travel',
   THEMED: '/themed',
   COUPLE_GROUP: '/couple-group',
+  /** Multi-style viral collage (4–6 templates → one PNG). */
+  STYLE_COLLAGE: '/style-collage',
+  /** Multi-person viral synthesis (2–4 portraits + multi-person template). */
+  MULTI_PERSON: '/multi-person',
   TRY_ON: '/try-on',
   PHOTOGRAPHY_SERVICE: '/photography-service',
   ENHANCE: '/enhance',

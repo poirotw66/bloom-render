@@ -10,4 +10,9 @@ User- and contributor-facing docs for BloomRender. Internal planning notes were 
 | [SCENE_IMAGES_STATUS.md](./SCENE_IMAGES_STATUS.md)   | Setup        | Full scene list, filenames, and readiness status                                                    |
 | [TYPES.md](./TYPES.md)                               | Contributors | Where shared vs feature-local TypeScript types live                                                 |
 
+Wave Y feature routes (also in root README):
+
+- `/style-collage` — one photo × 4–6 viral styles → labeled collage PNG (per-tile retry).
+- `/multi-person` — 2–4 portraits + multi-person viral templates (identity-preserving prompts).
+
 README showcase assets: [`docs/showcase/`](./showcase/). Older manual step photos still live under [`images/`](../images/) at the repo root.

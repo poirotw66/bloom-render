@@ -11,6 +11,7 @@ import { enMessages } from '../locales/en';
 import { zhTWMessages } from '../locales/zh-TW';
 import {
   GENERIC_EXAMPLE_THUMBNAILS,
+  getMultiPersonViralTemplates,
   getViralTemplateById,
   VIRAL_TEMPLATE_IDS,
   VIRAL_TEMPLATES,
@@ -32,6 +33,7 @@ const EXPECTED_IDS = [
   'claymation',
   'cny-portrait',
   'comic-pop-art',
+  'couple-portrait',
   'crochet-amigurumi',
   'cyberpunk-neon',
   'double-exposure',
@@ -39,11 +41,13 @@ const EXPECTED_IDS = [
   'era-70s-taiwan',
   'era-80s-taiwan',
   'era-90s-taiwan',
+  'family-portrait',
   'fantasy-rpg-hero',
   'felt-plush',
   'figurine-box',
   'film-noir',
   'flat-vector-avatar',
+  'friends-group',
   'hk-90s-film',
   'iso-diorama',
   'korean-studio-portrait',
@@ -76,20 +80,7 @@ const EXPECTED_IDS = [
   'yukata-festival',
 ].sort();
 
-const WAVE_X_IDS = [
-  'book-nook',
-  'anime-sky-poster',
-  'fantasy-rpg-hero',
-  'korean-studio-portrait',
-  'chalk-caricature',
-  'mermaid-underwater',
-  'autumn-cafe',
-  'temple-festival',
-  'flat-vector-avatar',
-  'double-exposure',
-  'city-pop-cover',
-  'crochet-amigurumi',
-];
+const WAVE_Y_MULTI_IDS = ['couple-portrait', 'family-portrait', 'friends-group'];
 
 const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'all',
@@ -105,15 +96,19 @@ const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
 ];
 
 describe('viralTemplates', () => {
-  it('ships the expected viral pack ids (56)', () => {
-    expect(VIRAL_TEMPLATES).toHaveLength(56);
+  it('ships the expected viral pack ids (59)', () => {
+    expect(VIRAL_TEMPLATES).toHaveLength(59);
     expect([...VIRAL_TEMPLATE_IDS].sort()).toEqual(EXPECTED_IDS);
   });
 
-  it('includes the Wave X twelve new template ids', () => {
-    for (const id of WAVE_X_IDS) {
+  it('includes Wave Y multi-person template ids and flags', () => {
+    for (const id of WAVE_Y_MULTI_IDS) {
       expect(VIRAL_TEMPLATE_IDS.has(id), id).toBe(true);
+      expect(getViralTemplateById(id)?.supportsMultiPerson).toBe(true);
     }
+    const multi = getMultiPersonViralTemplates();
+    expect(multi.length).toBeGreaterThanOrEqual(9);
+    expect(multi.every((t) => t.supportsMultiPerson)).toBe(true);
   });
 
   it('has unique ids, prompts, and dedicated viral thumbnails', () => {
@@ -156,11 +151,11 @@ describe('viralTemplates', () => {
     }
   });
 
-  it('Wave X prompts ask to preserve facial identity', () => {
-    for (const id of WAVE_X_IDS) {
-      const t = getViralTemplateById(id);
-      expect(t, id).toBeTruthy();
-      expect(t!.prompt.toLowerCase()).toMatch(/identity|likeness|facial|face|recogniz/);
+  it('Wave Y multi-person prompts ask to preserve facial identity', () => {
+    for (const id of WAVE_Y_MULTI_IDS) {
+      const tmpl = getViralTemplateById(id);
+      expect(tmpl, id).toBeTruthy();
+      expect(tmpl!.prompt.toLowerCase()).toMatch(/identity|likeness|facial|face|recogniz/);
     }
   });
 

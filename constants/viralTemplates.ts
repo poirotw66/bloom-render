@@ -35,6 +35,11 @@ export interface ViralTemplate {
   /** Path under public/ — dedicated viral preview, not a shared gallery asset. */
   thumbnail: string;
   tags: string[];
+  /**
+   * When true, template may be used for multi-person synthesis (2–4 reference
+   * portraits composited into one frame).
+   */
+  supportsMultiPerson?: boolean;
 }
 
 /** Shared/generic example assets that must not be reused as viral thumbnails. */
@@ -74,6 +79,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'polaroid-frame',
     category: 'polaroid',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.polaroid.title',
     descriptionKey: 'viral.polaroid.desc',
     thumbnailAltKey: 'viral.polaroid.thumb_alt',
@@ -256,6 +262,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'hk-90s-film',
     category: 'retro',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.hk_90s_film.title',
     descriptionKey: 'viral.hk_90s_film.desc',
     thumbnailAltKey: 'viral.hk_90s_film.thumb_alt',
@@ -270,6 +277,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'magazine-cover',
     category: 'social',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.magazine_cover.title',
     descriptionKey: 'viral.magazine_cover.desc',
     thumbnailAltKey: 'viral.magazine_cover.thumb_alt',
@@ -312,6 +320,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'pro-headshot',
     category: 'social',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.pro_headshot.title',
     descriptionKey: 'viral.pro_headshot.desc',
     thumbnailAltKey: 'viral.pro_headshot.thumb_alt',
@@ -480,6 +489,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'yearbook-90s',
     category: 'retro',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.yearbook_90s.title',
     descriptionKey: 'viral.yearbook_90s.desc',
     thumbnailAltKey: 'viral.yearbook_90s.thumb_alt',
@@ -648,6 +658,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'cny-portrait',
     category: 'social',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.cny_portrait.title',
     descriptionKey: 'viral.cny_portrait.desc',
     thumbnailAltKey: 'viral.cny_portrait.thumb_alt',
@@ -662,6 +673,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'wedding-photo',
     category: 'costume',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.wedding_photo.title',
     descriptionKey: 'viral.wedding_photo.desc',
     thumbnailAltKey: 'viral.wedding_photo.thumb_alt',
@@ -760,6 +772,7 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     id: 'autumn-cafe',
     category: 'social',
     feature: 'retouch',
+    supportsMultiPerson: true,
     titleKey: 'viral.autumn_cafe.title',
     descriptionKey: 'viral.autumn_cafe.desc',
     thumbnailAltKey: 'viral.autumn_cafe.thumb_alt',
@@ -840,10 +853,59 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     thumbnail: 'examples/viral/crochet-amigurumi.webp',
     tags: ['toy', 'crochet', 'amigurumi', 'viral'],
   },
+  {
+    id: 'couple-portrait',
+    category: 'social',
+    feature: 'retouch',
+    supportsMultiPerson: true,
+    titleKey: 'viral.couple_portrait.title',
+    descriptionKey: 'viral.couple_portrait.desc',
+    thumbnailAltKey: 'viral.couple_portrait.thumb_alt',
+    prompt:
+      'Create a romantic couple portrait from the attached reference people: soft natural light, complementary wardrobe, intimate but tasteful posing. Preserve each person’s real facial features, likeness, and identity separately — do not blend or mix faces. No celebrity lookalikes.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/couple-portrait.webp',
+    tags: ['social', 'couple', 'multi-person', 'viral'],
+  },
+  {
+    id: 'family-portrait',
+    category: 'social',
+    feature: 'retouch',
+    supportsMultiPerson: true,
+    titleKey: 'viral.family_portrait.title',
+    descriptionKey: 'viral.family_portrait.desc',
+    thumbnailAltKey: 'viral.family_portrait.thumb_alt',
+    prompt:
+      'Create a warm multi-generational family portrait from the attached reference people: cozy indoor or garden setting, soft even lighting, natural smiles. Keep every person’s facial features, age cues, and identity accurate and distinct — never blend faces between people.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/family-portrait.webp',
+    tags: ['social', 'family', 'multi-person', 'viral'],
+  },
+  {
+    id: 'friends-group',
+    category: 'social',
+    feature: 'retouch',
+    supportsMultiPerson: true,
+    titleKey: 'viral.friends_group.title',
+    descriptionKey: 'viral.friends_group.desc',
+    thumbnailAltKey: 'viral.friends_group.thumb_alt',
+    prompt:
+      'Create a lively friends group photo from the attached reference people: casual outdoor or café setting, candid joyful energy, balanced group composition. Preserve each friend’s facial features and identity clearly — do not morph or mix faces. No real celebrity names.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/friends-group.webp',
+    tags: ['social', 'friends', 'multi-person', 'viral'],
+  },
 ];
 
 export function getViralTemplateById(id: string): ViralTemplate | undefined {
   return VIRAL_TEMPLATES.find((t) => t.id === id);
+}
+
+export function getMultiPersonViralTemplates(): ViralTemplate[] {
+  return VIRAL_TEMPLATES.filter((t) => t.supportsMultiPerson);
 }
 
 export const VIRAL_TEMPLATE_IDS = new Set(VIRAL_TEMPLATES.map((t) => t.id));
