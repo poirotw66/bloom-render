@@ -12,11 +12,13 @@ import CostEstimateBadge from '../../components/CostEstimateBadge';
 import DemoModeBanner from '../../components/DemoModeBanner';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import ResultActions from '../../components/ResultActions';
+import VersionSwitcher from '../../components/VersionSwitcher';
 import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { publicAssetUrl } from '../../utils/publicAsset';
+import type { StyleCollageLayoutMode } from '../../utils/styleCollageLayout';
 import {
   UI_BTN_PRIMARY,
   UI_BTN_SECONDARY,
@@ -29,6 +31,8 @@ import {
   getTitleAccent,
 } from '../../utils/uiClasses';
 import { useStyleCollage } from './useStyleCollage';
+
+const LAYOUT_MODES: StyleCollageLayoutMode[] = ['grid', 'banner', 'story'];
 
 const StyleCollagePage: React.FC = () => {
   const { t } = useLanguage();
@@ -154,6 +158,70 @@ const StyleCollagePage: React.FC = () => {
               );
             })}
           </ul>
+          <section
+            className="theme-raised border theme-border rounded-xl p-3 sm:p-4 flex flex-col gap-3"
+            data-testid="style-collage-layout"
+          >
+            <h3 className="text-sm font-semibold theme-ink">{t('style_collage.layout_title')}</h3>
+            <div className="flex flex-wrap gap-2">
+              {LAYOUT_MODES.map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  data-testid={`style-collage-layout-${mode}`}
+                  aria-pressed={collage.layoutMode === mode}
+                  className={collage.layoutMode === mode ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
+                  onClick={() => collage.setLayoutMode(mode)}
+                >
+                  {t(`style_collage.layout_${mode === 'grid' ? 'grid' : mode}`)}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-4 text-sm theme-ink">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={collage.showLabels}
+                  onChange={(e) => collage.setShowLabels(e.target.checked)}
+                />
+                {t('style_collage.opt_labels')}
+              </label>
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={collage.showBorder}
+                  onChange={(e) => collage.setShowBorder(e.target.checked)}
+                />
+                {t('style_collage.opt_border')}
+              </label>
+              <label className="inline-flex items-center gap-2">
+                {t('style_collage.gap_label')}
+                <input
+                  type="range"
+                  min={8}
+                  max={32}
+                  step={4}
+                  value={collage.gap}
+                  onChange={(e) => collage.setGap(Number(e.target.value))}
+                  aria-label={t('style_collage.gap_label')}
+                />
+              </label>
+              <label className="inline-flex items-center gap-2">
+                {t('style_collage.format_label')}
+                <select
+                  value={collage.exportFormat}
+                  onChange={(e) =>
+                    collage.setExportFormat(e.target.value === 'jpeg' ? 'jpeg' : 'png')
+                  }
+                  className="theme-raised border theme-border rounded-lg px-2 py-1"
+                >
+                  <option value="png">PNG</option>
+                  <option value="jpeg">JPG</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
           <div className="flex flex-wrap items-center gap-3 justify-center pt-1">
             <CostEstimateBadge quantity={collage.selectedIds.length || collage.min} />
             <button
@@ -244,11 +312,28 @@ const StyleCollagePage: React.FC = () => {
             data-testid="style-collage-result"
           >
             <h2 className="text-base font-semibold theme-ink">{t('style_collage.result_title')}</h2>
+            <VersionSwitcher
+              count={collage.versions.length}
+              activeIndex={collage.activeVersion}
+              onSelect={collage.selectVersion}
+            />
             <img
               src={collage.collageUrl}
               alt={t('style_collage.result_alt')}
               className="w-full max-w-3xl rounded-xl border theme-border"
             />
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <CostEstimateBadge quantity={collage.selectedIds.length || collage.min} />
+              <button
+                type="button"
+                data-testid="style-collage-regenerate"
+                className={UI_BTN_SECONDARY}
+                disabled={!collage.canRegenerate}
+                onClick={() => void collage.regenerate()}
+              >
+                {t('style_collage.regenerate')}
+              </button>
+            </div>
             <ResultActions
               result={collage.collageUrl}
               fileBaseName="bloomrender-style-collage"

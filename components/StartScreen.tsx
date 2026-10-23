@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UploadIcon, MagicWandIcon, DownloadIcon, EditIcon } from './icons';
 import { generateImageFromText } from '../services/geminiService';
@@ -29,7 +29,7 @@ import ApiKeyNotice from './ApiKeyNotice';
 import DemoModeBanner from './DemoModeBanner';
 import ExampleShowcase from './ExampleShowcase';
 import HomeGallery from './HomeGallery';
-import ViralTemplatesSection from './ViralTemplatesSection';
+const ViralTemplatesSection = React.lazy(() => import('./ViralTemplatesSection'));
 import GenerationFailureNotice from './GenerationFailureNotice';
 import ProgressIndicator from './ProgressIndicator';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -450,7 +450,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         )}
 
         {/* Viral one-tap 玩法 — discoverable above the fold on landing. */}
-        {tab === 'upload' && <ViralTemplatesSection className="mt-6 sm:mt-8 w-full max-w-6xl" />}
+        {tab === 'upload' && (
+          <Suspense fallback={null}>
+            <ViralTemplatesSection className="mt-6 sm:mt-8 w-full max-w-6xl" />
+          </Suspense>
+        )}
 
         {/* Results first. Landing straight on an empty upload box asks the
             visitor to commit a photo before seeing a single thing the models
@@ -918,7 +922,9 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           !isGenerating &&
           !(compareEnabled && (compareRun.isRunning || compareResults.length > 0)) && (
             <>
-              <ViralTemplatesSection className="mt-6" compact />
+              <Suspense fallback={null}>
+                <ViralTemplatesSection className="mt-6" compact />
+              </Suspense>
               <ExampleShowcase feature="generate" />
             </>
           )}

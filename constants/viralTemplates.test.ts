@@ -21,14 +21,21 @@ import {
 
 const EXPECTED_IDS = [
   'acrylic-standee',
+  'airport-travel',
   'anime-handpainted',
   'anime-sky-poster',
   'astronaut',
   'autumn-cafe',
+  'birthday-party',
   'book-nook',
   'brick-minifig',
+  'cafe-meetup',
+  'camping-friends',
   'chalk-caricature',
+  'chef-portrait',
   'chibi-3d',
+  'christmas-cozy',
+  'christmas-party',
   'city-pop-cover',
   'classical-oil-painting',
   'claymation',
@@ -49,20 +56,31 @@ const EXPECTED_IDS = [
   'film-noir',
   'flat-vector-avatar',
   'friends-group',
+  'graduation-group',
+  'halloween-costume',
   'hk-90s-film',
   'iso-diorama',
   'korean-studio-portrait',
   'line-stickers',
+  'low-poly-portrait',
   'magazine-cover',
   'mermaid-underwater',
+  'mid-autumn-moon',
   'paper-cut',
   'pencil-sketch',
   'pet-human',
+  'pet-royal',
+  'pet-superhero',
+  'pilot-captain',
   'pixel-art',
   'polaroid-frame',
+  'popup-book',
   'pro-headshot',
   'purikura',
+  'risograph-poster',
+  'scientist-lab',
   'snow-globe',
+  'sports-team',
   'stained-glass',
   'taiwan-101',
   'taiwan-jiufen',
@@ -71,9 +89,11 @@ const EXPECTED_IDS = [
   'temple-festival',
   'trading-card',
   'ukiyo-e',
+  'valentine-roses',
   'vaporwave',
   'vintage-travel-poster',
   'watercolor-illustration',
+  'wedding-guests',
   'wedding-photo',
   'wuxia-costume',
   'y2k-digicam',
@@ -82,6 +102,32 @@ const EXPECTED_IDS = [
 ].sort();
 
 const WAVE_Y_MULTI_IDS = ['couple-portrait', 'family-portrait', 'friends-group'];
+
+const WAVE_Z_SCENE_IDS = [
+  'graduation-group',
+  'camping-friends',
+  'birthday-party',
+  'cafe-meetup',
+  'airport-travel',
+  'sports-team',
+  'wedding-guests',
+  'christmas-party',
+];
+
+const WAVE_Z_IDS = [
+  'low-poly-portrait',
+  'risograph-poster',
+  'popup-book',
+  'christmas-cozy',
+  'halloween-costume',
+  'mid-autumn-moon',
+  'valentine-roses',
+  'chef-portrait',
+  'pilot-captain',
+  'scientist-lab',
+  'pet-royal',
+  'pet-superhero',
+];
 
 const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'all',
@@ -94,12 +140,20 @@ const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'retro',
   'social',
   'costume',
+  'holiday',
+  'pet',
 ];
 
 describe('viralTemplates', () => {
-  it('ships the expected viral pack ids (59)', () => {
-    expect(VIRAL_TEMPLATES).toHaveLength(59);
+  it('ships the expected viral pack ids (79)', () => {
+    expect(VIRAL_TEMPLATES).toHaveLength(79);
     expect([...VIRAL_TEMPLATE_IDS].sort()).toEqual(EXPECTED_IDS);
+  });
+
+  it('includes Wave Z twelve new template ids', () => {
+    for (const id of WAVE_Z_IDS) {
+      expect(VIRAL_TEMPLATE_IDS.has(id), id).toBe(true);
+    }
   });
 
   it('includes Wave Y multi-person template ids and flags', () => {
@@ -160,7 +214,7 @@ describe('viralTemplates', () => {
     }
   });
 
-  it('Wave Y multi-person thumbs are id-named and perceptually unique', async () => {
+  it('all viral thumbs are perceptually unique (incl. Wave Y multi + Wave Z scenes)', async () => {
     const packHashes = new Map<string, string>();
     for (const template of VIRAL_TEMPLATES) {
       const onDisk = join(process.cwd(), 'public', template.thumbnail);
@@ -173,9 +227,10 @@ describe('viralTemplates', () => {
       packHashes.set(key, template.thumbnail);
     }
 
-    for (const id of WAVE_Y_MULTI_IDS) {
+    for (const id of [...WAVE_Y_MULTI_IDS, ...WAVE_Z_SCENE_IDS]) {
       const tmpl = getViralTemplateById(id);
       expect(tmpl, id).toBeTruthy();
+      expect(tmpl!.supportsMultiPerson, id).toBe(true);
       expect(tmpl!.thumbnail).toBe(`examples/viral/${id}.webp`);
       expect(existsSync(join(process.cwd(), 'public', tmpl!.thumbnail))).toBe(true);
     }

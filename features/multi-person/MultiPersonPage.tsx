@@ -12,6 +12,7 @@ import CostEstimateBadge from '../../components/CostEstimateBadge';
 import DemoModeBanner from '../../components/DemoModeBanner';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import ResultActions from '../../components/ResultActions';
+import VersionSwitcher from '../../components/VersionSwitcher';
 import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -231,11 +232,31 @@ const MultiPersonPage: React.FC = () => {
             data-testid="multi-person-result"
           >
             <h2 className="text-base font-semibold theme-ink">{t('multi_person.result_title')}</h2>
+            <VersionSwitcher
+              count={mp.versions.length}
+              activeIndex={mp.activeVersion}
+              onSelect={mp.selectVersion}
+              titleKey="multi_person.versions_title"
+              versionKey="multi_person.version_n"
+              testId="multi-person-versions"
+            />
             <img
               src={mp.resultUrl}
               alt={t('multi_person.result_alt')}
               className="w-full max-w-xl rounded-xl border theme-border"
             />
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <CostEstimateBadge quantity={1} />
+              <button
+                type="button"
+                data-testid="multi-person-regenerate"
+                className={UI_BTN_SECONDARY}
+                disabled={!mp.canRegenerate}
+                onClick={() => void mp.regenerate()}
+              >
+                {t('multi_person.regenerate')}
+              </button>
+            </div>
             <ResultActions
               result={mp.resultUrl}
               fileBaseName="bloomrender-multi-person"
