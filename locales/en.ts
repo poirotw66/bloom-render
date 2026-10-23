@@ -1439,7 +1439,7 @@ export const enMessages: Record<string, string> = {
 
   'viral.section_title': 'One-tap viral styles',
   'viral.section_subtitle':
-    'Figurine boxes, Polaroids, era time-travel, and Taiwan scenes — tap to try, then share “Use this style”.',
+    'Figurines, Polaroids, era travel, Taiwan scenes, toys, art, retro, and social styles — tap to try, then share “Use this style”.',
   'viral.filter_label': 'Filter styles',
   'viral.filter_all': 'All',
   'viral.filter_figurine': 'Figurine',

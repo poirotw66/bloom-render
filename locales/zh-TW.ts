@@ -1351,7 +1351,7 @@ export const zhTWMessages: Record<string, string> = {
 
   'viral.section_title': '一鍵玩法',
   'viral.section_subtitle':
-    '公仔盒玩、拍立得、年代穿越與台灣在地場景——點一下就能試，再分享「用同款」。',
+    '公仔、拍立得、年代穿越、台灣在地、玩具、藝術、復古與社群玩法——點一下就能試，再分享「用同款」。',
   'viral.filter_label': '篩選玩法',
   'viral.filter_all': '全部',
   'viral.filter_figurine': '公仔盒玩',
