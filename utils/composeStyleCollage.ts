@@ -2,25 +2,29 @@
  * @license
  * SPDX-License-Identifier: MIT
  *
- * Compose generated style tiles into one labeled collage PNG (data URL).
+ * Compose generated style tiles into one labeled collage (PNG or JPEG data URL).
  */
 
-import { computeStyleCollageLayout } from './styleCollageLayout';
+import { computeStyleCollageLayout, type StyleCollageLayoutMode } from './styleCollageLayout';
 
 export type StyleCollageTile = {
-  /** Image data URL or blob URL; null/undefined leaves an empty placeholder cell. */
   imageUrl?: string | null;
   label: string;
 };
 
 export type ComposeStyleCollageOptions = {
   tiles: StyleCollageTile[];
+  mode?: StyleCollageLayoutMode;
+  showLabels?: boolean;
+  showBorder?: boolean;
+  gap?: number;
   /** CSS color for canvas background (theme bg). */
   background?: string;
-  /** CSS color for label text. */
   labelColor?: string;
-  /** CSS color for empty cell fill. */
   emptyFill?: string;
+  borderColor?: string;
+  format?: 'png' | 'jpeg';
+  jpegQuality?: number;
   cellWidth?: number;
   cellImageHeight?: number;
 };
@@ -51,12 +55,15 @@ function drawCover(
 }
 
 /**
- * Paint a 2×2 or 2×3 collage with labels under each tile. Returns a PNG data URL.
+ * Paint collage cells with optional labels/borders. Returns a data URL.
  */
 export async function composeStyleCollage(options: ComposeStyleCollageOptions): Promise<string> {
   const tiles = options.tiles;
   const layout = computeStyleCollageLayout({
     count: Math.max(tiles.length, 4),
+    mode: options.mode ?? 'grid',
+    showLabels: options.showLabels !== false,
+    gap: options.gap,
     cellWidth: options.cellWidth,
     cellImageHeight: options.cellImageHeight,
   });
@@ -72,6 +79,9 @@ export async function composeStyleCollage(options: ComposeStyleCollageOptions): 
 
   const labelColor = options.labelColor ?? '#f5f0f2';
   const emptyFill = options.emptyFill ?? 'rgba(255,255,255,0.06)';
+  const borderColor = options.borderColor ?? 'rgba(255,255,255,0.28)';
+  const showBorder = options.showBorder === true;
+  const showLabels = options.showLabels !== false;
 
   for (const cell of layout.cells) {
     const tile = tiles[cell.index];
@@ -87,8 +97,14 @@ export async function composeStyleCollage(options: ComposeStyleCollageOptions): 
       }
     }
 
+    if (showBorder) {
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.imageHeight - 2);
+    }
+
     const label = tile?.label?.trim() || '';
-    if (label) {
+    if (showLabels && label && cell.labelHeight > 0) {
       ctx.fillStyle = labelColor;
       ctx.font = '600 22px "Work Sans", system-ui, sans-serif';
       ctx.textAlign = 'center';
@@ -102,5 +118,9 @@ export async function composeStyleCollage(options: ComposeStyleCollageOptions): 
     }
   }
 
+  const format = options.format ?? 'png';
+  if (format === 'jpeg') {
+    return canvas.toDataURL('image/jpeg', options.jpegQuality ?? 0.92);
+  }
   return canvas.toDataURL('image/png');
 }

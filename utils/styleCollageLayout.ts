@@ -2,16 +2,19 @@
  * @license
  * SPDX-License-Identifier: MIT
  *
- * Layout math for multi-style collage grids (2×2 for 4 cells, 2×3 for 5–6).
+ * Layout math for multi-style collage: grid, wide banner, or story strip.
  */
 
 export const STYLE_COLLAGE_MIN = 4;
 export const STYLE_COLLAGE_MAX = 6;
 
+export type StyleCollageLayoutMode = 'grid' | 'banner' | 'story';
+
 export type StyleCollageGrid = {
-  cols: 2;
-  rows: 2 | 3;
+  cols: number;
+  rows: number;
   cellCount: number;
+  mode: StyleCollageLayoutMode;
 };
 
 export type StyleCollageCellRect = {
@@ -34,6 +37,17 @@ export type StyleCollageLayout = {
   cells: StyleCollageCellRect[];
 };
 
+export type StyleCollageLayoutOptions = {
+  count: number;
+  mode?: StyleCollageLayoutMode;
+  showLabels?: boolean;
+  cellWidth?: number;
+  cellImageHeight?: number;
+  labelHeight?: number;
+  padding?: number;
+  gap?: number;
+};
+
 /** Validate and clamp how many styles may be selected for a collage. */
 export function clampStyleCollageSelectionCount(count: number): number {
   if (!Number.isFinite(count) || count < STYLE_COLLAGE_MIN) return STYLE_COLLAGE_MIN;
@@ -45,29 +59,38 @@ export function isValidStyleCollageSelectionCount(count: number): boolean {
   return Number.isInteger(count) && count >= STYLE_COLLAGE_MIN && count <= STYLE_COLLAGE_MAX;
 }
 
-/** 4 → 2×2; 5–6 → 2×3 (last cells may be empty at paint time). */
-export function styleCollageGridForCount(count: number): StyleCollageGrid {
-  const cellCount = clampStyleCollageSelectionCount(count);
-  if (cellCount <= 4) return { cols: 2, rows: 2, cellCount: 4 };
-  return { cols: 2, rows: 3, cellCount: 6 };
+/** 4 → 2×2; 5–6 → 2×3 for grid mode. */
+export function styleCollageGridForCount(
+  count: number,
+  mode: StyleCollageLayoutMode = 'grid',
+): StyleCollageGrid {
+  const n = clampStyleCollageSelectionCount(count);
+  if (mode === 'banner') return { cols: n, rows: 1, cellCount: n, mode };
+  if (mode === 'story') return { cols: 1, rows: n, cellCount: n, mode };
+  if (n <= 4) return { cols: 2, rows: 2, cellCount: 4, mode: 'grid' };
+  return { cols: 2, rows: 3, cellCount: 6, mode: 'grid' };
 }
 
-export function computeStyleCollageLayout(options: {
-  count: number;
-  cellWidth?: number;
-  cellImageHeight?: number;
-  labelHeight?: number;
-  padding?: number;
-  gap?: number;
-}): StyleCollageLayout {
-  const grid = styleCollageGridForCount(options.count);
-  const cellWidth = options.cellWidth ?? 480;
-  const imageHeight = options.cellImageHeight ?? 480;
-  const labelHeight = options.labelHeight ?? 44;
+export function computeStyleCollageLayout(options: StyleCollageLayoutOptions): StyleCollageLayout {
+  const mode = options.mode ?? 'grid';
+  const grid = styleCollageGridForCount(options.count, mode);
+  const showLabels = options.showLabels !== false;
+  const labelHeight = showLabels ? (options.labelHeight ?? 44) : 0;
   const padding = options.padding ?? 24;
   const gap = options.gap ?? 16;
-  const cellHeight = imageHeight + labelHeight;
 
+  let cellWidth = options.cellWidth ?? 480;
+  let imageHeight = options.cellImageHeight ?? 480;
+
+  if (mode === 'banner') {
+    cellWidth = options.cellWidth ?? 360;
+    imageHeight = options.cellImageHeight ?? 240; // wide tiles → ~3–4:1 overall
+  } else if (mode === 'story') {
+    cellWidth = options.cellWidth ?? 540;
+    imageHeight = options.cellImageHeight ?? 360;
+  }
+
+  const cellHeight = imageHeight + labelHeight;
   const canvasWidth = padding * 2 + grid.cols * cellWidth + (grid.cols - 1) * gap;
   const canvasHeight = padding * 2 + grid.rows * cellHeight + (grid.rows - 1) * gap;
 

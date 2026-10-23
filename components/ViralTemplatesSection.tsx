@@ -8,7 +8,11 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { VIRAL_TEMPLATES, type ViralTemplateCategory } from '../constants/viralTemplates';
+import {
+  getViralTemplateById,
+  VIRAL_TEMPLATES,
+  type ViralTemplateCategory,
+} from '../constants/viralTemplates';
 import { ROUTES } from '../constants/routes';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -19,6 +23,14 @@ import {
   STYLE_COLLAGE_MAX,
   toggleViralSelection,
 } from '../utils/viralSelection';
+import {
+  clearViralFavorites,
+  clearViralRecent,
+  getViralFavorites,
+  getViralRecent,
+  toggleViralFavorite,
+  pushViralRecent,
+} from '../utils/viralFavorites';
 import {
   UI_BTN_PRIMARY,
   UI_BTN_SECONDARY,
@@ -37,6 +49,8 @@ const CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'retro',
   'social',
   'costume',
+  'holiday',
+  'pet',
 ];
 
 /** When viewing “all” on desktop grid, collapse to avoid a tall wall. */
@@ -64,11 +78,22 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
   const [collageMode, setCollageMode] = useState(false);
   const [collageIds, setCollageIds] = useState<string[]>([]);
   const [collageHint, setCollageHint] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<string[]>(() => getViralFavorites());
+  const [recent, setRecent] = useState<string[]>(() => getViralRecent());
+  const [shelf, setShelf] = useState<'none' | 'favorites' | 'recent'>('none');
 
-  const entries =
+  const baseEntries =
     category === 'all'
       ? VIRAL_TEMPLATES
       : VIRAL_TEMPLATES.filter((entry) => entry.category === category);
+  const shelfIds = shelf === 'favorites' ? favorites : shelf === 'recent' ? recent : null;
+  const entries =
+    shelfIds === null
+      ? baseEntries
+      : shelfIds
+          .map((id) => getViralTemplateById(id))
+          .filter((e): e is NonNullable<typeof e> => Boolean(e))
+          .filter((e) => category === 'all' || e.category === category);
 
   const collapseAll =
     !compact && category === 'all' && !showAll && entries.length > ALL_PREVIEW_COUNT;
@@ -79,6 +104,8 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
     if (!template) return;
     setBusyId(id);
     try {
+      pushViralRecent(id);
+      setRecent(getViralRecent());
       await applyViralTemplate(template, navigate, { demoMode: isDemoMode });
     } finally {
       setBusyId(null);
@@ -129,6 +156,56 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
           {t('viral.section_subtitle')}
         </p>
       </div>
+
+      {!compact && (
+        <div className="mb-3 flex flex-wrap gap-2" data-testid="viral-shelves">
+          <button
+            type="button"
+            data-testid="viral-shelf-favorites"
+            aria-pressed={shelf === 'favorites'}
+            className={shelf === 'favorites' ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
+            onClick={() => setShelf((v) => (v === 'favorites' ? 'none' : 'favorites'))}
+          >
+            {t('viral.favorites_title')}
+          </button>
+          <button
+            type="button"
+            data-testid="viral-shelf-recent"
+            aria-pressed={shelf === 'recent'}
+            className={shelf === 'recent' ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
+            onClick={() => {
+              setRecent(getViralRecent());
+              setShelf((v) => (v === 'recent' ? 'none' : 'recent'));
+            }}
+          >
+            {t('viral.recent_title')}
+          </button>
+          {shelf === 'favorites' && favorites.length > 0 && (
+            <button
+              type="button"
+              className={`${UI_BTN_SECONDARY} text-sm`}
+              onClick={() => {
+                clearViralFavorites();
+                setFavorites([]);
+              }}
+            >
+              {t('viral.favorites_clear')}
+            </button>
+          )}
+          {shelf === 'recent' && recent.length > 0 && (
+            <button
+              type="button"
+              className={`${UI_BTN_SECONDARY} text-sm`}
+              onClick={() => {
+                clearViralRecent();
+                setRecent([]);
+              }}
+            >
+              {t('viral.recent_clear')}
+            </button>
+          )}
+        </div>
+      )}
 
       {!compact && (
         <div className="mb-3 flex flex-wrap gap-2 items-center" data-testid="viral-extra-actions">
@@ -230,6 +307,22 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
                   {t(entry.descriptionKey)}
                 </p>
                 <div className="mt-auto flex flex-col gap-2 pt-2">
+                  <button
+                    type="button"
+                    data-testid={`viral-favorite-${entry.id}`}
+                    aria-pressed={favorites.includes(entry.id)}
+                    aria-label={
+                      favorites.includes(entry.id)
+                        ? t('viral.favorite_remove')
+                        : t('viral.favorite_add')
+                    }
+                    className={`${UI_BTN_SECONDARY} w-full text-sm`}
+                    onClick={() => setFavorites(toggleViralFavorite(entry.id))}
+                  >
+                    {favorites.includes(entry.id)
+                      ? '♥ ' + t('viral.favorite_remove')
+                      : '♡ ' + t('viral.favorite_add')}
+                  </button>
                   {collageMode ? (
                     <button
                       type="button"

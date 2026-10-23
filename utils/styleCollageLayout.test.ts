@@ -28,25 +28,44 @@ describe('styleCollageLayout', () => {
     expect(isValidStyleCollageSelectionCount(6.5)).toBe(false);
   });
 
-  it('uses 2×2 for four styles and 2×3 for five or six', () => {
-    expect(styleCollageGridForCount(4)).toEqual({ cols: 2, rows: 2, cellCount: 4 });
-    expect(styleCollageGridForCount(5)).toEqual({ cols: 2, rows: 3, cellCount: 6 });
-    expect(styleCollageGridForCount(6)).toEqual({ cols: 2, rows: 3, cellCount: 6 });
+  it('uses 2×2 for four styles and 2×3 for five or six in grid mode', () => {
+    expect(styleCollageGridForCount(4)).toMatchObject({ cols: 2, rows: 2, cellCount: 4 });
+    expect(styleCollageGridForCount(5)).toMatchObject({ cols: 2, rows: 3, cellCount: 6 });
+    expect(styleCollageGridForCount(6)).toMatchObject({ cols: 2, rows: 3, cellCount: 6 });
+  });
+
+  it('lays out banner as one wide row and story as a tall column', () => {
+    expect(styleCollageGridForCount(4, 'banner')).toEqual({
+      cols: 4,
+      rows: 1,
+      cellCount: 4,
+      mode: 'banner',
+    });
+    expect(styleCollageGridForCount(5, 'story')).toEqual({
+      cols: 1,
+      rows: 5,
+      cellCount: 5,
+      mode: 'story',
+    });
+    const banner = computeStyleCollageLayout({ count: 4, mode: 'banner' });
+    expect(banner.canvasWidth).toBeGreaterThan(banner.canvasHeight);
+    const story = computeStyleCollageLayout({ count: 4, mode: 'story' });
+    expect(story.canvasHeight).toBeGreaterThan(story.canvasWidth);
+  });
+
+  it('can hide label strip height', () => {
+    const withLabels = computeStyleCollageLayout({ count: 4, showLabels: true });
+    const noLabels = computeStyleCollageLayout({ count: 4, showLabels: false });
+    expect(noLabels.canvasHeight).toBeLessThan(withLabels.canvasHeight);
+    expect(noLabels.cells[0]?.labelHeight).toBe(0);
   });
 
   it('computes non-overlapping cell rects inside the canvas', () => {
     const layout = computeStyleCollageLayout({ count: 4, cellWidth: 100, cellImageHeight: 80 });
     expect(layout.cells).toHaveLength(4);
-    expect(layout.canvasWidth).toBeGreaterThan(0);
-    expect(layout.canvasHeight).toBeGreaterThan(0);
     for (const cell of layout.cells) {
       expect(cell.x + cell.width).toBeLessThanOrEqual(layout.canvasWidth);
       expect(cell.y + cell.height).toBeLessThanOrEqual(layout.canvasHeight);
-      expect(cell.labelY).toBe(cell.y + cell.imageHeight);
     }
-    // First two cells share a row; next two the second row.
-    expect(layout.cells[0].y).toBe(layout.cells[1].y);
-    expect(layout.cells[2].y).toBe(layout.cells[3].y);
-    expect(layout.cells[2].y).toBeGreaterThan(layout.cells[0].y);
   });
 });

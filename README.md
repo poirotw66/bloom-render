@@ -41,7 +41,7 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 - **Portrait / travel / themed / couple·group / try-on** — Dedicated generators with demo samples.
 - **Local Enhance** — On-device background removal & 2× upscale (no API key).
 - **Prompt gallery** — Community presets; apply into generate / retouch / adjust / filter.
-- **One-tap 玩法** — 59 viral style templates (figurine, era travel, Taiwan scenes, toys, art, retro, social, costume); filter chips + remix deep links (`/r#…`).
+- **One-tap 玩法** — 79 viral style templates (figurine, era, Taiwan, toys, art, retro, social, costume, holiday, pet); favorites/recent, filter chips, remix (`/r#…`).
 - **Multi-style collage** — Pick 4–6 玩法 styles from one photo and download a labeled collage (`/style-collage`).
 - **Multi-person synthesis** — Upload 2–4 portraits into a shared-frame viral style (`/multi-person`).
 - **History · share · compare** — Browse past runs; share cards; before/after slider.
