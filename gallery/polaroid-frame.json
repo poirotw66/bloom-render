@@ -7,7 +7,7 @@
     "aspectRatio": "1:1",
     "tab": "retouch"
   },
-  "thumbnail": "examples/viral/polaroid.webp",
+  "thumbnail": "examples/viral/polaroid-frame.webp",
   "description": "Viral Polaroid frame retouch preset.",
   "author": "bloom-render",
   "tags": ["retouch", "polaroid", "viral"],
