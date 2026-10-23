@@ -29,12 +29,12 @@ test.describe('Wave O — viral templates', () => {
     await expect(page.getByText('公仔盒玩').first()).toBeVisible();
     await expect(page.getByText('拍立得').first()).toBeVisible();
     await expect(page.getByTestId('viral-apply-figurine-box')).toBeVisible();
-    // Wave U categories + samples (horizontal scroll / filter chips).
+    // Wave U/V categories + samples (horizontal scroll / filter chips).
     await expect(page.getByRole('button', { name: '玩具公仔' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '藝術風格' })).toBeVisible();
-    await page.getByRole('button', { name: '玩具公仔' }).click();
-    await expect(page.getByTestId('viral-apply-chibi-3d')).toBeVisible();
-    await expect(page.getByText('3D Q版公仔').first()).toBeVisible();
+    await expect(page.getByRole('button', { name: '服裝角色' })).toBeVisible();
+    await page.getByRole('button', { name: '服裝角色' }).click();
+    await expect(page.getByTestId('viral-apply-yukata-festival')).toBeVisible();
+    await expect(page.getByText('日系浴衣祭典').first()).toBeVisible();
   });
 
   test('generate page shows compact viral section', async ({ page }) => {

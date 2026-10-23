@@ -20,39 +20,51 @@ import {
 const EXPECTED_IDS = [
   'acrylic-standee',
   'anime-handpainted',
+  'astronaut',
   'brick-minifig',
   'chibi-3d',
   'claymation',
+  'comic-pop-art',
   'era-70s-taiwan',
   'era-80s-taiwan',
   'era-90s-taiwan',
   'figurine-box',
   'hk-90s-film',
+  'iso-diorama',
   'line-stickers',
   'magazine-cover',
+  'pet-human',
   'pixel-art',
   'polaroid-frame',
   'pro-headshot',
   'purikura',
+  'stained-glass',
   'taiwan-101',
   'taiwan-jiufen',
   'taiwan-night-market',
+  'tarot-card',
+  'trading-card',
   'ukiyo-e',
+  'vintage-travel-poster',
+  'wuxia-costume',
+  'y2k-digicam',
+  'yearbook-90s',
+  'yukata-festival',
 ].sort();
 
-const WAVE_U_IDS = [
-  'chibi-3d',
-  'line-stickers',
-  'acrylic-standee',
-  'pixel-art',
-  'claymation',
-  'ukiyo-e',
-  'hk-90s-film',
-  'magazine-cover',
-  'purikura',
-  'brick-minifig',
-  'pro-headshot',
-  'anime-handpainted',
+const WAVE_V_IDS = [
+  'pet-human',
+  'comic-pop-art',
+  'tarot-card',
+  'vintage-travel-poster',
+  'trading-card',
+  'yukata-festival',
+  'wuxia-costume',
+  'y2k-digicam',
+  'astronaut',
+  'iso-diorama',
+  'yearbook-90s',
+  'stained-glass',
 ];
 
 const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
@@ -65,16 +77,17 @@ const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'art',
   'retro',
   'social',
+  'costume',
 ];
 
 describe('viralTemplates', () => {
-  it('ships the expected viral pack ids (20)', () => {
-    expect(VIRAL_TEMPLATES).toHaveLength(20);
+  it('ships the expected viral pack ids (32)', () => {
+    expect(VIRAL_TEMPLATES).toHaveLength(32);
     expect([...VIRAL_TEMPLATE_IDS].sort()).toEqual(EXPECTED_IDS);
   });
 
-  it('includes the Wave U twelve new template ids', () => {
-    for (const id of WAVE_U_IDS) {
+  it('includes the Wave V twelve new template ids', () => {
+    for (const id of WAVE_V_IDS) {
       expect(VIRAL_TEMPLATE_IDS.has(id), id).toBe(true);
     }
   });
@@ -113,20 +126,27 @@ describe('viralTemplates', () => {
   it('does not reuse generic gallery/example preview images', () => {
     for (const template of VIRAL_TEMPLATES) {
       expect(GENERIC_EXAMPLE_THUMBNAILS.has(template.thumbnail)).toBe(false);
-      expect(template.thumbnail).not.toMatch(/portrait-|editor-|generate-|travel-|idphoto-|tryon-/);
+      // Ban shared gallery stems at examples/ root — not substrings inside viral ids
+      // (e.g. vintage-travel-poster is fine).
+      expect(template.thumbnail).not.toMatch(
+        /^examples\/(portrait|editor|generate|travel|idphoto|tryon)-/,
+      );
     }
   });
 
-  it('avoids trademarked brand names in brick / anime prompts and titles', () => {
+  it('avoids trademarked brand/game names in sensitive templates', () => {
     const brick = getViralTemplateById('brick-minifig');
-    const anime = getViralTemplateById('anime-handpainted');
-    expect(brick).toBeTruthy();
-    expect(anime).toBeTruthy();
-    const brandRe = /\b(lego|lego(?:s)?|disney|ghibli|pixar)\b/i;
-    expect(brick!.prompt).not.toMatch(brandRe);
-    expect(anime!.prompt).not.toMatch(brandRe);
-    expect(enMessages[brick!.titleKey]).not.toMatch(brandRe);
+    const trading = getViralTemplateById('trading-card');
+    const astronaut = getViralTemplateById('astronaut');
+    expect(brick && trading && astronaut).toBeTruthy();
+    const brandRe =
+      /\b(lego|pokemon|yu-?gi-?oh|magic:? the gathering|nasa|spacex|disney|ghibli)\b/i;
+    for (const t of [brick!, trading!, astronaut!]) {
+      expect(t.prompt).not.toMatch(brandRe);
+      expect(enMessages[t.titleKey]).not.toMatch(brandRe);
+    }
     expect(zhTWMessages[brick!.titleKey]).not.toMatch(/樂高/);
+    expect(astronaut!.prompt).toMatch(/no agency logos/i);
   });
 
   it('exposes zh-TW and EN title/description/alt keys for every template', () => {
@@ -140,6 +160,8 @@ describe('viralTemplates', () => {
     }
     expect(enMessages['viral.section_title']).toBeTruthy();
     expect(zhTWMessages['viral.section_title']).toBeTruthy();
+    expect(enMessages['viral.show_more']).toMatch(/\{count\}/);
+    expect(zhTWMessages['viral.show_more']).toMatch(/\{count\}/);
     expect(enMessages['viral.use_this_style']).toMatch(/Use this style/i);
     expect(zhTWMessages['viral.use_this_style']).toMatch(/用同款/);
     for (const cat of FILTER_CATEGORIES) {
