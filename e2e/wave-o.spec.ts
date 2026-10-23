@@ -35,6 +35,8 @@ test.describe('Wave O — viral templates', () => {
     await page.getByRole('button', { name: '服裝角色' }).click();
     await expect(page.getByTestId('viral-apply-yukata-festival')).toBeVisible();
     await expect(page.getByText('日系浴衣祭典').first()).toBeVisible();
+    await page.getByRole('button', { name: '藝術風格' }).click();
+    await expect(page.getByTestId('viral-apply-watercolor-illustration')).toBeVisible();
   });
 
   test('generate page shows compact viral section', async ({ page }) => {

@@ -14,9 +14,9 @@ const SiteFooter: React.FC = () => {
   return (
     <footer
       data-testid="site-footer"
-      className="w-full max-w-[1600px] mx-auto px-5 pb-6 sm:px-6 md:px-8"
+      className="w-full max-w-[1600px] mx-auto px-5 pb-8 sm:px-6 md:px-8"
     >
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm theme-ink-muted border-t theme-border pt-4">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm theme-ink-muted border-t theme-border pt-5 mt-2">
         <span>{t('footer.open_source')}</span>
         <a
           href={GITHUB_REPO_URL}

@@ -23,21 +23,30 @@ const EXPECTED_IDS = [
   'astronaut',
   'brick-minifig',
   'chibi-3d',
+  'classical-oil-painting',
   'claymation',
+  'cny-portrait',
   'comic-pop-art',
+  'cyberpunk-neon',
+  'embroidery',
   'era-70s-taiwan',
   'era-80s-taiwan',
   'era-90s-taiwan',
+  'felt-plush',
   'figurine-box',
+  'film-noir',
   'hk-90s-film',
   'iso-diorama',
   'line-stickers',
   'magazine-cover',
+  'paper-cut',
+  'pencil-sketch',
   'pet-human',
   'pixel-art',
   'polaroid-frame',
   'pro-headshot',
   'purikura',
+  'snow-globe',
   'stained-glass',
   'taiwan-101',
   'taiwan-jiufen',
@@ -45,26 +54,29 @@ const EXPECTED_IDS = [
   'tarot-card',
   'trading-card',
   'ukiyo-e',
+  'vaporwave',
   'vintage-travel-poster',
+  'watercolor-illustration',
+  'wedding-photo',
   'wuxia-costume',
   'y2k-digicam',
   'yearbook-90s',
   'yukata-festival',
 ].sort();
 
-const WAVE_V_IDS = [
-  'pet-human',
-  'comic-pop-art',
-  'tarot-card',
-  'vintage-travel-poster',
-  'trading-card',
-  'yukata-festival',
-  'wuxia-costume',
-  'y2k-digicam',
-  'astronaut',
-  'iso-diorama',
-  'yearbook-90s',
-  'stained-glass',
+const WAVE_W_IDS = [
+  'watercolor-illustration',
+  'cyberpunk-neon',
+  'classical-oil-painting',
+  'felt-plush',
+  'paper-cut',
+  'embroidery',
+  'pencil-sketch',
+  'vaporwave',
+  'film-noir',
+  'snow-globe',
+  'cny-portrait',
+  'wedding-photo',
 ];
 
 const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
@@ -81,13 +93,13 @@ const FILTER_CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
 ];
 
 describe('viralTemplates', () => {
-  it('ships the expected viral pack ids (32)', () => {
-    expect(VIRAL_TEMPLATES).toHaveLength(32);
+  it('ships the expected viral pack ids (44)', () => {
+    expect(VIRAL_TEMPLATES).toHaveLength(44);
     expect([...VIRAL_TEMPLATE_IDS].sort()).toEqual(EXPECTED_IDS);
   });
 
-  it('includes the Wave V twelve new template ids', () => {
-    for (const id of WAVE_V_IDS) {
+  it('includes the Wave W twelve new template ids', () => {
+    for (const id of WAVE_W_IDS) {
       expect(VIRAL_TEMPLATE_IDS.has(id), id).toBe(true);
     }
   });
@@ -126,11 +138,17 @@ describe('viralTemplates', () => {
   it('does not reuse generic gallery/example preview images', () => {
     for (const template of VIRAL_TEMPLATES) {
       expect(GENERIC_EXAMPLE_THUMBNAILS.has(template.thumbnail)).toBe(false);
-      // Ban shared gallery stems at examples/ root — not substrings inside viral ids
-      // (e.g. vintage-travel-poster is fine).
       expect(template.thumbnail).not.toMatch(
         /^examples\/(portrait|editor|generate|travel|idphoto|tryon)-/,
       );
+    }
+  });
+
+  it('Wave W prompts ask to preserve facial identity', () => {
+    for (const id of WAVE_W_IDS) {
+      const t = getViralTemplateById(id);
+      expect(t, id).toBeTruthy();
+      expect(t!.prompt.toLowerCase()).toMatch(/identity|likeness|facial|face|recogniz/);
     }
   });
 

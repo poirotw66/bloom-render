@@ -450,13 +450,13 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         )}
 
         {/* Viral one-tap 玩法 — discoverable above the fold on landing. */}
-        {tab === 'upload' && <ViralTemplatesSection className="mt-2" />}
+        {tab === 'upload' && <ViralTemplatesSection className="mt-6 sm:mt-8 w-full max-w-6xl" />}
 
         {/* Results first. Landing straight on an empty upload box asks the
             visitor to commit a photo before seeing a single thing the models
             can do; the gallery answers that question up front and doubles as
             navigation into each feature. */}
-        {tab === 'upload' && <HomeGallery className="mt-4" />}
+        {tab === 'upload' && <HomeGallery className="mt-8 sm:mt-10 w-full max-w-6xl" />}
 
         {tab === 'upload' ? (
           <div className="flex flex-col items-center gap-4 w-full animate-fade-in">
