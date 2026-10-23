@@ -14,7 +14,8 @@ export type ViralTemplateCategory =
   | 'toy'
   | 'art'
   | 'retro'
-  | 'social';
+  | 'social'
+  | 'costume';
 
 export type ViralTemplateFeature = 'generate' | 'retouch';
 
@@ -334,6 +335,174 @@ export const VIRAL_TEMPLATES: ViralTemplate[] = [
     tab: 'retouch',
     thumbnail: 'examples/viral/anime-handpainted.webp',
     tags: ['art', 'anime', 'handpainted', 'viral'],
+  },
+  {
+    id: 'pet-human',
+    category: 'social',
+    feature: 'retouch',
+    titleKey: 'viral.pet_human.title',
+    descriptionKey: 'viral.pet_human.desc',
+    thumbnailAltKey: 'viral.pet_human.thumb_alt',
+    prompt:
+      'Anthropomorphize the pet in the photo into a realistic human portrait whose hair/fur color, eye color, and expression match the pet. Show a clear side-by-side composition: original pet on one side and the matching human portrait on the other, soft natural lighting, photorealistic.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/pet-human.webp',
+    tags: ['social', 'pet', 'anthropomorphic', 'viral'],
+  },
+  {
+    id: 'comic-pop-art',
+    category: 'art',
+    feature: 'retouch',
+    titleKey: 'viral.comic_pop_art.title',
+    descriptionKey: 'viral.comic_pop_art.desc',
+    thumbnailAltKey: 'viral.comic_pop_art.thumb_alt',
+    prompt:
+      'Restyle as American comic pop art: bold black outlines, Ben-Day/halftone dots, saturated primary colors, dynamic comic-book portrait, empty speech bubble with no readable text or letters, graphic novel cover energy.',
+    aspectRatio: '1:1',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/comic-pop-art.webp',
+    tags: ['art', 'comic', 'pop-art', 'viral'],
+  },
+  {
+    id: 'tarot-card',
+    category: 'art',
+    feature: 'retouch',
+    titleKey: 'viral.tarot_card.title',
+    descriptionKey: 'viral.tarot_card.desc',
+    thumbnailAltKey: 'viral.tarot_card.thumb_alt',
+    prompt:
+      'Transform into an ornate tarot card titled The Star: the person as the central figure, gold filigree border, mystical celestial symbols, rich jewel tones, aged card stock texture, vertical tarot layout, no modern logos.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/tarot-card.webp',
+    tags: ['art', 'tarot', 'mystical', 'viral'],
+  },
+  {
+    id: 'vintage-travel-poster',
+    category: 'retro',
+    feature: 'retouch',
+    titleKey: 'viral.vintage_travel_poster.title',
+    descriptionKey: 'viral.vintage_travel_poster.desc',
+    thumbnailAltKey: 'viral.vintage_travel_poster.thumb_alt',
+    prompt:
+      'Restyle as a 1950s vintage travel poster: gouache flat colors, simplified shapes, the person as the stylish traveler in the foreground, scenic landmark backdrop, classic mid-century poster typography that remains decorative and unreadable as real brand text, slightly aged paper.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/vintage-travel-poster.webp',
+    tags: ['retro', 'poster', 'travel', 'viral'],
+  },
+  {
+    id: 'trading-card',
+    category: 'toy',
+    feature: 'retouch',
+    titleKey: 'viral.trading_card.title',
+    descriptionKey: 'viral.trading_card.desc',
+    thumbnailAltKey: 'viral.trading_card.thumb_alt',
+    prompt:
+      'Transform into a fantasy holographic trading card of the person as a character: ornate frame, shimmering holo foil effect, fictional ATK and DEF numbers, elemental energy accents, collectible card layout. Do not use any real game titles, brand names, or logos.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/trading-card.webp',
+    tags: ['toy', 'trading-card', 'fantasy', 'viral'],
+  },
+  {
+    id: 'yukata-festival',
+    category: 'costume',
+    feature: 'retouch',
+    titleKey: 'viral.yukata_festival.title',
+    descriptionKey: 'viral.yukata_festival.desc',
+    thumbnailAltKey: 'viral.yukata_festival.thumb_alt',
+    prompt:
+      'Dress the person in a colorful Japanese yukata at a summer festival at dusk: paper lanterns, festival stalls soft-focused behind, warm evening light, hair ornament, photorealistic travel portrait.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/yukata-festival.webp',
+    tags: ['costume', 'yukata', 'festival', 'viral'],
+  },
+  {
+    id: 'wuxia-costume',
+    category: 'costume',
+    feature: 'retouch',
+    titleKey: 'viral.wuxia_costume.title',
+    descriptionKey: 'viral.wuxia_costume.desc',
+    thumbnailAltKey: 'viral.wuxia_costume.thumb_alt',
+    prompt:
+      'Restyle as a wuxia film still: the person as a swordsman or swordswoman in flowing historical Chinese robes, bamboo forest mist, cool cinematic lighting, dramatic pose with a jian sword, photorealistic costume drama look. Do not use real TV show or film titles.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/wuxia-costume.webp',
+    tags: ['costume', 'wuxia', 'period', 'viral'],
+  },
+  {
+    id: 'y2k-digicam',
+    category: 'retro',
+    feature: 'retouch',
+    titleKey: 'viral.y2k_digicam.title',
+    descriptionKey: 'viral.y2k_digicam.desc',
+    thumbnailAltKey: 'viral.y2k_digicam.thumb_alt',
+    prompt:
+      'Restyle as an early-2000s compact digital camera snapshot: harsh on-camera flash, slight red-eye risk, low dynamic range, cool indoor night vibe, orange LCD date stamp in a corner (fictional date), candid Y2K party aesthetic, photorealistic.',
+    aspectRatio: '4:3',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/y2k-digicam.webp',
+    tags: ['retro', 'y2k', 'digicam', 'viral'],
+  },
+  {
+    id: 'astronaut',
+    category: 'costume',
+    feature: 'retouch',
+    titleKey: 'viral.astronaut.title',
+    descriptionKey: 'viral.astronaut.desc',
+    thumbnailAltKey: 'viral.astronaut.thumb_alt',
+    prompt:
+      'Transform into an astronaut portrait inside a spacecraft: reflective helmet visor optional or open, Earth visible through the window behind them, soft cabin lighting. Use a plain white spacesuit with no agency logos, national flags, mission patches, or brand markings.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/astronaut.webp',
+    tags: ['costume', 'astronaut', 'space', 'viral'],
+  },
+  {
+    id: 'iso-diorama',
+    category: 'toy',
+    feature: 'retouch',
+    titleKey: 'viral.iso_diorama.title',
+    descriptionKey: 'viral.iso_diorama.desc',
+    thumbnailAltKey: 'viral.iso_diorama.thumb_alt',
+    prompt:
+      'Place the person inside a tiny isometric 3D room diorama: cutaway dollhouse view, desk and cozy furniture, soft miniature lighting, cute scale model materials, clean isometric camera angle, photoreal miniature photography.',
+    aspectRatio: '1:1',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/iso-diorama.webp',
+    tags: ['toy', 'diorama', 'isometric', 'viral'],
+  },
+  {
+    id: 'yearbook-90s',
+    category: 'retro',
+    feature: 'retouch',
+    titleKey: 'viral.yearbook_90s.title',
+    descriptionKey: 'viral.yearbook_90s.desc',
+    thumbnailAltKey: 'viral.yearbook_90s.thumb_alt',
+    prompt:
+      'Restyle as a 1990s school yearbook portrait: classic mottled blue studio backdrop, soft butterfly lighting, period hair and clothing, printed yearbook crop with a simple caption reading CLASS OF 1996 under the photo, nostalgic yearbook print texture.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/yearbook-90s.webp',
+    tags: ['retro', 'yearbook', '1990s', 'viral'],
+  },
+  {
+    id: 'stained-glass',
+    category: 'art',
+    feature: 'retouch',
+    titleKey: 'viral.stained_glass.title',
+    descriptionKey: 'viral.stained_glass.desc',
+    thumbnailAltKey: 'viral.stained_glass.thumb_alt',
+    prompt:
+      'Restyle the portrait as a gothic stained-glass window: leaded black outlines, jewel-toned translucent glass panes, cathedral window frame, luminous backlight as if sun through glass, sacred art composition.',
+    aspectRatio: '3:4',
+    tab: 'retouch',
+    thumbnail: 'examples/viral/stained-glass.webp',
+    tags: ['art', 'stained-glass', 'gothic', 'viral'],
   },
 ];
 

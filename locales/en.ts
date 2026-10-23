@@ -1439,7 +1439,7 @@ export const enMessages: Record<string, string> = {
 
   'viral.section_title': 'One-tap viral styles',
   'viral.section_subtitle':
-    'Figurines, Polaroids, era travel, Taiwan scenes, toys, art, retro, and social styles — tap to try, then share “Use this style”.',
+    'Figurines, Polaroids, era travel, Taiwan scenes, toys, art, retro, social, and costume styles — tap to try, then share “Use this style”.',
   'viral.filter_label': 'Filter styles',
   'viral.filter_all': 'All',
   'viral.filter_figurine': 'Figurine',
@@ -1450,6 +1450,8 @@ export const enMessages: Record<string, string> = {
   'viral.filter_art': 'Art',
   'viral.filter_retro': 'Retro',
   'viral.filter_social': 'Social',
+  'viral.filter_costume': 'Costume',
+  'viral.show_more': 'Show {count} more',
   'viral.try_this': 'Try this',
   'viral.applying': 'Opening…',
   'viral.copy_remix': 'Copy style link',
@@ -1536,4 +1538,46 @@ export const enMessages: Record<string, string> = {
     'Hand-painted anime-film countryside look with soft watercolor backgrounds.',
   'viral.anime_handpainted.thumb_alt':
     'Preview: hand-painted anime countryside illustration portrait',
+  'viral.pet_human.title': 'Pet as human',
+  'viral.pet_human.desc':
+    'Turn a pet into a realistic human portrait matching fur, eyes, and expression — side by side.',
+  'viral.pet_human.thumb_alt': 'Preview: pet and matching human portrait side by side',
+  'viral.comic_pop_art.title': 'Comic pop art',
+  'viral.comic_pop_art.desc':
+    'American comic look with halftone dots, bold outlines, and a speech bubble.',
+  'viral.comic_pop_art.thumb_alt': 'Preview: comic pop-art portrait with halftone dots',
+  'viral.tarot_card.title': 'Tarot card',
+  'viral.tarot_card.desc':
+    'Ornate gold-filigree tarot card — The Star — with the person as the figure.',
+  'viral.tarot_card.thumb_alt': 'Preview: ornate The Star tarot card portrait',
+  'viral.vintage_travel_poster.title': 'Vintage travel poster',
+  'viral.vintage_travel_poster.desc':
+    '1950s gouache travel-poster style with you as the stylish traveler.',
+  'viral.vintage_travel_poster.thumb_alt': 'Preview: 1950s gouache travel poster portrait',
+  'viral.trading_card.title': 'Trading card',
+  'viral.trading_card.desc':
+    'Fantasy holographic trading card with fictional ATK/DEF — no real game brands.',
+  'viral.trading_card.thumb_alt': 'Preview: fantasy holographic trading card',
+  'viral.yukata_festival.title': 'Yukata festival',
+  'viral.yukata_festival.desc': 'Yukata at a summer festival at dusk with lantern glow.',
+  'viral.yukata_festival.thumb_alt': 'Preview: person in yukata at a dusk festival',
+  'viral.wuxia_costume.title': 'Wuxia film still',
+  'viral.wuxia_costume.desc': 'Wuxia swordsman look in misty bamboo forest — costume drama still.',
+  'viral.wuxia_costume.thumb_alt': 'Preview: wuxia swordsman in bamboo forest mist',
+  'viral.y2k_digicam.title': 'Y2K digicam flash',
+  'viral.y2k_digicam.desc': 'Early-2000s compact digicam flash look with an orange date stamp.',
+  'viral.y2k_digicam.thumb_alt': 'Preview: Y2K digicam flash snapshot with date stamp',
+  'viral.astronaut.title': 'Astronaut',
+  'viral.astronaut.desc':
+    'Astronaut portrait with Earth in the window — plain suit, no logos or flags.',
+  'viral.astronaut.thumb_alt': 'Preview: astronaut with Earth outside the window',
+  'viral.iso_diorama.title': 'Isometric mini room',
+  'viral.iso_diorama.desc': 'Tiny isometric 3D room diorama with you at a desk.',
+  'viral.iso_diorama.thumb_alt': 'Preview: isometric miniature room diorama',
+  'viral.yearbook_90s.title': '90s yearbook',
+  'viral.yearbook_90s.desc': 'Blue-backdrop yearbook portrait with a CLASS OF 1996 caption.',
+  'viral.yearbook_90s.thumb_alt': 'Preview: 1990s yearbook portrait with blue backdrop',
+  'viral.stained_glass.title': 'Stained glass',
+  'viral.stained_glass.desc': 'Portrait as a gothic stained-glass cathedral window.',
+  'viral.stained_glass.thumb_alt': 'Preview: gothic stained-glass window portrait',
 };

@@ -24,7 +24,11 @@ const CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'art',
   'retro',
   'social',
+  'costume',
 ];
+
+/** When viewing “all” on desktop grid, collapse to avoid a tall wall. */
+const ALL_PREVIEW_COUNT = 8;
 
 interface ViralTemplatesSectionProps {
   className?: string;
@@ -44,11 +48,16 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
   const navigate = useNavigate();
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(initialCategory);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   const entries =
     category === 'all'
       ? VIRAL_TEMPLATES
       : VIRAL_TEMPLATES.filter((entry) => entry.category === category);
+
+  const collapseAll =
+    !compact && category === 'all' && !showAll && entries.length > ALL_PREVIEW_COUNT;
+  const visibleEntries = collapseAll ? entries.slice(0, ALL_PREVIEW_COUNT) : entries;
 
   const onApply = async (id: string) => {
     const template = VIRAL_TEMPLATES.find((entry) => entry.id === id);
@@ -59,6 +68,11 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
     } finally {
       setBusyId(null);
     }
+  };
+
+  const onCategory = (value: (typeof CATEGORIES)[number]) => {
+    setCategory(value);
+    setShowAll(false);
   };
 
   return (
@@ -84,7 +98,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
             key={value}
             type="button"
             aria-pressed={category === value}
-            onClick={() => setCategory(value)}
+            onClick={() => onCategory(value)}
             className={`shrink-0 ${category === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}`}
           >
             {t(`viral.filter_${value}`)}
@@ -99,7 +113,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
             : 'flex gap-3 list-none p-0 m-0 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 sm:gap-4'
         }
       >
-        {entries.map((entry) => (
+        {visibleEntries.map((entry) => (
           <li
             key={entry.id}
             className={
@@ -146,6 +160,19 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
           </li>
         ))}
       </ul>
+
+      {collapseAll && (
+        <div className="mt-4 flex justify-center">
+          <button
+            type="button"
+            data-testid="viral-show-more"
+            onClick={() => setShowAll(true)}
+            className={`${UI_BTN_SECONDARY} px-5 py-2.5 text-sm`}
+          >
+            {t('viral.show_more', { count: entries.length - ALL_PREVIEW_COUNT })}
+          </button>
+        </div>
+      )}
     </section>
   );
 };
