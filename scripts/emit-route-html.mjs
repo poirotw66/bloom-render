@@ -72,6 +72,16 @@ export const ROUTE_SEO = {
     description:
       'Create beautiful photos for couples, families, and groups. 情侶／全家福：為雙人與團體生成溫馨合照。',
   },
+  '/style-collage': {
+    title: 'Multi-style Collage — BloomRender',
+    description:
+      'Pick 4–6 one-tap styles and compose them into one collage. 一鍵多風格拼圖：勾選玩法後組成拼貼圖。',
+  },
+  '/multi-person': {
+    title: 'Multi-person Synthesis — BloomRender',
+    description:
+      'Upload 2–4 portraits and generate a shared-frame look. 多人合成：上傳 2–4 張人像，合成同框合照。',
+  },
   '/try-on': {
     title: 'AI Try-On — BloomRender',
     description:

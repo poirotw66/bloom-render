@@ -29,6 +29,8 @@ const PhotographyServicePage = lazy(
   () => import('./features/photography-service/PhotographyServicePage'),
 );
 const CoupleGroupPage = lazy(() => import('./features/couple-group/CoupleGroupPage'));
+const StyleCollagePage = lazy(() => import('./features/style-collage/StyleCollagePage'));
+const MultiPersonPage = lazy(() => import('./features/multi-person/MultiPersonPage'));
 const TryOnPage = lazy(() => import('./features/tryon/TryOnPage'));
 const EnhancePage = lazy(() => import('./features/enhance/EnhancePage'));
 const RestorePage = lazy(() => import('./features/restore/RestorePage'));
@@ -134,6 +136,8 @@ const App: React.FC = () => {
               path={ROUTES.COUPLE_GROUP}
               element={<CoupleGroupPage onImageSelected={handleImageUpload} />}
             />
+            <Route path={ROUTES.STYLE_COLLAGE} element={<StyleCollagePage />} />
+            <Route path={ROUTES.MULTI_PERSON} element={<MultiPersonPage />} />
             <Route
               path={ROUTES.TRY_ON}
               element={<TryOnPage onImageSelected={handleImageUpload} />}

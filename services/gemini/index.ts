@@ -29,6 +29,8 @@ export { generateVirtualTryOn, type GenerateTryOnOptions } from './tryOn';
 
 export { generateRestoredPhoto, type RestoreOptions } from './restore';
 
+export { generateViralStyleImage, buildViralStylePrompt } from './viralStyle';
+
 // Re-export domain types from root for consumers that import from geminiService
 export type {
   RetouchLevel,
