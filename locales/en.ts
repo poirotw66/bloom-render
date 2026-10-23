@@ -1439,13 +1439,17 @@ export const enMessages: Record<string, string> = {
 
   'viral.section_title': 'One-tap viral styles',
   'viral.section_subtitle':
-    'Figurine boxes, Polaroids, era time-travel, and Taiwan scenes — tap to try, then share “Use this style”.',
+    'Figurines, Polaroids, era travel, Taiwan scenes, toys, art, retro, and social styles — tap to try, then share “Use this style”.',
   'viral.filter_label': 'Filter styles',
   'viral.filter_all': 'All',
   'viral.filter_figurine': 'Figurine',
   'viral.filter_polaroid': 'Polaroid',
   'viral.filter_era': 'Era travel',
   'viral.filter_taiwan': 'Taiwan',
+  'viral.filter_toy': 'Toys',
+  'viral.filter_art': 'Art',
+  'viral.filter_retro': 'Retro',
+  'viral.filter_social': 'Social',
   'viral.try_this': 'Try this',
   'viral.applying': 'Opening…',
   'viral.copy_remix': 'Copy style link',
@@ -1488,4 +1492,48 @@ export const enMessages: Record<string, string> = {
   'viral.taiwan_101.title': 'Taipei 101 skyline',
   'viral.taiwan_101.desc': 'Blue-hour viewpoint with Taipei 101 glowing behind clean city bokeh.',
   'viral.taiwan_101.thumb_alt': 'Preview: Taipei 101 glowing in the blue-hour skyline',
+  'viral.chibi_3d.title': '3D chibi figure',
+  'viral.chibi_3d.desc': 'Cute 3D chibi vinyl figure on a round base — pastel studio product shot.',
+  'viral.chibi_3d.thumb_alt': 'Preview: cute 3D chibi vinyl figure on a round base',
+  'viral.line_stickers.title': 'Sticker pack',
+  'viral.line_stickers.desc':
+    '3×3 cartoon sticker sheet with nine expressions and a thick white outline.',
+  'viral.line_stickers.thumb_alt': 'Preview: 3×3 cartoon sticker sheet of nine expressions',
+  'viral.acrylic_standee.title': 'Acrylic standee',
+  'viral.acrylic_standee.desc': 'Anime-styled die-cut acrylic standee of you, standing on a desk.',
+  'viral.acrylic_standee.thumb_alt': 'Preview: anime-styled acrylic character standee on a desk',
+  'viral.pixel_art.title': 'Pixel game character',
+  'viral.pixel_art.desc':
+    '16-bit pixel sprite with walk frames in a retro side-scrolling game scene.',
+  'viral.pixel_art.thumb_alt': 'Preview: 16-bit pixel character sprite in a retro game scene',
+  'viral.claymation.title': 'Claymation portrait',
+  'viral.claymation.desc':
+    'Plasticine stop-motion look with fingerprint texture and a miniature set.',
+  'viral.claymation.thumb_alt': 'Preview: claymation portrait with fingerprint clay texture',
+  'viral.ukiyo_e.title': 'Ukiyo-e print',
+  'viral.ukiyo_e.desc':
+    'Woodblock print portrait with the Great Wave, Mount Fuji, and washi texture.',
+  'viral.ukiyo_e.thumb_alt': 'Preview: ukiyo-e woodblock portrait with wave and Mount Fuji',
+  'viral.hk_90s_film.title': '90s HK film still',
+  'viral.hk_90s_film.desc':
+    'Rainy neon Hong Kong street — grainy, saturated green/red 90s film look.',
+  'viral.hk_90s_film.thumb_alt': 'Preview: rainy neon Hong Kong street as a 90s film still',
+  'viral.magazine_cover.title': 'Fashion magazine cover',
+  'viral.magazine_cover.desc':
+    'Glossy cover with a fictional masthead and cover lines — no real brand names.',
+  'viral.magazine_cover.thumb_alt': 'Preview: glossy fashion magazine cover layout',
+  'viral.purikura.title': 'Purikura booth',
+  'viral.purikura.desc': 'Photo-booth strip with sparkles, hearts, and a pink kawaii frame.',
+  'viral.purikura.thumb_alt': 'Preview: pink purikura photo-booth strip with sparkles',
+  'viral.brick_minifig.title': 'Brick minifigure',
+  'viral.brick_minifig.desc': 'Plastic building-brick minifigure of you on a studded baseplate.',
+  'viral.brick_minifig.thumb_alt': 'Preview: plastic building-brick minifigure on a baseplate',
+  'viral.pro_headshot.title': 'Pro headshot',
+  'viral.pro_headshot.desc': 'Corporate headshot in a navy suit with a blurred office backdrop.',
+  'viral.pro_headshot.thumb_alt': 'Preview: corporate headshot in a navy suit',
+  'viral.anime_handpainted.title': 'Hand-painted anime',
+  'viral.anime_handpainted.desc':
+    'Hand-painted anime-film countryside look with soft watercolor backgrounds.',
+  'viral.anime_handpainted.thumb_alt':
+    'Preview: hand-painted anime countryside illustration portrait',
 };

@@ -20,6 +20,10 @@ const CATEGORIES: Array<ViralTemplateCategory | 'all'> = [
   'polaroid',
   'era',
   'taiwan',
+  'toy',
+  'art',
+  'retro',
+  'social',
 ];
 
 interface ViralTemplatesSectionProps {
@@ -70,14 +74,18 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
         <p className="text-base theme-ink-muted max-w-2xl">{t('viral.section_subtitle')}</p>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label={t('viral.filter_label')}>
+      <div
+        className="flex flex-nowrap gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1 [scrollbar-width:thin]"
+        role="group"
+        aria-label={t('viral.filter_label')}
+      >
         {CATEGORIES.map((value) => (
           <button
             key={value}
             type="button"
             aria-pressed={category === value}
             onClick={() => setCategory(value)}
-            className={category === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
+            className={`shrink-0 ${category === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}`}
           >
             {t(`viral.filter_${value}`)}
           </button>
@@ -85,14 +93,20 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
       </div>
 
       <ul
-        className={`grid gap-4 list-none p-0 m-0 ${
-          compact ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
-        }`}
+        className={
+          compact
+            ? 'grid gap-4 list-none p-0 m-0 grid-cols-1 sm:grid-cols-2'
+            : 'flex gap-3 list-none p-0 m-0 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 sm:gap-4'
+        }
       >
         {entries.map((entry) => (
           <li
             key={entry.id}
-            className="theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col"
+            className={
+              compact
+                ? 'theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col'
+                : 'theme-raised border theme-border rounded-2xl overflow-hidden flex flex-col min-w-[min(78vw,280px)] snap-start sm:min-w-0'
+            }
           >
             <img
               src={publicAssetUrl(entry.thumbnail)}
