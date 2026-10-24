@@ -16,6 +16,7 @@ export const generateAdjustedImage = async (
   originalImage: File,
   adjustmentPrompt: string,
   settings?: ServiceSettings,
+  options?: { viralTemplateId?: string },
 ): Promise<string> => {
   logger.debug(`Starting global adjustment generation: ${adjustmentPrompt}`);
 
@@ -38,5 +39,6 @@ Output: Return ONLY the final adjusted image. Do not return text.`;
     settings,
     includeImageConfig: false,
     context: 'adjustment',
+    viralTemplateId: options?.viralTemplateId,
   });
 };

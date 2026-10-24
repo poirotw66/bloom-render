@@ -55,13 +55,16 @@ export const DEMO_ASSETS_BY_CONTEXT: Record<string, DemoAssetPair> = {
     before: ex('restore-before'),
     after: [ex('restore-after')],
   },
+  // Sample input only. Demo results for viral-style / multi-person use each
+  // template's own examples/viral/<id>.webp via viralTemplateId — never rotate
+  // generic generate-N / airport / office samples here.
   'viral-style': {
     before: ex('editor-before'),
-    after: [ex('editor-after'), ex('portrait-1'), ex('portrait-2')],
+    after: [],
   },
   'multi-person': {
     before: ex('tryon-before'),
-    after: [ex('travel-2'), ex('portrait-1')],
+    after: [],
   },
 };
 

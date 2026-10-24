@@ -20,6 +20,8 @@ export type GenerateGalleryLocationState = {
     prompt: string;
     aspectRatio?: PromptGalleryEntry['settings']['aspectRatio'];
     quantity?: number;
+    /** When set (viral templates), demo results use this template's thumbnail. */
+    viralTemplateId?: string;
   };
 };
 

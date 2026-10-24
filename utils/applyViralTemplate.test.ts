@@ -37,6 +37,7 @@ describe('applyViralTemplate helpers', () => {
     expect(remixToEditorPreset({ v: 1, id: template.id })).toEqual({
       prompt: template.prompt,
       tab: 'retouch',
+      viralTemplateId: template.id,
     });
     expect(remixToGeneratePreset({ v: 1, id: template.id })).toBeNull();
   });

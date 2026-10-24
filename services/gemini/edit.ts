@@ -79,6 +79,7 @@ export const generateEditedImage = async (
   userPrompt: string,
   target: GenerateEditedImageTarget | EditHotspot,
   settings?: ServiceSettings,
+  options?: { viralTemplateId?: string },
 ): Promise<string> => {
   // Backward-compatible: third arg used to be only `{ x, y }`.
   const normalized: GenerateEditedImageTarget =
@@ -97,6 +98,7 @@ export const generateEditedImage = async (
         settings,
         includeImageConfig: false,
         context: 'edit',
+        viralTemplateId: options?.viralTemplateId,
       });
     }
 
@@ -108,6 +110,7 @@ export const generateEditedImage = async (
       settings,
       includeImageConfig: false,
       context: 'edit',
+      viralTemplateId: options?.viralTemplateId,
     });
   }
 
@@ -123,5 +126,6 @@ export const generateEditedImage = async (
     settings,
     includeImageConfig: false,
     context: 'edit',
+    viralTemplateId: options?.viralTemplateId,
   });
 };

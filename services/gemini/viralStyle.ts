@@ -19,11 +19,16 @@ export function buildViralStylePrompt(stylePrompt: string): string {
   ].join('\n');
 }
 
+export type GenerateViralStyleOptions = {
+  viralTemplateId?: string;
+};
+
 export async function generateViralStyleImage(
   originalImage: File,
   stylePrompt: string,
   settings?: ServiceSettings,
   aspectRatio?: string,
+  options?: GenerateViralStyleOptions,
 ): Promise<string> {
   logger.debug('Starting viral style generation');
   return runImageGeneration({
@@ -33,5 +38,6 @@ export async function generateViralStyleImage(
     aspectRatio,
     includeImageConfig: true,
     context: 'viral-style',
+    viralTemplateId: options?.viralTemplateId,
   });
 }

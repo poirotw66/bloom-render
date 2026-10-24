@@ -4,11 +4,13 @@
  *
  * Offline demo ImageProvider: no API key, no network calls to AI providers.
  * Returns bundled public/examples images after a short simulated delay.
+ * Viral-template results use each template's own thumbnail (see demoViralResult).
  */
 
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { createI18nError } from '../gemini/shared';
 import { DEMO_MODEL_ID, demoAssetsForContext } from './demoCatalog';
+import { applyDemoViralVariation, resolveDemoResultAssetPath } from './demoViralResult';
 import type { GenerateImageRequest, ImageProvider } from './types';
 
 const MIN_DELAY_MS = 700;
@@ -104,12 +106,32 @@ export const demoImageProvider: ImageProvider = {
     }
 
     const context = request.context || 'generation';
-    const assets = demoAssetsForContext(context);
-    const index = nextVariantIndex(context, assets.after.length);
-    const afterPath = assets.after[index] ?? assets.after[0];
+    const viralPath = resolveDemoResultAssetPath({
+      context,
+      viralTemplateId: request.viralTemplateId,
+    });
 
     await sleep(simulatedDelayMs(), request.signal);
-    const dataUrl = await fetchPublicImageAsDataUrl(afterPath, request.signal);
+
+    if (viralPath) {
+      const variationKey = `viral:${request.viralTemplateId}`;
+      const variationIndex = nextVariantIndex(variationKey, 4);
+      const base = await fetchPublicImageAsDataUrl(viralPath, request.signal);
+      const dataUrl = await applyDemoViralVariation(base, variationIndex);
+      return { dataUrl, costUsd: 0 };
+    }
+
+    if (context === 'viral-style' || context === 'multi-person') {
+      throw createI18nError('error.demo_asset_missing');
+    }
+
+    const assets = demoAssetsForContext(context);
+    if (!assets.after.length) {
+      throw createI18nError('error.demo_asset_missing');
+    }
+    const index = nextVariantIndex(context, assets.after.length);
+    const afterPath = assets.after[index] ?? assets.after[0];
+    const dataUrl = await fetchPublicImageAsDataUrl(afterPath!, request.signal);
     return { dataUrl, costUsd: 0 };
   },
 };

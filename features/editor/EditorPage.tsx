@@ -45,6 +45,8 @@ export type EditorLocationState = {
   galleryPreset?: {
     prompt: string;
     tab?: Tab;
+    /** Viral template id — demo results use that template's thumbnail. */
+    viralTemplateId?: string;
   };
 };
 
@@ -74,6 +76,7 @@ const EditorPage: React.FC = () => {
   const [editHotspot, setEditHotspot] = useState<{ x: number; y: number } | null>(null);
   const [displayHotspot, setDisplayHotspot] = useState<{ x: number; y: number } | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(() => initialGalleryPreset?.tab ?? 'retouch');
+  const viralTemplateId = initialGalleryPreset?.viralTemplateId;
   const [retouchMode, setRetouchMode] = useState<RetouchSelectMode>('point');
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
 
@@ -205,6 +208,7 @@ const EditorPage: React.FC = () => {
         prompt,
         maskFile ? { mask: maskFile } : { hotspot: editHotspot },
         settings.toServiceSettings(),
+        { viralTemplateId },
       );
       void addToGenerationHistory(
         'editor',
@@ -239,6 +243,7 @@ const EditorPage: React.FC = () => {
     retouchMode,
     settings,
     t,
+    viralTemplateId,
   ]);
 
   const handleApplyFilter = useCallback(
@@ -256,6 +261,7 @@ const EditorPage: React.FC = () => {
           currentImage,
           filterPrompt,
           settings.toServiceSettings(),
+          { viralTemplateId },
         );
         void addToGenerationHistory(
           'editor',
@@ -274,7 +280,7 @@ const EditorPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [addImageToHistory, addToGenerationHistory, currentImage, settings, t],
+    [addImageToHistory, addToGenerationHistory, currentImage, settings, t, viralTemplateId],
   );
 
   const handleApplyAdjustment = useCallback(
@@ -292,6 +298,7 @@ const EditorPage: React.FC = () => {
           currentImage,
           adjustmentPrompt,
           settings.toServiceSettings(),
+          { viralTemplateId },
         );
         void addToGenerationHistory(
           'editor',
@@ -310,7 +317,7 @@ const EditorPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [addImageToHistory, addToGenerationHistory, currentImage, settings, t],
+    [addImageToHistory, addToGenerationHistory, currentImage, settings, t, viralTemplateId],
   );
 
   const handleApplyCrop = useCallback(() => {

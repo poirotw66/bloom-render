@@ -33,6 +33,11 @@ export interface GenerateImageRequest {
   includeImageConfig?: boolean;
   /** Feature context (e.g. id-photo, travel) — used by the demo provider. */
   context?: string;
+  /**
+   * When set, demo mode returns this viral template's own thumbnail
+   * (`examples/viral/<id>.webp`) instead of rotating generic sample images.
+   */
+  viralTemplateId?: string;
 }
 
 /** Result of one provider call; `costUsd` is set when the API reports a real charge. */

@@ -235,6 +235,7 @@ export function useStyleCollage() {
             variationPrompt(template.prompt, versionIndex),
             serviceSettings,
             template.aspectRatio,
+            { viralTemplateId: template.id },
           ),
         );
 
@@ -314,6 +315,7 @@ export function useStyleCollage() {
             provider: settings.imageProvider,
           },
           slot.template.aspectRatio,
+          { viralTemplateId: slot.template.id },
         );
         const updated = slots.map((s, i) =>
           i === index ? { ...s, resultUrl: url, error: null } : s,

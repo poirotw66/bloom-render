@@ -25,9 +25,10 @@ const DemoModeBanner: React.FC<DemoModeBannerProps> = ({ className = '', compact
   if (compact) {
     return (
       <span
-        className={`inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-sm font-semibold text-white ${className}`}
+        className={`inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-xs font-semibold text-white ${className}`}
+        data-testid="demo-result-label"
       >
-        {t('demo.badge')}
+        {t('demo.result_label')}
       </span>
     );
   }

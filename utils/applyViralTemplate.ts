@@ -38,12 +38,14 @@ export function resolveRemixToTemplate(payload: RemixPayload): ViralTemplate | n
 export function remixToEditorPreset(payload: RemixPayload): {
   prompt: string;
   tab: 'retouch' | 'adjust' | 'filters';
+  viralTemplateId?: string;
 } | null {
   const template = resolveRemixToTemplate(payload);
   if (template) {
     return {
       prompt: template.prompt,
       tab: template.tab ?? 'retouch',
+      viralTemplateId: template.id,
     };
   }
   if (
@@ -69,6 +71,7 @@ export function remixToGeneratePreset(
       prompt: template.prompt,
       aspectRatio: template.aspectRatio,
       quantity: template.quantity,
+      viralTemplateId: template.id,
     };
   }
   if ('f' in payload && payload.f === 'generate') {
@@ -100,6 +103,7 @@ export async function applyViralTemplate(
         prompt: template.prompt,
         aspectRatio: template.aspectRatio,
         quantity: template.quantity,
+        viralTemplateId: template.id,
       },
     };
     navigate(ROUTES.GENERATE, { state });
@@ -115,6 +119,7 @@ export async function applyViralTemplate(
         galleryPreset: {
           prompt: template.prompt,
           tab: template.tab ?? 'retouch',
+          viralTemplateId: template.id,
         },
       };
       navigate(ROUTES.EDIT, { state });

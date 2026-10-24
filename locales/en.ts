@@ -1121,6 +1121,7 @@ export const enMessages: Record<string, string> = {
   'examples.hero_subtitle':
     'Drag the slider — or watch it wipe — on a real before/after from this app.',
   'demo.badge': 'Demo',
+  'demo.result_label': 'Sample',
   'demo.banner_title': 'Showing a pre-made sample result',
   'demo.banner_hint': 'No API key or AI network call is used. Outputs come from bundled examples.',
   'demo.cta_settings': 'Add your own Gemini or OpenRouter key to generate with your photos',
