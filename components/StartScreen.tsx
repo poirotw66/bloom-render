@@ -126,6 +126,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const s = themeStyles[theme];
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const galleryPreset = (location.state as GenerateGalleryLocationState | null)?.galleryPreset;
+  const viralTemplateId = galleryPreset?.viralTemplateId;
   const [generationPrompt, setGenerationPrompt] = useState(() => galleryPreset?.prompt ?? '');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:4' | '4:3' | '16:9' | '9:16'>(
     () => galleryPreset?.aspectRatio ?? '1:1',
@@ -242,6 +243,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
         numberOfImages,
         settings.toServiceSettings(),
         referenceFile,
+        { viralTemplateId },
       );
       for (const [index, url] of urls.entries()) {
         void addToHistory(

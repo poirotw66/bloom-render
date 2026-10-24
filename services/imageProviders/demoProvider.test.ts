@@ -84,6 +84,56 @@ describe('demoImageProvider', () => {
     expect(String(firstCall?.[0] ?? '')).toContain('examples/generate-');
   });
 
+  it('uses the viral template thumbnail for viral-style / multi-person demo results', async () => {
+    const fetchMock = vi.fn(async () => {
+      return new Response(TINY_PNG_BYTES, {
+        status: 200,
+        headers: { 'Content-Type': 'image/webp' },
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const pending = demoImageProvider.generateImage({
+      prompt: 'figurine',
+      model: DEMO_MODEL_ID,
+      apiKey: 'demo',
+      context: 'viral-style',
+      viralTemplateId: 'figurine-box',
+    });
+    await vi.runAllTimersAsync();
+    await pending;
+
+    const url = String((fetchMock.mock.calls[0] as unknown as [string])[0]);
+    expect(url).toContain('examples/viral/figurine-box.webp');
+    expect(url).not.toMatch(/generate-|travel-|portrait-|editor-after/);
+
+    fetchMock.mockClear();
+    const multi = demoImageProvider.generateImage({
+      prompt: 'grads',
+      model: DEMO_MODEL_ID,
+      apiKey: 'demo',
+      context: 'multi-person',
+      viralTemplateId: 'graduation-group',
+    });
+    await vi.runAllTimersAsync();
+    await multi;
+    expect(String((fetchMock.mock.calls[0] as unknown as [string])[0])).toContain(
+      'examples/viral/graduation-group.webp',
+    );
+  });
+
+  it('rejects viral-style without a template id (no generic rotation)', async () => {
+    const pending = demoImageProvider.generateImage({
+      prompt: 'x',
+      model: DEMO_MODEL_ID,
+      apiKey: 'demo',
+      context: 'viral-style',
+    });
+    const expectation = expect(pending).rejects.toThrow('error.demo_asset_missing');
+    await vi.runAllTimersAsync();
+    await expectation;
+  });
+
   it('cycles after variants for the same context', async () => {
     const fetchMock = vi.fn(async () => {
       return new Response(TINY_PNG_BYTES, {

@@ -20,6 +20,8 @@ export interface RunImageGenerationOptions {
   /** Default true. Set false for editor edit/filter/adjust (legacy Gemini config). */
   includeImageConfig?: boolean;
   context?: string;
+  /** Demo mode: use this viral template's thumbnail as the sample result. */
+  viralTemplateId?: string;
 }
 
 async function filesToImageParts(files: File[]): Promise<ImagePart[]> {
@@ -53,6 +55,7 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
     imageSize,
     includeImageConfig = true,
     context = 'generation',
+    viralTemplateId,
   } = options;
 
   const providerId = resolveProvider(settings);
@@ -67,6 +70,7 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
     aspectRatio,
     imageSize,
     includeImageConfig,
+    viralTemplateId,
   });
 
   const imageParts = await filesToImageParts(images);
@@ -85,6 +89,7 @@ export async function runImageGeneration(options: RunImageGenerationOptions): Pr
     signal: settings?.abortSignal,
     includeImageConfig,
     context,
+    viralTemplateId,
   });
 
   // Prefer real OpenRouter usage.cost; otherwise fall back to the published table.

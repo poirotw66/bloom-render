@@ -240,11 +240,22 @@ const MultiPersonPage: React.FC = () => {
               versionKey="multi_person.version_n"
               testId="multi-person-versions"
             />
-            <img
-              src={mp.resultUrl}
-              alt={t('multi_person.result_alt')}
-              className="w-full max-w-xl rounded-xl border theme-border"
-            />
+            <div className="relative w-full max-w-xl">
+              <img
+                src={mp.resultUrl}
+                alt={t('multi_person.result_alt')}
+                className="w-full rounded-xl border theme-border"
+                data-testid="multi-person-result-img"
+              />
+              {isDemoMode && (
+                <span
+                  className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-xs font-semibold text-white"
+                  data-testid="multi-person-result-demo-label"
+                >
+                  {t('demo.result_label')}
+                </span>
+              )}
+            </div>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <CostEstimateBadge quantity={1} />
               <button

@@ -27,6 +27,11 @@ export {
   resetDemoVariantCounters,
 } from './demoProvider';
 export {
+  applyDemoViralVariation,
+  demoViralThumbnailPath,
+  resolveDemoResultAssetPath,
+} from './demoViralResult';
+export {
   DEFAULT_OPENROUTER_MODEL,
   OPENROUTER_IMAGE_MODELS,
   OPENROUTER_MODEL_LABEL_KEYS,

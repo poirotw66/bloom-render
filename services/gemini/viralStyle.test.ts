@@ -25,12 +25,15 @@ describe('viralStyle', () => {
 
   it('calls runImageGeneration with the source image', async () => {
     const file = new File([new Uint8Array([1, 2, 3])], 'face.png', { type: 'image/png' });
-    await generateViralStyleImage(file, 'Pixel art portrait.', { provider: 'demo' }, '1:1');
+    await generateViralStyleImage(file, 'Pixel art portrait.', { provider: 'demo' }, '1:1', {
+      viralTemplateId: 'pixel-art',
+    });
     expect(runImageGeneration).toHaveBeenCalledWith(
       expect.objectContaining({
         images: [file],
         aspectRatio: '1:1',
         context: 'viral-style',
+        viralTemplateId: 'pixel-art',
       }),
     );
   });

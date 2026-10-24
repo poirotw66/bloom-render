@@ -48,6 +48,8 @@ test.describe('Wave Y — style collage + multi-person', () => {
     await page.getByTestId('style-collage-generate').click();
     await expect(page.getByTestId('style-collage-result')).toBeVisible({ timeout: 60_000 });
     await expect(page.getByTestId('style-collage-slots')).toBeVisible();
+    await expect(page.getByTestId('style-collage-demo-label-figurine-box')).toBeVisible();
+    await expect(page.getByTestId('style-collage-result-demo-label')).toHaveText('示範圖');
   });
 
   test('multi-person page loads uploads and templates in demo mode', async ({ page }) => {
@@ -60,5 +62,6 @@ test.describe('Wave Y — style collage + multi-person', () => {
     await expect(page.getByTestId('multi-person-generate')).toBeEnabled({ timeout: 15_000 });
     await page.getByTestId('multi-person-generate').click();
     await expect(page.getByTestId('multi-person-result')).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByTestId('multi-person-result-demo-label')).toHaveText('示範圖');
   });
 });

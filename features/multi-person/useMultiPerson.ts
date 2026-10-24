@@ -133,6 +133,7 @@ export function useMultiPerson() {
           aspectRatio: selectedTemplate.aspectRatio,
           includeImageConfig: true,
           context: 'multi-person',
+          viralTemplateId: selectedTemplate.id,
         });
         setResultUrl(url);
         setVersions((prev) => {

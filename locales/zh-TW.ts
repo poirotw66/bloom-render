@@ -1053,6 +1053,7 @@ export const zhTWMessages: Record<string, string> = {
   'examples.hero_title': '先看看能做出什麼',
   'examples.hero_subtitle': '拖曳滑桿（或看它自動播放）比較本站實際的前後結果。',
   'demo.badge': 'Demo',
+  'demo.result_label': '示範圖',
   'demo.banner_title': '目前顯示預製範例結果',
   'demo.banner_hint': '不會使用 API 金鑰，也不會連線到 AI 供應商；結果來自內建範例圖。',
   'demo.cta_settings': '在設定中加入 Gemini 或 OpenRouter 金鑰，即可用自己的照片生成',

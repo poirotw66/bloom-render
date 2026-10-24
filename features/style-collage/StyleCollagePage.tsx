@@ -274,11 +274,22 @@ const StyleCollagePage: React.FC = () => {
                   className="theme-raised border theme-border rounded-xl overflow-hidden flex flex-col"
                 >
                   {slot.resultUrl ? (
-                    <img
-                      src={slot.resultUrl}
-                      alt={t(slot.template.titleKey)}
-                      className="w-full aspect-square object-cover"
-                    />
+                    <div className="relative w-full aspect-square">
+                      <img
+                        src={slot.resultUrl}
+                        alt={t(slot.template.titleKey)}
+                        className="w-full h-full object-cover"
+                        data-testid={`style-collage-slot-img-${slot.templateId}`}
+                      />
+                      {isDemoMode && (
+                        <span
+                          className="absolute top-1.5 left-1.5 z-10 inline-flex items-center rounded-md bg-sky-500/90 px-1.5 py-0.5 text-[10px] font-semibold text-white"
+                          data-testid={`style-collage-demo-label-${slot.templateId}`}
+                        >
+                          {t('demo.result_label')}
+                        </span>
+                      )}
+                    </div>
                   ) : (
                     <div className="w-full aspect-square bg-black/30 flex items-center justify-center text-xs theme-ink-muted px-2 text-center">
                       {slot.error || t('style_collage.pending')}
@@ -317,11 +328,21 @@ const StyleCollagePage: React.FC = () => {
               activeIndex={collage.activeVersion}
               onSelect={collage.selectVersion}
             />
-            <img
-              src={collage.collageUrl}
-              alt={t('style_collage.result_alt')}
-              className="w-full max-w-3xl rounded-xl border theme-border"
-            />
+            <div className="relative w-full max-w-3xl">
+              <img
+                src={collage.collageUrl}
+                alt={t('style_collage.result_alt')}
+                className="w-full rounded-xl border theme-border"
+              />
+              {isDemoMode && (
+                <span
+                  className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-sky-500/90 px-2 py-0.5 text-xs font-semibold text-white"
+                  data-testid="style-collage-result-demo-label"
+                >
+                  {t('demo.result_label')}
+                </span>
+              )}
+            </div>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <CostEstimateBadge quantity={collage.selectedIds.length || collage.min} />
               <button

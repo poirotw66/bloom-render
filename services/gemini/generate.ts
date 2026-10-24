@@ -31,6 +31,7 @@ export const generateImageFromText = async (
   numberOfImages: number = 1,
   settings?: ServiceSettings,
   referenceImage?: File | null,
+  options?: { viralTemplateId?: string },
 ): Promise<string[]> => {
   const hasReference = !!referenceImage;
   logger.debug(
@@ -52,6 +53,7 @@ export const generateImageFromText = async (
       imageSize,
       includeImageConfig: true,
       context: 'generation',
+      viralTemplateId: options?.viralTemplateId,
     }),
   );
 

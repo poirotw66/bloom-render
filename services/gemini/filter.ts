@@ -16,6 +16,7 @@ export const generateFilteredImage = async (
   originalImage: File,
   filterPrompt: string,
   settings?: ServiceSettings,
+  options?: { viralTemplateId?: string },
 ): Promise<string> => {
   logger.debug(`Starting filter generation: ${filterPrompt}`);
 
@@ -34,5 +35,6 @@ Output: Return ONLY the final filtered image. Do not return text.`;
     settings,
     includeImageConfig: false,
     context: 'filter',
+    viralTemplateId: options?.viralTemplateId,
   });
 };
