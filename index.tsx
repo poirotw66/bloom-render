@@ -11,7 +11,11 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import I18nErrorBoundary from './components/I18nErrorBoundary';
-import { LanguageProvider } from './contexts/LanguageContext';
+import {
+  getInitialLanguage,
+  LanguageProvider,
+  loadLocaleMessages,
+} from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useBackgroundMotionPause } from './hooks/useBackgroundMotionPause';
@@ -20,6 +24,9 @@ import { migratePixshopToBloomKeys } from './utils/storageMigration';
 
 // Rename legacy pixshop_* keys before any provider reads storage.
 migratePixshopToBloomKeys();
+
+// Start fetching the active locale before React paints (cache filled for provider).
+void loadLocaleMessages(getInitialLanguage());
 
 function AppWithMotionPause() {
   useBackgroundMotionPause();

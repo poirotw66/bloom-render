@@ -10,15 +10,15 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { ROUTES } from '../../constants/routes';
+import { getViralTemplateCardById } from '../../constants/viralTemplateCards';
 import { parseRemixHash } from '../../utils/remixLink';
 import { setPendingRemix } from '../../utils/pendingRemix';
 import {
   applyViralTemplate,
   remixToGeneratePreset,
-  resolveRemixToTemplate,
+  resolveRemixToCard,
   remixToEditorPreset,
 } from '../../utils/applyViralTemplate';
-import { getViralTemplateById } from '../../constants/viralTemplates';
 import type { GenerateGalleryLocationState } from '../../utils/applyPromptGalleryPreset';
 import type { EditorLocationState } from '../editor/EditorPage';
 import Spinner from '../../components/Spinner';
@@ -40,9 +40,9 @@ const RemixPage: React.FC = () => {
       }
       setPendingRemix(payload);
 
-      const template = resolveRemixToTemplate(payload);
-      if (template) {
-        await applyViralTemplate(template, navigate, { demoMode: isDemoMode });
+      const card = resolveRemixToCard(payload);
+      if (card) {
+        await applyViralTemplate(card, navigate, { demoMode: isDemoMode });
         return;
       }
 
@@ -54,27 +54,25 @@ const RemixPage: React.FC = () => {
         return;
       }
 
-      const generatePreset = remixToGeneratePreset(payload);
+      const generatePreset = await remixToGeneratePreset(payload);
       if (generatePreset) {
         const state: GenerateGalleryLocationState = { galleryPreset: generatePreset };
         navigate(ROUTES.GENERATE, { state, replace: true });
         return;
       }
 
-      const editorPreset = remixToEditorPreset(payload);
+      const editorPreset = await remixToEditorPreset(payload);
       if (editorPreset) {
         if (cancelled) return;
         const state: EditorLocationState = {
           awaitUpload: !isDemoMode,
           galleryPreset: editorPreset,
         };
-        // Demo without a concrete viral template id: still land on editor upload.
         navigate(ROUTES.EDIT, { state, replace: true });
         return;
       }
 
-      // Unknown template id
-      if ('id' in payload && !getViralTemplateById(payload.id)) {
+      if ('id' in payload && !getViralTemplateCardById(payload.id)) {
         setError(t('viral.remix_unknown'));
         return;
       }

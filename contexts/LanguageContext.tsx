@@ -1,6 +1,11 @@
 /**
  * @license
  * SPDX-License-Identifier: MIT
+ *
+ * Locales load on demand (one language chunk). Default language resolves
+ * synchronously from storage/browser, then that locale module is fetched
+ * before painting translated UI — avoids shipping both en + zh-TW in the
+ * homepage entry and reduces flash of the wrong language.
  */
 
 import React, {
@@ -12,22 +17,35 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
-import { enMessages } from '../locales/en';
-import { zhTWMessages } from '../locales/zh-TW';
 
 export type Language = 'en' | 'zh-TW';
 
 export const STORAGE_KEY_LANGUAGE = 'bloom_language';
 
-const translations: Record<Language, Record<string, string>> = {
-  en: enMessages,
-  'zh-TW': zhTWMessages,
+type Messages = Record<string, string>;
+
+const localeLoaders: Record<Language, () => Promise<Messages>> = {
+  en: () => import('../locales/en').then((m) => m.enMessages),
+  'zh-TW': () => import('../locales/zh-TW').then((m) => m.zhTWMessages),
 };
+
+const messageCache = new Map<Language, Messages>();
+
+export function loadLocaleMessages(lang: Language): Promise<Messages> {
+  const cached = messageCache.get(lang);
+  if (cached) return Promise.resolve(cached);
+  return localeLoaders[lang]().then((messages) => {
+    messageCache.set(lang, messages);
+    return messages;
+  });
+}
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
+  /** False until the active locale module has loaded. */
+  ready: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -87,6 +105,9 @@ export function getInitialLanguage(): Language {
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => getInitialLanguage());
+  const [messages, setMessages] = useState<Messages | null>(
+    () => messageCache.get(getInitialLanguage()) ?? null,
+  );
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
@@ -101,15 +122,47 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     document.documentElement.lang = language === 'zh-TW' ? 'zh-TW' : 'en';
   }, [language]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const cached = messageCache.get(language);
+    if (cached) {
+      setMessages(cached);
+      return;
+    }
+    setMessages(null);
+    void loadLocaleMessages(language).then((loaded) => {
+      if (!cancelled) setMessages(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [language]);
+
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {
-      const raw = translations[language][key] || key;
+      if (!messages) return key;
+      const raw = messages[key] || key;
       return vars ? interpolate(raw, vars) : raw;
     },
-    [language],
+    [messages],
   );
 
-  const value = useMemo(() => ({ language, setLanguage, t }), [language, setLanguage, t]);
+  const value = useMemo(
+    () => ({ language, setLanguage, t, ready: Boolean(messages) }),
+    [language, setLanguage, t, messages],
+  );
+
+  // Theme-colored shell while the locale chunk loads (no white flash).
+  if (!messages) {
+    return (
+      <div
+        className="min-h-svh w-full theme-bg"
+        data-testid="locale-loading"
+        aria-busy="true"
+        aria-live="polite"
+      />
+    );
+  }
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };

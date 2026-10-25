@@ -34,19 +34,19 @@ describe('applyViralTemplate helpers', () => {
     expect(remixUrlForTemplate(template)).toContain('/r#');
   });
 
-  it('maps template remix to editor preset', () => {
+  it('maps template remix to editor preset', async () => {
     const template = getViralTemplateById('polaroid-frame')!;
-    expect(resolveRemixToTemplate({ v: 1, id: template.id })).toEqual(template);
-    expect(remixToEditorPreset({ v: 1, id: template.id })).toEqual({
+    expect(await resolveRemixToTemplate({ v: 1, id: template.id })).toEqual(template);
+    expect(await remixToEditorPreset({ v: 1, id: template.id })).toEqual({
       prompt: template.prompt,
       tab: 'retouch',
       viralTemplateId: template.id,
     });
-    expect(remixToGeneratePreset({ v: 1, id: template.id })).toBeNull();
+    expect(await remixToGeneratePreset({ v: 1, id: template.id })).toBeNull();
   });
 
-  it('maps prompt-form generate payload', () => {
-    const preset = remixToGeneratePreset({
+  it('maps prompt-form generate payload', async () => {
+    const preset = await remixToGeneratePreset({
       v: 1,
       f: 'generate',
       p: 'neon alley',
@@ -56,8 +56,8 @@ describe('applyViralTemplate helpers', () => {
     expect(preset).toEqual({ prompt: 'neon alley', aspectRatio: '3:4', quantity: 2 });
   });
 
-  it('returns null for unknown template ids', () => {
-    expect(resolveRemixToTemplate({ v: 1, id: 'not-a-real-template' })).toBeNull();
+  it('returns null for unknown template ids', async () => {
+    expect(await resolveRemixToTemplate({ v: 1, id: 'not-a-real-template' })).toBeNull();
   });
 
   it('routes multi-person templates to multi-person target', () => {

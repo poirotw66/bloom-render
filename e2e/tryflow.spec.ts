@@ -9,10 +9,13 @@
 import { test, expect } from '@playwright/test';
 
 async function expandAllViral(page: import('@playwright/test').Page) {
+  // Lazy ViralTemplatesSection + locale chunk must mount before “show more”.
+  await expect(page.getByTestId('viral-templates')).toBeVisible({ timeout: 30_000 });
   for (let i = 0; i < 12; i++) {
     const more = page.getByTestId('viral-show-more');
     if (!(await more.isVisible().catch(() => false))) break;
     await more.click();
+    await page.waitForTimeout(50);
   }
 }
 
@@ -37,6 +40,7 @@ test.describe('Viral try-this flow', () => {
   });
 
   test('multi-person template opens /multi-person with scene preselected', async ({ page }) => {
+    test.setTimeout(60_000);
     await page.addInitScript(() => {
       localStorage.setItem('bloom_language', 'zh-TW');
       localStorage.setItem('bloom_theme', 'bloom');
@@ -44,6 +48,14 @@ test.describe('Viral try-this flow', () => {
     });
     await page.goto('/');
     await expandAllViral(page);
+    // Prefer social chip so graduation-group is not buried behind “show more” races.
+    const social = page.getByTestId('viral-category-social');
+    if (await social.isVisible().catch(() => false)) {
+      await social.click();
+    }
+    await expect(page.getByTestId('viral-apply-graduation-group')).toBeVisible({
+      timeout: 15_000,
+    });
     await page.getByTestId('viral-apply-graduation-group').scrollIntoViewIfNeeded();
     await page.getByTestId('viral-apply-graduation-group').click();
     await expect(page).toHaveURL(/\/multi-person/);

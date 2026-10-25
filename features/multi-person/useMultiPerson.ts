@@ -8,10 +8,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  getMultiPersonViralTemplates,
-  getViralTemplateById,
-  type ViralTemplate,
-} from '../../constants/viralTemplates';
+  getMultiPersonViralTemplateCards,
+  getViralTemplateCardById,
+  type ViralTemplateCard,
+} from '../../constants/viralTemplateCards';
+import { loadViralTemplate } from '../../utils/applyViralTemplate';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useDemoSampleFiles } from '../../hooks/useDemoSampleInput';
@@ -39,7 +40,7 @@ export function useMultiPerson() {
   const settings = useSettings();
   const location = useLocation();
   const navigate = useNavigate();
-  const templates = useMemo(() => getMultiPersonViralTemplates(), []);
+  const templates = useMemo(() => getMultiPersonViralTemplateCards(), []);
   const locationState = location.state as MultiPersonLocationState | null;
   const initialFromNav = locationState?.templateId;
 
@@ -81,7 +82,7 @@ export function useMultiPerson() {
     return () => urls.forEach((u) => URL.revokeObjectURL(u));
   }, [files]);
 
-  const selectedTemplate: ViralTemplate | undefined = getViralTemplateById(templateId);
+  const selectedTemplate: ViralTemplateCard | undefined = getViralTemplateCardById(templateId);
 
   const providerOk = providerSupportsMultiReference(settings.imageProvider);
   const providerMax = multiReferenceLimit(settings.imageProvider);
@@ -144,7 +145,12 @@ export function useMultiPerson() {
       pushViralRecent(selectedTemplate.id);
 
       try {
-        let prompt = buildMultiPersonPromptFromTemplate(selectedTemplate, files.length);
+        const full = await loadViralTemplate(selectedTemplate.id);
+        if (!full) {
+          setError(t('multi_person.error_need_template'));
+          return;
+        }
+        let prompt = buildMultiPersonPromptFromTemplate(full, files.length);
         if (versionIndex > 0) {
           prompt += `\nVariation ${versionIndex + 1}: adjust seating and lighting slightly while keeping every identity unchanged.`;
         }
@@ -156,10 +162,10 @@ export function useMultiPerson() {
             model: settings.effectiveModel,
             provider: settings.imageProvider,
           },
-          aspectRatio: selectedTemplate.aspectRatio,
+          aspectRatio: full.aspectRatio,
           includeImageConfig: true,
           context: 'multi-person',
-          viralTemplateId: selectedTemplate.id,
+          viralTemplateId: full.id,
         });
         setResultUrl(url);
         setVersions((prev) => {

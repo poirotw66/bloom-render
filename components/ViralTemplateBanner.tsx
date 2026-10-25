@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { getViralTemplateById } from '../constants/viralTemplates';
+import { getViralTemplateCardById } from '../constants/viralTemplateCards';
 import { useLanguage } from '../contexts/LanguageContext';
 import { publicAssetUrl } from '../utils/publicAsset';
 
@@ -25,7 +25,7 @@ const ViralTemplateBanner: React.FC<ViralTemplateBannerProps> = ({
   testId = 'viral-template-banner',
 }) => {
   const { t } = useLanguage();
-  const template = getViralTemplateById(templateId);
+  const template = getViralTemplateCardById(templateId);
   if (!template) return null;
 
   return (

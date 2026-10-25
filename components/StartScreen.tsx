@@ -6,7 +6,7 @@
 import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UploadIcon, MagicWandIcon, DownloadIcon, EditIcon } from './icons';
-import { generateImageFromText } from '../services/geminiService';
+import { generateImageFromText } from '../services/gemini/generate';
 import { formatApiErrorMessage } from '../services/gemini/shared';
 import { logger } from '../utils/logger';
 import { dataURLtoFile } from '../utils/fileUtils';

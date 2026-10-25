@@ -5,10 +5,12 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const pagesBase = process.env.GITHUB_PAGES === 'true';
+  const analyze = process.env.ANALYZE === 'true' || mode === 'analyze';
 
   return {
     base: pagesBase ? '/bloom-render/' : '/',
@@ -19,6 +21,17 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      ...(analyze
+        ? [
+            visualizer({
+              filename: 'dist/stats.html',
+              gzipSize: true,
+              brotliSize: true,
+              template: 'treemap',
+              open: false,
+            }),
+          ]
+        : []),
       VitePWA({
         registerType: 'prompt',
         includeAssets: ['logo/*.png', 'icons/*.png', 'og.png', 'favicon.ico'],
