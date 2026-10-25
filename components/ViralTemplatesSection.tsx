@@ -267,6 +267,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
           <button
             key={value}
             type="button"
+            data-testid={`viral-category-${value}`}
             aria-pressed={category === value}
             onClick={() => onCategory(value)}
             className={`shrink-0 ${category === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}`}
