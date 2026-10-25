@@ -14,8 +14,7 @@ import { logger } from '../utils/logger';
 import LocalEnhanceActions from './LocalEnhanceActions';
 import { peekPendingRemix } from '../utils/pendingRemix';
 import { buildRemixUrl } from '../utils/remixLink';
-import { remixUrlForTemplate } from '../utils/applyViralTemplate';
-import { getViralTemplateById } from '../constants/viralTemplates';
+import { getViralTemplateCardById } from '../constants/viralTemplateCards';
 
 interface ResultActionsProps {
   result: string | Blob;
@@ -44,8 +43,8 @@ function resolveRemixUrl(explicit?: string): string | undefined {
   const pending = peekPendingRemix();
   if (!pending) return undefined;
   if ('id' in pending) {
-    const template = getViralTemplateById(pending.id);
-    if (template) return remixUrlForTemplate(template);
+    const card = getViralTemplateCardById(pending.id);
+    if (card) return buildRemixUrl({ v: 1, id: card.id });
   }
   try {
     return buildRemixUrl(pending);

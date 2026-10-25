@@ -7,6 +7,11 @@
 
 import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { loadLocaleMessages } from './contexts/LanguageContext';
+
+// Warm locale cache so LanguageProvider can mount children synchronously in
+// jsdom hook tests (production still dynamic-imports one locale at a time).
+await Promise.all([loadLocaleMessages('en'), loadLocaleMessages('zh-TW')]);
 
 // This file runs for every test file, node-environment suites included (most
 // of the existing 72 tests are plain node). Only touch DOM globals when a DOM

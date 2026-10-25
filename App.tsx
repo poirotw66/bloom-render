@@ -17,7 +17,6 @@ import { ROUTES, isEditRoutePath } from './constants/routes';
 import { useLanguage } from './contexts/LanguageContext';
 import { applyValidatedImageFile } from './utils/applyValidatedImageFile';
 import { consumePendingRemix } from './utils/pendingRemix';
-import { remixToEditorPreset } from './utils/applyViralTemplate';
 
 const HistoryPage = lazy(() => import('./features/history/HistoryPage'));
 const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
@@ -54,13 +53,19 @@ const App: React.FC = () => {
         t,
         (validFile) => {
           setUploadError(null);
-          const pending = consumePendingRemix();
-          const editorPreset = pending ? remixToEditorPreset(pending) : null;
-          const state: EditorLocationState = {
-            initialFile: validFile,
-            ...(editorPreset ? { galleryPreset: editorPreset } : {}),
-          };
-          navigate(ROUTES.EDIT, { state });
+          void (async () => {
+            const pending = consumePendingRemix();
+            let editorPreset: EditorLocationState['galleryPreset'] | null = null;
+            if (pending) {
+              const { remixToEditorPreset } = await import('./utils/applyViralTemplate');
+              editorPreset = await remixToEditorPreset(pending);
+            }
+            const state: EditorLocationState = {
+              initialFile: validFile,
+              ...(editorPreset ? { galleryPreset: editorPreset } : {}),
+            };
+            navigate(ROUTES.EDIT, { state });
+          })();
         },
         setUploadError,
       );
