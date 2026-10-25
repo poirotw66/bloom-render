@@ -5,7 +5,7 @@
  * Multi-person viral synthesis UI (2–4 uploads + multi-person templates).
  */
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
 import CostEstimateBadge from '../../components/CostEstimateBadge';
@@ -13,6 +13,7 @@ import DemoModeBanner from '../../components/DemoModeBanner';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import ResultActions from '../../components/ResultActions';
 import VersionSwitcher from '../../components/VersionSwitcher';
+import ViralTemplateBanner from '../../components/ViralTemplateBanner';
 import { ROUTES } from '../../constants/routes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -38,6 +39,11 @@ const MultiPersonPage: React.FC = () => {
   const mp = useMultiPerson();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    const el = document.querySelector(`[data-testid="multi-person-template-${mp.templateId}"]`);
+    el?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, [mp.templateId]);
+
   return (
     <div className={`${UI_PAGE} ${getPageSurface(theme)}`} data-testid="multi-person-page">
       <div className="flex flex-col items-center gap-6 animate-fade-in w-full max-w-4xl mx-auto">
@@ -57,6 +63,14 @@ const MultiPersonPage: React.FC = () => {
 
         <ApiKeyNotice />
         <DemoModeBanner />
+
+        {mp.templateId && (
+          <ViralTemplateBanner
+            templateId={mp.templateId}
+            hintKey="viral.upload_for_template"
+            testId="viral-template-banner-multiperson"
+          />
+        )}
 
         {!mp.providerOk && (
           <p className="text-sm text-amber-200/90 text-center px-3" role="status">

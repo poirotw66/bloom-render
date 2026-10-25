@@ -6,6 +6,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   getMultiPersonViralTemplates,
   getViralTemplateById,
@@ -29,16 +30,41 @@ import { isAbortError, startRandomProgressTicker } from '../../utils/generationH
 import { logger } from '../../utils/logger';
 import { pushViralRecent } from '../../utils/viralFavorites';
 
+export type MultiPersonLocationState = {
+  templateId?: string;
+};
+
 export function useMultiPerson() {
   const { t } = useLanguage();
   const settings = useSettings();
+  const location = useLocation();
+  const navigate = useNavigate();
   const templates = useMemo(() => getMultiPersonViralTemplates(), []);
+  const locationState = location.state as MultiPersonLocationState | null;
+  const initialFromNav = locationState?.templateId;
 
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [templateId, setTemplateId] = useState<string>(
-    () => templates.find((x) => x.id === 'couple-portrait')?.id ?? templates[0]?.id ?? '',
-  );
+  const [templateId, setTemplateId] = useState<string>(() => {
+    if (initialFromNav && templates.some((x) => x.id === initialFromNav)) {
+      return initialFromNav;
+    }
+    return templates.find((x) => x.id === 'couple-portrait')?.id ?? templates[0]?.id ?? '';
+  });
+
+  useEffect(() => {
+    if (!initialFromNav) return;
+    if (templates.some((x) => x.id === initialFromNav)) {
+      setTemplateId(initialFromNav);
+    }
+    navigate(location.pathname, { replace: true, state: null });
+    try {
+      window.scrollTo(0, 0);
+    } catch {
+      /* jsdom */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- consume nav state once
+  }, []);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [versions, setVersions] = useState<string[]>([]);
   const [activeVersion, setActiveVersion] = useState(0);

@@ -20,19 +20,24 @@ import CropPanel from '../../components/CropPanel';
 import DemoModeBanner from '../../components/DemoModeBanner';
 import MaskBrushCanvas from '../../components/MaskBrushCanvas';
 import RetouchMaskToolbar, { type RetouchSelectMode } from '../../components/RetouchMaskToolbar';
-import { UndoIcon, RedoIcon, EyeIcon, XMarkIcon } from '../../components/icons';
+import { UndoIcon, RedoIcon, EyeIcon, UploadIcon, XMarkIcon } from '../../components/icons';
 import { ErrorDisplay } from '../../components/ErrorDisplay';
 import SavedPromptsBar from '../../components/SavedPromptsBar';
 import CompareSlider from '../../components/CompareSlider';
+import ViralTemplateBanner from '../../components/ViralTemplateBanner';
 import { confirmDiscardUnsavedWork, useUnsavedWork } from '../../hooks/useUnsavedWork';
 import { useEditorHistoryShortcuts } from '../../hooks/useEditorHistoryShortcuts';
 import { useHistory as useGenerationHistory } from '../../hooks/useHistory';
 import { useMaskBrush } from '../../hooks/useMaskBrush';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
+import { applyValidatedImageFile } from '../../utils/applyValidatedImageFile';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { logger } from '../../utils/logger';
+import { consumePendingRemix } from '../../utils/pendingRemix';
+import { remixToEditorPreset } from '../../utils/applyViralTemplate';
 import { getEditorThemeClasses } from '../../utils/themeUtils';
+import { UI_BTN_PRIMARY, UI_PAGE, getPageSurface } from '../../utils/uiClasses';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -41,7 +46,9 @@ type Tab = 'retouch' | 'adjust' | 'filters' | 'crop';
 
 export type EditorLocationState = {
   initialFile?: File;
-  /** Seeded from the community prompt gallery (Wave J). */
+  /** Non-demo viral apply: show upload step for this template. */
+  awaitUpload?: boolean;
+  /** Seeded from the community prompt gallery (Wave J) or viral apply. */
   galleryPreset?: {
     prompt: string;
     tab?: Tab;
@@ -56,13 +63,29 @@ const EditorPage: React.FC = () => {
   const locationState = location.state as EditorLocationState | null;
   const initialFile = locationState?.initialFile;
   const initialGalleryPreset = locationState?.galleryPreset;
+  const [awaitUpload] = useState(() => Boolean(locationState?.awaitUpload));
+  const [viralTemplateId] = useState(() => initialGalleryPreset?.viralTemplateId);
+  const uploadZoneRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (initialFile || initialGalleryPreset) {
+    if (initialFile || initialGalleryPreset || awaitUpload) {
       navigate(location.pathname, { replace: true, state: null });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- consume router state once on mount
   }, []);
+
+  useEffect(() => {
+    try {
+      window.scrollTo(0, 0);
+    } catch {
+      /* jsdom */
+    }
+    if (awaitUpload) {
+      uploadZoneRef.current?.focus();
+    }
+  }, [awaitUpload]);
+
   const { t } = useLanguage();
   const settings = useSettings();
   const { theme } = useTheme();
@@ -76,7 +99,6 @@ const EditorPage: React.FC = () => {
   const [editHotspot, setEditHotspot] = useState<{ x: number; y: number } | null>(null);
   const [displayHotspot, setDisplayHotspot] = useState<{ x: number; y: number } | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(() => initialGalleryPreset?.tab ?? 'retouch');
-  const viralTemplateId = initialGalleryPreset?.viralTemplateId;
   const [retouchMode, setRetouchMode] = useState<RetouchSelectMode>('point');
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
 
@@ -520,6 +542,13 @@ const EditorPage: React.FC = () => {
     return (
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-6 animate-fade-in">
         {settings.isDemoMode && <DemoModeBanner />}
+        {viralTemplateId && (
+          <ViralTemplateBanner
+            templateId={viralTemplateId}
+            hintKey="viral.editor_template_hint"
+            testId="viral-template-banner-editor"
+          />
+        )}
         {errorBanner}
 
         <div className="relative w-full rounded-xl overflow-hidden bg-black/20">
@@ -738,8 +767,91 @@ const EditorPage: React.FC = () => {
     );
   };
 
+  const acceptUploadedFile = useCallback(
+    (file: File) => {
+      void applyValidatedImageFile(
+        file,
+        t,
+        (validFile) => {
+          // Prefer pending remix (set by applyViralTemplate); fall back to banner id.
+          const pending = consumePendingRemix();
+          const fromPending = pending ? remixToEditorPreset(pending) : null;
+          if (fromPending?.prompt) setPrompt(fromPending.prompt);
+          if (fromPending?.tab) setActiveTab(fromPending.tab);
+          setHistory([validFile]);
+          setHistoryIndex(0);
+          setError(null);
+          try {
+            window.scrollTo(0, 0);
+          } catch {
+            /* jsdom */
+          }
+        },
+        (msg) => setError(msg),
+      );
+    },
+    [t],
+  );
+
   if (!currentImage) {
-    return <Navigate to={ROUTES.HOME} replace />;
+    if (!awaitUpload && !viralTemplateId) {
+      return <Navigate to={ROUTES.HOME} replace />;
+    }
+
+    return (
+      <div
+        className={`${UI_PAGE} ${getPageSurface(theme)} w-full max-w-2xl mx-auto flex flex-col items-center gap-5 animate-fade-in`}
+        data-testid="viral-editor-upload"
+      >
+        {viralTemplateId && (
+          <ViralTemplateBanner
+            templateId={viralTemplateId}
+            hintKey="viral.upload_for_template"
+            testId="viral-template-banner-upload"
+          />
+        )}
+        {error && <ErrorDisplay message={error} />}
+        <div
+          ref={uploadZoneRef}
+          tabIndex={0}
+          role="group"
+          aria-label={t('viral.upload_drag')}
+          data-testid="viral-editor-upload-zone"
+          className="p-10 border-2 border-dashed rounded-2xl theme-border theme-raised w-full flex flex-col items-center justify-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:brand-ring"
+          onDragOver={(e) => {
+            e.preventDefault();
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files?.[0];
+            if (file) acceptUploadedFile(file);
+          }}
+        >
+          <button
+            type="button"
+            className={`${UI_BTN_PRIMARY} inline-flex items-center gap-2 px-8 py-4 text-lg`}
+            data-testid="viral-editor-upload-button"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <UploadIcon className="w-5 h-5" />
+            {t('viral.upload_button')}
+          </button>
+          <p className="text-sm theme-ink-muted">{t('viral.upload_drag')}</p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            data-testid="viral-editor-upload-input"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) acceptUploadedFile(file);
+              e.target.value = '';
+            }}
+          />
+        </div>
+      </div>
+    );
   }
 
   return renderEditor();

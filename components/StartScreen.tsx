@@ -29,6 +29,7 @@ import ApiKeyNotice from './ApiKeyNotice';
 import DemoModeBanner from './DemoModeBanner';
 import ExampleShowcase from './ExampleShowcase';
 import HomeGallery from './HomeGallery';
+import ViralTemplateBanner from './ViralTemplateBanner';
 const ViralTemplatesSection = React.lazy(() => import('./ViralTemplatesSection'));
 import GenerationFailureNotice from './GenerationFailureNotice';
 import ProgressIndicator from './ProgressIndicator';
@@ -126,7 +127,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const s = themeStyles[theme];
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const galleryPreset = (location.state as GenerateGalleryLocationState | null)?.galleryPreset;
-  const viralTemplateId = galleryPreset?.viralTemplateId;
+  const [viralTemplateId] = useState(() => galleryPreset?.viralTemplateId);
   const [generationPrompt, setGenerationPrompt] = useState(() => galleryPreset?.prompt ?? '');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:4' | '4:3' | '16:9' | '9:16'>(
     () => galleryPreset?.aspectRatio ?? '1:1',
@@ -136,6 +137,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   useEffect(() => {
     if (!galleryPreset) return;
     routerNavigate(location.pathname, { replace: true, state: null });
+    try {
+      window.scrollTo(0, 0);
+    } catch {
+      /* jsdom */
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- consume gallery state once on mount
   }, []);
 
@@ -699,6 +705,13 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
           <div
             className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-8 md:p-10 rounded-2xl border ${s.borderCard}`}
           >
+            {viralTemplateId && (
+              <ViralTemplateBanner
+                templateId={viralTemplateId}
+                hintKey="viral.generate_for_template"
+                testId="viral-template-banner-generate"
+              />
+            )}
             <textarea
               id="generate-prompt"
               value={generationPrompt}
@@ -707,6 +720,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
               aria-label={t('start.prompt_placeholder')}
               className={`w-full h-40 md:h-44 bg-gray-900/50 border border-gray-600 rounded-xl p-5 text-gray-100 placeholder-gray-500 focus:outline-none focus-visible:ring-2 resize-none transition-colors duration-200 text-base ${s.inputFocus}`}
               disabled={busy}
+              data-testid="generate-prompt"
             />
 
             <SavedPromptsBar

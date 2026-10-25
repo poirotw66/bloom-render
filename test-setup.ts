@@ -24,6 +24,8 @@ if (typeof document !== 'undefined') {
   if (typeof URL.revokeObjectURL !== 'function') {
     URL.revokeObjectURL = () => undefined;
   }
+  // jsdom's scrollTo is a not-implemented stub that throws / warns.
+  window.scrollTo = () => undefined;
 
   // renderHook mounts a real component under the hood; without cleanup that
   // component (and any effects it registered) stays mounted into the next

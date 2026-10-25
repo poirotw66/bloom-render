@@ -21,8 +21,6 @@ import {
 import { getViralTemplateById } from '../../constants/viralTemplates';
 import type { GenerateGalleryLocationState } from '../../utils/applyPromptGalleryPreset';
 import type { EditorLocationState } from '../editor/EditorPage';
-import { demoAssetsForFeature } from '../../services/imageProviders/demoCatalog';
-import { fetchPublicImageAsFile } from '../../services/imageProviders/demoProvider';
 import Spinner from '../../components/Spinner';
 
 const RemixPage: React.FC = () => {
@@ -65,20 +63,13 @@ const RemixPage: React.FC = () => {
 
       const editorPreset = remixToEditorPreset(payload);
       if (editorPreset) {
-        if (isDemoMode) {
-          const before = demoAssetsForFeature('editor').before;
-          if (before) {
-            const initialFile = await fetchPublicImageAsFile(before, 'remix-editor-sample.webp');
-            if (cancelled) return;
-            const state: EditorLocationState = {
-              initialFile,
-              galleryPreset: editorPreset,
-            };
-            navigate(ROUTES.EDIT, { state, replace: true });
-            return;
-          }
-        }
-        navigate(ROUTES.HOME, { state: { remixReady: true }, replace: true });
+        if (cancelled) return;
+        const state: EditorLocationState = {
+          awaitUpload: !isDemoMode,
+          galleryPreset: editorPreset,
+        };
+        // Demo without a concrete viral template id: still land on editor upload.
+        navigate(ROUTES.EDIT, { state, replace: true });
         return;
       }
 
@@ -101,11 +92,13 @@ const RemixPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center gap-4 py-16 text-center">
-        <p className="theme-ink text-base">{error}</p>
+      <div className="flex flex-col items-center gap-4 py-16 text-center px-4">
+        <p className="text-red-300" role="alert">
+          {error}
+        </p>
         <button
           type="button"
-          className="px-5 py-2.5 rounded-xl brand-bg text-white font-semibold"
+          className="underline text-sm theme-ink"
           onClick={() => navigate(ROUTES.HOME)}
         >
           {t('viral.remix_home')}
@@ -115,7 +108,7 @@ const RemixPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3">
+    <div className="flex flex-col items-center gap-3 py-16" data-testid="remix-loading">
       <Spinner />
       <p className="text-sm theme-ink-muted">{t('viral.remix_loading')}</p>
     </div>

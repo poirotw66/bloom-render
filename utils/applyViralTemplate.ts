@@ -11,7 +11,6 @@ import {
 } from '../constants/viralTemplates';
 import { ROUTES } from '../constants/routes';
 import type { EditorLocationState } from '../features/editor/EditorPage';
-import { demoAssetsForFeature } from '../services/imageProviders/demoCatalog';
 import { fetchPublicImageAsFile } from '../services/imageProviders/demoProvider';
 import type { RemixPayload } from './remixLink';
 import { buildRemixUrl } from './remixLink';
@@ -84,10 +83,21 @@ export function remixToGeneratePreset(
   return null;
 }
 
+/** Where “試試這個” / remix should land for a given template. */
+export function resolveViralApplyTarget(
+  template: ViralTemplate,
+): 'multi-person' | 'generate' | 'edit' {
+  if (template.supportsMultiPerson) return 'multi-person';
+  if (template.feature === 'generate') return 'generate';
+  return 'edit';
+}
+
 /**
- * Apply a viral template: prefer opening the editor (selfie → transform).
- * In demo mode, load the bundled sample immediately; otherwise stash remix and
- * send the user to upload.
+ * Apply a viral template:
+ * - multi-person → /multi-person with scene preselected
+ * - generate → /generate with prompt / ratio / template id
+ * - demo retouch → /edit with that template’s own thumbnail as the sample
+ * - keyed retouch → /edit upload step (template banner + file picker)
  */
 export async function applyViralTemplate(
   template: ViralTemplate,
@@ -97,7 +107,16 @@ export async function applyViralTemplate(
   const payload = remixPayloadForTemplate(template);
   setPendingRemix(payload);
 
-  if (template.feature === 'generate') {
+  const target = resolveViralApplyTarget(template);
+
+  if (target === 'multi-person') {
+    navigate(ROUTES.MULTI_PERSON, {
+      state: { templateId: template.id },
+    });
+    return;
+  }
+
+  if (target === 'generate') {
     const state: GenerateGalleryLocationState = {
       galleryPreset: {
         prompt: template.prompt,
@@ -110,24 +129,36 @@ export async function applyViralTemplate(
     return;
   }
 
+  const galleryPreset: NonNullable<EditorLocationState['galleryPreset']> = {
+    prompt: template.prompt,
+    tab: template.tab ?? 'retouch',
+    viralTemplateId: template.id,
+  };
+
   if (options?.demoMode) {
-    const before = demoAssetsForFeature('editor').before;
-    if (before) {
-      const initialFile = await fetchPublicImageAsFile(before, 'viral-editor-sample.webp');
-      const state: EditorLocationState = {
-        initialFile,
-        galleryPreset: {
-          prompt: template.prompt,
-          tab: template.tab ?? 'retouch',
-          viralTemplateId: template.id,
-        },
-      };
-      navigate(ROUTES.EDIT, { state });
-      return;
-    }
+    // Use this template’s own preview as the demo sample so the editor matches
+    // the card the user tapped (results also resolve to the same thumb).
+    const thumbPath = template.thumbnail.startsWith('/')
+      ? template.thumbnail
+      : `/${template.thumbnail}`;
+    const initialFile = await fetchPublicImageAsFile(thumbPath, `${template.id}-demo.webp`);
+    const state: EditorLocationState = {
+      initialFile,
+      galleryPreset,
+    };
+    navigate(ROUTES.EDIT, { state });
+    return;
   }
 
-  navigate(options?.openUpload === false ? ROUTES.EDIT : ROUTES.HOME, {
-    state: { remixReady: true, remixTemplateId: template.id },
+  if (options?.openUpload === false) {
+    navigate(ROUTES.EDIT, { state: { galleryPreset } });
+    return;
+  }
+
+  navigate(ROUTES.EDIT, {
+    state: {
+      awaitUpload: true,
+      galleryPreset,
+    } satisfies EditorLocationState,
   });
 }
