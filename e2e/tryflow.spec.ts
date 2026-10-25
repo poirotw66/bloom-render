@@ -64,10 +64,11 @@ test.describe('Viral try-this flow', () => {
       localStorage.setItem('bloom_image_provider', 'demo');
     });
     await page.goto('/');
-    await page.getByTestId('viral-apply-polaroid-frame').click();
+    // figurine-box is single-person (polaroid-frame is also multi-person capable)
+    await page.getByTestId('viral-apply-figurine-box').click();
     await expect(page).toHaveURL(/\/edit/);
     await expect(page.getByTestId('viral-template-banner-editor')).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByTestId('viral-template-banner-title')).toHaveText('拍立得');
+    await expect(page.getByTestId('viral-template-banner-title')).toHaveText('公仔盒玩');
   });
 
   test('generate-class remix lands on /generate with prompt filled', async ({ page }) => {
