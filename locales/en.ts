@@ -1464,6 +1464,12 @@ export const enMessages: Record<string, string> = {
   'viral.remix_invalid': 'This style link is invalid or expired.',
   'viral.remix_unknown': 'Unknown style. Pick a template from the home page.',
   'viral.remix_home': 'Back to home',
+  'viral.selected_template': 'Selected style',
+  'viral.upload_for_template': 'Upload a portrait to apply this style.',
+  'viral.upload_button': 'Upload a photo for this style',
+  'viral.upload_drag': 'or drag and drop a photo here',
+  'viral.generate_for_template': 'Prompt and aspect ratio are filled in — generate when ready.',
+  'viral.editor_template_hint': 'Results use this style (demo shows the sample preview).',
   'viral.figurine_box.title': 'Collectible figure box',
   'viral.figurine_box.desc':
     'Turn a portrait into a 1/7 PVC figure in a clear retail blister box — product-shot lighting.',
