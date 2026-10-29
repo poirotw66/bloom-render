@@ -31,7 +31,7 @@ vi.mock('./ResultActions', () => ({ default: () => null }));
 
 const imageUrl = (index: number) => `data:image/png;base64,${btoa(`image-${index}`)}`;
 
-function renderGenerate(quantity = 4) {
+async function renderGenerate(quantity = 4) {
   const onImageSelected = vi.fn();
   const settingsRef: { current: ReturnType<typeof useSettings> | null } = { current: null };
   function SettingsProbe() {
@@ -63,6 +63,7 @@ function renderGenerate(quantity = 4) {
   render(<StartScreen tab="generate" onImageSelected={onImageSelected} navigate={vi.fn()} />, {
     wrapper: Wrapper,
   });
+  await screen.findByRole('button', { name: 'Generate Image' }, { timeout: 5000 });
   return {
     onImageSelected,
     switchProvider: () => settingsRef.current?.setImageProvider('openrouter'),
@@ -85,7 +86,7 @@ describe('StartScreen text-to-image batches', () => {
       .mockResolvedValueOnce(imageUrl(2))
       .mockResolvedValueOnce(imageUrl(3))
       .mockResolvedValueOnce(imageUrl(1));
-    const { onImageSelected, switchProvider } = renderGenerate();
+    const { onImageSelected, switchProvider } = await renderGenerate();
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
 
     await screen.findByText('Generated 3 of 4 images');
@@ -134,7 +135,7 @@ describe('StartScreen text-to-image batches', () => {
     vi.mocked(runImageGeneration)
       .mockResolvedValueOnce(imageUrl(0))
       .mockRejectedValue(new Error('error.quota_exceeded'));
-    const { onImageSelected } = renderGenerate();
+    const { onImageSelected } = await renderGenerate();
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
 
     await screen.findByText('Generated 1 of 4 images');
@@ -145,7 +146,7 @@ describe('StartScreen text-to-image batches', () => {
 
   it('shows the real failure cause when every slot fails and does not save failed results', async () => {
     vi.mocked(runImageGeneration).mockRejectedValue(new Error('error.api_key_missing'));
-    renderGenerate();
+    await renderGenerate();
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
 
     await screen.findByText('API key not found. Please check your settings.');
@@ -156,7 +157,7 @@ describe('StartScreen text-to-image batches', () => {
     vi.mocked(runImageGeneration)
       .mockResolvedValueOnce(imageUrl(0))
       .mockRejectedValue(new Error('error.quota_exceeded'));
-    renderGenerate(2);
+    await renderGenerate(2);
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
     await screen.findByText('Generated 1 of 2 images');
 
@@ -178,7 +179,7 @@ describe('StartScreen text-to-image batches', () => {
       .mockResolvedValueOnce(imageUrl(0))
       .mockRejectedValueOnce(new Error('error.quota_exceeded'))
       .mockImplementationOnce(() => new Promise((resolve) => (finishRetry = resolve)));
-    renderGenerate(2);
+    await renderGenerate(2);
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
     await screen.findByText('Generated 1 of 2 images');
 
@@ -200,7 +201,7 @@ describe('StartScreen text-to-image batches', () => {
       .mockResolvedValueOnce(imageUrl(0))
       .mockRejectedValueOnce(new Error('error.quota_exceeded'))
       .mockResolvedValueOnce(imageUrl(1));
-    renderGenerate();
+    await renderGenerate();
     fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Generate & Compare' }));
     await screen.findByText('Generated 1 of 2 images');
@@ -216,7 +217,7 @@ describe('StartScreen text-to-image batches', () => {
 
   it('still sends a successful single-image run directly to the editor', async () => {
     vi.mocked(runImageGeneration).mockResolvedValueOnce(imageUrl(0));
-    const { onImageSelected } = renderGenerate(1);
+    const { onImageSelected } = await renderGenerate(1);
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
 
     await waitFor(() => expect(onImageSelected).toHaveBeenCalledWith(expect.any(File)));

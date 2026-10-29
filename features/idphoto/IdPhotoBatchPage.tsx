@@ -119,7 +119,8 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
     }
 
     await batch.processBatch(files, {
-      generateApi: generateIdPhoto,
+      generateApi: (file, options, serviceSettings) =>
+        generateIdPhoto(file, { ...options, settings: serviceSettings }),
       options: {
         retouchLevel: idPhotoRetouchLevel,
         idType: idPhotoType,
@@ -176,9 +177,15 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
             current={batch.progress.current}
             results={batch.results}
             errors={batch.errors}
+            onCancel={batch.cancel}
           />
         ) : batch.results.length > 0 ? (
           <div className="w-full flex flex-col gap-6">
+            {batch.cancelled && (
+              <p className="text-sm theme-ink-muted text-center" role="status">
+                {t('batch.cancelled')}
+              </p>
+            )}
             <div className="flex items-center justify-center gap-4">
               <button type="button" onClick={handleBatchDownload} className={UI_BTN_SUCCESS}>
                 {t('history.batch_download')} ({batch.results.length})
@@ -216,6 +223,11 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
           </div>
         ) : (
           <>
+            {batch.cancelled && (
+              <p className="text-sm theme-ink-muted text-center" role="status">
+                {t('batch.cancelled')}
+              </p>
+            )}
             {/* Form options - reuse from IdPhotoForm */}
             <BatchUploadSection
               files={files}

@@ -2,23 +2,25 @@
  * @license
  * SPDX-License-Identifier: MIT
  */
-import React, { useState, useMemo } from 'react';
+import React, { Suspense, lazy, useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { BookmarkIcon, CogIcon, GitHubIcon, ListBulletIcon } from './icons';
-import SettingsModal from './SettingsModal';
+import HeaderLoadingDialog from './HeaderLoadingDialog';
 import StartTabNav, { type StartTab } from './StartTabNav';
 import { publicAssetUrl as asset } from '../utils/publicAsset';
 import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
 import { ROUTES } from '../constants/routes';
 import { GITHUB_REPO_URL } from '../constants/site';
-import HistoryPanel from './HistoryPanel';
 import {
   closeSettingsPanel,
   openSettingsPanel,
   useSettingsPanelOpen,
 } from '../utils/settingsPanel';
+
+const SettingsModal = lazy(() => import('./SettingsModal'));
+const HistoryPanel = lazy(() => import('./HistoryPanel'));
 
 /** BloomRender logo for header (product branding) */
 const LogoIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -214,12 +216,28 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
           </div>
         </div>
       </header>
-      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettingsPanel} />
-      <HistoryPanel
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        onImageSelected={onImageSelected}
-      />
+      {(isSettingsOpen || isHistoryOpen) && (
+        <Suspense
+          fallback={
+            <HeaderLoadingDialog
+              label={t(isSettingsOpen ? 'settings.title' : 'history.title')}
+              onClose={() => {
+                closeSettingsPanel();
+                setIsHistoryOpen(false);
+              }}
+            />
+          }
+        >
+          {isSettingsOpen && <SettingsModal isOpen onClose={closeSettingsPanel} />}
+          {isHistoryOpen && (
+            <HistoryPanel
+              isOpen
+              onClose={() => setIsHistoryOpen(false)}
+              onImageSelected={onImageSelected}
+            />
+          )}
+        </Suspense>
+      )}
     </>
   );
 };

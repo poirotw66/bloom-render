@@ -9,6 +9,7 @@
 import { test, expect } from '@playwright/test';
 
 async function expandAllViral(page: import('@playwright/test').Page) {
+  await expect(page.getByTestId('viral-templates')).toBeVisible();
   for (let i = 0; i < 12; i++) {
     const more = page.getByTestId('viral-show-more');
     if (!(await more.isVisible().catch(() => false))) break;

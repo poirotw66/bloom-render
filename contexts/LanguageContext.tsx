@@ -11,18 +11,18 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  useRef,
 } from 'react';
-import { enMessages } from '../locales/en';
-import { zhTWMessages } from '../locales/zh-TW';
+import {
+  getLoadedMessages,
+  loadMessages,
+  type Language,
+  type Messages,
+} from '../locales/loadMessages';
 
-export type Language = 'en' | 'zh-TW';
+export type { Language } from '../locales/loadMessages';
 
 export const STORAGE_KEY_LANGUAGE = 'bloom_language';
-
-const translations: Record<Language, Record<string, string>> = {
-  en: enMessages,
-  'zh-TW': zhTWMessages,
-};
 
 interface LanguageContextType {
   language: Language;
@@ -86,16 +86,44 @@ export function getInitialLanguage(): Language {
 }
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => getInitialLanguage());
+  const [active, setActive] = useState<{ language: Language; messages?: Messages }>(() => {
+    const language = getInitialLanguage();
+    return { language, messages: getLoadedMessages(language) };
+  });
+  const [loadError, setLoadError] = useState(false);
+  const requestedLanguage = useRef(active.language);
+  const requestId = useRef(0);
+  const language = active.language;
 
   const setLanguage = useCallback((lang: Language) => {
-    setLanguageState(lang);
-    try {
-      localStorage.setItem(STORAGE_KEY_LANGUAGE, lang);
-    } catch {
-      /* private mode */
+    requestedLanguage.current = lang;
+    const current = ++requestId.current;
+    setLoadError(false);
+    const commit = (messages: Messages) => {
+      if (requestId.current !== current) return;
+      setActive({ language: lang, messages });
+      try {
+        localStorage.setItem(STORAGE_KEY_LANGUAGE, lang);
+      } catch {
+        /* private mode */
+      }
+    };
+    const cached = getLoadedMessages(lang);
+    if (cached) {
+      commit(cached);
+      return;
     }
+    void loadMessages(lang).then(commit, () => {
+      if (requestId.current === current) setLoadError(true);
+    });
   }, []);
+
+  useEffect(() => {
+    if (!active.messages) setLanguage(requestedLanguage.current);
+    return () => {
+      requestId.current += 1;
+    };
+  }, [active.messages, setLanguage]);
 
   useEffect(() => {
     document.documentElement.lang = language === 'zh-TW' ? 'zh-TW' : 'en';
@@ -103,15 +131,46 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {
-      const raw = translations[language][key] || key;
+      const raw = active.messages?.[key] || key;
       return vars ? interpolate(raw, vars) : raw;
     },
-    [language],
+    [active.messages],
   );
 
   const value = useMemo(() => ({ language, setLanguage, t }), [language, setLanguage, t]);
 
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  // Switching keeps the previous dictionary visible; the initial load shows a neutral shell.
+  const errorLabel =
+    language === 'zh-TW' ? '無法載入語言，請重試。' : 'Unable to load language. Please retry.';
+  const retryLabel = language === 'zh-TW' ? '重試' : 'Retry';
+  if (!active.messages) {
+    return (
+      <div
+        role={loadError ? 'alert' : 'status'}
+        className="min-h-svh flex items-center justify-center gap-3 theme-ink"
+      >
+        {loadError ? errorLabel : 'BloomRender…'}
+        {loadError && (
+          <button type="button" onClick={() => setLanguage(requestedLanguage.current)}>
+            {retryLabel}
+          </button>
+        )}
+      </div>
+    );
+  }
+  return (
+    <LanguageContext.Provider value={value}>
+      {loadError && (
+        <div role="alert" className="p-3 text-center theme-ink">
+          {errorLabel}{' '}
+          <button type="button" onClick={() => setLanguage(requestedLanguage.current)}>
+            {retryLabel}
+          </button>
+        </div>
+      )}
+      {children}
+    </LanguageContext.Provider>
+  );
 };
 
 export const useLanguage = () => {

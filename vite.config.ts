@@ -1,4 +1,6 @@
 import path from 'path';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 // `defineConfig` from 'vitest/config' (not plain 'vite') so the `test` field
 // below type-checks — vitest augments Vite's UserConfig type for it.
 import { defineConfig } from 'vitest/config';
@@ -9,9 +11,29 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const pagesBase = process.env.GITHUB_PAGES === 'true';
+  const localeSources = {
+    en: readFileSync(new URL('./locales/en.ts', import.meta.url), 'utf8'),
+    'zh-TW': readFileSync(new URL('./locales/zh-TW.ts', import.meta.url), 'utf8'),
+  };
+  const localeVersion = createHash('sha256')
+    .update(localeSources.en)
+    .update(localeSources['zh-TW'])
+    .digest('hex')
+    .slice(0, 16);
 
   return {
     base: pagesBase ? '/bloom-render/' : '/',
+    define: {
+      __LOCALE_CACHE_VERSION__: JSON.stringify(localeVersion),
+      __LOCALE_MESSAGE_COUNTS__: JSON.stringify(
+        Object.fromEntries(
+          Object.entries(localeSources).map(([language, source]) => [
+            language,
+            [...source.matchAll(/^  '[^']+':/gm)].length,
+          ]),
+        ),
+      ),
+    },
     server: {
       port: 3002,
       host: '0.0.0.0',
@@ -70,7 +92,12 @@ export default defineConfig(({ mode }) => {
             'examples/*.webp',
             'og.png',
           ],
-          globIgnores: ['**/ort-wasm*.wasm', '**/transformers-*.js', '**/images/**'],
+          globIgnores: [
+            '**/ort-wasm*.wasm',
+            '**/transformers-*.js',
+            '**/locale-*.js',
+            '**/images/**',
+          ],
           maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
           // SPA deep links: serve index.html for navigations (works with 404.html copy).
           navigateFallback: 'index.html',
@@ -107,9 +134,12 @@ export default defineConfig(({ mode }) => {
       exclude: ['@huggingface/transformers'],
     },
     build: {
+      manifest: true,
       rollupOptions: {
         output: {
           manualChunks(id) {
+            if (id.endsWith('/locales/en.ts')) return 'locale-en';
+            if (id.endsWith('/locales/zh-TW.ts')) return 'locale-zh-TW';
             if (id.includes('node_modules')) {
               if (id.includes('@google/genai')) {
                 return 'gemini-sdk';
@@ -121,7 +151,15 @@ export default defineConfig(({ mode }) => {
               ) {
                 return 'transformers';
               }
-              return 'vendor';
+              if (
+                /\/node_modules\/(?:react|react-dom|react-router|react-router-dom|scheduler)\//.test(
+                  id,
+                )
+              )
+                return 'vendor';
+              if (id.includes('/node_modules/jszip/')) return 'image-archive';
+              if (id.includes('/node_modules/qrcode/')) return 'share-qr';
+              if (id.includes('/node_modules/react-image-crop/')) return 'image-crop';
             }
           },
         },

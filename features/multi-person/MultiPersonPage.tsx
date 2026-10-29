@@ -113,7 +113,7 @@ const MultiPersonPage: React.FC = () => {
                         <button
                           type="button"
                           className={`${UI_BTN_SECONDARY} flex-1 text-xs py-1`}
-                          disabled={index === 0 || isDemoMode}
+                          disabled={index === 0 || isDemoMode || mp.loading}
                           onClick={() => mp.move(index, -1)}
                           aria-label={t('multi_person.move_left')}
                         >
@@ -122,7 +122,7 @@ const MultiPersonPage: React.FC = () => {
                         <button
                           type="button"
                           className={`${UI_BTN_SECONDARY} flex-1 text-xs py-1`}
-                          disabled={isDemoMode}
+                          disabled={isDemoMode || mp.loading}
                           onClick={() => mp.removeAt(index)}
                           aria-label={t('multi_person.remove')}
                         >
@@ -131,7 +131,7 @@ const MultiPersonPage: React.FC = () => {
                         <button
                           type="button"
                           className={`${UI_BTN_SECONDARY} flex-1 text-xs py-1`}
-                          disabled={index >= mp.files.length - 1 || isDemoMode}
+                          disabled={index >= mp.files.length - 1 || isDemoMode || mp.loading}
                           onClick={() => mp.move(index, 1)}
                           aria-label={t('multi_person.move_right')}
                         >
@@ -143,7 +143,7 @@ const MultiPersonPage: React.FC = () => {
                     <button
                       type="button"
                       className="flex-1 text-sm theme-ink-muted hover:theme-ink"
-                      disabled={isDemoMode || mp.files.length >= mp.max}
+                      disabled={isDemoMode || mp.files.length >= mp.max || mp.loading}
                       onClick={() => inputRef.current?.click()}
                     >
                       {t('multi_person.add_slot', { n: String(index + 1) })}
@@ -159,6 +159,7 @@ const MultiPersonPage: React.FC = () => {
               type="button"
               className={`${UI_BTN_SECONDARY} self-center`}
               data-testid="multi-person-add"
+              disabled={mp.loading}
               onClick={() => inputRef.current?.click()}
             >
               {t('multi_person.add_photos')}
@@ -171,6 +172,7 @@ const MultiPersonPage: React.FC = () => {
             multiple
             className="hidden"
             data-testid="multi-person-file"
+            disabled={mp.loading}
             onChange={(e) => {
               const list = Array.from(e.target.files ?? []);
               if (list.length) mp.addFiles(list);
@@ -206,6 +208,7 @@ const MultiPersonPage: React.FC = () => {
                       data-testid={`multi-person-template-${entry.id}`}
                       className={active ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
                       aria-pressed={active}
+                      disabled={mp.loading}
                       onClick={() => mp.setTemplateId(entry.id)}
                     >
                       {active ? t('multi_person.selected') : t('multi_person.select')}
@@ -237,7 +240,17 @@ const MultiPersonPage: React.FC = () => {
         )}
 
         {mp.loading && (
-          <ProgressIndicator progress={mp.progress} statusMessages={[t('multi_person.progress')]} />
+          <ProgressIndicator
+            progress={mp.progress}
+            statusMessages={[t('multi_person.progress')]}
+            onCancel={mp.cancel}
+          />
+        )}
+
+        {mp.cancelled && (
+          <p className="text-sm theme-ink-muted text-center" role="status">
+            {t('generation.cancelled')}
+          </p>
         )}
 
         {mp.resultUrl && (
@@ -246,14 +259,16 @@ const MultiPersonPage: React.FC = () => {
             data-testid="multi-person-result"
           >
             <h2 className="text-base font-semibold theme-ink">{t('multi_person.result_title')}</h2>
-            <VersionSwitcher
-              count={mp.versions.length}
-              activeIndex={mp.activeVersion}
-              onSelect={mp.selectVersion}
-              titleKey="multi_person.versions_title"
-              versionKey="multi_person.version_n"
-              testId="multi-person-versions"
-            />
+            <fieldset disabled={mp.loading} className="w-full border-0 p-0 m-0">
+              <VersionSwitcher
+                count={mp.versions.length}
+                activeIndex={mp.activeVersion}
+                onSelect={mp.selectVersion}
+                titleKey="multi_person.versions_title"
+                versionKey="multi_person.version_n"
+                testId="multi-person-versions"
+              />
+            </fieldset>
             <div className="relative w-full max-w-xl">
               <img
                 src={mp.resultUrl}

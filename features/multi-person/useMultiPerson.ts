@@ -5,7 +5,7 @@
  * 2–4 portraits + a multi-person viral template → one composed photo.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   getMultiPersonViralTemplates,
@@ -45,7 +45,7 @@ export function useMultiPerson() {
 
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [templateId, setTemplateId] = useState<string>(() => {
+  const [templateId, setTemplateIdState] = useState<string>(() => {
     if (initialFromNav && templates.some((x) => x.id === initialFromNav)) {
       return initialFromNav;
     }
@@ -55,7 +55,7 @@ export function useMultiPerson() {
   useEffect(() => {
     if (!initialFromNav) return;
     if (templates.some((x) => x.id === initialFromNav)) {
-      setTemplateId(initialFromNav);
+      setTemplateIdState(initialFromNav);
     }
     navigate(location.pathname, { replace: true, state: null });
     try {
@@ -71,7 +71,29 @@ export function useMultiPerson() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [cancelled, setCancelled] = useState(false);
+  const activeRun = useRef<{ controller: AbortController; stop: () => void } | null>(null);
   const MAX_VERSIONS = 4;
+
+  useEffect(
+    () => () => {
+      const run = activeRun.current;
+      activeRun.current = null;
+      run?.controller.abort();
+      run?.stop();
+    },
+    [],
+  );
+
+  const cancel = useCallback(() => {
+    const run = activeRun.current;
+    if (!run) return;
+    activeRun.current = null;
+    run.controller.abort();
+    run.stop();
+    setLoading(false);
+    setCancelled(true);
+  }, []);
 
   useDemoSampleFiles('multi-person', setFiles, 2);
 
@@ -87,17 +109,20 @@ export function useMultiPerson() {
   const providerMax = multiReferenceLimit(settings.imageProvider);
 
   const addFiles = useCallback((incoming: File[]) => {
+    if (activeRun.current) return;
     setError(null);
     setResultUrl(null);
     setFiles((prev) => [...prev, ...incoming].slice(0, MULTI_PERSON_MAX));
   }, []);
 
   const removeAt = useCallback((index: number) => {
+    if (activeRun.current) return;
     setFiles((prev) => prev.filter((_, i) => i !== index));
     setResultUrl(null);
   }, []);
 
   const move = useCallback((index: number, dir: -1 | 1) => {
+    if (activeRun.current) return;
     setFiles((prev) => {
       const next = [...prev];
       const target = index + dir;
@@ -109,8 +134,13 @@ export function useMultiPerson() {
     });
   }, []);
 
+  const setTemplateId = useCallback((id: string) => {
+    if (!activeRun.current) setTemplateIdState(id);
+  }, []);
+
   const generate = useCallback(
     async (versionIndex = 0) => {
+      if (activeRun.current) return;
       if (!providerOk) {
         setError(t('multi_person.error_provider'));
         return;
@@ -139,11 +169,19 @@ export function useMultiPerson() {
 
       setLoading(true);
       setError(null);
-      if (versionIndex === 0) setResultUrl(null);
-      const stop = startRandomProgressTicker(setProgress);
-      pushViralRecent(selectedTemplate.id);
+      setCancelled(false);
+      setProgress(0);
+      const run: { controller: AbortController; stop: () => void } = {
+        controller: new AbortController(),
+        stop: () => undefined,
+      };
+      activeRun.current = run;
+      run.stop = startRandomProgressTicker((value) => {
+        if (activeRun.current === run) setProgress(value);
+      });
 
       try {
+        pushViralRecent(selectedTemplate.id);
         let prompt = buildMultiPersonPromptFromTemplate(selectedTemplate, files.length);
         if (versionIndex > 0) {
           prompt += `\nVariation ${versionIndex + 1}: adjust seating and lighting slightly while keeping every identity unchanged.`;
@@ -155,39 +193,45 @@ export function useMultiPerson() {
             apiKey: settings.effectiveApiKey,
             model: settings.effectiveModel,
             provider: settings.imageProvider,
+            abortSignal: run.controller.signal,
           },
           aspectRatio: selectedTemplate.aspectRatio,
           includeImageConfig: true,
           context: 'multi-person',
           viralTemplateId: selectedTemplate.id,
         });
+        if (activeRun.current !== run || run.controller.signal.aborted) return;
         setResultUrl(url);
         setVersions((prev) => {
           const next = versionIndex === 0 ? [url] : [...prev, url].slice(-MAX_VERSIONS);
           setActiveVersion(next.length - 1);
           return next;
         });
+        setProgress(100);
       } catch (err) {
-        if (!isAbortError(err)) {
+        if (activeRun.current === run && !isAbortError(err)) {
           logger.error('Multi-person generation failed', err);
           setError(formatApiErrorMessage(err, t, 'multi_person'));
         }
       } finally {
-        stop();
-        setProgress(100);
-        setLoading(false);
+        run.stop();
+        if (activeRun.current === run) {
+          activeRun.current = null;
+          setLoading(false);
+        }
       }
     },
     [files, providerMax, providerOk, selectedTemplate, settings, t],
   );
 
   const regenerate = useCallback(() => {
-    if (versions.length >= MAX_VERSIONS) return;
+    if (activeRun.current || versions.length >= MAX_VERSIONS) return;
     void generate(versions.length);
   }, [generate, versions.length]);
 
   const selectVersion = useCallback(
     (index: number) => {
+      if (activeRun.current) return;
       const url = versions[index];
       if (!url) return;
       setActiveVersion(index);
@@ -209,6 +253,8 @@ export function useMultiPerson() {
     loading,
     progress,
     error,
+    cancelled,
+    cancel,
     providerOk,
     min: MULTI_PERSON_MIN,
     max: MULTI_PERSON_MAX,

@@ -20,6 +20,7 @@ export const enMessages: Record<string, string> = {
   'star_nudge.cta': 'Star on GitHub',
   'star_nudge.dismiss': 'Dismiss',
   'generation.cancel': 'Cancel',
+  'generation.cancelled': 'Generation cancelled.',
   'generation.cancel_hint':
     'Stops waiting for the result. Requests already sent may still be billed.',
   'generation.partial_title': 'Generated {done} of {total} images',
@@ -1300,6 +1301,7 @@ export const enMessages: Record<string, string> = {
   'batch.processing': 'Processing {current} of {total}',
   'batch.progress': '{completed} of {total} completed',
   'batch.completed': 'Batch processing completed!',
+  'batch.cancelled': 'Batch cancelled. Completed images are kept.',
   'batch.summary': 'Success: {success}, Failed: {failed}, Total: {total}',
   'batch.success_count': '{count} successful',
   'batch.error_count': '{count} failed',

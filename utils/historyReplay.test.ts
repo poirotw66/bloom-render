@@ -14,7 +14,7 @@ import {
 
 describe('historyReplay', () => {
   it('maps history types to routes', () => {
-    expect(routeForHistoryType('generate')).toBe(ROUTES.HOME);
+    expect(routeForHistoryType('generate')).toBe(ROUTES.GENERATE);
     expect(routeForHistoryType('portrait')).toBe(ROUTES.PORTRAIT);
     expect(routeForHistoryType('couple')).toBe(ROUTES.COUPLE_GROUP);
     expect(routeForHistoryType('unknown')).toBe(ROUTES.HOME);

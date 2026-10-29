@@ -7,6 +7,10 @@
 
 import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { loadMessages } from './locales/loadMessages';
+
+// Production loads only the active locale; existing synchronous fixtures start with both cached.
+await Promise.all([loadMessages('en'), loadMessages('zh-TW')]);
 
 // This file runs for every test file, node-environment suites included (most
 // of the existing 72 tests are plain node). Only touch DOM globals when a DOM

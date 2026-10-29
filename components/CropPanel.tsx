@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+import 'react-image-crop/dist/ReactCrop.css';
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
