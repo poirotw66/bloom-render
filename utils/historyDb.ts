@@ -172,7 +172,10 @@ function runTransaction<T>(
         const tx = db.transaction(STORE_NAME, mode);
         const store = tx.objectStore(STORE_NAME);
         const request = run(store);
-        request.onsuccess = () => resolve(request.result);
+        // Request success can precede a commit failure or explicit transaction abort.
+        tx.oncomplete = () => resolve(request.result);
+        tx.onabort = () => reject(tx.error ?? new Error('History transaction aborted'));
+        tx.onerror = () => reject(tx.error);
         request.onerror = () => reject(request.error);
       }),
   );
@@ -224,6 +227,7 @@ export async function deleteHistoryItems(ids: string[]): Promise<void> {
     const store = tx.objectStore(STORE_NAME);
     for (const id of ids) store.delete(id);
     tx.oncomplete = () => resolve();
+    tx.onabort = () => reject(tx.error ?? new Error('History transaction aborted'));
     tx.onerror = () => reject(tx.error);
   });
 }

@@ -38,6 +38,7 @@ export type { HistoryItem };
 
 let history: HistoryItem[] = [];
 let initPromise: Promise<void> | null = null;
+let mutationQueue: Promise<void> = Promise.resolve();
 const listeners = new Set<() => void>();
 
 function withUrl(item: StoredHistoryItem): HistoryItem {
@@ -87,6 +88,20 @@ function getSnapshot(): HistoryItem[] {
   return history;
 }
 
+/** Keep optimistic updates and their rollbacks in the same order as storage writes. */
+function enqueueMutation<T>(mutation: () => Promise<T>): Promise<T> {
+  const next = mutationQueue.then(async () => {
+    await ensureInitialized();
+    return mutation();
+  });
+  // A failed mutation must not prevent later writes from running.
+  mutationQueue = next.then(
+    () => undefined,
+    () => undefined,
+  );
+  return next;
+}
+
 async function addToHistory(
   type: string,
   result: string,
@@ -99,8 +114,6 @@ async function addToHistory(
     recordGenerationSuccess();
     return `demo-skip-${type}`;
   }
-
-  await ensureInitialized();
 
   let sourceBlob: Blob | undefined;
   if (typeof source === 'string') {
@@ -121,59 +134,65 @@ async function addToHistory(
     options,
     sourceBlob,
   };
-  const item = withUrl(stored);
-  const previous = history;
-  setHistory(sortHistoryItems([item, ...previous]));
+  return enqueueMutation(async () => {
+    const item = withUrl(stored);
+    setHistory(sortHistoryItems([item, ...history]));
 
-  try {
-    await putHistoryItem(stored);
+    try {
+      await putHistoryItem(stored);
+    } catch (err) {
+      logger.error('Failed to save history item:', err);
+      setHistory(history.filter((entry) => entry.id !== item.id));
+      revokeAll([item]);
+      return item.id;
+    }
+    recordGenerationSuccess();
 
     const { keep, overflow } = splitOverflow(history, MAX_HISTORY_ITEMS);
     if (overflow.length > 0) {
-      setHistory(keep);
-      revokeAll(overflow);
-      await deleteHistoryItems(overflow.map((evicted) => evicted.id));
+      try {
+        await deleteHistoryItems(overflow.map((evicted) => evicted.id));
+        setHistory(keep);
+        revokeAll(overflow);
+      } catch (err) {
+        // The new image is saved. Keep usable URLs and retry retention on the next add.
+        logger.error('Failed to remove expired history items:', err);
+      }
     }
-    recordGenerationSuccess();
-  } catch (err) {
-    logger.error('Failed to save history item:', err);
-    // Roll back the optimistic add; the result wasn't actually persisted.
-    setHistory(previous);
-    URL.revokeObjectURL(item.url);
-    if (item.sourceUrl) URL.revokeObjectURL(item.sourceUrl);
-  }
 
-  return item.id;
+    return item.id;
+  });
 }
 
 async function removeFromHistory(id: string): Promise<void> {
-  const previous = history;
-  const removed = previous.find((item) => item.id === id);
-  setHistory(previous.filter((item) => item.id !== id));
+  return enqueueMutation(async () => {
+    const previous = history;
+    const removed = previous.find((item) => item.id === id);
+    setHistory(previous.filter((item) => item.id !== id));
 
-  try {
-    await deleteHistoryItems([id]);
-    if (removed) {
-      URL.revokeObjectURL(removed.url);
-      if (removed.sourceUrl) URL.revokeObjectURL(removed.sourceUrl);
+    try {
+      await deleteHistoryItems([id]);
+      if (removed) revokeAll([removed]);
+    } catch (err) {
+      logger.error('Failed to delete history item:', err);
+      setHistory(previous);
     }
-  } catch (err) {
-    logger.error('Failed to delete history item:', err);
-    setHistory(previous);
-  }
+  });
 }
 
 async function clearHistory(): Promise<void> {
-  const previous = history;
-  setHistory([]);
+  return enqueueMutation(async () => {
+    const previous = history;
+    setHistory([]);
 
-  try {
-    await clearHistoryItems();
-    revokeAll(previous);
-  } catch (err) {
-    logger.error('Failed to clear history:', err);
-    setHistory(previous);
-  }
+    try {
+      await clearHistoryItems();
+      revokeAll(previous);
+    } catch (err) {
+      logger.error('Failed to clear history:', err);
+      setHistory(previous);
+    }
+  });
 }
 
 export function useHistory() {

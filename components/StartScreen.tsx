@@ -13,7 +13,7 @@ import { dataURLtoFile } from '../utils/fileUtils';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import { allFailedError } from '../utils/generationHelpers';
 import { buildHistoryOptions } from '../utils/historyOptions';
-import { useGenerationFailures } from '../hooks/useGenerationFailures';
+import { useGenerationFailures, type IndexedGenerationTask } from '../hooks/useGenerationFailures';
 import { useHistory } from '../hooks/useHistory';
 import { fileFromSourceUrl, useHistoryReplay } from '../hooks/useHistoryReplay';
 import { usePasteImage } from '../hooks/usePasteImage';
@@ -166,6 +166,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const generationRun = useGenerationFailures();
+  const generationTaskRef = useRef<IndexedGenerationTask<{ index: number; url: string }> | null>(
+    null,
+  );
+  const generatedSlotsRef = useRef<Array<{ index: number; url: string }>>([]);
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
   const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
 
@@ -204,8 +209,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
   // Only one of the two flows can occupy the button at a time, but flipping
   // the toggle mid-request must not silently swap which flow "isGenerating"
   // is guarding — so anything that can start a new run checks both.
-  const anyRunning = isGenerating || compareRun.isRunning;
-  const busy = compareEnabled ? compareRun.isRunning : isGenerating;
+  const anyRunning = isGenerating || generationRun.isRunning || compareRun.isRunning;
+  const busy = compareEnabled ? compareRun.isRunning : isGenerating || generationRun.isRunning;
 
   const pickUploadFile = useCallback(
     (file: File) => {
@@ -241,36 +246,44 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     setIsGenerating(true);
     setError(null);
     setGeneratedImages([]);
+    generatedSlotsRef.current = [];
+    generationRun.reset();
 
-    try {
-      const urls = await generateImageFromText(
+    // Capture this run's inputs so retrying a failed slot uses the same prompt,
+    // reference and provider even if settings change while results are visible.
+    const serviceSettings = settings.toServiceSettings();
+    const historyOptions = buildHistoryOptions('generate', serviceSettings, {
+      prompt: generationPrompt,
+      aspectRatio,
+      numberOfImages,
+      hasReference: Boolean(referenceFile),
+    });
+    const task: IndexedGenerationTask<{ index: number; url: string }> = async (index, signal) => {
+      const [url] = await generateImageFromText(
         generationPrompt,
         aspectRatio,
-        numberOfImages,
-        settings.toServiceSettings(),
+        1,
+        { ...serviceSettings, abortSignal: signal },
         referenceFile,
         { viralTemplateId },
       );
-      for (const [index, url] of urls.entries()) {
-        void addToHistory(
-          'generate',
-          url,
-          buildHistoryOptions('generate', settings, {
-            prompt: generationPrompt,
-            aspectRatio,
-            numberOfImages,
-            variationIndex: index,
-            hasReference: Boolean(referenceFile),
-          }),
-        );
-      }
-      if (urls.length === 1) {
-        // If only one image, proceed directly to editing
-        const newFile = dataURLtoFile(urls[0], `generated-${Date.now()}.png`);
+      void addToHistory('generate', url, { ...historyOptions, variationIndex: index });
+      return { index, url };
+    };
+    generationTaskRef.current = task;
+
+    try {
+      const { results, failures, cancelled } = await generationRun.runBatch(numberOfImages, task);
+      if (cancelled) return;
+      if (results.length === 0) throw allFailedError(failures);
+
+      generatedSlotsRef.current = results;
+      if (numberOfImages === 1) {
+        const newFile = dataURLtoFile(results[0].url, `generated-${Date.now()}.png`);
         onImageSelected(newFile);
       } else {
-        // If multiple images, show selection screen
-        setGeneratedImages(urls);
+        // Keep partial batches here, including one success, so missing slots can be retried.
+        setGeneratedImages(results.map(({ url }) => url));
       }
     } catch (err) {
       setError(formatApiErrorMessage(err, t, 'generation'));
@@ -278,6 +291,27 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const handleGenerationRetryFailed = async () => {
+    if (!generationTaskRef.current || generationRun.isRunning) return;
+    try {
+      const { results, cancelled } = await generationRun.retryFailed(generationTaskRef.current);
+      if (cancelled || results.length === 0) return;
+      const slots = [...generatedSlotsRef.current, ...results].sort((a, b) => a.index - b.index);
+      generatedSlotsRef.current = slots;
+      setGeneratedImages(slots.map(({ url }) => url));
+    } catch (err) {
+      setError(formatApiErrorMessage(err, t, 'generation'));
+      logger.error('Text-to-image retry failed:', err);
+    }
+  };
+
+  const handleGenerationReset = () => {
+    setGeneratedImages([]);
+    generatedSlotsRef.current = [];
+    generationTaskRef.current = null;
+    generationRun.reset();
   };
 
   const runCompareSlot = (model: ModelType, slotIndex: number, signal: AbortSignal) => {
@@ -528,6 +562,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
             className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-6 rounded-2xl border ${s.borderCard}`}
           >
             <h3 className="text-xl font-bold text-white">{t('start.select_image')}</h3>
+            <GenerationFailureNotice
+              failures={generationRun.failures}
+              requestedCount={generationRun.requestedCount}
+              succeededCount={generationRun.succeededCount}
+              isRetrying={generationRun.isRetrying}
+              onRetry={handleGenerationRetryFailed}
+              context="generation"
+            />
             <div className="flex flex-wrap items-center justify-center gap-3 w-full">
               {generatedImages.length > 1 && (
                 <button type="button" onClick={handleDownloadAllZip} className={UI_BTN_SUCCESS}>
@@ -535,7 +577,12 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                   {t('start.download_all_zip')}
                 </button>
               )}
-              <button type="button" onClick={() => setGeneratedImages([])} className={UI_BTN_GHOST}>
+              <button
+                type="button"
+                onClick={handleGenerationReset}
+                disabled={generationRun.isRunning}
+                className={UI_BTN_GHOST}
+              >
                 {t('start.generate_new')}
               </button>
             </div>
@@ -574,6 +621,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ tab, onImageSelected, navigat
                       <button
                         type="button"
                         onClick={() => handleSelectGenerated(url, idx)}
+                        disabled={generationRun.isRunning}
                         className={UI_BTN_PRIMARY}
                         aria-label={`${t('start.edit_this')} ${idx + 1}`}
                       >
