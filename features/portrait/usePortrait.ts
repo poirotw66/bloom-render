@@ -21,6 +21,7 @@ import {
   startRandomProgressTicker,
 } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
 import { DEFAULT_PORTRAIT_TYPE, DEFAULT_PORTRAIT_SPEC } from '../../constants/portrait';
 import type { PortraitType, OutputSpec } from '../../types';
 
@@ -30,6 +31,8 @@ export function usePortrait() {
   const [searchParams] = useSearchParams();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
+  const attempts = useGenerationAttempt();
+  const cancelRun = run.cancel;
 
   const [portraitFile, setPortraitFile] = useState<File | null>(null);
   const [portraitResult, setPortraitResult] = useState<string | null>(null);
@@ -43,6 +46,13 @@ export function usePortrait() {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
+
+  const cancelGeneration = useCallback(() => {
+    attempts.cancel();
+    cancelRun();
+    setPortraitLoading(false);
+    setProgress(0);
+  }, [attempts, cancelRun]);
 
   useDemoSampleInput('portrait', setPortraitFile);
 
@@ -107,6 +117,7 @@ export function usePortrait() {
         variationIndex,
       })
         .then((url) => {
+          if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
           addToHistory(
             'portrait',
             url,
@@ -133,6 +144,8 @@ export function usePortrait() {
       setPortraitError(t('portrait.error_no_image'));
       return;
     }
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     setPortraitError(null);
     setPortraitLoading(true);
     setProgress(0);
@@ -140,7 +153,10 @@ export function usePortrait() {
     setPortraitResults([]);
     run.reset();
 
-    const stopProgress = startRandomProgressTicker(setProgress);
+    const stopProgress = startRandomProgressTicker((value) => {
+      if (attempt.isCurrent()) setProgress(value);
+    });
+    attempt.onCleanup(stopProgress);
 
     try {
       const { results, failures, cancelled } = await run.runBatch(quantity, (index, signal) =>
@@ -148,7 +164,7 @@ export function usePortrait() {
       );
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
 
       setProgress(100);
 
@@ -164,31 +180,39 @@ export function usePortrait() {
         setPortraitResults(results);
       }
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setPortraitError(formatApiErrorMessage(err, t, 'portrait'));
       logger.error('Portrait generation error:', err);
     } finally {
-      stopProgress();
-      setPortraitLoading(false);
-      setProgress(0);
+      if (attempt.isCurrent()) {
+        setPortraitLoading(false);
+        setProgress(0);
+      }
+      attempts.finish(attempt);
     }
-  }, [portraitFile, t, quantity, run, generateOne]);
+  }, [attempts, portraitFile, t, quantity, run, generateOne]);
 
   const handleRetryFailed = useCallback(async () => {
     if (!portraitFile) return;
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered } = await run.retryFailed((index, signal) =>
+      const { results: recovered, cancelled } = await run.retryFailed((index, signal) =>
         generateOne(portraitFile, index, signal),
       );
-      if (recovered.length === 0) return;
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
 
       setPortraitResults((prev) => [...prev, ...recovered]);
       setPortraitResult(null);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setPortraitError(formatApiErrorMessage(err, t, 'portrait'));
       logger.error('Portrait retry error:', err);
+    } finally {
+      attempts.finish(attempt);
     }
-  }, [portraitFile, run, generateOne, t]);
+  }, [attempts, portraitFile, run, generateOne, t]);
 
   const handlePortraitDownload = useCallback(() => {
     if (!portraitResult) return;
@@ -199,10 +223,11 @@ export function usePortrait() {
   }, [portraitResult]);
 
   const clearPortraitResult = useCallback(() => {
+    cancelGeneration();
     setPortraitResult(null);
     setPortraitResults([]);
     run.reset();
-  }, [run]);
+  }, [run, cancelGeneration]);
 
   const handlePortraitBatchDownload = useCallback(async () => {
     if (portraitResults.length === 0) return;
@@ -265,7 +290,7 @@ export function usePortrait() {
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
     isRunning: run.isRunning,
-    cancelGeneration: run.cancel,
+    cancelGeneration,
     handleRetryFailed,
     isDraggingOver,
     handleDragOver,

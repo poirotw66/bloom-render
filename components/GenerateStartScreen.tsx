@@ -14,6 +14,7 @@ import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import { allFailedError } from '../utils/generationHelpers';
 import { buildHistoryOptions } from '../utils/historyOptions';
 import { useGenerationFailures, type IndexedGenerationTask } from '../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../hooks/useGenerationAttempt';
 import { useHistory } from '../hooks/useHistory';
 import { fileFromSourceUrl, useHistoryReplay } from '../hooks/useHistoryReplay';
 import CostEstimateBadge from './CostEstimateBadge';
@@ -113,6 +114,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   const [error, setError] = useState<string | null>(null);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const generationRun = useGenerationFailures();
+  const generationAttempts = useGenerationAttempt();
   const generationTaskRef = useRef<IndexedGenerationTask<{ index: number; url: string }> | null>(
     null,
   );
@@ -139,6 +141,9 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   const [compareResults, setCompareResults] = useState<CompareSlotResult[]>([]);
   const [compareRunModels, setCompareRunModels] = useState<ModelType[]>([]);
   const compareRun = useGenerationFailures();
+  const compareAttempts = useGenerationAttempt();
+  const cancelGenerationRun = generationRun.cancel;
+  const cancelComparisonRun = compareRun.cancel;
 
   // Excludes the primary model so the two slots can never collide, which
   // would make partitionSettled's model-based bookkeeping ambiguous.
@@ -171,6 +176,8 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
       return;
     }
 
+    const attempt = generationAttempts.begin();
+    if (!attempt.isCurrent()) return;
     setIsGenerating(true);
     setError(null);
     setGeneratedImages([]);
@@ -195,6 +202,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
         referenceFile,
         { viralTemplateId },
       );
+      if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
       void addToHistory('generate', url, { ...historyOptions, variationIndex: index });
       return { index, url };
     };
@@ -202,7 +210,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
 
     try {
       const { results, failures, cancelled } = await generationRun.runBatch(numberOfImages, task);
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
       if (results.length === 0) throw allFailedError(failures);
 
       generatedSlotsRef.current = results;
@@ -214,28 +222,37 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
         setGeneratedImages(results.map(({ url }) => url));
       }
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'generation'));
       logger.error('Text-to-image generation failed:', err);
     } finally {
-      setIsGenerating(false);
+      if (attempt.isCurrent()) setIsGenerating(false);
+      generationAttempts.finish(attempt);
     }
   };
 
   const handleGenerationRetryFailed = async () => {
     if (!generationTaskRef.current || generationRun.isRunning) return;
+    const attempt = generationAttempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
       const { results, cancelled } = await generationRun.retryFailed(generationTaskRef.current);
-      if (cancelled || results.length === 0) return;
+      if (cancelled || !attempt.isCurrent() || results.length === 0) return;
       const slots = [...generatedSlotsRef.current, ...results].sort((a, b) => a.index - b.index);
       generatedSlotsRef.current = slots;
       setGeneratedImages(slots.map(({ url }) => url));
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'generation'));
       logger.error('Text-to-image retry failed:', err);
+    } finally {
+      generationAttempts.finish(attempt);
     }
   };
 
   const handleGenerationReset = () => {
+    generationAttempts.cancel();
+    setIsGenerating(false);
     setGeneratedImages([]);
     generatedSlotsRef.current = [];
     generationTaskRef.current = null;
@@ -251,6 +268,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
       model,
       abortSignal: signal,
     }).then((urls): CompareSlotResult => {
+      if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
       const url = urls[0];
       void addToHistory(
         'generate',
@@ -282,6 +300,8 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
       return;
     }
 
+    const attempt = compareAttempts.begin();
+    if (!attempt.isCurrent()) return;
     const modelsToRun: ModelType[] = [settings.model, effectiveCompareModel];
     setCompareRunModels(modelsToRun);
     setError(null);
@@ -291,7 +311,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
       const { results, failures, cancelled } = await compareRun.runBatch(2, (index, signal) =>
         runCompareSlot(modelsToRun[index], index, signal),
       );
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
 
       // Both models failing almost always shares one cause (bad key, blocked
       // prompt); fall back to the same single-error banner the plain flow
@@ -301,25 +321,39 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
       }
       setCompareResults(results);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'generation'));
       logger.error('Model comparison generation failed:', err);
+    } finally {
+      compareAttempts.finish(attempt);
     }
   };
 
   const handleCompareRetryFailed = async () => {
+    const attempt = compareAttempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
       const { results: recovered, cancelled } = await compareRun.retryFailed((index, signal) =>
         runCompareSlot(compareRunModels[index], index, signal),
       );
-      if (cancelled || recovered.length === 0) return;
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
       setCompareResults((prev) => [...prev, ...recovered]);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'generation'));
       logger.error('Model comparison retry failed:', err);
+    } finally {
+      compareAttempts.finish(attempt);
     }
   };
 
+  const handleCompareCancel = () => {
+    compareAttempts.cancel();
+    compareRun.cancel();
+  };
+
   const handleCompareReset = () => {
+    compareAttempts.cancel();
     setCompareResults([]);
     setCompareRunModels([]);
     compareRun.reset();
@@ -356,6 +390,15 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
       zipFileName: `generated-images-${Date.now()}.zip`,
     });
   };
+
+  useEffect(() => {
+    if (active) return;
+    generationAttempts.cancel();
+    cancelGenerationRun();
+    compareAttempts.cancel();
+    cancelComparisonRun();
+    setIsGenerating(false);
+  }, [active, generationAttempts, cancelGenerationRun, compareAttempts, cancelComparisonRun]);
 
   if (!active) return null;
   return (
@@ -457,7 +500,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
             {compareRun.isRunning ? (
               <ProgressIndicator
                 statusMessages={['start.compare_generating']}
-                onCancel={compareRun.cancel}
+                onCancel={handleCompareCancel}
               />
             ) : (
               <>

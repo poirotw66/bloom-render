@@ -21,6 +21,7 @@ import {
   startRandomProgressTicker,
 } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
 import { DEFAULT_THEMED_TYPE } from '../../constants/themed';
 import type { ThemedType } from '../../types';
 
@@ -30,6 +31,8 @@ export function useThemed() {
   const [searchParams] = useSearchParams();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
+  const attempts = useGenerationAttempt();
+  const cancelRun = run.cancel;
 
   const [themedFile, setThemedFile] = useState<File | null>(null);
   const [themedResult, setThemedResult] = useState<string | null>(null);
@@ -43,6 +46,13 @@ export function useThemed() {
   const [quantity, setQuantity] = useState<number>(1);
   const [outputSize, setOutputSize] = useState<'1K' | '2K' | '4K'>('1K');
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '16:9' | '9:16'>('16:9');
+
+  const cancelGeneration = useCallback(() => {
+    attempts.cancel();
+    cancelRun();
+    setThemedLoading(false);
+    setProgress(0);
+  }, [attempts, cancelRun]);
 
   useDemoSampleInput('themed', setThemedFile);
 
@@ -99,6 +109,7 @@ export function useThemed() {
         aspectRatio,
       })
         .then((url) => {
+          if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
           addToHistory(
             'themed',
             url,
@@ -125,6 +136,8 @@ export function useThemed() {
       setThemedError(t('themed.error_no_image'));
       return;
     }
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     setThemedError(null);
     setThemedLoading(true);
     setProgress(0);
@@ -132,7 +145,10 @@ export function useThemed() {
     setThemedResults([]);
     run.reset();
 
-    const stopProgress = startRandomProgressTicker(setProgress);
+    const stopProgress = startRandomProgressTicker((value) => {
+      if (attempt.isCurrent()) setProgress(value);
+    });
+    attempt.onCleanup(stopProgress);
 
     try {
       const { results, failures, cancelled } = await run.runBatch(quantity, (index, signal) =>
@@ -140,7 +156,7 @@ export function useThemed() {
       );
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
 
       setProgress(100);
 
@@ -156,31 +172,39 @@ export function useThemed() {
         setThemedResults(results);
       }
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setThemedError(formatApiErrorMessage(err, t, 'themed'));
       logger.error('Themed generation error:', err);
     } finally {
-      stopProgress();
-      setThemedLoading(false);
-      setProgress(0);
+      if (attempt.isCurrent()) {
+        setThemedLoading(false);
+        setProgress(0);
+      }
+      attempts.finish(attempt);
     }
-  }, [themedFile, t, quantity, run, generateOne]);
+  }, [attempts, themedFile, t, quantity, run, generateOne]);
 
   const handleRetryFailed = useCallback(async () => {
     if (!themedFile) return;
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered } = await run.retryFailed((index, signal) =>
+      const { results: recovered, cancelled } = await run.retryFailed((index, signal) =>
         generateOne(themedFile, index, signal),
       );
-      if (recovered.length === 0) return;
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
 
       setThemedResults((prev) => [...prev, ...recovered]);
       setThemedResult(null);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setThemedError(formatApiErrorMessage(err, t, 'themed'));
       logger.error('Themed retry error:', err);
+    } finally {
+      attempts.finish(attempt);
     }
-  }, [themedFile, run, generateOne, t]);
+  }, [attempts, themedFile, run, generateOne, t]);
 
   const handleThemedDownload = useCallback(() => {
     if (!themedResult) return;
@@ -191,10 +215,11 @@ export function useThemed() {
   }, [themedResult]);
 
   const clearThemedResult = useCallback(() => {
+    cancelGeneration();
     setThemedResult(null);
     setThemedResults([]);
     run.reset();
-  }, [run]);
+  }, [run, cancelGeneration]);
 
   const handleThemedBatchDownload = useCallback(async () => {
     if (themedResults.length === 0) return;
@@ -252,7 +277,7 @@ export function useThemed() {
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
     isRunning: run.isRunning,
-    cancelGeneration: run.cancel,
+    cancelGeneration,
     handleRetryFailed,
     isDraggingOver,
     handleDragOver,

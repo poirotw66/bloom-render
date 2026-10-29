@@ -21,6 +21,7 @@ import {
   startRandomProgressTicker,
 } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
 import {
   DEFAULT_ID_TYPE,
   DEFAULT_RETOUCH_LEVEL,
@@ -53,6 +54,8 @@ export function useIdPhoto() {
   const [searchParams] = useSearchParams();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
+  const attempts = useGenerationAttempt();
+  const cancelRun = run.cancel;
 
   const [idPhotoFile, setIdPhotoFile] = useState<File | null>(null);
   const [idPhotoResult, setIdPhotoResult] = useState<string | null>(null);
@@ -77,6 +80,13 @@ export function useIdPhoto() {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
+
+  const cancelGeneration = useCallback(() => {
+    attempts.cancel();
+    cancelRun();
+    setIdPhotoLoading(false);
+    setProgress(0);
+  }, [attempts, cancelRun]);
 
   useDemoSampleInput('idphoto', setIdPhotoFile);
 
@@ -159,6 +169,7 @@ export function useIdPhoto() {
           if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
           // Crop to the selected physical size at 300 DPI (demo assets included).
           const cropped = await cropIdPhotoToSize(url, pixels.width, pixels.height);
+          if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
           addToHistory(
             'idphoto',
             cropped,
@@ -206,6 +217,8 @@ export function useIdPhoto() {
       setIdPhotoError(t('idphoto.error_custom_clothing_empty'));
       return;
     }
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     setIdPhotoError(null);
     setIdPhotoLoading(true);
     setProgress(0);
@@ -213,7 +226,10 @@ export function useIdPhoto() {
     setIdPhotoResults([]);
     run.reset();
 
-    const stopProgress = startRandomProgressTicker(setProgress);
+    const stopProgress = startRandomProgressTicker((value) => {
+      if (attempt.isCurrent()) setProgress(value);
+    });
+    attempt.onCleanup(stopProgress);
 
     try {
       const { results, failures, cancelled } = await run.runBatch(quantity, (index, signal) =>
@@ -221,7 +237,7 @@ export function useIdPhoto() {
       );
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
 
       setProgress(100);
 
@@ -237,14 +253,18 @@ export function useIdPhoto() {
         setIdPhotoResults(results);
       }
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setIdPhotoError(formatApiErrorMessage(err, t, 'idphoto'));
       logger.error('ID photo generation error:', err);
     } finally {
-      stopProgress();
-      setIdPhotoLoading(false);
-      setProgress(0);
+      if (attempt.isCurrent()) {
+        setIdPhotoLoading(false);
+        setProgress(0);
+      }
+      attempts.finish(attempt);
     }
   }, [
+    attempts,
     idPhotoFile,
     idPhotoClothingOption,
     idPhotoClothingCustomText,
@@ -258,19 +278,24 @@ export function useIdPhoto() {
   const handleRetryFailed = useCallback(async () => {
     if (!idPhotoFile) return;
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered } = await run.retryFailed((index, signal) =>
+      const { results: recovered, cancelled } = await run.retryFailed((index, signal) =>
         generateOne(idPhotoFile, index, signal),
       );
-      if (recovered.length === 0) return;
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
 
       setIdPhotoResults((prev) => [...prev, ...recovered]);
       setIdPhotoResult(null);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setIdPhotoError(formatApiErrorMessage(err, t, 'idphoto'));
       logger.error('ID photo retry error:', err);
+    } finally {
+      attempts.finish(attempt);
     }
-  }, [idPhotoFile, run, generateOne, t]);
+  }, [attempts, idPhotoFile, run, generateOne, t]);
 
   const handleIdPhotoDownload = useCallback(() => {
     if (!idPhotoResult) return;
@@ -281,10 +306,11 @@ export function useIdPhoto() {
   }, [idPhotoResult]);
 
   const clearIdPhotoResult = useCallback(() => {
+    cancelGeneration();
     setIdPhotoResult(null);
     setIdPhotoResults([]);
     run.reset();
-  }, [run]);
+  }, [run, cancelGeneration]);
 
   const handleIdPhotoBatchDownload = useCallback(async () => {
     if (idPhotoResults.length === 0) return;
@@ -379,7 +405,7 @@ export function useIdPhoto() {
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
     isRunning: run.isRunning,
-    cancelGeneration: run.cancel,
+    cancelGeneration,
     handleRetryFailed,
     clearIdPhotoResult,
     isDraggingOver,

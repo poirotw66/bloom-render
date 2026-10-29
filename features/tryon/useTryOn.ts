@@ -18,6 +18,7 @@ import { buildHistoryOptions } from '../../utils/historyOptions';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { allFailedError } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
 import {
   TRYON_BACKGROUNDS,
   TRYON_STYLES,
@@ -40,6 +41,8 @@ export function useTryOn() {
   const settings = useSettings();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
+  const attempts = useGenerationAttempt();
+  const cancelRun = run.cancel;
 
   const [personFile, setPersonFile] = useState<File | null>(null);
   const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
@@ -75,6 +78,13 @@ export function useTryOn() {
       void fileFromSourceUrl(payload.sourceUrl, 'tryon-person.png').then(setPersonFile);
     }
   });
+
+  const cancelGeneration = useCallback(() => {
+    attempts.cancel();
+    cancelRun();
+    setLoading(false);
+    setProgress(0);
+  }, [attempts, cancelRun]);
 
   // Person preview URL
   useEffect(() => {
@@ -183,6 +193,7 @@ export function useTryOn() {
         outputSize,
         aspectRatio,
       }).then((dataUrl) => {
+        if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
         addToHistory(
           'tryon',
           dataUrl,
@@ -216,6 +227,8 @@ export function useTryOn() {
       return;
     }
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -230,12 +243,14 @@ export function useTryOn() {
       let completedCount = 0;
       const { results, failures, cancelled } = await run.runBatch(total, (i, signal) =>
         generateOne(personFile, clothingFiles, i, total, signal).then((dataUrl) => {
+          if (signal.aborted || !attempt.isCurrent())
+            throw new DOMException('Aborted', 'AbortError');
           completedCount += 1;
           setProgress(Math.round((completedCount / total) * 90));
           return dataUrl;
         }),
       );
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
       generated.push(...results);
 
       setProgress(100);
@@ -250,6 +265,7 @@ export function useTryOn() {
         setResults(generated);
       }
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'tryon'));
       logger.error('Try-on generation error:', err);
       if (generated.length > 0) {
@@ -257,36 +273,45 @@ export function useTryOn() {
         setResult(null);
       }
     } finally {
-      setLoading(false);
-      setProgress(0);
+      if (attempt.isCurrent()) {
+        setLoading(false);
+        setProgress(0);
+      }
+      attempts.finish(attempt);
     }
-  }, [personFile, clothingFiles, quantity, t, run, generateOne]);
+  }, [attempts, personFile, clothingFiles, quantity, t, run, generateOne]);
 
   const handleRetryFailed = useCallback(async () => {
     if (!personFile) return;
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered } = await run.retryFailed((i, signal) =>
+      const { results: recovered, cancelled } = await run.retryFailed((i, signal) =>
         generateOne(personFile, clothingFiles, i, quantity, signal),
       );
-      if (recovered.length === 0) return;
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
 
       setResults((prev) => [...prev, ...recovered]);
       setResult(null);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'tryon'));
       logger.error('Try-on retry error:', err);
+    } finally {
+      attempts.finish(attempt);
     }
-  }, [personFile, clothingFiles, quantity, run, generateOne, t]);
+  }, [attempts, personFile, clothingFiles, quantity, run, generateOne, t]);
 
   const clearResult = useCallback(() => {
+    cancelGeneration();
     setResult(null);
     setResults([]);
     setPersonFile(null);
     setClothingFiles([]);
     setError(null);
     run.reset();
-  }, [run]);
+  }, [run, cancelGeneration]);
 
   const handleBatchDownload = useCallback(async () => {
     const list = results.length > 0 ? results : result ? [result] : [];
@@ -336,7 +361,7 @@ export function useTryOn() {
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
     isRunning: run.isRunning,
-    cancelGeneration: run.cancel,
+    cancelGeneration,
     handleRetryFailed,
     canGenerate,
     hasResults,

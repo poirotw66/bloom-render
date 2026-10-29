@@ -11,6 +11,7 @@ import { useDialog } from '../hooks/useDialog';
 import { useHistory, type HistoryItem } from '../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import HistoryResultCard from './HistoryResultCard';
+import HistoryStorageNotice from './HistoryStorageNotice';
 import { XMarkIcon } from './icons';
 import { ROUTES } from '../constants/routes';
 import {
@@ -206,6 +207,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5">
+          <HistoryStorageNotice onManage={onClose} />
           {history.length === 0 ? (
             <div className="py-16 text-center text-gray-300">{t('history.empty')}</div>
           ) : filteredHistory.length === 0 ? (

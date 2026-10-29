@@ -60,12 +60,20 @@ async function renderGenerate(quantity = 4) {
       </MemoryRouter>
     );
   }
-  render(<StartScreen tab="generate" onImageSelected={onImageSelected} navigate={vi.fn()} />, {
-    wrapper: Wrapper,
-  });
+  const view = render(
+    <StartScreen tab="generate" onImageSelected={onImageSelected} navigate={vi.fn()} />,
+    {
+      wrapper: Wrapper,
+    },
+  );
   await screen.findByRole('button', { name: 'Generate Image' }, { timeout: 5000 });
   return {
     onImageSelected,
+    unmount: view.unmount,
+    showUpload: () =>
+      view.rerender(
+        <StartScreen tab="upload" onImageSelected={onImageSelected} navigate={vi.fn()} />,
+      ),
     switchProvider: () => settingsRef.current?.setImageProvider('openrouter'),
   };
 }
@@ -223,5 +231,62 @@ describe('StartScreen text-to-image batches', () => {
     await waitFor(() => expect(onImageSelected).toHaveBeenCalledWith(expect.any(File)));
     expect(runImageGeneration).toHaveBeenCalledTimes(1);
     expect(addToHistory).toHaveBeenCalledTimes(1);
+  });
+  it('ignores a cancelled model response after starting another comparison', async () => {
+    const pending: Array<(url: string) => void> = [];
+    vi.mocked(runImageGeneration).mockImplementation(
+      () => new Promise((resolve) => pending.push(resolve)),
+    );
+    await renderGenerate();
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate & Compare' }));
+    await waitFor(() => expect(runImageGeneration).toHaveBeenCalledTimes(2));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await screen.findByRole('button', { name: 'Generate & Compare' });
+    fireEvent.click(screen.getByRole('button', { name: 'Generate & Compare' }));
+    await waitFor(() => expect(runImageGeneration).toHaveBeenCalledTimes(4));
+    await act(async () => {
+      pending[0](imageUrl(0));
+      pending[1](imageUrl(1));
+    });
+    expect(addToHistory).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeTruthy();
+    await act(async () => {
+      pending[2](imageUrl(2));
+      pending[3](imageUrl(3));
+    });
+    await screen.findByRole('button', { name: 'Generate New Images' });
+    expect(addToHistory).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not save a normal generation or open the editor after unmount', async () => {
+    let finish!: (url: string) => void;
+    vi.mocked(runImageGeneration).mockImplementation(
+      () => new Promise((resolve) => (finish = resolve)),
+    );
+    const { onImageSelected, unmount } = await renderGenerate(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
+    await waitFor(() => expect(runImageGeneration).toHaveBeenCalledOnce());
+    const signal = vi.mocked(runImageGeneration).mock.calls[0][0].settings?.abortSignal;
+    unmount();
+    expect(signal?.aborted).toBe(true);
+    await act(async () => finish(imageUrl(0)));
+    expect(addToHistory).not.toHaveBeenCalled();
+    expect(onImageSelected).not.toHaveBeenCalled();
+  });
+  it('cancels when leaving Generate for Upload even though its draft remains mounted', async () => {
+    let finish!: (url: string) => void;
+    vi.mocked(runImageGeneration).mockImplementation(
+      () => new Promise((resolve) => (finish = resolve)),
+    );
+    const { onImageSelected, showUpload } = await renderGenerate(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
+    await waitFor(() => expect(runImageGeneration).toHaveBeenCalledOnce());
+    const signal = vi.mocked(runImageGeneration).mock.calls[0][0].settings?.abortSignal;
+    showUpload();
+    expect(signal?.aborted).toBe(true);
+    await act(async () => finish(imageUrl(0)));
+    expect(addToHistory).not.toHaveBeenCalled();
+    expect(onImageSelected).not.toHaveBeenCalled();
   });
 });

@@ -27,6 +27,8 @@ vi.mock('../utils/logger', () => ({ logger: { error: vi.fn() } }));
 
 const IMAGE = 'data:image/png;base64,eA==';
 let useHistory: typeof import('./useHistory').useHistory;
+let useHistoryStorageStatus: typeof import('./useHistory').useHistoryStorageStatus;
+let getPendingHistoryItems: typeof import('./useHistory').getPendingHistoryItems;
 
 function deferred() {
   let resolve!: () => void;
@@ -51,7 +53,7 @@ beforeEach(async () => {
   let url = 0;
   vi.spyOn(URL, 'createObjectURL').mockImplementation(() => `blob:test-${++url}`);
   vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
-  ({ useHistory } = await import('./useHistory'));
+  ({ useHistory, useHistoryStorageStatus, getPendingHistoryItems } = await import('./useHistory'));
 });
 
 afterEach(() => {
@@ -60,6 +62,142 @@ afterEach(() => {
 });
 
 describe('history store mutations', () => {
+  it('subscribes to storage status without loading image history on the homepage', async () => {
+    const { result } = renderHook(() => useHistoryStorageStatus());
+    await act(async () => undefined);
+    expect(getAllHistoryItems).not.toHaveBeenCalled();
+    expect(result.current.issue).toBeNull();
+  });
+
+  it('retries a failed initial read without reloading and restores saved history', async () => {
+    vi.mocked(getAllHistoryItems).mockRejectedValueOnce(new Error('Temporary storage failure'));
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    await waitFor(() => expect(result.current.status.issue?.operation).toBe('load'));
+    vi.mocked(getAllHistoryItems).mockResolvedValue([stored('restored', 1)]);
+    await act(async () => result.current.status.retryHistoryStorage());
+    expect(result.current.store.history.map((item) => item.id)).toEqual(['restored']);
+    expect(result.current.status.issue).toBeNull();
+    expect(result.current.status.isRetrying).toBe(false);
+  });
+
+  it('retains a quota-failed image for download and retries the same stored key', async () => {
+    vi.mocked(putHistoryItem).mockRejectedValueOnce(
+      new DOMException('Storage full', 'QuotaExceededError'),
+    );
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    let id!: string;
+    await act(async () => {
+      id = await result.current.store.addToHistory('portrait', IMAGE);
+    });
+    expect(result.current.store.history).toEqual([]);
+    expect(result.current.status.issue?.kind).toBe('quota');
+    expect(result.current.status.pendingCount).toBe(1);
+    expect(getPendingHistoryItems()[0].id).toBe(id);
+    expect(getPendingHistoryItems()[0].blob.type).toBe('image/png');
+    await act(async () => result.current.status.retryHistoryStorage());
+    expect(result.current.store.history.map((item) => item.id)).toEqual([id]);
+    expect(vi.mocked(putHistoryItem).mock.calls.map(([item]) => item.id)).toEqual([id, id]);
+    expect(result.current.status.pendingCount).toBe(0);
+    expect(result.current.status.issue).toBeNull();
+  });
+
+  it('keeps pending images across failed reconnects and never evicts data to resolve quota', async () => {
+    vi.mocked(getAllHistoryItems).mockResolvedValue([stored('old-2', 2), stored('old-1', 1)]);
+    vi.mocked(putHistoryItem).mockRejectedValue(
+      new DOMException('Storage full', 'QuotaExceededError'),
+    );
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    await act(async () => {
+      await result.current.store.addToHistory('portrait', IMAGE);
+      await result.current.status.retryHistoryStorage();
+    });
+    expect(result.current.store.history.map((item) => item.id)).toEqual(['old-2', 'old-1']);
+    expect(result.current.status.pendingCount).toBe(1);
+    expect(deleteHistoryItems).not.toHaveBeenCalled();
+    expect(clearHistoryItems).not.toHaveBeenCalled();
+    vi.mocked(getAllHistoryItems).mockRejectedValue(new Error('Disconnected'));
+    await act(async () => result.current.status.retryHistoryStorage());
+    expect(result.current.status.pendingCount).toBe(1);
+    expect(getPendingHistoryItems()).toHaveLength(1);
+    expect(result.current.store.history).toHaveLength(2);
+  });
+
+  it('retains a generated image when history cannot initialize and saves after recovery', async () => {
+    vi.mocked(getAllHistoryItems).mockRejectedValue(new Error('Disconnected'));
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    await act(async () => {
+      await result.current.store.addToHistory('portrait', IMAGE);
+    });
+    expect(putHistoryItem).not.toHaveBeenCalled();
+    expect(result.current.status.pendingCount).toBe(1);
+    vi.mocked(getAllHistoryItems).mockResolvedValue([]);
+    await act(async () => result.current.status.retryHistoryStorage());
+    expect(putHistoryItem).toHaveBeenCalledOnce();
+    expect(result.current.store.history).toHaveLength(1);
+    expect(result.current.status.pendingCount).toBe(0);
+    expect(result.current.status.issue).toBeNull();
+  });
+
+  it('shares repeated retry clicks and reconciles an already persisted pending key', async () => {
+    vi.mocked(putHistoryItem).mockRejectedValueOnce(new Error('Uncertain commit'));
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    let id!: string;
+    await act(async () => {
+      id = await result.current.store.addToHistory('portrait', IMAGE);
+    });
+    const persisted = getPendingHistoryItems()[0];
+    vi.mocked(getAllHistoryItems).mockResolvedValue([persisted]);
+    await act(async () => {
+      const first = result.current.status.retryHistoryStorage();
+      const second = result.current.status.retryHistoryStorage();
+      expect(first).toBe(second);
+      await first;
+    });
+    expect(putHistoryItem).toHaveBeenCalledOnce();
+    expect(result.current.store.history.map((item) => item.id)).toEqual([id]);
+    expect(result.current.status.pendingCount).toBe(0);
+  });
+
+  it('does not immediately evict an older recovered image when newer history fills the cap', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(1);
+    vi.mocked(putHistoryItem).mockRejectedValueOnce(
+      new DOMException('Storage full', 'QuotaExceededError'),
+    );
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    let oldId!: string;
+    await act(async () => {
+      oldId = await result.current.store.addToHistory('portrait', IMAGE);
+    });
+    // Another tab saved newer images while this tab's image was pending.
+    vi.mocked(getAllHistoryItems).mockResolvedValue([stored('newer-3', 3), stored('newer-2', 2)]);
+    await act(async () => result.current.status.retryHistoryStorage());
+    expect(result.current.store.history.map((item) => item.id)).toEqual([
+      'newer-3',
+      'newer-2',
+      oldId,
+    ]);
+    expect(result.current.status.pendingCount).toBe(0);
+    expect(deleteHistoryItems).not.toHaveBeenCalled();
+  });
+
   it('preserves a successful queued add after the preceding add fails', async () => {
     const pending = deferred();
     vi.mocked(putHistoryItem).mockImplementationOnce(() => pending.promise);

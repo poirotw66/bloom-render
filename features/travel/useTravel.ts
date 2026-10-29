@@ -19,6 +19,7 @@ import {
   startRandomProgressTicker,
 } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
 import {
   TRAVEL_SCENE_ID_RANDOM,
   pickRandomTravelScene,
@@ -58,8 +59,13 @@ import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryRepla
 export type TravelSceneIdOrCustom = string;
 
 // Helper to load an image from a URL (e.g., from public folder) as a File object
-async function urlToFile(path: string, filename: string, mimeType: string): Promise<File> {
-  const res = await fetch(publicAssetUrl(path));
+async function urlToFile(
+  path: string,
+  filename: string,
+  mimeType: string,
+  signal?: AbortSignal,
+): Promise<File> {
+  const res = await fetch(publicAssetUrl(path), { signal });
   if (!res.ok) throw new Error('error.failed_fetch');
 
   const contentType = res.headers.get('content-type');
@@ -81,6 +87,8 @@ export function useTravel() {
   const settings = useSettings();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
+  const attempts = useGenerationAttempt();
+  const cancelRun = run.cancel;
 
   // A retry must reuse the exact generator the original run resolved: the same
   // scene reference file and the same rolled values for 'random' weather/time,
@@ -164,6 +172,13 @@ export function useTravel() {
       );
     }
   });
+
+  const cancelGeneration = useCallback(() => {
+    attempts.cancel();
+    cancelRun();
+    setLoading(false);
+    setProgress(0);
+  }, [attempts, cancelRun]);
 
   useEffect(() => {
     let cancelled = false;
@@ -255,108 +270,116 @@ export function useTravel() {
       setError(t('travel.error_custom_scene_empty'));
       return;
     }
-    let scenePrompt: string;
-    let sceneReferenceImage: File | undefined;
-    let resolvedSceneNameKey: string | null = null;
-    let resolvedSceneCustomLabel: string | null = null;
-
-    if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
-      if (travelScenes.length === 0) {
-        setError(t('travel.error_scenes_load'));
-        return;
-      }
-      const picked = pickRandomTravelScene(travelScenes);
-      scenePrompt = picked.prompt;
-
-      if (useReferenceImage && picked.referenceImagePath) {
-        try {
-          const refPath = sceneRefPath(picked.referenceImagePath);
-          sceneReferenceImage = await urlToFile(
-            refPath,
-            referenceFileName(picked.id, refPath),
-            mimeTypeForImagePath(refPath),
-          );
-        } catch {
-          sceneReferenceImage = undefined;
-        }
-      } else {
-        sceneReferenceImage = undefined;
-      }
-      resolvedSceneNameKey = picked.nameKey;
-    } else if (selectedSceneId === 'custom') {
-      const rawPrompt = resolveScenePrompt();
-      if (!rawPrompt && !customSceneReferenceFile) {
-        setError(t('travel.error_no_scene'));
-        return;
-      }
-
-      // Auto-optimize prompt for custom scenes using AI (Gemini-only).
-      setLoading(true);
-      try {
-        if (!rawPrompt) {
-          scenePrompt = '';
-        } else if (settings.imageProvider === 'openrouter') {
-          scenePrompt = rawPrompt;
-        } else {
-          scenePrompt = await generateOptimizedPrompt(
-            rawPrompt,
-            customSceneReferenceFile ?? undefined,
-            settings.toServiceSettings(),
-          );
-        }
-      } catch (e) {
-        logger.warn('Prompt optimization failed, using raw prompt', e);
-        scenePrompt = rawPrompt;
-      }
-
-      sceneReferenceImage = customSceneReferenceFile ?? undefined;
-      resolvedSceneCustomLabel = customSceneText.trim() || null;
-    } else {
-      const scene = travelScenes.find((s) => s.id === selectedSceneId);
-      const basePrompt = scene?.prompt ?? resolveScenePrompt();
-
-      if (!basePrompt && !customSceneReferenceFile) {
-        setError(t('travel.error_no_scene'));
-        return;
-      }
-
-      scenePrompt = basePrompt;
-
-      // Logic:
-      // 1. If user uploaded a custom reference file (in custom inputs), ALWAYS use it.
-      // 2. If NO custom file, AND 'useReferenceImage' is true, try to load the scene's built-in reference.
-      if (customSceneReferenceFile) {
-        sceneReferenceImage = customSceneReferenceFile;
-      } else if (useReferenceImage && scene?.referenceImagePath) {
-        const refPath = sceneRefPath(scene.referenceImagePath);
-        try {
-          sceneReferenceImage = await urlToFile(
-            refPath,
-            referenceFileName(scene.id, refPath),
-            mimeTypeForImagePath(refPath),
-          );
-        } catch {
-          logger.debug(
-            `Note: No valid reference image found at ${refPath}, falling back to text prompt.`,
-          );
-          sceneReferenceImage = undefined;
-        }
-      } else {
-        sceneReferenceImage = undefined;
-      }
-
-      if (scene) resolvedSceneNameKey = scene.nameKey;
-    }
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
+    run.reset();
     setError(null);
     setLoading(true);
     setProgress(0);
     setResult(null);
     setResults([]);
-
-    run.reset();
-    const stopProgress = startRandomProgressTicker(setProgress);
+    const stopProgress = startRandomProgressTicker((value) => {
+      if (attempt.isCurrent()) setProgress(value);
+    });
+    attempt.onCleanup(stopProgress);
 
     try {
+      let scenePrompt: string;
+      let sceneReferenceImage: File | undefined;
+      let resolvedSceneNameKey: string | null = null;
+      let resolvedSceneCustomLabel: string | null = null;
+
+      if (selectedSceneId === TRAVEL_SCENE_ID_RANDOM) {
+        if (travelScenes.length === 0) {
+          setError(t('travel.error_scenes_load'));
+          return;
+        }
+        const picked = pickRandomTravelScene(travelScenes);
+        scenePrompt = picked.prompt;
+
+        if (useReferenceImage && picked.referenceImagePath) {
+          try {
+            const refPath = sceneRefPath(picked.referenceImagePath);
+            sceneReferenceImage = await urlToFile(
+              refPath,
+              referenceFileName(picked.id, refPath),
+              mimeTypeForImagePath(refPath),
+              attempt.signal,
+            );
+          } catch {
+            sceneReferenceImage = undefined;
+          }
+        } else {
+          sceneReferenceImage = undefined;
+        }
+        resolvedSceneNameKey = picked.nameKey;
+      } else if (selectedSceneId === 'custom') {
+        const rawPrompt = resolveScenePrompt();
+        if (!rawPrompt && !customSceneReferenceFile) {
+          setError(t('travel.error_no_scene'));
+          return;
+        }
+
+        // Auto-optimize prompt for custom scenes using AI (Gemini-only).
+        setLoading(true);
+        try {
+          if (!rawPrompt) {
+            scenePrompt = '';
+          } else if (settings.imageProvider === 'openrouter') {
+            scenePrompt = rawPrompt;
+          } else {
+            scenePrompt = await generateOptimizedPrompt(
+              rawPrompt,
+              customSceneReferenceFile ?? undefined,
+              settings.toServiceSettings(attempt.signal),
+            );
+          }
+        } catch (e) {
+          if (!attempt.isCurrent()) return;
+          logger.warn('Prompt optimization failed, using raw prompt', e);
+          scenePrompt = rawPrompt;
+        }
+
+        sceneReferenceImage = customSceneReferenceFile ?? undefined;
+        resolvedSceneCustomLabel = customSceneText.trim() || null;
+      } else {
+        const scene = travelScenes.find((s) => s.id === selectedSceneId);
+        const basePrompt = scene?.prompt ?? resolveScenePrompt();
+
+        if (!basePrompt && !customSceneReferenceFile) {
+          setError(t('travel.error_no_scene'));
+          return;
+        }
+
+        scenePrompt = basePrompt;
+
+        // Logic:
+        // 1. If user uploaded a custom reference file (in custom inputs), ALWAYS use it.
+        // 2. If NO custom file, AND 'useReferenceImage' is true, try to load the scene's built-in reference.
+        if (customSceneReferenceFile) {
+          sceneReferenceImage = customSceneReferenceFile;
+        } else if (useReferenceImage && scene?.referenceImagePath) {
+          const refPath = sceneRefPath(scene.referenceImagePath);
+          try {
+            sceneReferenceImage = await urlToFile(
+              refPath,
+              referenceFileName(scene.id, refPath),
+              mimeTypeForImagePath(refPath),
+              attempt.signal,
+            );
+          } catch {
+            logger.debug(
+              `Note: No valid reference image found at ${refPath}, falling back to text prompt.`,
+            );
+            sceneReferenceImage = undefined;
+          }
+        } else {
+          sceneReferenceImage = undefined;
+        }
+
+        if (scene) resolvedSceneNameKey = scene.nameKey;
+      }
+      if (!attempt.isCurrent()) return;
       // Enhance the prompt with dynamic variations and selected style/weather/time/vibe
       const stylePrompt = TRAVEL_STYLES.find((s) => s.id === style)?.prompt || '';
 
@@ -410,6 +433,7 @@ export function useTravel() {
           settings: settings.toServiceSettings(signal),
         })
           .then((url) => {
+            if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
             addToHistory(
               'travel',
               url,
@@ -442,7 +466,7 @@ export function useTravel() {
       } = await run.runBatch(quantity, generateOne);
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
 
       setProgress(100);
 
@@ -479,14 +503,18 @@ export function useTravel() {
         clearBackground,
       });
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'travel'));
       logger.error('Travel generation error:', err);
     } finally {
-      stopProgress();
-      setLoading(false);
-      setProgress(0);
+      if (attempt.isCurrent()) {
+        setLoading(false);
+        setProgress(0);
+      }
+      attempts.finish(attempt);
     }
   }, [
+    attempts,
     run,
     files,
     isGroupMode,
@@ -570,6 +598,7 @@ export function useTravel() {
   }, [results]);
 
   const clearResult = useCallback(() => {
+    cancelGeneration();
     setResult(null);
     setResults([]);
     setResultSceneNameKey(null);
@@ -577,23 +606,28 @@ export function useTravel() {
     setResultMetadata(null);
     retryGeneratorRef.current = null;
     run.reset();
-  }, [run]);
+  }, [run, cancelGeneration]);
 
   const handleRetryFailed = useCallback(async () => {
     const generateOne = retryGeneratorRef.current;
     if (!generateOne) return;
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered } = await run.retryFailed(generateOne);
-      if (recovered.length === 0) return;
+      const { results: recovered, cancelled } = await run.retryFailed(generateOne);
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
 
       setResults((prev) => [...prev, ...recovered]);
       setResult(null);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'travel'));
       logger.error('Travel retry error:', err);
+    } finally {
+      attempts.finish(attempt);
     }
-  }, [run, t]);
+  }, [attempts, run, t]);
 
   const setFilesFromDrop = useCallback(
     (incoming: File[]) => {
@@ -698,7 +732,7 @@ export function useTravel() {
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
     isRunning: run.isRunning,
-    cancelGeneration: run.cancel,
+    cancelGeneration,
     handleRetryFailed,
     clearResult,
     setFilesFromDrop,

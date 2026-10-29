@@ -12,6 +12,7 @@ import StickyDemoCta from './components/StickyDemoCta';
 import Spinner from './components/Spinner';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import StartScreen from './components/StartScreen';
+import HistoryStorageNotice from './components/HistoryStorageNotice';
 import type { EditorLocationState } from './features/editor/EditorPage';
 import { ROUTES, isEditRoutePath } from './constants/routes';
 import { useLanguage } from './contexts/LanguageContext';
@@ -79,6 +80,7 @@ const App: React.FC = () => {
         tabIndex={-1}
         className={`flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none max-[640px]:pb-24 ${isEditRoute ? 'items-start' : 'items-center'}`}
       >
+        <HistoryStorageNotice />
         {uploadError && !isEditRoute && (
           <div className="w-full max-w-2xl mb-4">
             <ErrorDisplay message={uploadError} />

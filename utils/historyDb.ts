@@ -144,32 +144,109 @@ export function parseLegacyHistory(raw: string | null): LegacyHistoryRow[] {
 }
 
 let dbPromise: Promise<IDBDatabase> | null = null;
+let connection: IDBDatabase | null = null;
+const OPEN_TIMEOUT_MS = 10_000;
+
+export type HistoryStorageErrorKind = 'quota' | 'blocked' | 'unavailable';
+
+/** Classify storage failures without replacing the original IndexedDB error. */
+export function getHistoryStorageErrorKind(error: unknown): HistoryStorageErrorKind {
+  const name = error && typeof error === 'object' && 'name' in error ? error.name : undefined;
+  if (name === 'QuotaExceededError' || name === 'NS_ERROR_DOM_QUOTA_REACHED') return 'quota';
+  if (name === 'HistoryStorageBlockedError') return 'blocked';
+  return 'unavailable';
+}
+
+function invalidateConnection(db: IDBDatabase): void {
+  if (connection !== db) return;
+  connection = null;
+  dbPromise = null;
+}
 
 function openDb(): Promise<IDBDatabase> {
   if (!dbPromise) {
-    dbPromise = new Promise((resolve, reject) => {
+    const attempt = new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
+      let settled = false;
+      const fail = (error: unknown) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        reject(error);
+      };
+      const timer = setTimeout(
+        () => fail(new DOMException('History database open timed out', 'TimeoutError')),
+        OPEN_TIMEOUT_MS,
+      );
       request.onupgradeneeded = () => {
+        if (settled) {
+          request.transaction?.abort();
+          return;
+        }
         const db = request.result;
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         }
       };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const db = request.result;
+        if (settled) {
+          db.close();
+          return;
+        }
+        settled = true;
+        clearTimeout(timer);
+        connection = db;
+        db.onversionchange = () => {
+          invalidateConnection(db);
+          db.close();
+        };
+        db.onclose = () => invalidateConnection(db);
+        resolve(db);
+      };
+      request.onerror = () => fail(request.error ?? new Error('Failed to open history database'));
+      request.onblocked = () => {
+        const error = new Error('History database is blocked by another tab');
+        error.name = 'HistoryStorageBlockedError';
+        fail(error);
+      };
+    });
+    dbPromise = attempt;
+    void attempt.catch(() => {
+      if (dbPromise === attempt) dbPromise = null;
     });
   }
   return dbPromise;
+}
+
+function withTransaction<T>(
+  mode: IDBTransactionMode,
+  run: (tx: IDBTransaction) => Promise<T>,
+): Promise<T> {
+  return openDb().then((db) => {
+    let tx: IDBTransaction;
+    try {
+      tx = db.transaction(STORE_NAME, mode);
+    } catch (error) {
+      if (!(error instanceof DOMException) || error.name !== 'InvalidStateError') throw error;
+      // No request has been issued, so reopening cannot replay a dispatched write.
+      invalidateConnection(db);
+      db.close();
+      return openDb().then((reopened) => run(reopened.transaction(STORE_NAME, mode)));
+    }
+    // Queue requests in the same turn as transaction creation so it stays active.
+    return run(tx);
+  });
 }
 
 function runTransaction<T>(
   mode: IDBTransactionMode,
   run: (store: IDBObjectStore) => IDBRequest<T>,
 ): Promise<T> {
-  return openDb().then(
-    (db) =>
+  return withTransaction(
+    mode,
+    (tx) =>
       new Promise<T>((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, mode);
         const store = tx.objectStore(STORE_NAME);
         const request = run(store);
         // Request success can precede a commit failure or explicit transaction abort.
@@ -221,15 +298,17 @@ export async function putHistoryItem(item: StoredHistoryItem): Promise<void> {
 
 export async function deleteHistoryItems(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const db = await openDb();
-  await new Promise<void>((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    for (const id of ids) store.delete(id);
-    tx.oncomplete = () => resolve();
-    tx.onabort = () => reject(tx.error ?? new Error('History transaction aborted'));
-    tx.onerror = () => reject(tx.error);
-  });
+  await withTransaction(
+    'readwrite',
+    (tx) =>
+      new Promise<void>((resolve, reject) => {
+        const store = tx.objectStore(STORE_NAME);
+        for (const id of ids) store.delete(id);
+        tx.oncomplete = () => resolve();
+        tx.onabort = () => reject(tx.error ?? new Error('History transaction aborted'));
+        tx.onerror = () => reject(tx.error);
+      }),
+  );
 }
 
 export async function clearHistoryItems(): Promise<void> {
@@ -255,6 +334,7 @@ export async function migrateLegacyHistoryIfNeeded(): Promise<void> {
     localStorage.removeItem(VERY_LEGACY_STORAGE_KEY);
   } catch (err) {
     logger.error('Failed to migrate legacy history into IndexedDB:', err);
-    // Leave the legacy key in place so migration can retry on next load.
+    // Keep the legacy key so a later retry can complete the migration.
+    throw err;
   }
 }

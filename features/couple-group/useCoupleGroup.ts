@@ -24,6 +24,7 @@ import {
   startRandomProgressTicker,
 } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
+import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
 import type { CoupleGroupMode, CoupleGroupStyle } from './types';
 import {
   COUPLE_STYLES,
@@ -37,6 +38,8 @@ export function useCoupleGroup() {
   const settings = useSettings();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
+  const attempts = useGenerationAttempt();
+  const cancelRun = run.cancel;
   const [searchParams] = useSearchParams();
 
   // Mode: couple (2 files) or group (3-6 files)
@@ -61,6 +64,13 @@ export function useCoupleGroup() {
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '16:9' | '9:16'>('16:9');
 
   useDemoSampleFiles(mode === 'group' ? 'group' : 'couple', setFiles, mode === 'group' ? 3 : 2);
+
+  const cancelGeneration = useCallback(() => {
+    attempts.cancel();
+    cancelRun();
+    setLoading(false);
+    setProgress(0);
+  }, [attempts, cancelRun]);
 
   // Read URL parameters on mount
   useEffect(() => {
@@ -210,9 +220,8 @@ export function useCoupleGroup() {
 
   // Generate handler
   /**
-   * Encodes the uploaded files and resolves the model/prompt config once, then
-   * hands back a per-slot generator. Both the initial run and a retry reuse
-   * this so a retry doesn't re-encode every upload per failed slot.
+   * Resolves the model/prompt configuration once, then returns a per-slot
+   * generator that receives the current run's cancellation signal.
    */
   const buildGenerator = useCallback(async (): Promise<
     (index: number, signal: AbortSignal) => Promise<string>
@@ -255,19 +264,20 @@ export function useCoupleGroup() {
       provider: serviceSettings.provider,
     });
 
-    return async (i: number) => {
+    return async (i: number, signal: AbortSignal) => {
       const variedPrompt = createPrompt(i);
 
       try {
         const url = await runImageGeneration({
           prompt: variedPrompt,
           images: files,
-          settings: serviceSettings,
+          settings: { ...serviceSettings, abortSignal: signal },
           aspectRatio,
           imageSize: supportsMultiRes ? effectiveSize : undefined,
           includeImageConfig: true,
           context: mode === 'couple' ? 'couple' : 'group',
         });
+        if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
         addToHistory(
           mode,
           url,
@@ -301,6 +311,8 @@ export function useCoupleGroup() {
       return;
     }
 
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     setLoading(true);
     setError(null);
     setProgress(0);
@@ -308,10 +320,14 @@ export function useCoupleGroup() {
     setResults([]);
     run.reset();
 
-    const stopProgress = startRandomProgressTicker(setProgress);
+    const stopProgress = startRandomProgressTicker((value) => {
+      if (attempt.isCurrent()) setProgress(value);
+    });
+    attempt.onCleanup(stopProgress);
 
     try {
       const generateOne = await buildGenerator();
+      if (!attempt.isCurrent()) return;
       const {
         results: generatedResults,
         failures,
@@ -319,7 +335,7 @@ export function useCoupleGroup() {
       } = await run.runBatch(quantity, generateOne);
 
       // The user asked to stop: fall back to the form, no error, no partial notice.
-      if (cancelled) return;
+      if (cancelled || !attempt.isCurrent()) return;
 
       setProgress(100);
 
@@ -335,37 +351,47 @@ export function useCoupleGroup() {
         setResults(generatedResults);
       }
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'couple_group'));
       logger.error('Couple/group generation error:', err);
     } finally {
-      stopProgress();
-      setLoading(false);
-      setProgress(0);
+      if (attempt.isCurrent()) {
+        setLoading(false);
+        setProgress(0);
+      }
+      attempts.finish(attempt);
     }
-  }, [mode, files, t, quantity, run, buildGenerator]);
+  }, [attempts, mode, files, t, quantity, run, buildGenerator]);
 
   const handleRetryFailed = useCallback(async () => {
+    const attempt = attempts.begin();
+    if (!attempt.isCurrent()) return;
     try {
       const generateOne = await buildGenerator();
-      const { results: recovered } = await run.retryFailed(generateOne);
-      if (recovered.length === 0) return;
+      if (!attempt.isCurrent()) return;
+      const { results: recovered, cancelled } = await run.retryFailed(generateOne);
+      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
 
       setResults((prev) => [...prev, ...recovered]);
       setResult(null);
     } catch (err) {
+      if (!attempt.isCurrent()) return;
       setError(formatApiErrorMessage(err, t, 'couple_group'));
       logger.error('Couple/group retry error:', err);
+    } finally {
+      attempts.finish(attempt);
     }
-  }, [run, buildGenerator, t]);
+  }, [attempts, run, buildGenerator, t]);
 
   // Clear result
   const clearResult = useCallback(() => {
+    cancelGeneration();
     setResult(null);
     setResults([]);
     setFiles([]);
     setError(null);
     run.reset();
-  }, [run]);
+  }, [run, cancelGeneration]);
 
   const handleBatchDownload = useCallback(async () => {
     if (results.length === 0) return;
@@ -405,7 +431,7 @@ export function useCoupleGroup() {
     succeededCount: run.succeededCount,
     isRetrying: run.isRetrying,
     isRunning: run.isRunning,
-    cancelGeneration: run.cancel,
+    cancelGeneration,
     handleRetryFailed,
     handleDragOver,
     handleDragLeave,
