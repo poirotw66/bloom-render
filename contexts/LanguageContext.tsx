@@ -161,7 +161,10 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   return (
     <LanguageContext.Provider value={value}>
       {loadError && (
-        <div role="alert" className="p-3 text-center theme-ink">
+        <div
+          role="alert"
+          className="locale-switch-error sticky top-0 z-[60] theme-surface p-3 text-center theme-ink"
+        >
           {errorLabel}{' '}
           <button type="button" onClick={() => setLanguage(requestedLanguage.current)}>
             {retryLabel}

@@ -46,7 +46,7 @@ test('repeated failed initial locale downloads recover on retry', async ({ page 
   await expect.poll(() => attempts).toBe(2);
   await expect(page.getByRole('alert')).toContainText('Unable to load language');
   await page.getByRole('button', { name: 'Retry', exact: true }).click();
-  await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   expect(attempts).toBe(3);
 });
 
@@ -61,7 +61,7 @@ test('a failed locale switch leaves the active UI usable and recovers on retry',
   await page.goto('/');
   await page.getByTestId('lang-toggle-zh').click();
   await expect(page.getByRole('alert')).toContainText('Unable to load language');
-  await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   await page.getByRole('button', { name: 'Retry', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-TW');
 });
@@ -70,7 +70,7 @@ test('the visited locale remains usable when its module is unavailable on reload
   page,
 }) => {
   await page.goto('/');
-  await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   await expect
     .poll(() =>
       page.evaluate(async () => {
@@ -86,7 +86,7 @@ test('the visited locale remains usable when its module is unavailable on reload
     await route.abort();
   });
   await page.reload();
-  await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   expect(blocked).toBeGreaterThan(0);
   await expect(page.getByRole('alert')).toHaveCount(0);
 });

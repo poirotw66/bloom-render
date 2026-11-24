@@ -23,7 +23,7 @@ export const DEFAULT_OG_IMAGE = `${SITE_BASE}/og.png`;
  */
 export const ROUTE_SEO = {
   '/': {
-    title: 'BloomRender — Let your ideas bloom.',
+    title: 'BloomRender — AI photo editor',
     description:
       'BloomRender is a browser-based AI photo studio for ID photos, portraits, travel shots, try-on, and edits. 瀏覽器 AI 影像工作室：證件照、人像、旅遊照、試穿與修圖。 Bring your own Gemini or OpenRouter key.',
   },

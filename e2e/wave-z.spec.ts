@@ -25,7 +25,8 @@ test.describe('Wave Z — viral polish', () => {
     await expect(page.getByTestId('viral-apply-christmas-cozy')).toBeVisible();
     await page.getByRole('button', { name: '寵物' }).click();
     await expect(page.getByTestId('viral-apply-pet-royal')).toBeVisible();
-    await expect(page.getByTestId('viral-shelves')).toBeVisible();
+    await page.getByTestId('viral-library-tools').locator('summary').click();
+    await expect(page.getByTestId('viral-shelf-favorites')).toBeVisible();
     await page.getByTestId('viral-favorite-pet-royal').click();
     await page.getByTestId('viral-shelf-favorites').click();
     await expect(page.getByTestId('viral-apply-pet-royal')).toBeVisible();

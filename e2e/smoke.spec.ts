@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SAMPLE_IMAGE = path.join(__dirname, 'fixtures', 'sample.png');
 
 const ROUTES: { path: string; expectText: RegExp | string }[] = [
-  { path: '/', expectText: /AI-Powered Photo Editor/i },
+  { path: '/', expectText: /AI photo editor/i },
   { path: '/generate', expectText: /Generate Image|Text to image|Describe/i },
   { path: '/history', expectText: /Generation History/i },
   { path: '/idphoto', expectText: /ID Photo Studio/i },
@@ -45,7 +45,7 @@ test.describe('smoke', () => {
   test('home page loads', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('BloomRender').first()).toBeVisible();
-    await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+    await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   });
 
   test('landing shows API-key notice and Try demo with no key', async ({ page }) => {
@@ -64,7 +64,7 @@ test.describe('smoke', () => {
     await page.goto('/');
     const notice = page.getByTestId('api-key-notice');
     await expect(notice).toBeVisible();
-    await expect(notice.getByText(/Add an API key/i)).toBeVisible();
+    await expect(notice.getByText(/Bring your own key/i)).toBeVisible();
     const tryDemo = page.getByTestId('try-demo-button');
     await expect(tryDemo).toBeVisible();
     await tryDemo.click();

@@ -5,3 +5,6 @@ package-lock.json
 test-results
 playwright-report
 blob-report
+
+# Vendored Taste Skill files remain identical to upstream.
+public/assets/taste

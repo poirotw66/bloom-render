@@ -5,6 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useEffect } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
 import { SettingsProvider } from '../contexts/SettingsContext';
@@ -14,7 +15,10 @@ import { runImageGeneration } from '../services/gemini/runImageGeneration';
 import { buildHistoryReplayState, type HistoryReplayState } from '../utils/historyReplay';
 import StartScreen from './StartScreen';
 
-const { generatorImported } = vi.hoisted(() => ({ generatorImported: vi.fn() }));
+const { generatorImported, pasteSubscriptions } = vi.hoisted(() => ({
+  generatorImported: vi.fn(),
+  pasteSubscriptions: { current: 0 },
+}));
 vi.mock('./GenerateStartScreen', async (importOriginal) => {
   generatorImported();
   return importOriginal();
@@ -22,7 +26,18 @@ vi.mock('./GenerateStartScreen', async (importOriginal) => {
 vi.mock('../hooks/useHistory', () => ({
   useHistory: () => ({ addToHistory: vi.fn(async () => 'history-id') }),
 }));
-vi.mock('../hooks/usePasteImage', () => ({ usePasteImage: vi.fn() }));
+vi.mock('../hooks/usePasteImage', () => ({
+  usePasteImage: vi.fn((_ref, _onImage, options) => {
+    const enabled = options?.enabled !== false;
+    useEffect(() => {
+      if (!enabled) return;
+      pasteSubscriptions.current += 1;
+      return () => {
+        pasteSubscriptions.current -= 1;
+      };
+    }, [enabled]);
+  }),
+}));
 vi.mock('../services/gemini/runImageGeneration', () => ({ runImageGeneration: vi.fn() }));
 vi.mock('../contexts/LanguageContext', async () => {
   const { enMessages } = await import('../locales/en');
@@ -123,7 +138,7 @@ describe('start-screen routing compatibility', () => {
     expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBe(true);
     fireEvent.click(screen.getByRole('checkbox'));
     expect(screen.getByRole('button', { name: '2' }).getAttribute('aria-pressed')).toBe('true');
-    expect(vi.mocked(usePasteImage).mock.lastCall?.[2]?.enabled).toBe(false);
+    expect(pasteSubscriptions.current).toBe(0);
 
     fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
     await screen.findByText('Select an image to edit');

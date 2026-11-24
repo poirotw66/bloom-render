@@ -26,3 +26,27 @@ test.describe('a11y', () => {
     });
   }
 });
+
+for (const theme of ['bloom', 'night', 'newyear']) {
+  for (const width of [390, 1440]) {
+    test(`${theme} homepage has no serious or critical accessibility violations at ${width}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+      await page.addInitScript((theme) => {
+        localStorage.setItem('bloom_language', 'en');
+        localStorage.setItem('bloom_theme', theme);
+      }, theme);
+      await page.goto('/');
+      await expect(page.locator('#home-title')).toBeVisible();
+      await expect(page.getByTestId('viral-templates')).toBeVisible();
+      await expect(page.locator('.home-hero')).toHaveClass(/is-entered/);
+      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+      expect(
+        results.violations.filter((violation) =>
+          ['serious', 'critical'].includes(violation.impact ?? ''),
+        ),
+      ).toEqual([]);
+    });
+  }
+}

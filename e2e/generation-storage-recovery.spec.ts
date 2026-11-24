@@ -74,7 +74,7 @@ test('history reconnects after a temporary first open failure without reloading'
   page,
 }) => {
   await page.goto('/');
-  await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   await seedHistory(page);
   await page.evaluate(() => {
     const open = indexedDB.open.bind(indexedDB);
@@ -87,6 +87,7 @@ test('history reconnects after a temporary first open failure without reloading'
       return version === undefined ? open(name) : open(name, version);
     };
   });
+  await page.locator('button[aria-label="All photo tools"]').click();
   await page.getByRole('button', { name: 'Generation History', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Generation History', exact: true });
   await expect(dialog.getByTestId('history-storage-notice')).toBeVisible();
@@ -109,7 +110,7 @@ test('quota failure retains downloadable images and retries saves without regene
     });
   });
   await page.goto('/');
-  await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  await expect(page.getByText(/AI photo editor/i)).toBeVisible();
   await seedHistory(page);
   await page.evaluate(() => {
     const state = window as Window & { failHistoryWrites?: boolean };

@@ -25,7 +25,7 @@ test.describe('Wave N — i18n + star nudge', () => {
       .toBe('zh-TW');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-TW');
-    await expect(page.getByText('證件照').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('AI 照片編輯');
   });
 
   test('zh-* browser language defaults to zh-TW when unset', async ({ browser }) => {

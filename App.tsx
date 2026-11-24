@@ -7,6 +7,7 @@ import React, { useCallback, Suspense, lazy, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import SiteFooter from './components/SiteFooter';
+import HomeFooter from './components/HomeFooter';
 import StarNudge from './components/StarNudge';
 import StickyDemoCta from './components/StickyDemoCta';
 import Spinner from './components/Spinner';
@@ -43,6 +44,7 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useLanguage();
+  const isHomeRoute = location.pathname === ROUTES.HOME;
   const isEditRoute = isEditRoutePath(location.pathname);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -75,7 +77,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-svh text-gray-100 flex flex-col">
+    <div className={`min-h-svh text-gray-100 flex flex-col ${isHomeRoute ? 'home-app' : ''}`}>
       <a href="#main-content" className="skip-link">
         {t('a11y.skip_to_content')}
       </a>
@@ -83,7 +85,7 @@ const App: React.FC = () => {
       <main
         id="main-content"
         tabIndex={-1}
-        className={`flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none max-[640px]:pb-24 ${isEditRoute ? 'items-start' : 'items-center'}`}
+        className={`${isHomeRoute ? 'home-main' : ''} flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none max-[640px]:pb-24 ${isEditRoute ? 'items-start' : 'items-center'}`}
       >
         <HistoryStorageNotice />
         {uploadError && !isEditRoute && (
@@ -166,8 +168,8 @@ const App: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
-      <SiteFooter />
-      <StickyDemoCta />
+      {isHomeRoute ? <HomeFooter onImageSelected={handleImageUpload} /> : <SiteFooter />}
+      {!isHomeRoute && <StickyDemoCta />}
       <StarNudge />
     </div>
   );

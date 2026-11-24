@@ -25,7 +25,7 @@ test.describe('Wave O — viral templates', () => {
     await page.goto('/');
     const section = page.getByTestId('viral-templates');
     await expect(section).toBeVisible();
-    await expect(page.getByRole('heading', { name: '一鍵玩法' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '一張照片，換個樣子。' })).toBeVisible();
     await expect(page.getByText('公仔盒玩').first()).toBeVisible();
     await expect(page.getByText('拍立得').first()).toBeVisible();
     await expect(page.getByTestId('viral-apply-figurine-box')).toBeVisible();

@@ -19,12 +19,13 @@ test.describe('Wave Y — style collage + multi-person', () => {
   test('landing collage select mode and multi-person entry', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByTestId('viral-templates')).toBeVisible();
+    await page.getByTestId('viral-library-tools').locator('summary').click();
     await expect(page.getByTestId('viral-collage-mode')).toBeVisible();
     await expect(page.getByTestId('viral-open-multi-person')).toBeVisible();
 
     await page.getByTestId('viral-collage-mode').click();
     // First desktop “All” preview only shows 8; stick to early pack ids.
-    for (const id of ['figurine-box', 'polaroid-frame', 'era-70s-taiwan', 'taiwan-night-market']) {
+    for (const id of ['figurine-box', 'polaroid-frame', 'era-70s-taiwan', 'era-80s-taiwan']) {
       await expect(page.getByTestId(`viral-collage-toggle-${id}`)).toBeVisible();
       await page.getByTestId(`viral-collage-toggle-${id}`).click();
     }

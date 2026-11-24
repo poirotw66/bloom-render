@@ -6,7 +6,7 @@
  * Taste PRESERVE: keep theme hues; tighten rhythm, chips, and card density.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getViralTemplateCardById,
@@ -59,6 +59,7 @@ const ALL_PREVIEW_COUNT = 8;
 
 interface ViralTemplatesSectionProps {
   className?: string;
+  presentation?: 'default' | 'home';
   /** Compact layout for generate / travel feature pages. */
   compact?: boolean;
   /** Optional starting category filter (e.g. Taiwan scenes on Travel). */
@@ -67,6 +68,7 @@ interface ViralTemplatesSectionProps {
 
 const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
   className = '',
+  presentation = 'default',
   compact = false,
   initialCategory = 'all',
 }) => {
@@ -75,6 +77,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
   const navigate = useNavigate();
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(initialCategory);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [collageMode, setCollageMode] = useState(false);
   const [collageIds, setCollageIds] = useState<string[]>([]);
@@ -96,9 +99,17 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
           .filter((e): e is ViralTemplateCard => Boolean(e))
           .filter((e) => category === 'all' || e.category === category);
 
-  const collapseAll =
-    !compact && category === 'all' && !showAll && entries.length > ALL_PREVIEW_COUNT;
-  const visibleEntries = collapseAll ? entries.slice(0, ALL_PREVIEW_COUNT) : entries;
+  const home = presentation === 'home';
+  const [phone, setPhone] = useState(() => window.matchMedia('(max-width: 639px)').matches);
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 639px)');
+    const update = () => setPhone(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+  const previewCount = home ? (phone ? 3 : 4) : ALL_PREVIEW_COUNT;
+  const collapseAll = !compact && category === 'all' && !showAll && entries.length > previewCount;
+  const visibleEntries = collapseAll ? entries.slice(0, previewCount) : entries;
 
   const onApply = async (id: string) => {
     const template = getViralTemplateCardById(id);
@@ -117,6 +128,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
   const onCategory = (value: (typeof CATEGORIES)[number]) => {
     setCategory(value);
     setShowAll(false);
+    setCopiedId(null);
   };
 
   const onToggleCollage = (id: string) => {
@@ -140,6 +152,261 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
     }
     navigate(ROUTES.STYLE_COLLAGE, { state: { selectedIds: collageIds } });
   };
+
+  if (home)
+    return (
+      <section
+        id="styles"
+        className={`home-section home-styles ${showAll || visibleEntries.length > previewCount || collageMode ? 'home-styles--expanded' : ''}`}
+        aria-labelledby="viral-templates-heading"
+        data-testid="viral-templates"
+      >
+        <div className="wrap home-wrap">
+          <div className="home-section__head">
+            <h2 id="viral-templates-heading">{t('home.styles_title')}</h2>
+            <p>{t('home.styles_intro')}</p>
+          </div>
+          <div className="home-library-bar">
+            <div className="home-categories" role="group" aria-label={t('viral.filter_label')}>
+              {CATEGORIES.map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  data-testid={`viral-category-${value}`}
+                  aria-pressed={category === value}
+                  onClick={() => onCategory(value)}
+                >
+                  {t(`viral.filter_${value}`)}
+                </button>
+              ))}
+            </div>
+            <label className="home-category-select">
+              {t('home.choose_category')}
+              <select
+                value={category}
+                onChange={(event) => onCategory(event.target.value as typeof category)}
+              >
+                {CATEGORIES.map((value) => (
+                  <option key={value} value={value}>
+                    {t(`viral.filter_${value}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <details className="home-library-tools" data-testid="viral-library-tools">
+              <summary>
+                {t(
+                  shelf === 'favorites'
+                    ? 'viral.favorites_title'
+                    : shelf === 'recent'
+                      ? 'viral.recent_title'
+                      : 'home.library_tools',
+                )}{' '}
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M8 2v12M2 8h12" />
+                </svg>
+              </summary>
+              <div
+                onClick={(event) => {
+                  if ((event.target as HTMLElement).closest('button, a'))
+                    event.currentTarget.closest('details')?.removeAttribute('open');
+                }}
+              >
+                <button
+                  type="button"
+                  data-testid="viral-shelf-favorites"
+                  aria-pressed={shelf === 'favorites'}
+                  onClick={() => setShelf((v) => (v === 'favorites' ? 'none' : 'favorites'))}
+                >
+                  {t('viral.favorites_title')}
+                </button>
+                <button
+                  type="button"
+                  data-testid="viral-shelf-recent"
+                  aria-pressed={shelf === 'recent'}
+                  onClick={() => {
+                    setRecent(getViralRecent());
+                    setShelf((v) => (v === 'recent' ? 'none' : 'recent'));
+                  }}
+                >
+                  {t('viral.recent_title')}
+                </button>
+                <button
+                  type="button"
+                  data-testid="viral-collage-mode"
+                  aria-pressed={collageMode}
+                  onClick={() => {
+                    setCollageMode((v) => !v);
+                    setCollageHint(null);
+                    if (collageMode) setCollageIds([]);
+                  }}
+                >
+                  {collageMode ? t('viral.collage_mode_on') : t('viral.collage_mode')}
+                </button>
+                {shelf === 'favorites' && favorites.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearViralFavorites();
+                      setFavorites([]);
+                    }}
+                  >
+                    {t('viral.favorites_clear')}
+                  </button>
+                )}
+                {shelf === 'recent' && recent.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearViralRecent();
+                      setRecent([]);
+                    }}
+                  >
+                    {t('viral.recent_clear')}
+                  </button>
+                )}
+                <Link to={ROUTES.STYLE_COLLAGE} data-testid="viral-open-collage">
+                  {t('viral.open_collage')}
+                </Link>
+                <Link to={ROUTES.MULTI_PERSON} data-testid="viral-open-multi-person">
+                  {t('viral.open_multi_person')}
+                </Link>
+              </div>
+            </details>
+          </div>
+          {collageMode && (
+            <div className="home-collage-actions">
+              <p>{t('home.collage_hint')}</p>
+              <button
+                type="button"
+                className="btn btn--primary"
+                data-testid="viral-collage-start"
+                disabled={!canStartStyleCollage(collageIds.length)}
+                onClick={openCollage}
+              >
+                {t('viral.collage_start', { count: String(collageIds.length) })}
+              </button>
+            </div>
+          )}
+          {collageHint && <p role="status">{collageHint}</p>}
+          <ul className="home-style-grid">
+            {visibleEntries.map((entry) => (
+              <li key={entry.id} className="home-style-card card">
+                <div className="home-style-card__picture">
+                  <img
+                    src={publicAssetUrl(entry.thumbnail)}
+                    alt={t(entry.thumbnailAltKey)}
+                    loading="lazy"
+                    decoding="async"
+                    width="480"
+                    height="360"
+                    data-source="BloomRender"
+                    data-subject={entry.id}
+                  />
+                  <div className="home-style-card__quick">
+                    <button
+                      type="button"
+                      data-testid={`viral-favorite-${entry.id}`}
+                      aria-pressed={favorites.includes(entry.id)}
+                      aria-label={
+                        favorites.includes(entry.id)
+                          ? t('viral.favorite_remove')
+                          : t('viral.favorite_add')
+                      }
+                      onClick={() => setFavorites(toggleViralFavorite(entry.id))}
+                    >
+                      {favorites.includes(entry.id) ? '♥' : '♡'}
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={t(
+                        copiedId === entry.id ? 'viral.remix_copied' : 'viral.copy_remix',
+                      )}
+                      title={t(copiedId === entry.id ? 'viral.remix_copied' : 'viral.copy_remix')}
+                      onClick={async () => {
+                        const url = buildRemixUrl({ v: 1, id: entry.id });
+                        try {
+                          await navigator.clipboard.writeText(url);
+                          setCopiedId(entry.id);
+                        } catch {
+                          window.prompt(t('viral.copy_link'), url);
+                        }
+                      }}
+                    >
+                      {copiedId === entry.id ? (
+                        <span aria-hidden="true">✓</span>
+                      ) : (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          aria-hidden="true"
+                        >
+                          <rect x="8" y="8" width="12" height="12" rx="2" />
+                          <path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="home-style-card__body">
+                  <h3>{t(entry.titleKey)}</h3>
+                  {collageMode ? (
+                    <button
+                      type="button"
+                      data-testid={`viral-collage-toggle-${entry.id}`}
+                      aria-pressed={collageIds.includes(entry.id)}
+                      onClick={() => onToggleCollage(entry.id)}
+                    >
+                      {collageIds.includes(entry.id)
+                        ? t('viral.collage_remove')
+                        : t('viral.collage_add')}{' '}
+                      <span aria-hidden="true">+</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      data-testid={`viral-apply-${entry.id}`}
+                      disabled={busyId === entry.id}
+                      onClick={() => void onApply(entry.id)}
+                    >
+                      {busyId === entry.id ? t('viral.applying') : t('viral.try_this')}{' '}
+                      <span aria-hidden="true">↗</span>
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {entries.length === 0 && (
+            <p className="home-library-empty" role="status">
+              {t('home.empty_shelf')}
+            </p>
+          )}
+          {collapseAll && (
+            <button
+              type="button"
+              className="home-show-more link"
+              data-testid="viral-show-more"
+              onClick={() => setShowAll(true)}
+            >
+              {t('viral.show_more', { count: entries.length - previewCount })}{' '}
+              <span aria-hidden="true">↓</span>
+            </button>
+          )}
+        </div>
+      </section>
+    );
 
   return (
     <section
