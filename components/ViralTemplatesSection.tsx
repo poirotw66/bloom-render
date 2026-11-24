@@ -9,15 +9,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  getViralTemplateById,
-  VIRAL_TEMPLATES,
+  getViralTemplateCardById,
+  VIRAL_TEMPLATE_CARDS,
+  type ViralTemplateCard,
   type ViralTemplateCategory,
-} from '../constants/viralTemplates';
+} from '../constants/viralTemplateCards';
 import { ROUTES } from '../constants/routes';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { publicAssetUrl } from '../utils/publicAsset';
-import { applyViralTemplate, remixUrlForTemplate } from '../utils/applyViralTemplate';
+import { buildRemixUrl } from '../utils/remixLink';
 import {
   canStartStyleCollage,
   STYLE_COLLAGE_MAX,
@@ -84,15 +85,15 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
 
   const baseEntries =
     category === 'all'
-      ? VIRAL_TEMPLATES
-      : VIRAL_TEMPLATES.filter((entry) => entry.category === category);
+      ? VIRAL_TEMPLATE_CARDS
+      : VIRAL_TEMPLATE_CARDS.filter((entry) => entry.category === category);
   const shelfIds = shelf === 'favorites' ? favorites : shelf === 'recent' ? recent : null;
   const entries =
     shelfIds === null
       ? baseEntries
       : shelfIds
-          .map((id) => getViralTemplateById(id))
-          .filter((e): e is NonNullable<typeof e> => Boolean(e))
+          .map((id) => getViralTemplateCardById(id))
+          .filter((e): e is ViralTemplateCard => Boolean(e))
           .filter((e) => category === 'all' || e.category === category);
 
   const collapseAll =
@@ -100,12 +101,13 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
   const visibleEntries = collapseAll ? entries.slice(0, ALL_PREVIEW_COUNT) : entries;
 
   const onApply = async (id: string) => {
-    const template = VIRAL_TEMPLATES.find((entry) => entry.id === id);
+    const template = getViralTemplateCardById(id);
     if (!template) return;
     setBusyId(id);
     try {
       pushViralRecent(id);
       setRecent(getViralRecent());
+      const { applyViralTemplate } = await import('../utils/applyViralTemplate');
       await applyViralTemplate(template, navigate, { demoMode: isDemoMode });
     } finally {
       setBusyId(null);
@@ -265,6 +267,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
           <button
             key={value}
             type="button"
+            data-testid={`viral-category-${value}`}
             aria-pressed={category === value}
             onClick={() => onCategory(value)}
             className={`shrink-0 ${category === value ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}`}
@@ -348,7 +351,7 @@ const ViralTemplatesSection: React.FC<ViralTemplatesSectionProps> = ({
                     type="button"
                     className={`${UI_BTN_SECONDARY} w-full text-sm`}
                     onClick={async () => {
-                      const url = remixUrlForTemplate(entry);
+                      const url = buildRemixUrl({ v: 1, id: entry.id });
                       try {
                         await navigator.clipboard.writeText(url);
                       } catch {

@@ -13,6 +13,31 @@ const cacheVersion =
 const CACHE_NAME = `bloomrender-locale-messages:${import.meta.env.BASE_URL}`;
 const loaded = new Map<Language, Messages>();
 const pending = new Map<Language, Promise<Messages>>();
+const failedImports = new Set<Language>();
+let retrySequence = 0;
+
+async function importMessages(language: Language): Promise<Messages> {
+  // Browsers retain failed module imports. A fresh URL lets Retry download the
+  // same build's chunk again without reloading the app or losing user input.
+  if (failedImports.has(language) && import.meta.env.PROD) {
+    const base = new URL(import.meta.env.BASE_URL, window.location.origin);
+    const response = await fetch(new URL(`locale-modules-${cacheVersion}.json`, base));
+    if (!response.ok) throw new Error('Unable to load locale module manifest');
+    const modules: Record<Language, string> = await response.json();
+    const url = new URL(modules[language], base);
+    url.searchParams.set('retry', String(++retrySequence));
+    const module = await import(/* @vite-ignore */ url.href);
+    return language === 'en' ? module.enMessages : module.zhTWMessages;
+  }
+  try {
+    return language === 'en'
+      ? (await import('./en')).enMessages
+      : (await import('./zh-TW')).zhTWMessages;
+  } catch (error) {
+    failedImports.add(language);
+    throw error;
+  }
+}
 
 function cacheUrl(language: Language): string {
   const base = new URL(import.meta.env.BASE_URL, window.location.origin);
@@ -76,10 +101,7 @@ export function loadMessages(language: Language): Promise<Messages> {
   const request = (async () => {
     let messages: Messages;
     try {
-      messages =
-        language === 'en'
-          ? (await import('./en')).enMessages
-          : (await import('./zh-TW')).zhTWMessages;
+      messages = await importMessages(language);
       void saveOfflineMessages(language, messages);
     } catch (error) {
       const offline = await readOfflineMessages(language);

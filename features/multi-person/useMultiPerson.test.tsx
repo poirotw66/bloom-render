@@ -10,6 +10,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { runImageGeneration } from '../../services/gemini/runImageGeneration';
 import { useMultiPerson } from './useMultiPerson';
+import * as viralTemplateHelpers from '../../utils/applyViralTemplate';
+import { getViralTemplateById, type ViralTemplate } from '../../constants/viralTemplates';
 
 vi.mock('../../services/gemini/runImageGeneration', () => ({ runImageGeneration: vi.fn() }));
 vi.mock('../../hooks/useDemoSampleInput', () => ({ useDemoSampleFiles: () => undefined }));
@@ -26,10 +28,10 @@ vi.mock('../../contexts/SettingsContext', () => ({
 }));
 vi.mock('../../utils/viralFavorites', () => ({ pushViralRecent: vi.fn() }));
 
-function deferred() {
-  let resolve!: (url: string) => void;
+function deferred<T = string>() {
+  let resolve!: (value: T) => void;
   let reject!: (reason: Error) => void;
-  const promise = new Promise<string>((res, rej) => {
+  const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
   });
@@ -52,19 +54,38 @@ function mount() {
 beforeEach(() => {
   vi.useFakeTimers();
   vi.mocked(runImageGeneration).mockReset();
+  vi.spyOn(viralTemplateHelpers, 'loadViralTemplate').mockImplementation(async (id) =>
+    getViralTemplateById(id),
+  );
 });
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
   vi.useRealTimers();
 });
 
 describe('multi-person generation lifecycle', () => {
+  it('does not call the provider when cancelled while template prompts are loading', async () => {
+    const pending = deferred<ViralTemplate | undefined>();
+    vi.mocked(viralTemplateHelpers.loadViralTemplate).mockReturnValueOnce(pending.promise);
+    const { result } = mount();
+    act(() => result.current.generate());
+    expect(result.current.loading).toBe(true);
+    act(() => result.current.cancel());
+    await act(async () => pending.resolve(getViralTemplateById('couple-portrait')));
+    expect(runImageGeneration).not.toHaveBeenCalled();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.cancelled).toBe(true);
+    expect(result.current.resultUrl).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it('aborts and stops progress immediately when cancelled without claiming completion', async () => {
     const pending = deferred();
     vi.mocked(runImageGeneration).mockReturnValue(pending.promise);
     const { result } = mount();
-    act(() => result.current.generate());
+    await act(async () => result.current.generate());
     const signal = vi.mocked(runImageGeneration).mock.calls[0][0].settings?.abortSignal;
     expect(signal?.aborted).toBe(false);
     expect(result.current.loading).toBe(true);
@@ -88,7 +109,7 @@ describe('multi-person generation lifecycle', () => {
     const pending = deferred();
     vi.mocked(runImageGeneration).mockReturnValue(pending.promise);
     const { result, unmount } = mount();
-    act(() => result.current.generate());
+    await act(async () => result.current.generate());
     const signal = vi.mocked(runImageGeneration).mock.calls[0][0].settings?.abortSignal;
     unmount();
     expect(signal?.aborted).toBe(true);
@@ -104,14 +125,14 @@ describe('multi-person generation lifecycle', () => {
       .mockReturnValueOnce(first.promise)
       .mockReturnValueOnce(second.promise);
     const { result } = mount();
-    act(() => {
+    await act(async () => {
       result.current.generate();
       result.current.generate();
       result.current.regenerate();
     });
     expect(runImageGeneration).toHaveBeenCalledTimes(1);
     act(() => result.current.cancel());
-    act(() => result.current.generate());
+    await act(async () => result.current.generate());
     expect(runImageGeneration).toHaveBeenCalledTimes(2);
     expect(result.current.cancelled).toBe(false);
 

@@ -7,10 +7,12 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const pagesBase = process.env.GITHUB_PAGES === 'true';
+  const analyze = process.env.ANALYZE === 'true' || mode === 'analyze';
   const localeSources = {
     en: readFileSync(new URL('./locales/en.ts', import.meta.url), 'utf8'),
     'zh-TW': readFileSync(new URL('./locales/zh-TW.ts', import.meta.url), 'utf8'),
@@ -41,6 +43,37 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'locale-retry-manifest',
+        generateBundle(_options, bundle) {
+          const modules = Object.fromEntries(
+            ['en', 'zh-TW'].map((language) => {
+              const source = path.resolve(__dirname, `locales/${language}.ts`);
+              const chunk = Object.values(bundle).find(
+                (entry) => entry.type === 'chunk' && entry.moduleIds.includes(source),
+              );
+              if (!chunk) throw new Error(`Missing locale chunk: ${language}`);
+              return [language, chunk.fileName];
+            }),
+          );
+          this.emitFile({
+            type: 'asset',
+            fileName: `locale-modules-${localeVersion}.json`,
+            source: JSON.stringify(modules),
+          });
+        },
+      },
+      ...(analyze
+        ? [
+            visualizer({
+              filename: 'dist/stats.html',
+              gzipSize: true,
+              brotliSize: true,
+              template: 'treemap',
+              open: false,
+            }),
+          ]
+        : []),
       VitePWA({
         registerType: 'prompt',
         includeAssets: ['logo/*.png', 'icons/*.png', 'og.png', 'favicon.ico'],

@@ -773,19 +773,21 @@ const EditorPage: React.FC = () => {
         file,
         t,
         (validFile) => {
-          // Prefer pending remix (set by applyViralTemplate); fall back to banner id.
-          const pending = consumePendingRemix();
-          const fromPending = pending ? remixToEditorPreset(pending) : null;
-          if (fromPending?.prompt) setPrompt(fromPending.prompt);
-          if (fromPending?.tab) setActiveTab(fromPending.tab);
-          setHistory([validFile]);
-          setHistoryIndex(0);
-          setError(null);
-          try {
-            window.scrollTo(0, 0);
-          } catch {
-            /* jsdom */
-          }
+          void (async () => {
+            // Prefer pending remix (set by applyViralTemplate); fall back to banner id.
+            const pending = consumePendingRemix();
+            const fromPending = pending ? await remixToEditorPreset(pending) : null;
+            if (fromPending?.prompt) setPrompt(fromPending.prompt);
+            if (fromPending?.tab) setActiveTab(fromPending.tab);
+            setHistory([validFile]);
+            setHistoryIndex(0);
+            setError(null);
+            try {
+              window.scrollTo(0, 0);
+            } catch {
+              /* jsdom */
+            }
+          })();
         },
         (msg) => setError(msg),
       );

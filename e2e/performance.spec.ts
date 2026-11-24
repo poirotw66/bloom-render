@@ -34,16 +34,20 @@ test('home loads only the active locale and defers generation and closed dialogs
   expect(scripts.some((url) => /GenerateStartScreen-/.test(url))).toBe(true);
 });
 
-test('a failed initial locale download shows a retry and recovers', async ({ page }) => {
+test('repeated failed initial locale downloads recover on retry', async ({ page }) => {
   let attempts = 0;
-  await page.route('**/locale-en-*.js', async (route) => {
-    if (++attempts === 1) await route.abort();
+  await page.route(/\/locale-en-[^/]+\.js(?:\?.*)?$/, async (route) => {
+    if (++attempts <= 2) await route.abort();
     else await route.continue();
   });
   await page.goto('/');
   await expect(page.getByRole('alert')).toContainText('Unable to load language');
   await page.getByRole('button', { name: 'Retry', exact: true }).click();
+  await expect.poll(() => attempts).toBe(2);
+  await expect(page.getByRole('alert')).toContainText('Unable to load language');
+  await page.getByRole('button', { name: 'Retry', exact: true }).click();
   await expect(page.getByText(/AI-Powered Photo Editor/i)).toBeVisible();
+  expect(attempts).toBe(3);
 });
 
 test('a failed locale switch leaves the active UI usable and recovers on retry', async ({

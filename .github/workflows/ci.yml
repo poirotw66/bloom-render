@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -64,6 +64,9 @@ jobs:
           # the default `/` base so PRs exercise a plain production build.
           GITHUB_PAGES: 'false'
 
+      - name: Check homepage bundle size
+        run: npm run check:bundle
+
   # Sibling job: Chromium-only Playwright smoke (home, routes, demo, upload).
   # Kept separate so a slow browser install does not block the quality-gate
   # signal, and so quality-gate failures do not skip e2e entirely when both
@@ -80,7 +83,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies

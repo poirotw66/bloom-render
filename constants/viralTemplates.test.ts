@@ -162,8 +162,46 @@ describe('viralTemplates', () => {
       expect(getViralTemplateById(id)?.supportsMultiPerson).toBe(true);
     }
     const multi = getMultiPersonViralTemplates();
-    expect(multi.length).toBeGreaterThanOrEqual(9);
+    expect(multi.length).toBe(12);
     expect(multi.every((t) => t.supportsMultiPerson)).toBe(true);
+  });
+
+  it('multi-person menu lists only supportsMultiPerson templates (no single-person lookalikes)', () => {
+    const SINGLE_PERSON_LOOKALIKES = [
+      'pro-headshot',
+      'yearbook-90s',
+      'wedding-photo',
+      'autumn-cafe',
+      'polaroid-frame',
+      'figurine-box',
+      'christmas-cozy',
+    ];
+    const multi = getMultiPersonViralTemplates();
+    const multiIds = new Set(multi.map((t) => t.id));
+    for (const id of SINGLE_PERSON_LOOKALIKES) {
+      expect(multiIds.has(id), id).toBe(false);
+      expect(getViralTemplateById(id)?.supportsMultiPerson).toBeFalsy();
+    }
+    for (const entry of multi) {
+      expect(entry.supportsMultiPerson, entry.id).toBe(true);
+      expect(entry.prompt.length).toBeGreaterThan(40);
+    }
+    expect([...multiIds].sort()).toEqual(
+      [
+        'airport-travel',
+        'birthday-party',
+        'cafe-meetup',
+        'camping-friends',
+        'christmas-party',
+        'cny-portrait',
+        'couple-portrait',
+        'family-portrait',
+        'friends-group',
+        'graduation-group',
+        'sports-team',
+        'wedding-guests',
+      ].sort(),
+    );
   });
 
   it('has unique ids, prompts, and dedicated viral thumbnails', () => {
@@ -178,7 +216,7 @@ describe('viralTemplates', () => {
       expect(template.thumbnail).toMatch(/^examples\/viral\/[a-z0-9-]+\.webp$/);
       expect(GENERIC_EXAMPLE_THUMBNAILS.has(template.thumbnail)).toBe(false);
       expect(template.feature).toMatch(/^(generate|retouch)$/);
-      expect(getViralTemplateById(template.id)).toBe(template);
+      expect(getViralTemplateById(template.id)).toEqual(template);
 
       const onDisk = join(process.cwd(), 'public', template.thumbnail);
       expect(existsSync(onDisk), onDisk).toBe(true);
