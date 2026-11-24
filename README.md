@@ -52,7 +52,7 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 
 ## Quick start
 
-**Node.js 20+**, npm (`npm ci` from the lockfile).
+**Node.js 22.12+**, npm (`npm ci` from the lockfile).
 
 ```bash
 npm ci

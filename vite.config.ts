@@ -43,6 +43,26 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'locale-retry-manifest',
+        generateBundle(_options, bundle) {
+          const modules = Object.fromEntries(
+            ['en', 'zh-TW'].map((language) => {
+              const source = path.resolve(__dirname, `locales/${language}.ts`);
+              const chunk = Object.values(bundle).find(
+                (entry) => entry.type === 'chunk' && entry.moduleIds.includes(source),
+              );
+              if (!chunk) throw new Error(`Missing locale chunk: ${language}`);
+              return [language, chunk.fileName];
+            }),
+          );
+          this.emitFile({
+            type: 'asset',
+            fileName: `locale-modules-${localeVersion}.json`,
+            source: JSON.stringify(modules),
+          });
+        },
+      },
       ...(analyze
         ? [
             visualizer({

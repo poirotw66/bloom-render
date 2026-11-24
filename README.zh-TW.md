@@ -52,7 +52,7 @@
 
 ## 快速開始
 
-環境：**Node.js 20+**、npm（有 lockfile 時請用 `npm ci`）。
+環境：**Node.js 22.12+**、npm（有 lockfile 時請用 `npm ci`）。
 
 ```bash
 npm ci
