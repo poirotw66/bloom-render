@@ -1,0 +1,13 @@
+BloomRender original reference illustrations
+
+These SVG reference illustrations were created for BloomRender. No PoseWear
+or other third-party reference images are included in this directory.
+
+To the extent possible under law, the creators have waived all copyright and
+related or neighboring rights to these original SVG illustrations under
+CC0 1.0 Universal. They may be copied, modified and used commercially.
+
+https://creativecommons.org/publicdomain/zero/1.0/
+
+This dedication applies only to the original illustrations in this directory.
+It does not grant rights to any person, brand or other material a user uploads.

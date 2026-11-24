@@ -45,6 +45,9 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 - **Multi-style collage** — Pick 4–6 玩法 styles from one photo and download a labeled collage (`/style-collage`).
 - **Multi-person synthesis** — Upload 2–4 portraits into a shared-frame viral style (`/multi-person`).
 - **History · share · compare** — Browse past runs; share cards; before/after slider.
+- **Try-on references and drafts** — Original CC0 clothing, pose and lighting illustrations, plus optional uploaded pose, expression, scene and lighting references. Preserve the original background or pose; drafts keep input images in IndexedDB and can be cleared. Demo uses samples only.
+- **Try-on recipes** — Share links and import/export JSON contain built-in material IDs and settings, without uploaded images or API keys. History replay restores saved person, clothing and other references.
+- **Full history export** — ZIP backups include results, source photos, references and generation metadata. Older records may lack original inputs. Reference materials have searchable, shareable detail pages.
 - **Settings** — Gemini / OpenRouter / Live demo; language; themes (**Bloom**, **Night**, **New Year**).
 - **i18n** — English & Traditional Chinese. **PWA**-ready static build.
 

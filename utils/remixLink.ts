@@ -8,6 +8,7 @@
  */
 
 import { SITE_BASE_PATH, SITE_ORIGIN } from '../constants/site';
+import { parseTryOnRecipe, type TryOnRecipe } from '../types/tryOnRecipe';
 
 /** Preferred short form: viral template id. */
 export type RemixIdPayload = { v: 1; id: string };
@@ -22,7 +23,9 @@ export type RemixPromptPayload = {
   tab?: 'retouch' | 'adjust' | 'filters';
 };
 
-export type RemixPayload = RemixIdPayload | RemixPromptPayload;
+export type RemixTryOnPayload = { v: 1; f: 'tryon'; recipe: TryOnRecipe };
+
+export type RemixPayload = RemixIdPayload | RemixPromptPayload | RemixTryOnPayload;
 
 const MAX_PROMPT_CHARS = 500;
 const MAX_ID_CHARS = 64;
@@ -115,6 +118,13 @@ export function normalizeRemixPayload(payload: RemixPayload): RemixPayload {
   assertNoForbiddenKeys(payload);
 
   if (payload.v !== 1) throw new Error('Unsupported remix payload version');
+
+  if ('f' in payload && payload.f === 'tryon') {
+    assertAllowedKeys(payload, new Set(['v', 'f', 'recipe']));
+    const recipe = parseTryOnRecipe(payload.recipe);
+    if (!recipe) throw new Error('Invalid try-on recipe');
+    return { v: 1, f: 'tryon', recipe };
+  }
 
   if ('id' in payload && payload.id !== undefined) {
     assertAllowedKeys(payload, ID_KEYS);

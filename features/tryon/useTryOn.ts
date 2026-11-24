@@ -1,17 +1,12 @@
-/**
- * @license
- * SPDX-License-Identifier: MIT
- *
- * Hook for AI virtual try-on: person + clothing images -> person wearing clothing.
- */
-
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
 import { useDemoTryOnSamples } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { generateVirtualTryOn } from '../../services/geminiService';
+import { prepareTryOnRequest } from '../../services/gemini/tryOn';
 import { formatApiErrorMessage } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
@@ -19,65 +14,610 @@ import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { allFailedError } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
+import { publicAssetUrl } from '../../utils/publicAsset';
+import {
+  loadTryOnDraft,
+  saveTryOnDraft,
+  deleteTryOnDraft,
+  type TryOnDraft,
+} from '../../utils/tryOnDraftDb';
+import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMaterials';
+import {
+  TRYON_OPTIONAL_REFERENCE_ROLES,
+  parseTryOnRecipe,
+  type HistoryReference,
+  type TryOnOptionalReferenceRole,
+  type TryOnRecipe,
+} from '../../types/tryOnRecipe';
 import {
   TRYON_BACKGROUNDS,
   TRYON_STYLES,
   DEFAULT_TRYON_BACKGROUND,
   DEFAULT_TRYON_STYLE,
-  type TryOnBackgroundId,
-  type TryOnStyleId,
 } from '../../constants/tryOn';
 import {
   MIN_CLOTHING_IMAGES,
   MAX_CLOTHING_IMAGES,
   DEFAULT_TRYON_OUTPUT_SIZE,
   DEFAULT_TRYON_ASPECT_RATIO,
-  type TryOnOutputSize,
-  type TryOnAspectRatio,
 } from './types';
+
+type ReferenceFile = { file: File; materialId?: string };
+type TryOnInputs = {
+  person: File | null;
+  clothing: ReferenceFile[];
+  references: Partial<Record<TryOnOptionalReferenceRole, ReferenceFile>>;
+  settings: TryOnRecipe['settings'];
+};
+
+function emptyInputs(): TryOnInputs {
+  return {
+    person: null,
+    clothing: [],
+    references: {},
+    settings: {
+      background: DEFAULT_TRYON_BACKGROUND,
+      style: DEFAULT_TRYON_STYLE,
+      outputSize: DEFAULT_TRYON_OUTPUT_SIZE,
+      aspectRatio: DEFAULT_TRYON_ASPECT_RATIO,
+      quantity: 1,
+      keepBackground: false,
+      keepPose: true,
+    },
+  };
+}
+
+function recipeFor(inputs: TryOnInputs): TryOnRecipe {
+  return {
+    v: 1,
+    kind: 'tryon',
+    materialIds: [
+      ...inputs.clothing,
+      ...TRYON_OPTIONAL_REFERENCE_ROLES.flatMap((role) => inputs.references[role] ?? []),
+    ].flatMap((ref) => (ref.materialId ? [ref.materialId] : [])),
+    settings: { ...inputs.settings },
+  };
+}
+
+function storedReferences(inputs: TryOnInputs): HistoryReference[] {
+  return [
+    ...inputs.clothing.map((ref) => ({
+      role: 'clothing' as const,
+      blob: ref.file,
+      name: ref.file.name,
+      materialId: ref.materialId,
+    })),
+    ...TRYON_OPTIONAL_REFERENCE_ROLES.flatMap((role) => {
+      const ref = inputs.references[role];
+      return ref ? [{ role, blob: ref.file, name: ref.file.name, materialId: ref.materialId }] : [];
+    }),
+  ];
+}
+
+function restoreInputs(
+  recipe: TryOnRecipe,
+  person: File | null,
+  references: HistoryReference[],
+): TryOnInputs {
+  const restored = { ...emptyInputs(), person, settings: recipe.settings };
+  for (const ref of references) {
+    const value = {
+      file: new File([ref.blob], ref.name, { type: ref.blob.type }),
+      materialId: ref.materialId,
+    };
+    if (ref.role === 'clothing') {
+      if (restored.clothing.length < MAX_CLOTHING_IMAGES) restored.clothing.push(value);
+    } else if (TRYON_OPTIONAL_REFERENCE_ROLES.includes(ref.role))
+      restored.references[ref.role] = value;
+  }
+  return restored;
+}
+
+async function materialFile(material: TryOnMaterial, signal: AbortSignal): Promise<File> {
+  const response = await fetch(publicAssetUrl(material.image), { signal });
+  if (!response.ok) throw new Error('error.network_error');
+  const blob = await response.blob();
+  if (!material.image.endsWith('.svg'))
+    return new File([blob], `${material.id}.webp`, { type: blob.type });
+  const url = URL.createObjectURL(blob);
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('error.invalid_image'));
+      img.src = url;
+    });
+    signal.throwIfAborted();
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth || 768;
+    canvas.height = image.naturalHeight || 1024;
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('error.invalid_image');
+    context.drawImage(image, 0, 0);
+    const png = await new Promise<Blob>((resolve, reject) =>
+      canvas.toBlob(
+        (value) => (value ? resolve(value) : reject(new Error('error.invalid_image'))),
+        'image/png',
+      ),
+    );
+    return new File([png], `${material.id}.png`, { type: 'image/png' });
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
 
 export function useTryOn() {
   const { t } = useLanguage();
   const settings = useSettings();
+  const location = useLocation();
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
-  const attempts = useGenerationAttempt();
+  const resetRun = run.reset;
   const cancelRun = run.cancel;
-
-  const [personFile, setPersonFile] = useState<File | null>(null);
-  const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
-  const [clothingFiles, setClothingFiles] = useState<File[]>([]);
-  const [clothingPreviewUrls, setClothingPreviewUrls] = useState<string[]>([]);
-
-  useDemoTryOnSamples(setPersonFile, setClothingFiles);
-
+  const attempts = useGenerationAttempt();
+  const [inputs, setInputs] = useState<TryOnInputs>(emptyInputs);
+  const [draftStatus, setDraftStatus] = useState<'loading' | 'saved' | 'error' | 'empty'>(
+    'loading',
+  );
+  const [draftReady, setDraftReady] = useState(false);
+  const [materialLoading, setMaterialLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [results, setResults] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [quantity, setQuantity] = useState(1);
   const [progress, setProgress] = useState(0);
-  const [background, setBackground] = useState<TryOnBackgroundId>(DEFAULT_TRYON_BACKGROUND);
-  const [style, setStyle] = useState<TryOnStyleId>(DEFAULT_TRYON_STYLE);
-  const [outputSize, setOutputSize] = useState<TryOnOutputSize>(DEFAULT_TRYON_OUTPUT_SIZE);
-  const [aspectRatio, setAspectRatio] = useState<TryOnAspectRatio>(DEFAULT_TRYON_ASPECT_RATIO);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const revision = useRef(0);
+  const explicitInput = useRef(false);
+  const pendingRecipe = useRef<TryOnRecipe | null>(null);
+  const persistedInputs = useRef(inputs);
+  const mounted = useRef(true);
+  const materialRequests = useRef(new Map<string, AbortController>());
+  const recipeRequest = useRef<AbortController | null>(null);
+  const previousDemo = useRef(settings.isDemoMode);
+  const batch = useRef<{
+    inputs: TryOnInputs;
+    serviceSettings: ReturnType<typeof settings.toServiceSettings>;
+    metadata: { imageProvider: string; model: string };
+  } | null>(null);
+
+  useEffect(() => {
+    mounted.current = true;
+    const requests = materialRequests.current;
+    return () => {
+      mounted.current = false;
+      recipeRequest.current?.abort();
+      for (const controller of requests.values()) controller.abort();
+    };
+  }, []);
+
+  const updateInputs = useCallback((change: (current: TryOnInputs) => TryOnInputs) => {
+    revision.current += 1;
+    setInputs(change);
+    setError(null);
+  }, []);
+  const updateSettings = useCallback(
+    <K extends keyof TryOnRecipe['settings']>(key: K, value: TryOnRecipe['settings'][K]) => {
+      updateInputs((current) => ({ ...current, settings: { ...current.settings, [key]: value } }));
+    },
+    [updateInputs],
+  );
+  const setPerson = useCallback(
+    (file: File | null) => {
+      updateInputs((current) => ({ ...current, person: file }));
+      setResult(null);
+      setResults([]);
+    },
+    [updateInputs],
+  );
+  const addClothing = useCallback(
+    (files: File[]) => {
+      updateInputs((current) => ({
+        ...current,
+        clothing: [...current.clothing, ...files.map((file) => ({ file }))].slice(
+          0,
+          MAX_CLOTHING_IMAGES,
+        ),
+      }));
+      setResult(null);
+      setResults([]);
+    },
+    [updateInputs],
+  );
+  const demoPerson = useCallback(
+    (file: File | null) => setInputs((current) => ({ ...current, person: file })),
+    [],
+  );
+  const demoClothing = useCallback(
+    (files: File[]) =>
+      setInputs((current) => ({ ...current, clothing: files.map((file) => ({ file })) })),
+    [],
+  );
+  useDemoTryOnSamples(demoPerson, demoClothing);
+
+  const applyRecipe = useCallback(
+    (value: TryOnRecipe) => {
+      const recipe = parseTryOnRecipe(value);
+      if (!recipe) {
+        setError(t('tryon.recipe_invalid'));
+        return;
+      }
+      const materials = recipe.materialIds.map((id) =>
+        TRYON_MATERIALS.find((material) => material.id === id),
+      );
+      if (
+        materials.some((material) => !material) ||
+        materials.filter((material) => material?.role === 'clothing').length >
+          MAX_CLOTHING_IMAGES ||
+        TRYON_OPTIONAL_REFERENCE_ROLES.some(
+          (role) => materials.filter((material) => material?.role === role).length > 1,
+        )
+      ) {
+        setError(t('tryon.recipe_material_missing'));
+        return;
+      }
+      if (settings.isDemoMode) {
+        pendingRecipe.current = recipe;
+        setInputs((current) => ({ ...current, settings: recipe.settings }));
+        return;
+      }
+      explicitInput.current = true;
+      revision.current += 1;
+      const currentRevision = revision.current;
+      for (const request of materialRequests.current.values()) request.abort();
+      recipeRequest.current?.abort();
+      const controller = new AbortController();
+      recipeRequest.current = controller;
+      setMaterialLoading(true);
+      void Promise.all(
+        materials.map(async (material) => ({
+          material: material!,
+          file: await materialFile(material!, controller.signal),
+        })),
+      )
+        .then((files) => {
+          if (!mounted.current || controller.signal.aborted || revision.current !== currentRevision)
+            return;
+          attempts.cancel();
+          resetRun();
+          batch.current = null;
+          setResult(null);
+          setResults([]);
+          setLoading(false);
+          setProgress(0);
+          setInputs((current) => {
+            const next: TryOnInputs = {
+              ...current,
+              clothing: [],
+              references: {},
+              settings: recipe.settings,
+            };
+            for (const { material, file } of files) {
+              const ref = { file, materialId: material.id };
+              if (material.role === 'clothing') next.clothing.push(ref);
+              else next.references[material.role] = ref;
+            }
+            return next;
+          });
+          setDraftReady(true);
+          setError(null);
+        })
+        .catch(async (err) => {
+          if (!mounted.current || controller.signal.aborted || revision.current !== currentRevision)
+            return;
+          setError(formatApiErrorMessage(err, t, 'tryon'));
+          if (draftStatus !== 'loading') return;
+          try {
+            const draft = await loadTryOnDraft();
+            if (
+              !mounted.current ||
+              controller.signal.aborted ||
+              revision.current !== currentRevision
+            )
+              return;
+            if (draft) {
+              const restored = restoreInputs(
+                draft.recipe,
+                draft.person
+                  ? new File([draft.person.blob], draft.person.name, {
+                      type: draft.person.blob.type,
+                    })
+                  : null,
+                draft.references,
+              );
+              persistedInputs.current = restored;
+              setInputs(restored);
+            }
+            setDraftReady(true);
+            setDraftStatus(draft ? 'saved' : 'empty');
+          } catch {
+            if (
+              mounted.current &&
+              !controller.signal.aborted &&
+              revision.current === currentRevision
+            ) {
+              setDraftReady(true);
+              setDraftStatus('error');
+            }
+          }
+        })
+        .finally(() => {
+          if (mounted.current && recipeRequest.current === controller) setMaterialLoading(false);
+        });
+    },
+    [t, attempts, resetRun, settings.isDemoMode, draftStatus],
+  );
+  const applyRecipeRef = useRef(applyRecipe);
+  applyRecipeRef.current = applyRecipe;
 
   useHistoryReplay((payload) => {
-    if (payload.type !== 'tryon') return;
+    if (payload.type !== 'tryon' || settings.isDemoMode) return;
+    recipeRequest.current?.abort();
+    for (const request of materialRequests.current.values()) request.abort();
+    explicitInput.current = true;
+    revision.current += 1;
+    const currentRevision = revision.current;
+    setDraftReady(true);
     const opts = payload.options ?? {};
-    if (typeof opts.background === 'string') setBackground(opts.background as TryOnBackgroundId);
-    if (typeof opts.style === 'string') setStyle(opts.style as TryOnStyleId);
-    if (opts.outputSize === '1K' || opts.outputSize === '2K' || opts.outputSize === '4K') {
-      setOutputSize(opts.outputSize);
-    }
-    if (opts.aspectRatio === '1:1' || opts.aspectRatio === '16:9' || opts.aspectRatio === '9:16') {
-      setAspectRatio(opts.aspectRatio);
-    }
-    if (payload.sourceUrl) {
-      void fileFromSourceUrl(payload.sourceUrl, 'tryon-person.png').then(setPersonFile);
-    }
+    const fallback = { ...emptyInputs().settings, ...opts };
+    const recipe =
+      parseTryOnRecipe(opts.recipe) ??
+      parseTryOnRecipe({
+        v: 1,
+        kind: 'tryon',
+        materialIds: [],
+        settings: {
+          background: fallback.background,
+          style: fallback.style,
+          outputSize: fallback.outputSize,
+          aspectRatio: fallback.aspectRatio,
+          quantity: fallback.quantity,
+          keepBackground: fallback.keepBackground,
+          keepPose: fallback.keepPose,
+        },
+      }) ??
+      recipeFor(emptyInputs());
+    setInputs(restoreInputs(recipe, null, payload.references ?? []));
+    if (!payload.references?.some((ref) => ref.role === 'clothing'))
+      setError(t('tryon.replay_clothing_missing'));
+    const restore = payload.sourceBlob
+      ? Promise.resolve(
+          new File([payload.sourceBlob], 'tryon-person.png', { type: payload.sourceBlob.type }),
+        )
+      : payload.sourceUrl
+        ? fileFromSourceUrl(payload.sourceUrl, 'tryon-person.png')
+        : Promise.resolve(null);
+    void restore
+      .then((person) => {
+        if (!mounted.current || currentRevision !== revision.current) return;
+        setInputs((current) => ({ ...current, person }));
+      })
+      .catch(() => {
+        if (mounted.current && currentRevision === revision.current)
+          setError(t('tryon.replay_person_missing'));
+      });
   });
+
+  const sharedRecipe = (location.state as { tryOnRecipe?: unknown } | null)?.tryOnRecipe;
+  const appliedSharedRecipe = useRef<unknown>(null);
+  useEffect(() => {
+    if (
+      !sharedRecipe ||
+      (appliedSharedRecipe.current === sharedRecipe && !recipeRequest.current?.signal.aborted)
+    )
+      return;
+    appliedSharedRecipe.current = sharedRecipe;
+    const parsed = parseTryOnRecipe(sharedRecipe);
+    if (parsed) applyRecipe(parsed);
+    else {
+      explicitInput.current = true;
+      setError(t('tryon.recipe_invalid'));
+    }
+  }, [sharedRecipe, applyRecipe, t]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    if (previousDemo.current !== settings.isDemoMode) {
+      previousDemo.current = settings.isDemoMode;
+      attempts.cancel();
+      cancelRun();
+      resetRun();
+      batch.current = null;
+      setLoading(false);
+      setProgress(0);
+      setMaterialLoading(false);
+      revision.current += 1;
+      recipeRequest.current?.abort();
+      for (const request of materialRequests.current.values()) request.abort();
+      setInputs(emptyInputs());
+      setResult(null);
+      setResults([]);
+      setError(null);
+      explicitInput.current = false;
+    }
+    if (settings.isDemoMode) {
+      setDraftReady(false);
+      setDraftStatus('empty');
+      return;
+    }
+    if (pendingRecipe.current) {
+      const recipe = pendingRecipe.current;
+      pendingRecipe.current = null;
+      applyRecipeRef.current(recipe);
+      return;
+    }
+    if (explicitInput.current) {
+      setDraftReady(true);
+      return;
+    }
+    setDraftReady(false);
+    setDraftStatus('loading');
+    const restoreRevision = revision.current;
+    void loadTryOnDraft()
+      .then((draft) => {
+        if (!mounted.current || controller.signal.aborted) return;
+        if (!explicitInput.current && revision.current === restoreRevision) {
+          if (draft) {
+            const restored = restoreInputs(
+              draft.recipe,
+              draft.person
+                ? new File([draft.person.blob], draft.person.name, { type: draft.person.blob.type })
+                : null,
+              draft.references,
+            );
+            persistedInputs.current = restored;
+            setInputs(restored);
+          }
+          setDraftStatus(draft ? 'saved' : 'empty');
+        }
+        setDraftReady(true);
+      })
+      .catch(() => {
+        if (!mounted.current || controller.signal.aborted) return;
+        setDraftStatus('error');
+        setDraftReady(true);
+      });
+    return () => controller.abort();
+  }, [settings.isDemoMode, attempts, cancelRun, resetRun]);
+
+  useEffect(() => {
+    if (!draftReady || settings.isDemoMode || materialLoading) return;
+    if (persistedInputs.current === inputs) return;
+    const currentRevision = revision.current;
+    const hasInput = Boolean(
+      inputs.person || inputs.clothing.length || Object.keys(inputs.references).length,
+    );
+    if (!hasInput && currentRevision === 0) return;
+    persistedInputs.current = inputs;
+    const draft: TryOnDraft = {
+      person: inputs.person ? { blob: inputs.person, name: inputs.person.name } : null,
+      references: storedReferences(inputs),
+      recipe: recipeFor(inputs),
+    };
+    void saveTryOnDraft(draft)
+      .then(() => {
+        if (mounted.current && revision.current === currentRevision)
+          setDraftStatus(hasInput ? 'saved' : 'empty');
+      })
+      .catch(() => {
+        if (mounted.current && revision.current === currentRevision) setDraftStatus('error');
+      });
+  }, [inputs, draftReady, settings.isDemoMode, materialLoading]);
+
+  const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
+  const [clothingPreviewUrls, setClothingPreviewUrls] = useState<string[]>([]);
+  const [referencePreviewUrls, setReferencePreviewUrls] = useState<
+    Partial<Record<TryOnOptionalReferenceRole, string>>
+  >({});
+  useEffect(() => {
+    const url = inputs.person ? URL.createObjectURL(inputs.person) : null;
+    setPersonPreviewUrl(url);
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [inputs.person]);
+  useEffect(() => {
+    const urls = inputs.clothing.map(({ file }) => URL.createObjectURL(file));
+    setClothingPreviewUrls(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [inputs.clothing]);
+  useEffect(() => {
+    const urls: Partial<Record<TryOnOptionalReferenceRole, string>> = {};
+    for (const role of TRYON_OPTIONAL_REFERENCE_ROLES)
+      if (inputs.references[role]) urls[role] = URL.createObjectURL(inputs.references[role]!.file);
+    setReferencePreviewUrls(urls);
+    return () => Object.values(urls).forEach((url) => URL.revokeObjectURL(url));
+  }, [inputs.references]);
+
+  const addMaterial = useCallback(
+    async (material: TryOnMaterial) => {
+      if (
+        settings.isDemoMode ||
+        materialRequests.current.has(material.id) ||
+        recipeFor(inputs).materialIds.includes(material.id)
+      )
+        return;
+      if (material.role === 'clothing' && inputs.clothing.length >= MAX_CLOTHING_IMAGES) return;
+      revision.current += 1;
+      const controller = new AbortController();
+      materialRequests.current.set(material.id, controller);
+      try {
+        const file = await materialFile(material, controller.signal);
+        if (!mounted.current || controller.signal.aborted) return;
+        setInputs((current) => {
+          if (recipeFor(current).materialIds.includes(material.id)) return current;
+          const ref = { file, materialId: material.id };
+          return material.role === 'clothing'
+            ? { ...current, clothing: [...current.clothing, ref].slice(0, MAX_CLOTHING_IMAGES) }
+            : { ...current, references: { ...current.references, [material.role]: ref } };
+        });
+        setError(null);
+      } catch (err) {
+        if (mounted.current && !controller.signal.aborted)
+          setError(formatApiErrorMessage(err, t, 'tryon'));
+      } finally {
+        materialRequests.current.delete(material.id);
+      }
+    },
+    [inputs, settings.isDemoMode, t],
+  );
+  const removeMaterial = useCallback(
+    (id: string) => {
+      materialRequests.current.get(id)?.abort();
+      updateInputs((current) => ({
+        ...current,
+        clothing: current.clothing.filter((ref) => ref.materialId !== id),
+        references: Object.fromEntries(
+          Object.entries(current.references).filter(([, ref]) => ref.materialId !== id),
+        ),
+      }));
+    },
+    [updateInputs],
+  );
+  const setReference = useCallback(
+    (role: TryOnOptionalReferenceRole, file: File | null) => {
+      updateInputs((current) => {
+        const references = { ...current.references };
+        if (file) references[role] = { file };
+        else delete references[role];
+        return { ...current, references };
+      });
+    },
+    [updateInputs],
+  );
+  const removeClothing = useCallback(
+    (index: number) =>
+      updateInputs((current) => ({
+        ...current,
+        clothing: current.clothing.filter((_, i) => i !== index),
+      })),
+    [updateInputs],
+  );
+  const clearClothing = useCallback(
+    () => updateInputs((current) => ({ ...current, clothing: [] })),
+    [updateInputs],
+  );
+  const clearDraft = useCallback(async () => {
+    revision.current += 1;
+    const clearRevision = revision.current;
+    recipeRequest.current?.abort();
+    for (const controller of materialRequests.current.values()) controller.abort();
+    try {
+      await deleteTryOnDraft();
+      if (mounted.current && revision.current === clearRevision) {
+        const cleared = emptyInputs();
+        persistedInputs.current = cleared;
+        setInputs(cleared);
+        setResult(null);
+        setResults([]);
+        setError(null);
+        setDraftStatus('empty');
+      }
+    } catch (error) {
+      if (mounted.current && revision.current === clearRevision) setDraftStatus('error');
+      throw error;
+    }
+  }, []);
 
   const cancelGeneration = useCallback(() => {
     attempts.cancel();
@@ -85,148 +625,82 @@ export function useTryOn() {
     setLoading(false);
     setProgress(0);
   }, [attempts, cancelRun]);
-
-  // Person preview URL
-  useEffect(() => {
-    if (personFile) {
-      const url = URL.createObjectURL(personFile);
-      setPersonPreviewUrl(url);
-      return () => URL.revokeObjectURL(url);
-    }
-    setPersonPreviewUrl(null);
-  }, [personFile]);
-
-  // Clothing preview URLs
-  useEffect(() => {
-    const urls = clothingFiles.map((f) => URL.createObjectURL(f));
-    setClothingPreviewUrls(urls);
-    return () => urls.forEach((u) => URL.revokeObjectURL(u));
-  }, [clothingFiles]);
-
-  const setPerson = useCallback((file: File | null) => {
-    setPersonFile(file);
-    setError(null);
-    setResult(null);
-    setResults([]);
-  }, []);
-
-  const addClothing = useCallback((files: File[]) => {
-    setClothingFiles((prev) => [...prev, ...files].slice(0, MAX_CLOTHING_IMAGES));
-    setError(null);
-    setResult(null);
-    setResults([]);
-  }, []);
-
-  const removeClothing = useCallback((index: number) => {
-    setClothingFiles((prev) => prev.filter((_, i) => i !== index));
-    setError(null);
-  }, []);
-
-  const clearClothing = useCallback(() => {
-    setClothingFiles([]);
-    setError(null);
-  }, []);
-
-  const handlePersonFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = (e.target.files || [])[0];
-      setPerson(file || null);
-      e.target.value = '';
-    },
-    [setPerson],
-  );
-
-  const handleClothingFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith('image/'));
-      addClothing(files);
-      e.target.value = '';
-    },
-    [addClothing],
-  );
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDraggingOver(true);
-  }, []);
-
-  const handleDragLeave = useCallback(() => {
-    setIsDraggingOver(false);
-  }, []);
-
-  const handleDropPerson = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDraggingOver(false);
-      const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/'));
-      if (file) setPerson(file);
-    },
-    [setPerson],
-  );
-
-  const handleDropClothing = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDraggingOver(false);
-      const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
-      addClothing(files);
-    },
-    [addClothing],
-  );
-
   const generateOne = useCallback(
     (
-      person: File,
-      clothing: File[],
-      variationIndex: number,
+      snapshot: NonNullable<typeof batch.current>,
+      index: number,
       total: number,
       signal: AbortSignal,
     ) => {
-      const backgroundOption = TRYON_BACKGROUNDS.find((b) => b.id === background);
-      const styleOption = TRYON_STYLES.find((s) => s.id === style);
-
-      return generateVirtualTryOn(person, clothing, {
-        settings: settings.toServiceSettings(signal),
-        variationIndex: total > 1 ? variationIndex : undefined,
-        backgroundHint: backgroundOption?.promptHint,
-        styleHint: styleOption?.promptHint,
-        outputSize,
-        aspectRatio,
-      }).then((dataUrl) => {
+      const current = snapshot.inputs;
+      const options = {
+        settings: { ...snapshot.serviceSettings, abortSignal: signal },
+        variationIndex: total > 1 ? index : undefined,
+        backgroundHint: TRYON_BACKGROUNDS.find((item) => item.id === current.settings.background)
+          ?.promptHint,
+        styleHint: TRYON_STYLES.find((item) => item.id === current.settings.style)?.promptHint,
+        outputSize: current.settings.outputSize,
+        aspectRatio: current.settings.aspectRatio,
+        keepBackground: current.settings.keepBackground,
+        keepPose: current.settings.keepPose,
+        referenceFiles: Object.fromEntries(
+          Object.entries(current.references).map(([role, ref]) => [role, ref.file]),
+        ),
+        referenceHints: Object.fromEntries(
+          Object.entries(current.references).flatMap(([role, ref]) => {
+            const material = TRYON_MATERIALS.find((item) => item.id === ref.materialId);
+            return material ? [[role, material.prompt]] : [];
+          }),
+        ),
+      };
+      const clothing = current.clothing.map((ref) => ref.file);
+      const prepared = prepareTryOnRequest(current.person!, clothing, options);
+      return generateVirtualTryOn(current.person!, clothing, options).then((dataUrl) => {
         if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
-        addToHistory(
+        void addToHistory(
           'tryon',
           dataUrl,
-          buildHistoryOptions('tryon', settings, {
-            background,
-            style,
+          buildHistoryOptions('tryon', snapshot.metadata, {
+            ...current.settings,
             clothingCount: clothing.length,
-            outputSize,
-            aspectRatio,
-            variationIndex,
+            variationIndex: index,
+            prompt: prepared.prompt,
+            effectiveOutputSize: prepared.effectiveSize,
+            recipe: recipeFor(current),
           }),
-          person,
+          current.person,
+          storedReferences(current),
         );
         return dataUrl;
       });
     },
-    [background, style, outputSize, aspectRatio, settings, addToHistory],
+    [addToHistory],
   );
 
   const handleGenerate = useCallback(async () => {
-    if (!personFile) {
+    if (!inputs.person) {
       setError(t('tryon.error_no_person'));
       return;
     }
-    if (clothingFiles.length < MIN_CLOTHING_IMAGES) {
+    if (inputs.clothing.length < MIN_CLOTHING_IMAGES) {
       setError(t('tryon.error_no_clothing'));
       return;
     }
-    if (clothingFiles.length > MAX_CLOTHING_IMAGES) {
+    if (inputs.clothing.length > MAX_CLOTHING_IMAGES) {
       setError(t('tryon.error_too_many_clothing'));
       return;
     }
-
+    if (materialLoading) return;
+    const serviceSettings = settings.toServiceSettings();
+    const snapshot = {
+      inputs,
+      serviceSettings,
+      metadata: {
+        imageProvider: settings.imageProvider,
+        model: serviceSettings.model ?? settings.model,
+      },
+    };
+    batch.current = snapshot;
     const attempt = attempts.begin();
     if (!attempt.isCurrent()) return;
     setLoading(true);
@@ -234,43 +708,27 @@ export function useTryOn() {
     setResult(null);
     setResults([]);
     setProgress(0);
-    run.reset();
-
-    const total = quantity;
-    const generated: string[] = [];
-
+    resetRun();
+    const total = inputs.settings.quantity;
     try {
-      let completedCount = 0;
-      const { results, failures, cancelled } = await run.runBatch(total, (i, signal) =>
-        generateOne(personFile, clothingFiles, i, total, signal).then((dataUrl) => {
+      let completed = 0;
+      const outcome = await run.runBatch(total, (index, signal) =>
+        generateOne(snapshot, index, total, signal).then((dataUrl) => {
           if (signal.aborted || !attempt.isCurrent())
             throw new DOMException('Aborted', 'AbortError');
-          completedCount += 1;
-          setProgress(Math.round((completedCount / total) * 90));
+          completed += 1;
+          setProgress(Math.round((completed / total) * 90));
           return dataUrl;
         }),
       );
-      if (cancelled || !attempt.isCurrent()) return;
-      generated.push(...results);
-
-      setProgress(100);
-      if (generated.length === 0) {
-        throw allFailedError(failures);
-      }
-      // Always use the list form when some slots failed, so the partial-result
-      // notice and its retry button have somewhere to live.
-      if (generated.length === 1 && total === 1) {
-        setResult(generated[0]);
-      } else {
-        setResults(generated);
-      }
+      if (outcome.cancelled || !attempt.isCurrent()) return;
+      if (!outcome.results.length) throw allFailedError(outcome.failures);
+      if (outcome.results.length === 1 && total === 1) setResult(outcome.results[0]);
+      else setResults(outcome.results);
     } catch (err) {
-      if (!attempt.isCurrent()) return;
-      setError(formatApiErrorMessage(err, t, 'tryon'));
-      logger.error('Try-on generation error:', err);
-      if (generated.length > 0) {
-        setResults(generated);
-        setResult(null);
+      if (attempt.isCurrent()) {
+        setError(formatApiErrorMessage(err, t, 'tryon'));
+        logger.error('Try-on generation error:', err);
       }
     } finally {
       if (attempt.isCurrent()) {
@@ -279,74 +737,139 @@ export function useTryOn() {
       }
       attempts.finish(attempt);
     }
-  }, [attempts, personFile, clothingFiles, quantity, t, run, generateOne]);
-
+  }, [inputs, materialLoading, settings, attempts, run, resetRun, generateOne, t]);
   const handleRetryFailed = useCallback(async () => {
-    if (!personFile) return;
-
+    const snapshot = batch.current;
+    if (!snapshot) return;
     const attempt = attempts.begin();
-    if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered, cancelled } = await run.retryFailed((i, signal) =>
-        generateOne(personFile, clothingFiles, i, quantity, signal),
+      const outcome = await run.retryFailed((index, signal) =>
+        generateOne(snapshot, index, snapshot.inputs.settings.quantity, signal),
       );
-      if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
-
-      setResults((prev) => [...prev, ...recovered]);
+      if (outcome.cancelled || !attempt.isCurrent() || !outcome.results.length) return;
+      setResults((previous) => [...previous, ...outcome.results]);
       setResult(null);
     } catch (err) {
-      if (!attempt.isCurrent()) return;
-      setError(formatApiErrorMessage(err, t, 'tryon'));
-      logger.error('Try-on retry error:', err);
+      if (attempt.isCurrent()) setError(formatApiErrorMessage(err, t, 'tryon'));
     } finally {
       attempts.finish(attempt);
     }
-  }, [attempts, personFile, clothingFiles, quantity, run, generateOne, t]);
-
+  }, [attempts, run, generateOne, t]);
   const clearResult = useCallback(() => {
     cancelGeneration();
     setResult(null);
     setResults([]);
-    setPersonFile(null);
-    setClothingFiles([]);
     setError(null);
-    run.reset();
-  }, [run, cancelGeneration]);
-
+    resetRun();
+  }, [cancelGeneration, resetRun]);
   const handleBatchDownload = useCallback(async () => {
-    const list = results.length > 0 ? results : result ? [result] : [];
-    if (list.length === 0) return;
+    const list = results.length ? results : result ? [result] : [];
     await downloadBatchWithZipFallback({
       sources: list,
       itemFileName: (index) => `try-on-${index + 1}.png`,
       zipFileName: `try-on-${Date.now()}.zip`,
     });
-  }, [results, result]);
-
-  const canGenerate =
-    personFile !== null &&
-    clothingFiles.length >= MIN_CLOTHING_IMAGES &&
-    clothingFiles.length <= MAX_CLOTHING_IMAGES;
-
-  const hasResults = results.length > 0 || result !== null;
-
+  }, [result, results]);
+  const handlePersonFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPerson(event.target.files?.[0] ?? null);
+      event.target.value = '';
+    },
+    [setPerson],
+  );
+  const handleClothingFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      addClothing(
+        Array.from(event.target.files ?? []).filter((file) => file.type.startsWith('image/')),
+      );
+      event.target.value = '';
+    },
+    [addClothing],
+  );
+  const handleDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDraggingOver(true);
+  }, []);
+  const handleDragLeave = useCallback(() => setIsDraggingOver(false), []);
+  const handleDropPerson = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      setIsDraggingOver(false);
+      const file = Array.from(event.dataTransfer.files).find((file) =>
+        file.type.startsWith('image/'),
+      );
+      if (file) setPerson(file);
+    },
+    [setPerson],
+  );
+  const handleDropClothing = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      setIsDraggingOver(false);
+      addClothing(
+        Array.from(event.dataTransfer.files).filter((file) => file.type.startsWith('image/')),
+      );
+    },
+    [addClothing],
+  );
+  const recipe = useMemo(() => recipeFor(inputs), [inputs]);
   return {
-    personFile,
+    personFile: inputs.person,
     personPreviewUrl,
     setPerson,
-    clothingFiles,
+    clothingFiles: inputs.clothing.map((ref) => ref.file),
     clothingPreviewUrls,
     addClothing,
     removeClothing,
     clearClothing,
+    referenceFiles: Object.fromEntries(
+      Object.entries(inputs.references).map(([role, ref]) => [role, ref.file]),
+    ) as Partial<Record<TryOnOptionalReferenceRole, File>>,
+    referencePreviewUrls,
+    setReference,
+    materialIds: recipe.materialIds,
+    addMaterial,
+    removeMaterial,
+    recipe,
+    applyRecipe,
+    clearDraft,
+    draftStatus,
+    materialLoading,
     result,
     results,
     loading,
     error,
     progress,
-    quantity,
-    setQuantity,
     isDraggingOver,
+    ...inputs.settings,
+    setQuantity: useCallback(
+      (value: number) => updateSettings('quantity', Math.max(1, Math.min(4, Math.round(value)))),
+      [updateSettings],
+    ),
+    setBackground: useCallback(
+      (value: TryOnRecipe['settings']['background']) => updateSettings('background', value),
+      [updateSettings],
+    ),
+    setStyle: useCallback(
+      (value: TryOnRecipe['settings']['style']) => updateSettings('style', value),
+      [updateSettings],
+    ),
+    setOutputSize: useCallback(
+      (value: TryOnRecipe['settings']['outputSize']) => updateSettings('outputSize', value),
+      [updateSettings],
+    ),
+    setAspectRatio: useCallback(
+      (value: TryOnRecipe['settings']['aspectRatio']) => updateSettings('aspectRatio', value),
+      [updateSettings],
+    ),
+    setKeepBackground: useCallback(
+      (value: boolean) => updateSettings('keepBackground', value),
+      [updateSettings],
+    ),
+    setKeepPose: useCallback(
+      (value: boolean) => updateSettings('keepPose', value),
+      [updateSettings],
+    ),
     handlePersonFileChange,
     handleClothingFileChange,
     handleDragOver,
@@ -363,17 +886,14 @@ export function useTryOn() {
     isRunning: run.isRunning,
     cancelGeneration,
     handleRetryFailed,
-    canGenerate,
-    hasResults,
+    canGenerate: Boolean(
+      inputs.person &&
+      inputs.clothing.length >= MIN_CLOTHING_IMAGES &&
+      inputs.clothing.length <= MAX_CLOTHING_IMAGES &&
+      !materialLoading,
+    ),
+    hasResults: results.length > 0 || result !== null,
     minClothing: MIN_CLOTHING_IMAGES,
     maxClothing: MAX_CLOTHING_IMAGES,
-    background,
-    setBackground,
-    style,
-    setStyle,
-    outputSize,
-    setOutputSize,
-    aspectRatio,
-    setAspectRatio,
   };
 }

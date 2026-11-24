@@ -30,6 +30,16 @@ describe('historyReplay', () => {
     expect(state[HISTORY_REPLAY_STATE_KEY].type).toBe('travel');
   });
 
+  it('carries source and all reference blobs without relying on object URL lifetime', () => {
+    const source = new Blob(['person']);
+    const references = [
+      { role: 'clothing' as const, blob: new Blob(['shirt']), name: 'shirt.png' },
+    ];
+    const state = buildHistoryReplayState('tryon', { quantity: 2 }, undefined, references, source);
+    expect(readHistoryReplayState(state)?.references).toBe(references);
+    expect(readHistoryReplayState(state)?.sourceBlob).toBe(source);
+  });
+
   it('returns null for invalid state', () => {
     expect(readHistoryReplayState(null)).toBeNull();
     expect(readHistoryReplayState({})).toBeNull();

@@ -38,6 +38,13 @@ const RemixPage: React.FC = () => {
         setError(t('viral.remix_invalid'));
         return;
       }
+      if ('f' in payload && payload.f === 'tryon') {
+        navigate(ROUTES.TRY_ON, {
+          replace: true,
+          state: { tryOnRecipe: payload.recipe },
+        });
+        return;
+      }
       setPendingRemix(payload);
 
       const card = resolveRemixToCard(payload);

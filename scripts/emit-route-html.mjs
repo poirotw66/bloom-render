@@ -10,6 +10,9 @@ import { CONTENT_SECURITY_POLICY } from '../constants/csp.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
+const MATERIALS = JSON.parse(
+  readFileSync(join(REPO_ROOT, 'constants/tryOnMaterials.json'), 'utf8'),
+);
 
 /** Site origin + path base for GitHub Pages / bloss0m hosting. */
 export const SITE_ORIGIN = 'https://www.bloss0m.com';
@@ -86,6 +89,11 @@ export const ROUTE_SEO = {
     title: 'AI Try-On — BloomRender',
     description:
       'Virtual clothing try-on from a photo and garment reference. AI 試穿：上傳人像與服裝，預覽上身效果。',
+  },
+  '/materials': {
+    title: 'Try-on Reference Materials — BloomRender',
+    description:
+      'Browse original clothing, pose and lighting references for AI try-on. 試穿參考素材：原創服裝、姿勢與光線插圖，可套用到自己的照片。',
   },
   '/photography-service': {
     title: 'Photography Studio — BloomRender',
@@ -263,15 +271,53 @@ export function emitRouteHtml(
 
   const written = [];
   const titles = {};
+  const contentRoutes =
+    routes === ROUTE_SEO
+      ? Object.fromEntries(
+          MATERIALS.map((material) => [
+            `/materials/${material.id}`,
+            {
+              title: `${material.title} · ${material.titleZh} — BloomRender`,
+              description: `${material.description} ${material.descriptionZh}`,
+              material,
+            },
+          ]),
+        )
+      : {};
+  const allRoutes = { ...routes, ...contentRoutes };
 
-  for (const [routePath, seo] of Object.entries(routes)) {
+  for (const [routePath, seo] of Object.entries(allRoutes)) {
     const url = absoluteUrlForRoute(routePath);
-    const html = applySeoMeta(indexHtml, {
+    let html = applySeoMeta(indexHtml, {
       title: seo.title,
       description: seo.description,
       url,
       image: ogImage,
     });
+    if ('material' in seo) {
+      const material = seo.material;
+      const escapeHtml = (value) =>
+        String(value).replace(
+          /[&<>"']/g,
+          (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
+        );
+      const content = `<noscript><main><h1>${escapeHtml(material.title)} · ${escapeHtml(material.titleZh)}</h1><p>${escapeHtml(material.description)}</p><p>${escapeHtml(material.descriptionZh)}</p><img src="${SITE_BASE}/${escapeHtml(material.image)}" alt="${escapeHtml(material.title)}"><p>${escapeHtml(material.prompt)}</p><p>Original BloomRender illustration · CC0 1.0</p><a href="${SITE_BASE}/try-on">Use in try-on</a><a href="${SITE_BASE}/materials">All materials</a></main></noscript>`;
+      html = html.replace('</body>', `${content}\n</body>`);
+      const structured = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: material.title,
+        description: material.description,
+        image: `${SITE_BASE}/${material.image}`,
+        url,
+        license: 'https://creativecommons.org/publicdomain/zero/1.0/',
+        creator: { '@type': 'Organization', name: 'BloomRender' },
+      }).replace(/</g, '\\u003c');
+      html = html.replace(
+        '</head>',
+        `<script type="application/ld+json">${structured}</script>\n</head>`,
+      );
+    }
     const relOut = outputPathForRoute(routePath);
     const absOut = join(distDir, relOut);
     mkdirSync(dirname(absOut), { recursive: true });
@@ -287,7 +333,7 @@ export function emitRouteHtml(
 
   if (writeRobotsAndSitemap) {
     const robots = buildRobotsTxt();
-    const sitemap = buildSitemapXml(Object.keys(routes));
+    const sitemap = buildSitemapXml(Object.keys(allRoutes));
     writeFileSync(join(distDir, 'robots.txt'), robots, 'utf8');
     writeFileSync(join(distDir, 'sitemap.xml'), sitemap, 'utf8');
     written.push('robots.txt', 'sitemap.xml');

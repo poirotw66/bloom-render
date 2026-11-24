@@ -24,6 +24,7 @@ import {
 } from '../utils/historyDb';
 import { logger } from '../utils/logger';
 import { recordGenerationSuccess } from '../utils/generationSuccess';
+import type { HistoryReference } from '../types/tryOnRecipe';
 
 export type { HistoryItem };
 export type HistoryStorageOperation = 'load' | 'save' | 'delete' | 'clear' | 'retention';
@@ -178,6 +179,7 @@ async function addToHistory(
   result: string,
   options?: Record<string, unknown>,
   source?: Blob | File | string | null,
+  references?: HistoryReference[],
 ): Promise<string> {
   if (options?.provider === 'demo' || options?.demo === true) {
     recordGenerationSuccess();
@@ -200,6 +202,7 @@ async function addToHistory(
     timestamp: Date.now(),
     options,
     sourceBlob,
+    ...(references ? { references } : {}),
   };
   return enqueueMutation(async () => {
     await saveItem(stored);

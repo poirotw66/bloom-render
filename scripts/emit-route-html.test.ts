@@ -103,6 +103,18 @@ describe('route SEO helpers', () => {
     expect(written).toContain('idphoto/batch/index.html');
     expect(written).toContain('robots.txt');
     expect(written).toContain('sitemap.xml');
+    expect(written).toContain('materials/white-oxford-shirt/index.html');
+    const materialHtml = readFileSync(
+      join(distDir, 'materials/white-oxford-shirt/index.html'),
+      'utf8',
+    );
+    expect(materialHtml).toContain('Oxford shirt');
+    expect(materialHtml).toContain('白色牛津襯衫');
+    expect(materialHtml).toContain('<noscript><main>');
+    expect(materialHtml).toContain('application/ld+json');
+    expect(materialHtml).toContain(
+      'https://www.bloss0m.com/bloom-render/materials/white-oxford-shirt',
+    );
 
     const titleValues = Object.values(titles);
     expect(new Set(titleValues).size).toBe(titleValues.length);

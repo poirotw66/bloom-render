@@ -125,6 +125,37 @@ describe('normalizeStoredRow', () => {
   });
 });
 
+describe('reference history persistence', () => {
+  it('keeps valid reference blobs and material identifiers while dropping damaged inputs', () => {
+    const shirt = new Blob(['shirt'], { type: 'image/png' });
+    const result = normalizeStoredRow({
+      id: 'tryon',
+      type: 'tryon',
+      timestamp: 1,
+      blob: new Blob(['output']),
+      references: [
+        { role: 'clothing', blob: shirt, name: 'shirt.png', materialId: 'white-shirt' },
+        { role: 'pose', blob: 'blob:expired', name: 'pose.png' },
+        { role: 'unknown', blob: shirt, name: 'bad.png' },
+      ] as never,
+    });
+    expect(result?.item.references).toEqual([
+      { role: 'clothing', blob: shirt, name: 'shirt.png', materialId: 'white-shirt' },
+    ]);
+    expect(result?.item.references?.[0].blob).toBe(shirt);
+  });
+
+  it('preserves references when upgrading a legacy result representation', () => {
+    const references = [
+      { role: 'clothing' as const, blob: new Blob(['shirt']), name: 'shirt.png' },
+    ];
+    expect(
+      normalizeStoredRow({ id: 'a', type: 'tryon', timestamp: 1, result: PNG_DATA_URL, references })
+        ?.item.references,
+    ).toEqual(references);
+  });
+});
+
 describe('parseLegacyHistory', () => {
   it('parses a legacy history blob', () => {
     const raw = JSON.stringify([{ id: 'a', type: 'portrait', timestamp: 1, result: PNG_DATA_URL }]);

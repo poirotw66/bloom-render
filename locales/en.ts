@@ -520,6 +520,13 @@ export const enMessages: Record<string, string> = {
   'tryon.edit': 'Edit in Editor',
   'tryon.again': 'Try Again',
   'tryon.error_no_person': 'Please upload your photo first.',
+  'tryon.recipe_invalid': 'This try-on recipe is invalid. Choose another recipe file.',
+  'tryon.recipe_material_missing':
+    'A material in this recipe is unavailable. Please choose another reference.',
+  'tryon.replay_clothing_missing':
+    'This older record has no saved clothing references. Please upload the clothing again.',
+  'tryon.replay_person_missing':
+    'The original photo could not be restored. Please upload your photo again.',
   'tryon.error_no_clothing': 'Please upload at least one clothing photo.',
   'tryon.error_too_many_clothing': 'Maximum 5 clothing photos allowed.',
   'tryon.error_generation_failed': 'Failed to generate try-on. Please try again.',

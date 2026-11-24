@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHistory, type HistoryItem } from '../../hooks/useHistory';
@@ -46,11 +46,31 @@ function buildHistorySearchText(item: HistoryItem): string {
 }
 
 const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
   const { history, removeFromHistory, clearHistory } = useHistory();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeType, setActiveType] = useState<HistoryFilterType>('all');
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState(false);
+  const exportLock = useRef(false);
+  const chinese = language === 'zh-TW';
+
+  const handleExport = async (): Promise<void> => {
+    if (exportLock.current || !filteredHistory.length) return;
+    exportLock.current = true;
+    setExporting(true);
+    setExportError(false);
+    try {
+      const { downloadHistoryArchive } = await import('../../utils/historyArchive');
+      await downloadHistoryArchive(filteredHistory);
+    } catch {
+      setExportError(true);
+    } finally {
+      exportLock.current = false;
+      setExporting(false);
+    }
+  };
 
   const filteredHistory = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -115,6 +135,22 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
                 {t('history.batch_download')}
               </button>
             )}
+            {filteredHistory.length > 0 && (
+              <button
+                type="button"
+                onClick={handleExport}
+                disabled={exporting}
+                className={`${UI_BTN_SECONDARY} disabled:opacity-50`}
+              >
+                {exporting
+                  ? chinese
+                    ? '匯出中…'
+                    : 'Exporting…'
+                  : chinese
+                    ? '匯出圖片與配方'
+                    : 'Export images and recipes'}
+              </button>
+            )}
             {history.length > 0 && (
               <button type="button" onClick={handleClearAll} className={UI_BTN_SECONDARY}>
                 {t('history.clear_all')}
@@ -122,6 +158,19 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
             )}
           </div>
         </div>
+
+        {filteredHistory.length > 0 && (
+          <p className="text-sm theme-ink-muted">
+            {chinese
+              ? '配方匯出包含原始照片與參考圖，請妥善保管。舊紀錄可能缺少部分輸入。'
+              : 'Recipe exports include original photos and reference images. Keep them private. Older records may have missing inputs.'}
+          </p>
+        )}
+        {exportError && (
+          <p role="alert" className="text-sm text-red-300">
+            {chinese ? '匯出失敗，請重試。' : 'Export failed. Please try again.'}
+          </p>
+        )}
 
         <div className="flex flex-wrap justify-center gap-3">
           {HISTORY_TYPES.map((type) => {

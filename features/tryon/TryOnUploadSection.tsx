@@ -19,6 +19,7 @@ interface TryOnUploadSectionProps {
   clothingPreviewUrls: string[];
   error: string | null;
   loading: boolean;
+  disabled?: boolean;
   isDraggingOver: boolean;
   canGenerate: boolean;
   minClothing: number;
@@ -33,6 +34,7 @@ interface TryOnUploadSectionProps {
   onDragLeave: () => void;
   onDropPerson: (e: React.DragEvent) => void;
   onDropClothing: (e: React.DragEvent) => void;
+  children?: React.ReactNode;
 }
 
 const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
@@ -40,6 +42,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
   clothingPreviewUrls,
   error,
   loading,
+  disabled = false,
   isDraggingOver,
   canGenerate,
   minClothing,
@@ -54,12 +57,14 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
   onDragLeave,
   onDropPerson,
   onDropClothing,
+  children,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
+  const isDisabled = loading || disabled;
   const hasPerson = personPreviewUrl !== null;
   const clothingCount = clothingPreviewUrls.length;
-  const canAddClothing = !isDemoMode && clothingCount < maxClothing;
+  const canAddClothing = !isDemoMode && !isDisabled && clothingCount < maxClothing;
   const personZoneRef = useRef<HTMLDivElement>(null);
   const clothingZoneRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +89,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
     },
     [canAddClothing, onClothingFileChange],
   );
-  usePasteImage(personZoneRef, emitPerson, { enabled: !isDemoMode });
+  usePasteImage(personZoneRef, emitPerson, { enabled: !isDemoMode && !isDisabled });
   usePasteImage(clothingZoneRef, emitClothing, { enabled: !isDemoMode && canAddClothing });
 
   return (
@@ -105,7 +110,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         } ${hasPerson ? 'border-teal-500/30' : ''}`}
         onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
         onDragLeave={isDemoMode ? undefined : onDragLeave}
-        onDrop={isDemoMode ? (e) => e.preventDefault() : onDropPerson}
+        onDrop={isDemoMode || isDisabled ? (e) => e.preventDefault() : onDropPerson}
       >
         <div className="flex items-center gap-2 mb-4">
           <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold">
@@ -132,8 +137,11 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                   </div>
                   <input
                     type="file"
+                    data-testid="tryon-person-input"
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     accept="image/*"
+                    aria-label={t('tryon.change_person')}
+                    disabled={isDisabled}
                     onChange={onPersonFileChange}
                   />
                 </>
@@ -159,7 +167,15 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
                 {t('start.upload_drag')}
               </span>
             </div>
-            <input type="file" className="hidden" accept="image/*" onChange={onPersonFileChange} />
+            <input
+              type="file"
+              data-testid="tryon-person-input"
+              className="hidden"
+              accept="image/*"
+              aria-label={t('tryon.person_photo')}
+              disabled={isDisabled || isDemoMode}
+              onChange={onPersonFileChange}
+            />
           </label>
         )}
       </div>
@@ -184,7 +200,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         } ${clothingCount > 0 ? 'border-amber-500/30' : ''}`}
         onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
         onDragLeave={isDemoMode ? undefined : onDragLeave}
-        onDrop={isDemoMode ? (e) => e.preventDefault() : onDropClothing}
+        onDrop={isDemoMode || isDisabled ? (e) => e.preventDefault() : onDropClothing}
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -216,8 +232,9 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
               {!isDemoMode && (
                 <button
                   type="button"
+                  disabled={isDisabled}
                   onClick={() => onRemoveClothing(idx)}
-                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-colors hover:bg-red-600 scale-75 group-hover:scale-100"
+                  className="absolute top-1 right-1 min-w-11 min-h-11 bg-gray-950/85 text-white rounded-full flex items-center justify-center transition-colors hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-rose-300 disabled:opacity-50"
                   aria-label={t('tryon.remove_clothing')}
                 >
                   <XMarkIcon className="w-3.5 h-3.5" />
@@ -232,9 +249,12 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
             <label className="aspect-square rounded-xl border-2 border-dashed border-gray-700 bg-gray-900/60 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/10 transition-colors text-gray-500 hover:text-amber-400 group">
               <input
                 type="file"
+                data-testid="tryon-clothing-input"
                 className="hidden"
                 accept="image/*"
                 multiple
+                aria-label={t('tryon.add_clothing')}
+                disabled={isDisabled}
                 onChange={onClothingFileChange}
               />
               <span className="text-2xl group-hover:scale-125 transition-transform duration-300">
@@ -251,11 +271,13 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         </p>
       </div>
 
+      {children}
+
       <div className="w-full max-w-md mx-auto">
         <QuantitySelector
           quantity={quantity}
           onChange={onQuantityChange}
-          disabled={loading}
+          disabled={isDisabled}
           min={1}
           max={4}
         />
@@ -268,7 +290,7 @@ const TryOnUploadSection: React.FC<TryOnUploadSectionProps> = ({
         <button
           type="button"
           onClick={onGenerate}
-          disabled={loading || !canGenerate}
+          disabled={isDisabled || !canGenerate}
           className="w-full py-4 px-6 brand-bg hover:brand-bg disabled:brand-bg text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
         >
           {loading ? (

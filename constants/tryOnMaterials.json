@@ -1,0 +1,98 @@
+[
+  {
+    "id": "white-oxford-shirt",
+    "role": "clothing",
+    "title": "Oxford shirt",
+    "titleZh": "白色牛津襯衫",
+    "description": "A white long-sleeved button-down shirt with a pointed collar and chest pocket.",
+    "descriptionZh": "白色長袖排釦襯衫，尖領、單邊胸袋與弧形下襬。",
+    "image": "images/tryon-materials/white-oxford-shirt.svg",
+    "prompt": "White cotton Oxford shirt, pointed button-down collar, long sleeves, left chest pocket, curved hem.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "navy-tailored-jacket",
+    "role": "clothing",
+    "title": "Navy jacket",
+    "titleZh": "海軍藍西裝外套",
+    "description": "A navy single-breasted jacket with notched lapels and two buttons.",
+    "descriptionZh": "海軍藍單排雙釦西裝外套，平駁領、兩側翻蓋口袋。",
+    "image": "images/tryon-materials/navy-tailored-jacket.svg",
+    "prompt": "Navy tailored single-breasted blazer, notched lapels, two dark buttons, flap pockets, long sleeves.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "terracotta-midi-dress",
+    "role": "clothing",
+    "title": "Midi dress",
+    "titleZh": "陶土色中長洋裝",
+    "description": "A terracotta sleeveless midi dress with a round neckline and softly flared skirt.",
+    "descriptionZh": "陶土色無袖中長洋裝，圓領、收腰與微展裙襬。",
+    "image": "images/tryon-materials/terracotta-midi-dress.svg",
+    "prompt": "Terracotta sleeveless midi dress, round neckline, fitted waist, softly flared A-line skirt, matte woven fabric.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "pose-relaxed-front",
+    "role": "pose",
+    "title": "Relaxed front",
+    "titleZh": "正面自然站姿",
+    "description": "Face the camera with relaxed arms and the weight resting on one leg.",
+    "descriptionZh": "正面看向鏡頭，雙臂自然垂放，重心落在單腳。",
+    "image": "images/tryon-materials/pose-relaxed-front.svg",
+    "prompt": "Full-body front-facing pose, relaxed arms beside the body, weight on the right leg, left foot slightly forward.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "pose-hand-on-hip",
+    "role": "pose",
+    "title": "Hand on hip",
+    "titleZh": "單手叉腰",
+    "description": "Stand at a slight angle with one hand on the hip and the other arm relaxed.",
+    "descriptionZh": "身體微側，一手叉腰，另一隻手自然垂放。",
+    "image": "images/tryon-materials/pose-hand-on-hip.svg",
+    "prompt": "Full-body three-quarter standing pose, right hand on hip with elbow out, left arm relaxed, feet apart.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "pose-seated-profile",
+    "role": "pose",
+    "title": "Seated profile",
+    "titleZh": "側身坐姿",
+    "description": "Sit sideways on a stool with both feet on the floor and hands resting on the knees.",
+    "descriptionZh": "側身坐在高腳凳上，雙腳落地，雙手輕放膝上。",
+    "image": "images/tryon-materials/pose-seated-profile.svg",
+    "prompt": "Full-body seated side profile on a simple stool, torso upright, knees bent, both feet on floor, hands resting on knees.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "lighting-soft-window",
+    "role": "lighting",
+    "title": "Window light",
+    "titleZh": "窗邊柔光",
+    "description": "Broad soft light from the left with gentle shadow on the opposite side.",
+    "descriptionZh": "左側大面積柔光，另一側保留柔和陰影。",
+    "image": "images/tryon-materials/lighting-soft-window.svg",
+    "prompt": "Soft diffused daylight from a large window on camera left, gentle facial shadows, natural neutral white balance.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  },
+  {
+    "id": "lighting-warm-rim",
+    "role": "lighting",
+    "title": "Warm rim light",
+    "titleZh": "暖色輪廓光",
+    "description": "Warm light from behind the right shoulder with a soft neutral fill on the face.",
+    "descriptionZh": "右後方暖光勾出輪廓，臉部以中性柔光補亮。",
+    "image": "images/tryon-materials/lighting-warm-rim.svg",
+    "prompt": "Warm golden rim light from behind camera right outlining hair and shoulders, soft neutral frontal fill, controlled exposure.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+  }
+]

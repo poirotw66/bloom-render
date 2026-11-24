@@ -6,6 +6,7 @@
  */
 
 import { ROUTES, type AppRoutePath } from '../constants/routes';
+import type { HistoryReference } from '../types/tryOnRecipe';
 
 export const HISTORY_REPLAY_STATE_KEY = 'bloomHistoryReplay';
 
@@ -15,6 +16,8 @@ export type HistoryReplayState = {
     options?: Record<string, unknown>;
     /** Object URL or data URL of the stored source image, when available. */
     sourceUrl?: string;
+    sourceBlob?: Blob;
+    references?: HistoryReference[];
   };
 };
 
@@ -48,9 +51,17 @@ export function buildHistoryReplayState(
   type: string,
   options?: Record<string, unknown>,
   sourceUrl?: string,
+  references?: HistoryReference[],
+  sourceBlob?: Blob,
 ): HistoryReplayState {
   return {
-    [HISTORY_REPLAY_STATE_KEY]: { type, options, sourceUrl },
+    [HISTORY_REPLAY_STATE_KEY]: {
+      type,
+      options,
+      sourceUrl,
+      ...(references ? { references } : {}),
+      ...(sourceBlob ? { sourceBlob } : {}),
+    },
   };
 }
 

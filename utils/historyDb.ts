@@ -16,6 +16,7 @@
  */
 
 import { logger } from './logger';
+import type { HistoryReference, TryOnReferenceRole } from '../types/tryOnRecipe';
 
 /** A row as it lives in IndexedDB. Object URLs are per-session, so none is stored. */
 export interface StoredHistoryItem {
@@ -26,6 +27,7 @@ export interface StoredHistoryItem {
   options?: Record<string, unknown>;
   /** Optional input/before image for compare + generate-again (Wave B+). */
   sourceBlob?: Blob;
+  references?: HistoryReference[];
 }
 
 /** A row plus the object URL the UI renders it through. */
@@ -41,6 +43,7 @@ interface LegacyHistoryRow {
   result?: string;
   blob?: Blob;
   sourceBlob?: Blob;
+  references?: HistoryReference[];
   timestamp: number;
   options?: Record<string, unknown>;
 }
@@ -95,6 +98,37 @@ export function dataUrlToBlob(dataUrl: string): Blob {
   return new Blob([bytes], { type: mimeType });
 }
 
+const REFERENCE_ROLES: readonly TryOnReferenceRole[] = [
+  'clothing',
+  'pose',
+  'expression',
+  'scene',
+  'lighting',
+];
+
+/** Older rows have no references. Ignore damaged optional inputs without losing their result. */
+export function normalizeHistoryReferences(value: unknown): HistoryReference[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.slice(0, 9).flatMap((reference: unknown) => {
+    if (!reference || typeof reference !== 'object') return [];
+    const ref = reference as Partial<HistoryReference>;
+    if (
+      !REFERENCE_ROLES.includes(ref.role as TryOnReferenceRole) ||
+      !(ref.blob instanceof Blob) ||
+      typeof ref.name !== 'string'
+    )
+      return [];
+    return [
+      {
+        role: ref.role as TryOnReferenceRole,
+        blob: ref.blob,
+        name: ref.name,
+        ...(typeof ref.materialId === 'string' ? { materialId: ref.materialId } : {}),
+      },
+    ];
+  });
+}
+
 /**
  * Normalise a row read from IndexedDB. Returns null for rows that are neither
  * a Blob row nor a decodable data-URL row, so one corrupt entry can't take the
@@ -106,9 +140,21 @@ export function normalizeStoredRow(row: LegacyHistoryRow): {
 } | null {
   const { id, type, timestamp, options } = row;
   const sourceBlob = row.sourceBlob instanceof Blob ? row.sourceBlob : undefined;
+  const references = normalizeHistoryReferences(row.references);
 
   if (row.blob instanceof Blob) {
-    return { item: { id, type, timestamp, options, blob: row.blob, sourceBlob }, migrated: false };
+    return {
+      item: {
+        id,
+        type,
+        timestamp,
+        options,
+        blob: row.blob,
+        sourceBlob,
+        ...(references ? { references } : {}),
+      },
+      migrated: false,
+    };
   }
 
   if (typeof row.result === 'string') {
@@ -121,6 +167,7 @@ export function normalizeStoredRow(row: LegacyHistoryRow): {
           options,
           blob: dataUrlToBlob(row.result),
           sourceBlob,
+          ...(references ? { references } : {}),
         },
         migrated: true,
       };

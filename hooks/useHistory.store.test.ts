@@ -62,6 +62,32 @@ afterEach(() => {
 });
 
 describe('history store mutations', () => {
+  it('preserves reference blobs through a failed save and recovery', async () => {
+    vi.mocked(putHistoryItem).mockRejectedValueOnce(new DOMException('Full', 'QuotaExceededError'));
+    const { result } = renderHook(() => ({
+      store: useHistory(),
+      status: useHistoryStorageStatus(),
+    }));
+    const source = new Blob(['person']);
+    const references = [
+      { role: 'clothing' as const, blob: new Blob(['shirt']), name: 'shirt.png' },
+    ];
+    await act(async () => {
+      await result.current.store.addToHistory(
+        'tryon',
+        IMAGE,
+        { clothingCount: 1 },
+        source,
+        references,
+      );
+    });
+    expect(getPendingHistoryItems()[0].references).toEqual(references);
+    await act(async () => result.current.status.retryHistoryStorage());
+    expect(result.current.store.history[0].references).toEqual(references);
+    expect(result.current.store.history[0].sourceBlob).toBe(source);
+    expect(result.current.status.pendingCount).toBe(0);
+  });
+
   it('subscribes to storage status without loading image history on the homepage', async () => {
     const { result } = renderHook(() => useHistoryStorageStatus());
     await act(async () => undefined);

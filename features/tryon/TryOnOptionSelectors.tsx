@@ -17,6 +17,7 @@ interface TryOnOptionSelectorsProps {
   onBackgroundChange: (id: TryOnBackgroundId) => void;
   onStyleChange: (id: TryOnStyleId) => void;
   disabled?: boolean;
+  backgroundDisabled?: boolean;
 }
 
 const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
@@ -25,6 +26,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
   onBackgroundChange,
   onStyleChange,
   disabled = false,
+  backgroundDisabled = false,
 }) => {
   const { t } = useLanguage();
 
@@ -45,20 +47,20 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 min-[380px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
           {TRYON_BACKGROUNDS.map((opt) => {
             const isActive = background === opt.id;
             return (
               <button
                 key={opt.id}
                 type="button"
-                onClick={() => !disabled && onBackgroundChange(opt.id)}
-                disabled={disabled}
+                onClick={() => !disabled && !backgroundDisabled && onBackgroundChange(opt.id)}
+                disabled={disabled || backgroundDisabled}
                 className={`group relative flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-colors duration-300 ${
                   isActive
                     ? 'bg-teal-600 text-white scale-105 z-10'
                     : 'bg-gray-800/40 text-gray-400 border border-gray-700/50 hover:bg-gray-700/60 hover:border-teal-500/30'
-                } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
+                } ${disabled || backgroundDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5'}`}
               >
                 <span
                   className={`text-sm font-bold tracking-normal transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
@@ -79,7 +81,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
             );
           })}
         </div>
-        {selectedBg && (
+        {selectedBg && !backgroundDisabled && (
           <p className="text-sm text-gray-500 italic mt-1 px-1 leading-relaxed animate-fade-in">
             {selectedBg.promptHint.split('.')[0]}.
           </p>
@@ -98,7 +100,7 @@ const TryOnOptionSelectors: React.FC<TryOnOptionSelectorsProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 min-[380px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
           {TRYON_STYLES.map((opt) => {
             const isActive = style === opt.id;
             return (

@@ -7,14 +7,18 @@
 
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { readHistoryReplayState } from '../utils/historyReplay';
+import {
+  readHistoryReplayState,
+  type HistoryReplayState,
+  HISTORY_REPLAY_STATE_KEY,
+} from '../utils/historyReplay';
 
 /**
  * Reads `bloomHistoryReplay` from router state once, invokes `apply`, then
  * clears the state so a refresh does not re-apply.
  */
 export function useHistoryReplay(
-  apply: (payload: { type: string; options?: Record<string, unknown>; sourceUrl?: string }) => void,
+  apply: (payload: HistoryReplayState[typeof HISTORY_REPLAY_STATE_KEY]) => void,
 ): void {
   const location = useLocation();
   const navigate = useNavigate();

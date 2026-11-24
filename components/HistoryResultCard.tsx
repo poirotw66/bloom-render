@@ -50,7 +50,13 @@ const HistoryResultCard: React.FC<HistoryResultCardProps> = ({
   const handleGenerateAgain = () => {
     const path = routeForHistoryType(item.type);
     navigate(path, {
-      state: buildHistoryReplayState(item.type, item.options, item.sourceUrl),
+      state: buildHistoryReplayState(
+        item.type,
+        item.options,
+        item.sourceUrl,
+        item.references,
+        item.sourceBlob,
+      ),
     });
     onAfterNavigate?.();
   };
@@ -93,7 +99,11 @@ const HistoryResultCard: React.FC<HistoryResultCardProps> = ({
         {!compact && item.options && Object.keys(item.options).length > 0 && (
           <div className="flex flex-wrap gap-2">
             {Object.entries(item.options)
-              .filter(([key]) => !['prompt'].includes(key))
+              .filter(
+                ([key, value]) =>
+                  !['prompt', 'recipe'].includes(key) &&
+                  ['string', 'number', 'boolean'].includes(typeof value),
+              )
               .slice(0, 8)
               .map(([key, value]) => (
                 <span

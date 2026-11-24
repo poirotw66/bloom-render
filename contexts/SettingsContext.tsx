@@ -76,7 +76,16 @@ const STORAGE_KEY_COMPRESSION_THRESHOLD = 'bloom_compression_threshold';
 const STORAGE_KEY_BACKGROUND_MOTION = 'bloom_background_motion';
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [imageProvider, setImageProviderState] = useState<ImageProviderId>('gemini');
+  const [imageProvider, setImageProviderState] = useState<ImageProviderId>(() => {
+    try {
+      const stored =
+        localStorage.getItem(STORAGE_KEY_PROVIDER) ||
+        localStorage.getItem('pixshop_image_provider');
+      return stored && isImageProviderId(stored) ? stored : 'gemini';
+    } catch {
+      return 'gemini';
+    }
+  });
   const [apiKey, setApiKeyState] = useState<string>('');
   const [model, setModelState] = useState<ModelType>(DEFAULT_MODEL);
   const [openRouterApiKey, setOpenRouterApiKeyState] = useState<string>('');

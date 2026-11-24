@@ -12,8 +12,41 @@ import {
   type RemixPayload,
 } from './remixLink';
 import { SITE_BASE_PATH, SITE_ORIGIN } from '../constants/site';
+import type { TryOnRecipe } from '../types/tryOnRecipe';
+
+const tryOnRecipe: TryOnRecipe = {
+  v: 1,
+  kind: 'tryon',
+  materialIds: ['white-oxford-shirt', 'pose-hand-on-hip'],
+  settings: {
+    background: 'studio',
+    style: 'editorial_high',
+    outputSize: '2K',
+    aspectRatio: '9:16',
+    quantity: 2,
+    keepBackground: true,
+    keepPose: false,
+  },
+};
 
 describe('remixLink', () => {
+  it('shares a try-on recipe without carrying private image inputs', () => {
+    const payload: RemixPayload = { v: 1, f: 'tryon', recipe: tryOnRecipe };
+    const encoded = encodeRemixPayload(payload);
+    expect(decodeRemixPayload(encoded)).toEqual(payload);
+    expect(buildRemixUrl(payload)).toContain('/r#');
+  });
+
+  it('rejects private fields and image URLs in nested try-on recipes', () => {
+    for (const recipe of [
+      { ...tryOnRecipe, apiKey: 'secret' },
+      { ...tryOnRecipe, image: 'data:image/png;base64,private' },
+      { ...tryOnRecipe, materialIds: ['https://example.com/private.png'] },
+      { ...tryOnRecipe, settings: { ...tryOnRecipe.settings, apiKey: 'secret' } },
+    ]) {
+      expect(() => encodeRemixPayload({ v: 1, f: 'tryon', recipe } as RemixPayload)).toThrow();
+    }
+  });
   it('roundtrips viral template id form', () => {
     const payload: RemixPayload = { v: 1, id: 'figurine-box' };
     const encoded = encodeRemixPayload(payload);

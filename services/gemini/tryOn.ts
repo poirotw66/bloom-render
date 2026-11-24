@@ -1,14 +1,11 @@
-/**
- * @license
- * SPDX-License-Identifier: MIT
- *
- * Virtual try-on: generate image of person wearing provided clothing.
- */
-
 import { logger } from '../../utils/logger';
 import { runImageGeneration } from './runImageGeneration';
 import { supportsMultiResolution, type ServiceSettings } from './shared';
 import { generateTryOnPrompt } from './prompts/tryOn';
+import {
+  TRYON_OPTIONAL_REFERENCE_ROLES,
+  type TryOnOptionalReferenceRole,
+} from '../../types/tryOnRecipe';
 
 export interface GenerateTryOnOptions {
   settings?: ServiceSettings;
@@ -17,46 +14,54 @@ export interface GenerateTryOnOptions {
   styleHint?: string;
   outputSize?: '1K' | '2K' | '4K';
   aspectRatio?: '1:1' | '16:9' | '9:16';
+  keepBackground?: boolean;
+  keepPose?: boolean;
+  referenceFiles?: Partial<Record<TryOnOptionalReferenceRole, File>>;
+  referenceHints?: Partial<Record<TryOnOptionalReferenceRole, string>>;
 }
 
-/**
- * Generates one image of the person (first file) wearing the clothing (remaining files)
- * in a new fashion catalog-style scene.
- */
+export function prepareTryOnRequest(
+  personImage: File,
+  clothingImages: File[],
+  options: GenerateTryOnOptions = {},
+) {
+  const referenceRoles = TRYON_OPTIONAL_REFERENCE_ROLES.filter(
+    (role) => options.referenceFiles?.[role],
+  );
+  const prompt = generateTryOnPrompt({
+    ...options,
+    clothingCount: clothingImages.length,
+    referenceRoles,
+  });
+  const images = [
+    personImage,
+    ...clothingImages,
+    ...referenceRoles.map((role) => options.referenceFiles![role]!),
+  ];
+  const supportsMultiRes = supportsMultiResolution(options.settings?.model);
+  const effectiveSize = supportsMultiRes ? (options.outputSize ?? '1K') : '1K';
+  return {
+    prompt,
+    images,
+    effectiveSize,
+    aspectRatio: options.aspectRatio ?? '9:16',
+    imageSize: supportsMultiRes ? effectiveSize : undefined,
+    includeImageConfig: true,
+    context: 'try-on',
+  };
+}
+
 export const generateVirtualTryOn = async (
   personImage: File,
   clothingImages: File[],
   options: GenerateTryOnOptions = {},
 ): Promise<string> => {
-  const serviceSettings = options.settings;
-
-  const prompt = generateTryOnPrompt({
-    clothingCount: clothingImages.length,
-    variationIndex: options.variationIndex,
-    backgroundHint: options.backgroundHint,
-    styleHint: options.styleHint,
-  });
-
-  const images = [personImage, ...clothingImages];
-
-  const model = serviceSettings?.model;
-  const supportsMultiRes = supportsMultiResolution(model);
-  const effectiveSize: '1K' | '2K' | '4K' = supportsMultiRes ? options.outputSize || '1K' : '1K';
-  const aspectRatio = options.aspectRatio || '9:16';
-
+  const prepared = prepareTryOnRequest(personImage, clothingImages, options);
   logger.debug('Starting virtual try-on generation', {
     clothingCount: clothingImages.length,
-    outputSize: effectiveSize,
-    aspectRatio,
+    referenceCount: prepared.images.length,
+    outputSize: prepared.effectiveSize,
+    aspectRatio: prepared.aspectRatio,
   });
-
-  return runImageGeneration({
-    prompt,
-    images,
-    settings: serviceSettings,
-    aspectRatio,
-    imageSize: supportsMultiRes ? effectiveSize : undefined,
-    includeImageConfig: true,
-    context: 'try-on',
-  });
+  return runImageGeneration({ ...prepared, settings: options.settings });
 };
