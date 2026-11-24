@@ -21,7 +21,7 @@ export type HistoryReplayState = {
 export function routeForHistoryType(type: string): AppRoutePath {
   switch (type) {
     case 'generate':
-      return ROUTES.HOME;
+      return ROUTES.GENERATE;
     case 'editor':
       return ROUTES.EDIT;
     case 'idphoto':

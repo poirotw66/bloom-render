@@ -14,6 +14,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { SettingsProvider } from '../../contexts/SettingsContext';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { useIdPhoto } from './useIdPhoto';
+import { cropIdPhotoToSize } from '../../utils/idPhotoCrop';
 
 const addToHistory = vi.fn().mockResolvedValue('history-id');
 
@@ -61,6 +62,9 @@ function samplePhoto(): File {
 
 beforeEach(() => {
   generateIdPhoto.mockReset();
+  vi.mocked(cropIdPhotoToSize)
+    .mockReset()
+    .mockImplementation(async (url) => url);
   addToHistory.mockClear();
 });
 
@@ -111,5 +115,33 @@ describe('useIdPhoto handleIdPhotoGenerate', () => {
       expect(result.current.idPhotoError).toBe('API key not found. Please check your settings.');
     });
     expect(result.current.idPhotoError).not.toBe('All generations failed. Please try again.');
+  });
+  it('does not persist a crop that finishes after cancellation', async () => {
+    let finishCrop!: (url: string) => void;
+    generateIdPhoto.mockResolvedValue('provider-image');
+    vi.mocked(cropIdPhotoToSize).mockImplementation(
+      () => new Promise((resolve) => (finishCrop = resolve)),
+    );
+    const { result } = renderHook(() => useIdPhoto(), { wrapper });
+    act(() =>
+      result.current.handleDrop({
+        preventDefault() {},
+        dataTransfer: { files: [samplePhoto()] },
+      } as unknown as React.DragEvent),
+    );
+    let pending!: Promise<void>;
+    await act(async () => {
+      pending = result.current.handleIdPhotoGenerate();
+      await Promise.resolve();
+    });
+    expect(cropIdPhotoToSize).toHaveBeenCalledOnce();
+    act(() => result.current.cancelGeneration());
+    await act(async () => {
+      finishCrop('late-crop');
+      await pending;
+    });
+    expect(addToHistory).not.toHaveBeenCalled();
+    expect(result.current.idPhotoResult).toBeNull();
+    expect(result.current.idPhotoLoading).toBe(false);
   });
 });

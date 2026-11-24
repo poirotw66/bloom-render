@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/emit-route-html.mjs",
-    "build:analyze": "ANALYZE=true vite build && node scripts/emit-route-html.mjs",
-    "check:bundle": "node scripts/check-bundle-size.mjs",
+    "build": "vite build && node scripts/emit-route-html.mjs && node scripts/check-bundle-budget.mjs",
+    "check:bundle": "node scripts/check-bundle-budget.mjs && node scripts/check-bundle-size.mjs",
+    "build:analyze": "ANALYZE=true vite build && node scripts/emit-route-html.mjs && node scripts/check-bundle-budget.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest run",

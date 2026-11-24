@@ -20,6 +20,7 @@ export const enMessages: Record<string, string> = {
   'star_nudge.cta': 'Star on GitHub',
   'star_nudge.dismiss': 'Dismiss',
   'generation.cancel': 'Cancel',
+  'generation.cancelled': 'Generation cancelled.',
   'generation.cancel_hint':
     'Stops waiting for the result. Requests already sent may still be billed.',
   'generation.partial_title': 'Generated {done} of {total} images',
@@ -1257,6 +1258,25 @@ export const enMessages: Record<string, string> = {
   'enhance.status_done': 'Done',
 
   'history.title': 'Generation History',
+  'history.storage.title': 'History storage needs attention',
+  'history.storage.quota':
+    'Browser storage is full. Download your images and remove history you no longer need, then retry.',
+  'history.storage.blocked':
+    'History storage is blocked. Close other BloomRender tabs, then retry the connection.',
+  'history.storage.unavailable': 'History storage is unavailable. Retry the connection when ready.',
+  'history.storage.pending':
+    '{count} images are not saved to history. These copies are kept only in this tab. Download them before closing or reloading. Retrying does not generate new images.',
+  'history.storage.retry': 'Reconnect and retry saves',
+  'history.storage.retrying': 'Retrying storage…',
+  'history.storage.download': 'Download {count} unsaved images',
+  'history.storage.download_failed': 'Could not start the download. Please try again.',
+  'history.storage.manage': 'Manage history',
+  'history.storage.operation.delete':
+    'The history item could not be deleted. Reconnect, then try deleting it again.',
+  'history.storage.operation.clear':
+    'History could not be cleared. Reconnect, then try clearing it again.',
+  'history.storage.operation.retention':
+    'New images were saved, but old history could not be cleaned up. Retry the connection.',
   'history.subtitle': 'View and manage your generated photos',
   'history.empty': 'No history yet',
   'history.no_results': 'No results found',
@@ -1300,6 +1320,7 @@ export const enMessages: Record<string, string> = {
   'batch.processing': 'Processing {current} of {total}',
   'batch.progress': '{completed} of {total} completed',
   'batch.completed': 'Batch processing completed!',
+  'batch.cancelled': 'Batch cancelled. Completed images are kept.',
   'batch.summary': 'Success: {success}, Failed: {failed}, Total: {total}',
   'batch.success_count': '{count} successful',
   'batch.error_count': '{count} failed',

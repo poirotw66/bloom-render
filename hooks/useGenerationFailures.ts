@@ -2,20 +2,11 @@
  * @license
  * SPDX-License-Identifier: MIT
  *
- * Owns one multi-image generation run: which slots failed, and cancelling it.
- *
- * Failures: every flow used to feed Promise.allSettled straight into
- * getFulfilledResults, which silently dropped rejections — asking for 4 images
- * and getting 2 looked identical to asking for 2. The API calls were still
- * billed, so the loss has to be visible and recoverable.
- *
- * Cancellation: a 4K run takes long enough that picking the wrong settings used
- * to mean waiting it out with no way back. runBatch/retryFailed hand each task
- * an AbortSignal and cancel() aborts it. Per the SDK, aborting is client-side
- * only: it stops the wait, not the server-side work, so usage is still billed.
+ * Owns one multi-image generation run: failed slots, retries, and client cancellation.
+ * Aborting stops the client's wait; server-side work may still finish and be billed.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   runIndexedTasks,
   type GenerationFailure,
@@ -26,7 +17,7 @@ import {
 export type IndexedGenerationTask<T> = (index: number, signal: AbortSignal) => Promise<T>;
 
 export interface GenerationRunOutcome<T> extends SettledPartition<T> {
-  /** True when the user cancelled; callers should skip both error and partial UI. */
+  /** Cancelled or superseded runs have no results that callers should publish. */
   cancelled: boolean;
 }
 
@@ -63,49 +54,93 @@ const EMPTY_STATE: GenerationRunState = {
   isRunning: false,
 };
 
+type ActiveRun = { controller: AbortController; retry: boolean };
+
+function cancelledOutcome<T>(): GenerationRunOutcome<T> {
+  return { results: [], failures: [], cancelled: true };
+}
+
+/** Settle cancellation even if a provider ignores its signal; consume its late rejection. */
+function waitForRun<T>(
+  operation: Promise<SettledPartition<T>>,
+  signal: AbortSignal,
+): Promise<SettledPartition<T> | null> {
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      signal.removeEventListener('abort', onAbort);
+      resolve(null);
+    };
+    operation.then(
+      (value) => {
+        signal.removeEventListener('abort', onAbort);
+        resolve(value);
+      },
+      (error) => {
+        signal.removeEventListener('abort', onAbort);
+        reject(error);
+      },
+    );
+    if (signal.aborted) onAbort();
+    else signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
 export function useGenerationFailures(): UseGenerationFailuresResult {
   const [state, setState] = useState<GenerationRunState>(EMPTY_STATE);
-
-  // retryFailed needs the current failed slots at call time without taking
-  // failedIndices as a dependency (which would re-create the callback on every
-  // run and churn every consumer's useCallback deps).
   const failedIndicesRef = useRef<number[]>([]);
-  const controllerRef = useRef<AbortController | null>(null);
-  const cancelledRef = useRef(false);
+  const activeRunRef = useRef<ActiveRun | null>(null);
+  const mountedRef = useRef(true);
 
-  const startRun = useCallback((): AbortController => {
-    controllerRef.current?.abort();
-    const controller = new AbortController();
-    controllerRef.current = controller;
-    cancelledRef.current = false;
-    return controller;
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      const run = activeRunRef.current;
+      activeRunRef.current = null;
+      run?.controller.abort();
+    };
   }, []);
 
-  const finishRun = useCallback((controller: AbortController) => {
-    if (controllerRef.current === controller) controllerRef.current = null;
+  const startRun = useCallback((retry: boolean): ActiveRun | null => {
+    if (!mountedRef.current) return null;
+    const previous = activeRunRef.current;
+    activeRunRef.current = null;
+    previous?.controller.abort();
+    const run = { controller: new AbortController(), retry };
+    activeRunRef.current = run;
+    return run;
+  }, []);
+
+  const isCurrent = useCallback(
+    (run: ActiveRun) =>
+      mountedRef.current && activeRunRef.current === run && !run.controller.signal.aborted,
+    [],
+  );
+
+  const finishRun = useCallback((run: ActiveRun) => {
+    if (activeRunRef.current === run) activeRunRef.current = null;
   }, []);
 
   const runBatch = useCallback(
     async <T>(count: number, task: IndexedGenerationTask<T>): Promise<GenerationRunOutcome<T>> => {
-      const controller = startRun();
-      const indices = Array.from({ length: count }, (_, i) => i);
-
+      const run = startRun(false);
+      if (!run) return cancelledOutcome();
+      failedIndicesRef.current = [];
       setState({ ...EMPTY_STATE, requestedCount: count, isRunning: true });
 
       try {
-        const partition = await runIndexedTasks(indices, (index) => task(index, controller.signal));
-        const cancelled = cancelledRef.current;
-
-        if (cancelled) {
-          // Nothing partial to show or retry — the user asked to stop.
-          failedIndicesRef.current = [];
-          setState(EMPTY_STATE);
-          return { ...partition, cancelled };
-        }
+        const indices = Array.from({ length: count }, (_, i) => i);
+        const partition = await waitForRun(
+          runIndexedTasks(indices, async (index) => {
+            if (run.controller.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+            return task(index, run.controller.signal);
+          }),
+          run.controller.signal,
+        );
+        if (!partition || !isCurrent(run)) return cancelledOutcome();
 
         const failedIndices = partition.failures.map((failure) => failure.index);
         failedIndicesRef.current = failedIndices;
-
         setState({
           failures: partition.failures,
           failedIndices,
@@ -114,36 +149,40 @@ export function useGenerationFailures(): UseGenerationFailuresResult {
           isRetrying: false,
           isRunning: false,
         });
-
-        return { ...partition, cancelled };
+        return { ...partition, cancelled: false };
+      } catch (error) {
+        if (!isCurrent(run)) return cancelledOutcome();
+        setState(EMPTY_STATE);
+        throw error;
       } finally {
-        finishRun(controller);
+        finishRun(run);
       }
     },
-    [startRun, finishRun],
+    [startRun, isCurrent, finishRun],
   );
 
   const retryFailed = useCallback(
     async <T>(task: IndexedGenerationTask<T>): Promise<GenerationRunOutcome<T>> => {
-      const indices = failedIndicesRef.current;
+      if (!mountedRef.current) return cancelledOutcome();
+      const indices = [...failedIndicesRef.current];
       if (indices.length === 0) return { results: [], failures: [], cancelled: false };
 
-      const controller = startRun();
+      const run = startRun(true);
+      if (!run) return cancelledOutcome();
       setState((prev) => ({ ...prev, isRetrying: true, isRunning: true }));
 
       try {
-        const partition = await runIndexedTasks(indices, (index) => task(index, controller.signal));
-        const cancelled = cancelledRef.current;
-
-        if (cancelled) {
-          // Keep the failures so the retry button stays available.
-          setState((prev) => ({ ...prev, isRetrying: false, isRunning: false }));
-          return { ...partition, cancelled };
-        }
+        const partition = await waitForRun(
+          runIndexedTasks(indices, async (index) => {
+            if (run.controller.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+            return task(index, run.controller.signal);
+          }),
+          run.controller.signal,
+        );
+        if (!partition || !isCurrent(run)) return cancelledOutcome();
 
         const failedIndices = partition.failures.map((failure) => failure.index);
         failedIndicesRef.current = failedIndices;
-
         setState((prev) => ({
           ...prev,
           failures: partition.failures,
@@ -152,33 +191,39 @@ export function useGenerationFailures(): UseGenerationFailuresResult {
           isRetrying: false,
           isRunning: false,
         }));
-
-        return { ...partition, cancelled };
-      } catch (err) {
+        return { ...partition, cancelled: false };
+      } catch (error) {
+        if (!isCurrent(run)) return cancelledOutcome();
         setState((prev) => ({ ...prev, isRetrying: false, isRunning: false }));
-        throw err;
+        throw error;
       } finally {
-        finishRun(controller);
+        finishRun(run);
       }
     },
-    [startRun, finishRun],
+    [startRun, isCurrent, finishRun],
   );
 
   const cancel = useCallback(() => {
-    if (!controllerRef.current) return;
-    cancelledRef.current = true;
-    controllerRef.current.abort();
+    const run = activeRunRef.current;
+    if (!run) return;
+    activeRunRef.current = null;
+    run.controller.abort();
+    if (!run.retry) failedIndicesRef.current = [];
+    if (mountedRef.current) {
+      setState((prev) =>
+        run.retry ? { ...prev, isRetrying: false, isRunning: false } : EMPTY_STATE,
+      );
+    }
   }, []);
 
   const reset = useCallback(() => {
+    const run = activeRunRef.current;
+    activeRunRef.current = null;
+    run?.controller.abort();
     failedIndicesRef.current = [];
-    cancelledRef.current = false;
-    setState(EMPTY_STATE);
+    if (mountedRef.current) setState(EMPTY_STATE);
   }, []);
 
-  // Memoised: consumers put this object in their useCallback dependency arrays,
-  // so a fresh identity every render would rebuild their callbacks every render
-  // and stop those dependency lists from gating anything.
   return useMemo(
     () => ({ ...state, runBatch, retryFailed, cancel, reset }),
     [state, runBatch, retryFailed, cancel, reset],

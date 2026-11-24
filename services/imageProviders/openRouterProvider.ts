@@ -132,7 +132,7 @@ export const openRouterImageProvider: ImageProvider = {
     if (imageSize) body.resolution = imageSize;
 
     try {
-      return await withRetryAndTimeout(
+      const json = await withRetryAndTimeout(
         async (combined) => {
           const response = await fetch(OPENROUTER_IMAGES_URL, {
             method: 'POST',
@@ -146,22 +146,30 @@ export const openRouterImageProvider: ImageProvider = {
             throwHttpError(response, detail);
           }
 
-          const json = (await response.json()) as OpenRouterImagesResponse;
-          if (json.error?.message) {
-            throw new Error(json.error.message);
+          const result = (await response.json()) as OpenRouterImagesResponse;
+          if (result.error?.message) {
+            throw new Error(result.error.message);
           }
+          return result;
+        },
+        { signal },
+      );
 
-          const costUsd = readUsageCostUsd(json);
-          const first = json.data?.[0];
-          if (first?.b64_json) {
-            const mime = first.media_type || 'image/png';
-            return { dataUrl: `data:${mime};base64,${first.b64_json}`, costUsd };
-          }
-          if (first?.url?.startsWith('data:')) {
-            return { dataUrl: first.url, costUsd };
-          }
-          if (first?.url) {
-            const imageResponse = await fetch(first.url, { signal: combined });
+      const costUsd = readUsageCostUsd(json);
+      const first = json.data?.[0];
+      if (first?.b64_json) {
+        const mime = first.media_type || 'image/png';
+        return { dataUrl: `data:${mime};base64,${first.b64_json}`, costUsd };
+      }
+      if (first?.url?.startsWith('data:')) {
+        return { dataUrl: first.url, costUsd };
+      }
+      if (first?.url) {
+        const imageUrl = first.url;
+        // A successful generation must never be repeated just because its image download fails.
+        return await withRetryAndTimeout(
+          async (combined) => {
+            const imageResponse = await fetch(imageUrl, { signal: combined });
             if (!imageResponse.ok) {
               throw attachHttpMeta(
                 new Error(`Failed to download OpenRouter image URL (${imageResponse.status})`),
@@ -178,12 +186,12 @@ export const openRouterImageProvider: ImageProvider = {
             const b64 = btoa(binary);
             const mime = imageResponse.headers.get('content-type') || 'image/png';
             return { dataUrl: `data:${mime};base64,${b64}`, costUsd };
-          }
+          },
+          { signal },
+        );
+      }
 
-          throw createI18nError('error.no_image');
-        },
-        { signal },
-      );
+      throw createI18nError('error.no_image');
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') throw err;
       if (err instanceof Error && err.message.startsWith('error.')) throw err;

@@ -138,4 +138,47 @@ describe('useTravel handleGenerate', () => {
     // Not the generic fallback the regression used to always show.
     expect(result.current.error).not.toBe('All generations failed. Please try again.');
   });
+  it('does not start image generation after a cancelled prompt preparation resolves late', async () => {
+    let finishPrompt!: (prompt: string) => void;
+    generateOptimizedPrompt.mockImplementation(
+      () => new Promise((resolve) => (finishPrompt = resolve)),
+    );
+    const { result } = renderHook(() => useTravel(), { wrapper });
+    act(() => {
+      result.current.setSelectedSceneId('custom');
+      result.current.setCustomSceneText('a quiet street');
+      result.current.setFilesFromDrop([samplePhoto()]);
+    });
+    let pending!: Promise<void>;
+    act(() => {
+      pending = result.current.handleGenerate();
+    });
+    expect(generateOptimizedPrompt).toHaveBeenCalledOnce();
+    const signal = generateOptimizedPrompt.mock.calls[0][2].abortSignal;
+    act(() => result.current.cancelGeneration());
+    expect(signal.aborted).toBe(true);
+    expect(result.current.loading).toBe(false);
+    await act(async () => {
+      finishPrompt('late optimized scene');
+      await pending;
+    });
+    expect(generateTravelPhoto).not.toHaveBeenCalled();
+    expect(addToHistory).not.toHaveBeenCalled();
+    expect(result.current.error).toBeNull();
+  });
+
+  it('does not prepare a prompt when a saved generate handler is invoked after unmount', async () => {
+    const { result, unmount } = renderHook(() => useTravel(), { wrapper });
+    act(() => {
+      result.current.setSelectedSceneId('custom');
+      result.current.setCustomSceneText('a quiet street');
+      result.current.setFilesFromDrop([samplePhoto()]);
+    });
+    const generate = result.current.handleGenerate;
+    unmount();
+    await generate();
+    expect(generateOptimizedPrompt).not.toHaveBeenCalled();
+    expect(generateTravelPhoto).not.toHaveBeenCalled();
+    expect(addToHistory).not.toHaveBeenCalled();
+  });
 });

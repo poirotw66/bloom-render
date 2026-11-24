@@ -99,4 +99,30 @@ describe('useCoupleGroup handleGenerate', () => {
     });
     expect(result.current.error).not.toBe('All generations failed. Please try again.');
   });
+  it('passes cancellation to the provider and ignores its late result', async () => {
+    let finish!: (url: string) => void;
+    runImageGeneration.mockImplementation(() => new Promise((resolve) => (finish = resolve)));
+    const { result } = renderHook(() => useCoupleGroup(), { wrapper });
+    act(() =>
+      result.current.handleDrop({
+        preventDefault() {},
+        dataTransfer: { files: [samplePhoto('a.png'), samplePhoto('b.png')] },
+      } as unknown as React.DragEvent),
+    );
+    let pending!: Promise<void>;
+    await act(async () => {
+      pending = result.current.handleGenerate();
+      await Promise.resolve();
+    });
+    const signal = runImageGeneration.mock.calls[0][0].settings.abortSignal;
+    expect(signal).toBeInstanceOf(AbortSignal);
+    act(() => result.current.cancelGeneration());
+    expect(signal.aborted).toBe(true);
+    await act(async () => {
+      finish('late-image');
+      await pending;
+    });
+    expect(result.current.result).toBeNull();
+    expect(addToHistory).not.toHaveBeenCalled();
+  });
 });

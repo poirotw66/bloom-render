@@ -6,6 +6,7 @@
  */
 
 import { logger } from '../../utils/logger';
+import { allFailedError, partitionSettled } from '../../utils/generationHelpers';
 import { runImageGeneration } from './runImageGeneration';
 import { supportsMultiResolution, type ServiceSettings } from './shared';
 
@@ -24,6 +25,7 @@ export function buildGeneratePrompt(userPrompt: string, hasReferenceImage: boole
 /**
  * Generates one or more images from scratch based on a text prompt.
  * Optionally uses a reference image for style / atmosphere inspiration.
+ * Returns successful slots in request order; throws the first cause only when all fail.
  */
 export const generateImageFromText = async (
   prompt: string,
@@ -57,7 +59,13 @@ export const generateImageFromText = async (
     }),
   );
 
-  const results = await Promise.all(promises);
-  logger.debug(`Generated ${results.length} images.`);
+  const { results, failures } = partitionSettled(
+    await Promise.allSettled(promises),
+    Array.from({ length: numberOfImages }, (_, index) => index),
+  );
+  if (results.length === 0 && failures.length > 0) {
+    throw allFailedError(failures);
+  }
+  logger.debug(`Generated ${results.length} images (${failures.length} failed).`);
   return results;
 };

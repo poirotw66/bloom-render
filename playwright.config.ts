@@ -8,7 +8,10 @@
 
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 4173;
+const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 4173);
+if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+  throw new Error('PLAYWRIGHT_PORT must be an integer between 1 and 65535');
+}
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
@@ -35,7 +38,7 @@ export default defineConfig({
   webServer: {
     // Build once, then serve. CI also builds in quality-gate; e2e job builds
     // independently so the sibling job stays self-contained.
-    command: `npm run build && npx vite preview --host 127.0.0.1 --port ${PORT}`,
+    command: `npm run build && npx vite preview --host 127.0.0.1 --port ${PORT} --strictPort`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

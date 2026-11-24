@@ -75,6 +75,7 @@ const StyleCollagePage: React.FC = () => {
                   type="button"
                   className={UI_BTN_SECONDARY}
                   onClick={() => inputRef.current?.click()}
+                  disabled={collage.loading}
                 >
                   {t('style_collage.change_photo')}
                 </button>
@@ -95,6 +96,7 @@ const StyleCollagePage: React.FC = () => {
             type="file"
             accept="image/*"
             className="hidden"
+            disabled={collage.loading}
             data-testid="style-collage-file"
             onChange={(e) => {
               const file = e.target.files?.[0] ?? null;
@@ -150,6 +152,7 @@ const StyleCollagePage: React.FC = () => {
                       aria-pressed={selected}
                       className={selected ? UI_CHIP_ACTIVE : UI_CHIP_INACTIVE}
                       onClick={() => collage.toggleId(entry.id)}
+                      disabled={collage.loading}
                     >
                       {selected ? t('style_collage.remove') : t('style_collage.add')}
                     </button>
@@ -253,10 +256,11 @@ const StyleCollagePage: React.FC = () => {
         {collage.loading && (
           <ProgressIndicator
             progress={collage.progress}
+            onCancel={collage.cancel}
             statusMessages={[
               t('style_collage.progress', {
                 done: String(collage.completed),
-                total: String(collage.selectedIds.length),
+                total: String(collage.slots.length),
               }),
             ]}
           />

@@ -1,11 +1,6 @@
 /**
  * @license
  * SPDX-License-Identifier: MIT
- *
- * Locales load on demand (one language chunk). Default language resolves
- * synchronously from storage/browser, then that locale module is fetched
- * before painting translated UI — avoids shipping both en + zh-TW in the
- * homepage entry and reduces flash of the wrong language.
  */
 
 import React, {
@@ -16,36 +11,23 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  useRef,
 } from 'react';
+import {
+  getLoadedMessages,
+  loadMessages,
+  type Language,
+  type Messages,
+} from '../locales/loadMessages';
 
-export type Language = 'en' | 'zh-TW';
+export type { Language } from '../locales/loadMessages';
 
 export const STORAGE_KEY_LANGUAGE = 'bloom_language';
-
-type Messages = Record<string, string>;
-
-const localeLoaders: Record<Language, () => Promise<Messages>> = {
-  en: () => import('../locales/en').then((m) => m.enMessages),
-  'zh-TW': () => import('../locales/zh-TW').then((m) => m.zhTWMessages),
-};
-
-const messageCache = new Map<Language, Messages>();
-
-export function loadLocaleMessages(lang: Language): Promise<Messages> {
-  const cached = messageCache.get(lang);
-  if (cached) return Promise.resolve(cached);
-  return localeLoaders[lang]().then((messages) => {
-    messageCache.set(lang, messages);
-    return messages;
-  });
-}
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
-  /** False until the active locale module has loaded. */
-  ready: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -104,67 +86,91 @@ export function getInitialLanguage(): Language {
 }
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => getInitialLanguage());
-  const [messages, setMessages] = useState<Messages | null>(
-    () => messageCache.get(getInitialLanguage()) ?? null,
-  );
+  const [active, setActive] = useState<{ language: Language; messages?: Messages }>(() => {
+    const language = getInitialLanguage();
+    return { language, messages: getLoadedMessages(language) };
+  });
+  const [loadError, setLoadError] = useState(false);
+  const requestedLanguage = useRef(active.language);
+  const requestId = useRef(0);
+  const language = active.language;
 
   const setLanguage = useCallback((lang: Language) => {
-    setLanguageState(lang);
-    try {
-      localStorage.setItem(STORAGE_KEY_LANGUAGE, lang);
-    } catch {
-      /* private mode */
+    requestedLanguage.current = lang;
+    const current = ++requestId.current;
+    setLoadError(false);
+    const commit = (messages: Messages) => {
+      if (requestId.current !== current) return;
+      setActive({ language: lang, messages });
+      try {
+        localStorage.setItem(STORAGE_KEY_LANGUAGE, lang);
+      } catch {
+        /* private mode */
+      }
+    };
+    const cached = getLoadedMessages(lang);
+    if (cached) {
+      commit(cached);
+      return;
     }
+    void loadMessages(lang).then(commit, () => {
+      if (requestId.current === current) setLoadError(true);
+    });
   }, []);
+
+  useEffect(() => {
+    if (!active.messages) setLanguage(requestedLanguage.current);
+    return () => {
+      requestId.current += 1;
+    };
+  }, [active.messages, setLanguage]);
 
   useEffect(() => {
     document.documentElement.lang = language === 'zh-TW' ? 'zh-TW' : 'en';
   }, [language]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const cached = messageCache.get(language);
-    if (cached) {
-      setMessages(cached);
-      return;
-    }
-    setMessages(null);
-    void loadLocaleMessages(language).then((loaded) => {
-      if (!cancelled) setMessages(loaded);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [language]);
-
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {
-      if (!messages) return key;
-      const raw = messages[key] || key;
+      const raw = active.messages?.[key] || key;
       return vars ? interpolate(raw, vars) : raw;
     },
-    [messages],
+    [active.messages],
   );
 
-  const value = useMemo(
-    () => ({ language, setLanguage, t, ready: Boolean(messages) }),
-    [language, setLanguage, t, messages],
-  );
+  const value = useMemo(() => ({ language, setLanguage, t }), [language, setLanguage, t]);
 
-  // Theme-colored shell while the locale chunk loads (no white flash).
-  if (!messages) {
+  // Switching keeps the previous dictionary visible; the initial load shows a neutral shell.
+  const errorLabel =
+    language === 'zh-TW' ? '無法載入語言，請重試。' : 'Unable to load language. Please retry.';
+  const retryLabel = language === 'zh-TW' ? '重試' : 'Retry';
+  if (!active.messages) {
     return (
       <div
-        className="min-h-svh w-full theme-bg"
-        data-testid="locale-loading"
-        aria-busy="true"
-        aria-live="polite"
-      />
+        role={loadError ? 'alert' : 'status'}
+        className="min-h-svh flex items-center justify-center gap-3 theme-ink"
+      >
+        {loadError ? errorLabel : 'BloomRender…'}
+        {loadError && (
+          <button type="button" onClick={() => setLanguage(requestedLanguage.current)}>
+            {retryLabel}
+          </button>
+        )}
+      </div>
     );
   }
-
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={value}>
+      {loadError && (
+        <div role="alert" className="p-3 text-center theme-ink">
+          {errorLabel}{' '}
+          <button type="button" onClick={() => setLanguage(requestedLanguage.current)}>
+            {retryLabel}
+          </button>
+        </div>
+      )}
+      {children}
+    </LanguageContext.Provider>
+  );
 };
 
 export const useLanguage = () => {

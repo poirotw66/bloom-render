@@ -6,7 +6,7 @@
  * Mock-provider coverage for usePortrait: success path + real failure message.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -55,6 +55,8 @@ beforeEach(() => {
   addToHistory.mockClear();
 });
 
+afterEach(() => vi.useRealTimers());
+
 describe('usePortrait handlePortraitGenerate', () => {
   it('stores a successful result and writes history', async () => {
     generateProfessionalPortrait.mockResolvedValue('data:image/png;base64,portrait');
@@ -102,5 +104,71 @@ describe('usePortrait handlePortraitGenerate', () => {
       expect(result.current.portraitError).toBe('API key not found. Please check your settings.');
     });
     expect(result.current.portraitError).not.toBe('All generations failed. Please try again.');
+  });
+  it('cancels immediately, clears its ticker, and ignores an old result after a newer run starts', async () => {
+    let finishOld!: (url: string) => void;
+    let finishNew!: (url: string) => void;
+    generateProfessionalPortrait
+      .mockImplementationOnce(() => new Promise((resolve) => (finishOld = resolve)))
+      .mockImplementationOnce(() => new Promise((resolve) => (finishNew = resolve)));
+    const { result } = renderHook(() => usePortrait(), { wrapper });
+    act(() =>
+      result.current.handleDrop({
+        preventDefault() {},
+        dataTransfer: { files: [samplePhoto()] },
+      } as unknown as React.DragEvent),
+    );
+    vi.useFakeTimers();
+    let oldRun!: Promise<void>;
+    let newRun!: Promise<void>;
+    act(() => {
+      oldRun = result.current.handlePortraitGenerate();
+    });
+    expect(vi.getTimerCount()).toBe(1);
+    act(() => result.current.cancelGeneration());
+    expect(result.current.portraitLoading).toBe(false);
+    expect(vi.getTimerCount()).toBe(0);
+    await act(async () => {
+      newRun = result.current.handlePortraitGenerate();
+      await oldRun;
+      finishOld('old-image');
+      await Promise.resolve();
+    });
+    expect(result.current.portraitLoading).toBe(true);
+    expect(result.current.portraitResult).toBeNull();
+    expect(addToHistory).not.toHaveBeenCalled();
+    await act(async () => {
+      finishNew('new-image');
+      await newRun;
+    });
+    expect(result.current.portraitResult).toBe('new-image');
+    expect(addToHistory).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('stops its ticker on unmount and never persists a late provider result', async () => {
+    let finish!: (url: string) => void;
+    generateProfessionalPortrait.mockImplementation(
+      () => new Promise((resolve) => (finish = resolve)),
+    );
+    const { result, unmount } = renderHook(() => usePortrait(), { wrapper });
+    act(() =>
+      result.current.handleDrop({
+        preventDefault() {},
+        dataTransfer: { files: [samplePhoto()] },
+      } as unknown as React.DragEvent),
+    );
+    vi.useFakeTimers();
+    let pending!: Promise<void>;
+    act(() => {
+      pending = result.current.handlePortraitGenerate();
+    });
+    const signal = generateProfessionalPortrait.mock.calls[0][1].settings.abortSignal;
+    unmount();
+    expect(signal.aborted).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+    finish('late-image');
+    await pending;
+    expect(addToHistory).not.toHaveBeenCalled();
   });
 });

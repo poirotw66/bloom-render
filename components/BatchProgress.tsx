@@ -9,6 +9,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatApiErrorMessage } from '../services/gemini/shared';
 import Spinner from './Spinner';
+import { UI_BTN_GHOST } from '../utils/uiClasses';
 
 interface BatchProgressProps {
   completed: number;
@@ -16,6 +17,7 @@ interface BatchProgressProps {
   current: number;
   results: Array<{ file: File; result: string; index: number }>;
   errors: Array<{ file: File; error: Error; index: number }>;
+  onCancel?: () => void;
   className?: string;
 }
 
@@ -25,6 +27,7 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
   current,
   results,
   errors,
+  onCancel,
   className = '',
 }) => {
   const { t } = useLanguage();
@@ -78,6 +81,15 @@ const BatchProgress: React.FC<BatchProgressProps> = ({
           </>
         )}
       </div>
+
+      {onCancel && !isComplete && (
+        <div className="flex flex-col items-center gap-1.5">
+          <button type="button" onClick={onCancel} className={UI_BTN_GHOST}>
+            {t('generation.cancel')}
+          </button>
+          <p className="text-xs text-gray-400 text-center">{t('generation.cancel_hint')}</p>
+        </div>
+      )}
 
       {/* Results Summary */}
       {results.length > 0 && (
