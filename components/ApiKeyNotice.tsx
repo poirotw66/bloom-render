@@ -21,6 +21,7 @@ export const OPENROUTER_KEY_CONSOLE_URL = 'https://openrouter.ai/keys';
 
 interface ApiKeyNoticeProps {
   className?: string;
+  compact?: boolean;
 }
 
 const noticeShell: Record<ThemeType, string> = {
@@ -60,7 +61,7 @@ const btnGetKey: Record<ThemeType, string> = {
     'text-yellow-100 border border-yellow-400/50 hover:bg-red-800/50 focus-visible:ring-yellow-400',
 };
 
-const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
+const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = false }) => {
   const { t } = useLanguage();
   const settings = useSettings();
   const { theme } = useTheme();
@@ -70,6 +71,48 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '' }) => {
 
   const isOpenRouter = settings.imageProvider === 'openrouter';
   const getKeyUrl = isOpenRouter ? OPENROUTER_KEY_CONSOLE_URL : API_KEY_CONSOLE_URL;
+
+  if (compact)
+    return (
+      <aside
+        data-testid="api-key-notice"
+        className={`tool-key-notice ${className}`}
+        aria-label={t('apikey.notice_title')}
+      >
+        <p>{isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}</p>
+        <div className="tool-key-notice-actions">
+          <button
+            type="button"
+            data-testid="try-demo-button"
+            onClick={() => settings.enableDemoMode()}
+            className="tool-button tool-button-primary"
+          >
+            {t('demo.try_demo')}
+          </button>
+          <button
+            type="button"
+            onClick={openSettingsPanel}
+            className="tool-button tool-button-secondary"
+          >
+            {t('apikey.open_settings')}
+          </button>
+        </div>
+        <details>
+          <summary>{t('settings.provider_section')}</summary>
+          <div className="tool-key-notice-actions">
+            <OpenRouterSignInButton compact />
+            <a
+              href={getKeyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tool-button tool-button-secondary"
+            >
+              {t('apikey.get_key')}
+            </a>
+          </div>
+        </details>
+      </aside>
+    );
 
   return (
     <div

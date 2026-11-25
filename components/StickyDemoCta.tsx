@@ -9,17 +9,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
-import { useTheme, type ThemeType } from '../contexts/ThemeContext';
-
-const btnByTheme: Record<ThemeType, string> = {
-  bloom: 'brand-bg-strong text-white hover:opacity-95 focus-visible:brand-ring',
-  night: 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:ring-blue-400',
-  newyear: 'bg-red-700 text-yellow-50 hover:bg-red-600 focus-visible:ring-yellow-400',
-};
 
 const StickyDemoCta: React.FC = () => {
   const { t } = useLanguage();
-  const { theme } = useTheme();
   const { isDemoMode, effectiveApiKey, enableDemoMode } = useSettings();
   const [footerVisible, setFooterVisible] = useState(false);
 
@@ -51,7 +43,7 @@ const StickyDemoCta: React.FC = () => {
         type="button"
         data-testid="sticky-try-demo-button"
         onClick={() => enableDemoMode()}
-        className={`pointer-events-auto w-full max-w-md rounded-2xl px-5 py-3.5 text-base font-bold shadow-lg border theme-border transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg-main)] ${btnByTheme[theme]}`}
+        className="tool-button tool-button-primary pointer-events-auto w-full max-w-md"
       >
         {t('demo.sticky_try_demo')}
       </button>

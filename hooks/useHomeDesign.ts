@@ -43,8 +43,8 @@ function loadHomeDesign(): Promise<HomeDesignKit> {
   return kitPromise;
 }
 
-/** Keep the design kit scoped to the landing page and release its canvas on navigation. */
-export function useHomeDesign() {
+/** Scope motion and its cleanup to the mounted route. */
+function usePageDesign(rootSelector: string, home: boolean) {
   useLayoutEffect(() => {
     const html = document.documentElement;
     const hadEntrance = html.classList.contains('m-enter');
@@ -56,7 +56,7 @@ export function useHomeDesign() {
       'data-radius': 'soft',
       'data-buttons': 'arrow',
       'data-motion': '',
-      'data-home': '',
+      ...(home ? { 'data-home': '' } : {}),
     };
     const previous = Object.keys(attributes).map(
       (name) => [name, html.getAttribute(name)] as const,
@@ -68,7 +68,7 @@ export function useHomeDesign() {
     document.head.append(stylesheet);
     let cancelled = false;
     let moments: MomentsKit | undefined;
-    const root = document.querySelector<HTMLElement>('.home-main');
+    const root = document.querySelector<HTMLElement>(rootSelector);
     void loadHomeDesign()
       .then(async ({ motion, moments: kit }) => {
         if (cancelled || !root) return;
@@ -92,5 +92,13 @@ export function useHomeDesign() {
         else html.setAttribute(name, value);
       }
     };
-  }, []);
+  }, [rootSelector, home]);
+}
+
+export function useHomeDesign() {
+  usePageDesign('.home-main', true);
+}
+
+export function useToolDesign() {
+  usePageDesign('.tool-main--workbench', false);
 }

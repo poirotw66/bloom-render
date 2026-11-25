@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnOptionalReferenceRole } from '../../types/tryOnRecipe';
-import { UI_BTN_SECONDARY } from '../../utils/uiClasses';
 import { REFERENCE_ROLE_LABELS } from './TryOnMaterialPicker';
+import './tryon-reference-controls.css';
 
 interface TryOnReferenceControlsProps {
   keepBackground: boolean;
@@ -31,12 +31,13 @@ export default function TryOnReferenceControls({
   const poseOverride = Boolean(referencePreviewUrls.pose);
 
   return (
-    <section className="space-y-4" aria-labelledby="tryon-controls-title">
-      <h2 id="tryon-controls-title" className="text-lg font-semibold theme-ink">
+    <fieldset className="tryon-reference-controls">
+      <legend id="tryon-controls-title" className="tryon-subheading">
         {zh ? '構圖與參考圖' : 'Composition and references'}
-      </h2>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="flex min-h-11 items-center gap-3 rounded-xl border theme-border p-3 text-sm theme-ink">
+      </legend>
+      <div className="tryon-preservation-grid">
+        <label className="tryon-preservation">
+          <span>{zh ? '保留原背景與光線' : 'Keep original background and light'}</span>
           <input
             type="checkbox"
             data-testid="tryon-keep-background"
@@ -45,9 +46,9 @@ export default function TryOnReferenceControls({
             disabled={disabled || backgroundOverride}
             className="h-5 w-5 shrink-0 accent-rose-500"
           />
-          {zh ? '保留原背景與光線' : 'Keep original background and light'}
         </label>
-        <label className="flex min-h-11 items-center gap-3 rounded-xl border theme-border p-3 text-sm theme-ink">
+        <label className="tryon-preservation">
+          <span>{zh ? '保留原姿勢' : 'Keep original pose'}</span>
           <input
             type="checkbox"
             data-testid="tryon-keep-pose"
@@ -56,11 +57,10 @@ export default function TryOnReferenceControls({
             disabled={disabled || poseOverride}
             className="h-5 w-5 shrink-0 accent-rose-500"
           />
-          {zh ? '保留原姿勢' : 'Keep original pose'}
         </label>
       </div>
       {(backgroundOverride || poseOverride) && (
-        <p role="status" className="text-sm text-amber-200">
+        <p role="status" className="tryon-hint">
           {[
             backgroundOverride &&
               (zh
@@ -75,20 +75,17 @@ export default function TryOnReferenceControls({
             .join(' ')}
         </p>
       )}
-      <details
-        className="rounded-xl border theme-border p-3"
-        open={Object.keys(referencePreviewUrls).length > 0}
-      >
-        <summary className="min-h-11 flex items-center cursor-pointer text-sm font-medium theme-ink">
+      <details className="tryon-disclosure" open={Object.keys(referencePreviewUrls).length > 0}>
+        <summary className="tryon-disclosure-title">
           {zh ? '上傳其他參考圖（選填）' : 'Upload extra references (optional)'}
         </summary>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3">
+        <div className="tryon-reference-grid">
           {OPTIONAL_ROLES.map((role) => {
             const title = REFERENCE_ROLE_LABELS[role][zh ? 1 : 0];
             const preview = referencePreviewUrls[role];
             return (
-              <div key={role} className="space-y-2 min-w-0">
-                <label className="flex min-h-11 flex-col gap-2 text-sm theme-ink">
+              <div key={role} className="tryon-reference-field">
+                <label className="tryon-field">
                   <span>{title}</span>
                   <input
                     type="file"
@@ -98,7 +95,7 @@ export default function TryOnReferenceControls({
                       zh ? `上傳${title}參考圖` : `Upload ${title.toLowerCase()} reference`
                     }
                     disabled={disabled}
-                    className="block w-full min-h-11 text-xs theme-ink-muted file:mr-2 file:rounded-lg file:border-0 file:px-3 file:py-3 file:text-xs file:font-medium file:bg-gray-700 file:text-white"
+                    className="tryon-reference-input"
                     onChange={(event) => {
                       const file = event.target.files?.[0];
                       if (file) onReferenceChange(role, file);
@@ -107,7 +104,7 @@ export default function TryOnReferenceControls({
                   />
                 </label>
                 {preview && (
-                  <div className="flex items-center gap-3 rounded-xl theme-raised p-2">
+                  <div className="tryon-reference-preview">
                     <img
                       src={preview}
                       alt={zh ? `${title}參考圖` : `${title} reference`}
@@ -117,7 +114,7 @@ export default function TryOnReferenceControls({
                       type="button"
                       disabled={disabled}
                       onClick={() => onReferenceChange(role, null)}
-                      className={`${UI_BTN_SECONDARY} min-h-11 text-sm`}
+                      className="tool-button tool-button-secondary"
                     >
                       {zh ? `移除${title}` : `Remove ${title.toLowerCase()}`}
                     </button>
@@ -128,6 +125,6 @@ export default function TryOnReferenceControls({
           })}
         </div>
       </details>
-    </section>
+    </fieldset>
   );
 }

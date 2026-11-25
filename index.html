@@ -113,7 +113,7 @@
           opacity: 1;
         }
         100% {
-          transform: translateX(300vw);
+          transform: translate(300vw, -300vw);
           opacity: 0;
         }
       }
@@ -169,16 +169,13 @@
 
       #shooting-stars {
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        transform: rotateZ(-45deg);
+        inset: 0;
       }
       #shooting-stars .star {
         position: absolute;
-        height: 2px;
+        height: 180px;
         width: 180px;
+        clip-path: polygon(0 99%, 99% 0, 100% 1%, 1% 100%);
         background-color: var(--shooting-star-color);
         opacity: 0.7;
         animation: shooting-star 3s linear infinite;
@@ -437,47 +434,6 @@
     </style>
   </head>
   <body>
-    <div id="bloom-petals" aria-hidden="true">
-      <div class="bloom-petal-orb"></div>
-      <div class="bloom-petal-orb"></div>
-      <div class="bloom-petal-orb"></div>
-      <div class="bloom-petal-orb"></div>
-      <div class="bloom-petal-orb"></div>
-      <div class="bloom-petal-orb"></div>
-    </div>
-    <div id="bloom-falling-petals" aria-hidden="true">
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-      <span class="falling-petal"></span>
-    </div>
-    <div id="star-bg">
-      <div id="stars1"></div>
-      <div id="stars2"></div>
-      <div id="stars3"></div>
-      <div id="shooting-stars">
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-      </div>
-    </div>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

@@ -1,0 +1,12 @@
+.tryon-reference-controls .tryon-preservation-grid {
+  column-gap: 24px;
+}
+
+.tryon-reference-controls .tryon-preservation {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tryon-preservation > span {
+  min-width: 0;
+}

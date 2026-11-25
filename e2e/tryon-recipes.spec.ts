@@ -13,12 +13,40 @@ async function seed(page: Page, provider = 'openrouter') {
   }, provider);
 }
 
+async function openWorkspace(page: Page, name: 'Reference library' | 'Recipes' | 'Draft') {
+  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
+  const command = nav.getByRole('button', { name, exact: true });
+  if (await command.isVisible()) await command.click();
+  else {
+    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
+    await page
+      .getByRole('dialog', { name: 'All photo tools', exact: true })
+      .getByRole('button', { name, exact: true })
+      .click();
+  }
+  const dialog = page.getByRole('dialog', { name, exact: true });
+  await expect(dialog).toBeVisible();
+  return dialog;
+}
+
+async function closeWorkspace(page: Page) {
+  await page.keyboard.press('Escape');
+}
+
+async function expectSavedDraft(page: Page) {
+  await openWorkspace(page, 'Draft');
+  await expect(page.getByTestId('tryon-draft-status')).toContainText('saved');
+  await closeWorkspace(page);
+}
+
 async function chooseMaterials(page: Page) {
+  await openWorkspace(page, 'Reference library');
   for (const id of ['white-oxford-shirt', 'pose-hand-on-hip', 'lighting-soft-window']) {
     const button = page.getByTestId(`tryon-material-${id}`);
     await button.click();
     await expect(button).toHaveAttribute('aria-pressed', 'true');
   }
+  await closeWorkspace(page);
 }
 
 test('draft survives reload and can be explicitly cleared', async ({ page }) => {
@@ -28,20 +56,26 @@ test('draft survives reload and can be explicitly cleared', async ({ page }) => 
     .getByTestId('tryon-person-input')
     .setInputFiles({ name: 'person.png', mimeType: 'image/png', buffer: SAMPLE });
   await chooseMaterials(page);
-  await expect(page.getByTestId('tryon-draft-status')).toContainText('saved');
+  await expectSavedDraft(page);
   await page.reload();
   await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeEnabled();
+  await openWorkspace(page, 'Reference library');
   for (const id of ['white-oxford-shirt', 'pose-hand-on-hip', 'lighting-soft-window']) {
     await expect(page.getByTestId(`tryon-material-${id}`)).toHaveAttribute('aria-pressed', 'true');
   }
+  await closeWorkspace(page);
+  await openWorkspace(page, 'Draft');
   await page.getByTestId('tryon-clear-draft').click();
   await expect(page.getByTestId('tryon-clear-draft')).toBeEnabled();
+  await closeWorkspace(page);
   await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeDisabled();
   await page.reload();
+  await openWorkspace(page, 'Reference library');
   await expect(page.getByTestId('tryon-material-white-oxford-shirt')).toHaveAttribute(
     'aria-pressed',
     'false',
   );
+  await closeWorkspace(page);
   await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeDisabled();
 });
 
@@ -93,6 +127,7 @@ test('generation roles, history replay and full archive retain all inputs', asyn
   await page.getByRole('button', { name: 'Generate again', exact: true }).click();
   await expect(page).toHaveURL(/\/try-on$/);
   await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeEnabled();
+  await openWorkspace(page, 'Reference library');
   await expect(page.getByTestId('tryon-material-pose-hand-on-hip')).toHaveAttribute(
     'aria-pressed',
     'true',
@@ -101,6 +136,7 @@ test('generation roles, history replay and full archive retain all inputs', asyn
     'aria-pressed',
     'true',
   );
+  await closeWorkspace(page);
   await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
   await expect.poll(() => requests.length).toBe(2);
   expect(requests[1].input_references).toEqual(requests[0].input_references);
@@ -116,6 +152,7 @@ test('recipe links carry materials and settings into another browser without pri
   await page
     .getByTestId('tryon-person-input')
     .setInputFiles({ name: 'private-person.png', mimeType: 'image/png', buffer: SAMPLE });
+  await openWorkspace(page, 'Recipes');
   await page.getByRole('button', { name: 'Copy recipe link', exact: true }).click();
   const url = await page.getByRole('textbox', { name: 'Recipe link', exact: true }).inputValue();
   const json = Buffer.from(url.split('#')[1], 'base64url').toString();
@@ -126,6 +163,7 @@ test('recipe links carry materials and settings into another browser without pri
   const localPath = `/r#${url.split('#')[1]}`;
   await recipient.goto(new URL(localPath, page.url()).href);
   await expect(recipient).toHaveURL(/\/try-on$/);
+  await openWorkspace(recipient, 'Reference library');
   await expect(recipient.getByTestId('tryon-material-white-oxford-shirt')).toHaveAttribute(
     'aria-pressed',
     'true',
@@ -134,6 +172,7 @@ test('recipe links carry materials and settings into another browser without pri
     'aria-pressed',
     'true',
   );
+  await closeWorkspace(recipient);
   await expect(
     recipient.getByRole('button', { name: 'Generate Try-On', exact: true }),
   ).toBeDisabled();
@@ -148,14 +187,18 @@ test('material details can apply a reference and demo stays sample-only', async 
     page.getByText('Original BloomRender reference illustration, provided under CC0 1.0.'),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Use in try-on', exact: true }).click();
+  await openWorkspace(page, 'Reference library');
   await expect(page.getByTestId('tryon-material-white-oxford-shirt')).toHaveAttribute(
     'aria-pressed',
     'true',
   );
   await page.evaluate(() => localStorage.setItem('bloom_image_provider', 'demo'));
   await page.reload();
+  await openWorkspace(page, 'Reference library');
   await expect(page.getByTestId('tryon-material-white-oxford-shirt')).toBeDisabled();
-  await expect(page.getByTestId('tryon-clear-draft')).toHaveCount(0);
+  await closeWorkspace(page);
+  await openWorkspace(page, 'Draft');
+  await expect(page.getByTestId('tryon-clear-draft')).toBeDisabled();
 });
 
 test('switching to demo cancels a real request and preserves the private draft', async ({
@@ -186,7 +229,7 @@ test('switching to demo cancels a real request and preserves the private draft',
   await page
     .getByTestId('tryon-clothing-input')
     .setInputFiles({ name: 'shirt.png', mimeType: 'image/png', buffer: SAMPLE });
-  await expect(page.getByTestId('tryon-draft-status')).toContainText('saved');
+  await expectSavedDraft(page);
   await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
   await expect.poll(() => posted).toBe(true);
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
@@ -194,7 +237,9 @@ test('switching to demo cancels a real request and preserves the private draft',
   await dialog.getByLabel('Provider', { exact: true }).selectOption('demo');
   await page.keyboard.press('Escape');
   release();
+  await openWorkspace(page, 'Reference library');
   await expect(page.getByTestId('tryon-material-white-oxford-shirt')).toBeDisabled();
+  await closeWorkspace(page);
   await expect(page.locator('img[src^="data:image/png"]')).toHaveCount(0);
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await dialog.getByLabel('Provider', { exact: true }).selectOption('openrouter');

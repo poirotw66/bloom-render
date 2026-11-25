@@ -1,0 +1,219 @@
+.tool-shell {
+  --tool-ink: var(--ink);
+  --tool-muted: var(--ink-soft);
+  --tool-surface: var(--bg-surface);
+  --tool-raised: var(--bg-raised);
+  --tool-line: #8d6d7b;
+  --tool-action: #b5355c;
+  --tool-action-hover: #9d254a;
+  --tool-focus: #ffc0d4;
+  --brand-primary: #b5355c;
+  --brand-primary-strong: #9d254a;
+  --brand-primary-soft: #ffc0d4;
+  --brand-accent: #ffc0d4;
+  color: var(--tool-ink);
+  background-color: color-mix(in srgb, var(--bg-main) 90%, transparent);
+}
+
+[data-theme='night'] .tool-shell {
+  --tool-action: #245ecc;
+  --tool-action-hover: #1c4da9;
+  --tool-focus: #a6c7ff;
+  --brand-primary: #245ecc;
+  --brand-primary-strong: #1c4da9;
+  --brand-primary-soft: #a6c7ff;
+  --brand-accent: #a6c7ff;
+}
+
+[data-theme='newyear'] .tool-shell {
+  --tool-action: #ad2929;
+  --tool-action-hover: #942020;
+  --tool-focus: #ffd5a0;
+  --brand-primary: #ad2929;
+  --brand-primary-strong: #942020;
+  --brand-primary-soft: #ffd5a0;
+  --brand-accent: #ffd5a0;
+}
+
+.tool-shell-wrap {
+  width: min(1200px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.tool-main {
+  display: flex;
+  flex-direction: column;
+  padding-block: 28px 40px;
+}
+
+.tool-shell :is(button, a, input, select, textarea, summary):focus-visible,
+.tool-main:focus-visible {
+  outline: 2px solid var(--tool-focus);
+  outline-offset: 3px;
+}
+
+.tool-button,
+.tool-control {
+  min-height: 44px;
+  border: 1px solid var(--tool-line);
+  border-radius: 10px;
+  color: var(--tool-ink);
+  background: var(--tool-raised);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 160ms,
+    border-color 160ms,
+    transform 160ms;
+}
+
+.tool-button:hover:not(:disabled) {
+  border-color: var(--tool-focus);
+}
+
+.tool-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.tool-button-primary {
+  border-color: transparent;
+  background: var(--tool-action);
+  color: #fff;
+}
+
+.tool-button-primary:hover:not(:disabled) {
+  background: var(--tool-action-hover);
+  border-color: transparent;
+}
+
+.tool-button:disabled,
+.tool-control:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.tool-control {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.tool-control::placeholder {
+  color: var(--tool-muted);
+  opacity: 1;
+}
+
+.tool-control option {
+  color: var(--tool-ink);
+  background: var(--tool-raised);
+}
+
+.tool-footer {
+  padding-block: 16px;
+  color: var(--tool-muted);
+  font-size: 14px;
+}
+
+.tool-footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--tool-line);
+  padding-top: 12px;
+}
+
+.tool-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--tool-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.tool-key-notice {
+  border: 1px solid var(--tool-line);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--tool-surface);
+}
+
+.tool-key-notice p {
+  color: var(--tool-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tool-key-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tool-key-notice summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--tool-ink);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.tool-key-notice details[open] summary {
+  margin-bottom: 8px;
+}
+
+.tool-key-notice :is([data-testid='openrouter-sign-in'], [data-testid='openrouter-sign-out']) {
+  min-height: 44px;
+  border: 1px solid var(--tool-line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: var(--tool-raised);
+  color: var(--tool-ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .tool-shell-wrap {
+    width: calc(100% - 32px);
+  }
+  .tool-main {
+    padding-block: 20px 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-button {
+    transition: none;
+  }
+}
+
+.tool-shell--tryon .tool-main--workbench {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+.tryon-workspace > .wrap {
+  height: 100%;
+}

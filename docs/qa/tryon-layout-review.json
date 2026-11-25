@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-25",
+  "repository": "poirotw66/bloom-render",
+  "baseCommit": "9dba191",
+  "goal": "Resolve the remaining 21 layout gate findings, continuing until the gate passes.",
+  "outcome": "GATE: PASS",
+  "gate": {
+    "url": "http://127.0.0.1:4192/try-on?build=19d542dc196f",
+    "kind": "software",
+    "category": "AI virtual try-on",
+    "primary": "Generate try-on",
+    "freshRunOpenFailures": [7, 3, 0],
+    "openFailures": 0,
+    "rawFailOccurrences": 2,
+    "activeWaivers": [
+      {
+        "check": "focus-ring",
+        "target": ".focus\\:outline-none:focus",
+        "reason": "Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads."
+      },
+      {
+        "check": "container-edges",
+        "target": "div#root \"",
+        "reason": "This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout."
+      }
+    ],
+    "nonBlockingWarnings": ["copy-buttons", "skip-link"],
+    "evidence": "tryon-gate-pass.txt",
+    "cacheNote": "A URL query containing the actual built TryOnPage bundle hash forced a fresh check after feature/style/hook changes. The gate source fingerprint does not scan those project directories. No checker code or thresholds changed.",
+    "scope": "Standard gate: consistency quick checks at 1440 and 390, plus desktop and mobile layout. Additional Playwright tests cover reduced motion, keyboard interaction and real workflows."
+  },
+  "changes": [
+    "A viewport-height try-on workspace, with two independently scrollable desktop panes and one mobile work area scroller.",
+    "Real native dialogs for materials, recipes and drafts, reached through responsive header commands; Escape and focus restoration remain functional.",
+    "Accessible native person upload, aligned input help and preservation controls, and a visible draft-save failure alert outside dialogs.",
+    "A shared route-scoped entrance and a deployed cursor spotlight with reduced-motion and route cleanup support.",
+    "Ambient decoration moved inside the React mount; the dark sakura theme, provider setup, references, replayable history and recipe sharing remain intact."
+  ],
+  "verification": {
+    "unitTests": {
+      "files": 99,
+      "passed": 485
+    },
+    "productionBrowserRegressions": {
+      "passed": 54,
+      "suites": ["smoke", "a11y", "tryon-recipes", "tool-layout", "tryon-draft-failure"],
+      "includes": [
+        "All primary routes",
+        "Homepage and try-on in all three themes",
+        "320, 390, 768, 1024 and 1440 widths",
+        "Keyboard uploads and dialogs",
+        "Recipes, history replay, export and demo isolation",
+        "Actual draft write failure",
+        "Viewport scroll reachability",
+        "Reduced motion and route cleanup"
+      ]
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuildAndBundleBudget": "passed",
+    "diffWhitespace": "passed",
+    "screenshots": [
+      ".taste-skill/shots/tryon21-pass-1440.png",
+      ".taste-skill/shots/tryon21-pass-390.png"
+    ]
+  },
+  "limitations": [
+    "Gate PASS retains two documented framework/focus waivers and two non-blocking warnings.",
+    "Provider calls in browser tests are mocked; no paid AI request was made."
+  ],
+  "deliveryAtVerification": "Local changes only; not committed, pushed or deployed in this continuation."
+}

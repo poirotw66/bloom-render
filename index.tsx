@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import AmbientBackground from './components/AmbientBackground';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import I18nErrorBoundary from './components/I18nErrorBoundary';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -24,6 +25,7 @@ function AppWithMotionPause() {
   useBackgroundMotionPause();
   return (
     <>
+      <AmbientBackground />
       <App />
       <PwaUpdatePrompt />
     </>

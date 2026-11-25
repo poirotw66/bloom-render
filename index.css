@@ -1,6 +1,15 @@
 @import 'tailwindcss';
 @import './home.css';
 
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  isolation: isolate;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 /*
   BloomRender design tokens — Taste PRESERVE restyle.
   Quiet instrument + Work Sans; brand hues via CSS vars (fuchsia/pink, blue/cyan, red/gold).

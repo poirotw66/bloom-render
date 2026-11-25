@@ -1,11 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: MIT
- *
- * Output size and aspect ratio selectors for try-on.
- * Gemini 3: 1K / 2K / 4K; Gemini 2: 1K only. Both: 1:1, 16:9, 9:16.
- */
-
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -16,7 +8,6 @@ import {
   type TryOnOutputSize,
   type TryOnAspectRatio,
 } from './types';
-import { UI_LABEL, uiOption } from '../../utils/uiClasses';
 
 interface TryOnOutputOptionsProps {
   outputSize: TryOnOutputSize;
@@ -26,68 +17,56 @@ interface TryOnOutputOptionsProps {
   disabled?: boolean;
 }
 
-const TryOnOutputOptions: React.FC<TryOnOutputOptionsProps> = ({
+export default function TryOnOutputOptions({
   outputSize,
   aspectRatio,
   onOutputSizeChange,
   onAspectRatioChange,
   disabled = false,
-}) => {
-  const { t } = useLanguage();
+}: TryOnOutputOptionsProps) {
+  const { t, language } = useLanguage();
   const { effectiveModel } = useSettings();
-  const supportsMultiRes = supportsMultiResolution(effectiveModel);
-  const allowedSizes: TryOnOutputSize[] = supportsMultiRes ? TRYON_OUTPUT_SIZES : ['1K'];
-
+  const multiResolution = supportsMultiResolution(effectiveModel);
+  const allowedSizes: TryOnOutputSize[] = multiResolution ? TRYON_OUTPUT_SIZES : ['1K'];
   return (
-    <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
-      <div className="flex flex-col gap-3">
-        <label className={UI_LABEL}>
-          {t('tryon.label.output_size')}
-          {!supportsMultiRes && (
-            <span className="ml-2 text-xs font-normal text-gray-500">
-              ({t('tryon.gemini2_only_1k')})
-            </span>
-          )}
-        </label>
-        <div className="flex flex-wrap justify-center gap-2">
-          {allowedSizes.map((size) => {
-            const isActive = outputSize === size;
-            return (
-              <button
-                key={size}
-                type="button"
-                onClick={() => !disabled && onOutputSizeChange(size)}
-                disabled={disabled}
-                className={uiOption(isActive)}
-              >
-                {t(`tryon.size.${size}`)}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <label className={UI_LABEL}>{t('tryon.label.aspect_ratio')}</label>
-        <div className="flex flex-wrap justify-center gap-2">
-          {TRYON_ASPECT_RATIOS.map((ratio) => {
-            const isActive = aspectRatio === ratio;
-            return (
-              <button
-                key={ratio}
-                type="button"
-                onClick={() => !disabled && onAspectRatioChange(ratio)}
-                disabled={disabled}
-                className={uiOption(isActive)}
-              >
-                {t(`tryon.ratio.${ratio.replace(':', '_')}`)}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+    <div className="tryon-field-grid">
+      <label className="tryon-field">
+        <span>{t('tryon.label.output_size')}</span>
+        <select
+          value={multiResolution ? outputSize : '1K'}
+          onChange={(event) => onOutputSizeChange(event.target.value as TryOnOutputSize)}
+          disabled={disabled}
+          className="tool-control"
+        >
+          {allowedSizes.map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+        {!multiResolution && (
+          <span className="tryon-hint">
+            {language === 'zh-TW'
+              ? '目前模型輸出 1K 圖片。'
+              : 'The selected model outputs 1K images.'}
+          </span>
+        )}
+      </label>
+      <label className="tryon-field">
+        <span>{t('tryon.label.aspect_ratio')}</span>
+        <select
+          value={aspectRatio}
+          onChange={(event) => onAspectRatioChange(event.target.value as TryOnAspectRatio)}
+          disabled={disabled}
+          className="tool-control"
+        >
+          {TRYON_ASPECT_RATIOS.map((ratio) => (
+            <option key={ratio} value={ratio}>
+              {ratio}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
-};
-
-export default TryOnOutputOptions;
+}

@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { parseTryOnRecipe, type TryOnRecipe } from '../../types/tryOnRecipe';
 import { buildRemixUrl } from '../../utils/remixLink';
-import { UI_BTN_SECONDARY, UI_INPUT } from '../../utils/uiClasses';
 
 interface Props {
   recipe: TryOnRecipe;
@@ -72,28 +71,27 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
   }
 
   return (
-    <section
-      className="space-y-3 border-t theme-border pt-5"
-      aria-label={zh ? '試穿配方' : 'Try-on recipe'}
-    >
-      <h2 className="text-base font-semibold theme-ink">
-        {zh ? '儲存與分享配方' : 'Save and share a recipe'}
-      </h2>
-      <p className="text-sm theme-ink-muted">
+    <section className="tryon-recipe" aria-label={zh ? '試穿配方' : 'Try-on recipe'}>
+      <h2 className="tryon-subheading">{zh ? '儲存與分享配方' : 'Save and share a recipe'}</h2>
+      <p className="tryon-hint">
         {zh
           ? '連結與配方只含內建素材及設定，不包含你的照片、上傳參考圖或金鑰。自訂參考圖需由使用者重新上傳。'
           : 'Links and recipes contain built-in materials and settings only. Photos, uploaded references and keys stay private. Custom references must be uploaded again.'}
       </p>
-      <div className="flex flex-wrap gap-2">
-        <button type="button" className={UI_BTN_SECONDARY} onClick={() => void share()}>
+      <div className="tryon-action-row">
+        <button
+          type="button"
+          className="tool-button tool-button-secondary"
+          onClick={() => void share()}
+        >
           {zh ? '複製配方連結' : 'Copy recipe link'}
         </button>
-        <button type="button" className={UI_BTN_SECONDARY} onClick={download}>
+        <button type="button" className="tool-button tool-button-secondary" onClick={download}>
           {zh ? '下載配方' : 'Download recipe'}
         </button>
         <button
           type="button"
-          className={UI_BTN_SECONDARY}
+          className="tool-button tool-button-secondary"
           disabled={busy}
           onClick={() => fileInput.current?.click()}
         >
@@ -112,19 +110,21 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
         />
       </div>
       {shareUrl && (
-        <label className="block text-sm theme-ink-muted">
+        <label className="tryon-field">
           {zh ? '配方連結' : 'Recipe link'}
           <input
-            className={`mt-1 w-full ${UI_INPUT}`}
+            className="tool-control"
             readOnly
             value={shareUrl}
             onFocus={(event) => event.target.select()}
           />
         </label>
       )}
-      <p role="status" className="text-sm theme-ink-muted">
-        {message}
-      </p>
+      {message && (
+        <p role="status" className="tryon-hint">
+          {message}
+        </p>
+      )}
     </section>
   );
 }
