@@ -4,7 +4,7 @@
  *
  * Content-Security-Policy applied via <meta http-equiv> in index.html and
  * every emit-route-html per-route shell. Keep in sync with network hosts the
- * app actually calls (Gemini, OpenRouter, Hugging Face model hub, jsDelivr
+ * app actually calls (Gemini, OpenAI, OpenRouter, Hugging Face model hub, jsDelivr
  * ONNX/transformers WASM).
  *
  * Plain .mjs so Node 20 CI can import it from scripts/emit-route-html.mjs
@@ -28,6 +28,7 @@ export const CONTENT_SECURITY_POLICY = [
     "'self'",
     'https://generativelanguage.googleapis.com',
     'https://openrouter.ai',
+    'https://api.openai.com',
     'https://huggingface.co',
     'https://cdn-lfs.huggingface.co',
     'https://cdn-lfs-us-1.huggingface.co',

@@ -32,6 +32,11 @@ export {
   resolveDemoResultAssetPath,
 } from './demoViralResult';
 export {
+  DEFAULT_OPENAI_MODEL,
+  OPENAI_IMAGE_MODELS,
+  isOpenAIModel,
+  resolveStoredOpenAIModel,
+  type OpenAIModel,
   DEFAULT_OPENROUTER_MODEL,
   OPENROUTER_IMAGE_MODELS,
   OPENROUTER_MODEL_LABEL_KEYS,

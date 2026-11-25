@@ -1,0 +1,9 @@
+gate: checking http://127.0.0.1:4194/try-on (software); this takes a few minutes on a CPU Chrome
+gate: no open FAIL
+  WAIVED focus-ring .focus\:outline-none:focus: Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads.
+  WAIVED container-edges div#root "跳至主要內容BloomRender參考素材庫配方草稿試試 Demo中ENAI 試": This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout.
+  waiver ignored (matches no open finding): card-layout "section#styles > div.wrap.home-wrap > ul.home-style-grid "♡ 公仔盒玩 試試這個 ↗""
+  waiver ignored (matches no open finding): copy-headline "h1#home-title "AI 照片編輯， 從你的照片開始。""
+  waiver ignored (matches no open finding): container-edges "div.hero-text.home-hero__content > div.home-hero__text > p.home-key-note > span "3 種 AI 供應商，生成需自備金鑰。""
+  2 WARN (not blocking), first: copy-buttons nav.wrap.tool-shell-wrap > div.tool-head; skip-link div#root > div.min-h-svh.text-gray-100:n
+GATE: PASS

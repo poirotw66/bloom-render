@@ -3,7 +3,7 @@
  * Prompt optimization (text) stays on the Gemini SDK path.
  */
 
-export type ImageProviderId = 'gemini' | 'openrouter' | 'demo';
+export type ImageProviderId = 'gemini' | 'openrouter' | 'openai' | 'demo';
 
 export interface ImagePart {
   mimeType: string;
@@ -57,6 +57,7 @@ export interface ImageProvider {
 export const IMAGE_PROVIDER_IDS: readonly ImageProviderId[] = [
   'gemini',
   'openrouter',
+  'openai',
   'demo',
 ] as const;
 

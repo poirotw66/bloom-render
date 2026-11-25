@@ -100,7 +100,10 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
           },
           {
             labelKey: 'settings.model',
-            value: t(MODEL_LABEL_KEYS[settings.model]),
+            value:
+              settings.imageProvider === 'gemini'
+                ? t(MODEL_LABEL_KEYS[settings.model])
+                : settings.effectiveModel,
           },
         ]}
       />

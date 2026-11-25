@@ -2,7 +2,7 @@
 
 [English](./README.md) | [繁體中文](./README.zh-TW.md)
 
-**AI photo studio in your browser — BYO Gemini / OpenRouter key, or try the offline demo with no key.**
+**AI photo studio in your browser — BYO Gemini / OpenAI / OpenRouter key, or try the offline demo with no key.**
 
 [![CI](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml/badge.svg)](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
@@ -48,7 +48,7 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 - **Try-on references and drafts** — Original CC0 clothing, pose and lighting illustrations, plus optional uploaded pose, expression, scene and lighting references. Preserve the original background or pose; drafts keep input images in IndexedDB and can be cleared. Demo uses samples only.
 - **Try-on recipes** — Share links and import/export JSON contain built-in material IDs and settings, without uploaded images or API keys. History replay restores saved person, clothing and other references.
 - **Full history export** — ZIP backups include results, source photos, references and generation metadata. Older records may lack original inputs. Reference materials have searchable, shareable detail pages.
-- **Settings** — Gemini / OpenRouter / Live demo; language; themes (**Bloom**, **Night**, **New Year**).
+- **Settings** — Gemini / OpenAI / OpenRouter / Live demo; language; themes (**Bloom**, **Night**, **New Year**).
 - **i18n** — English & Traditional Chinese. **PWA**-ready static build.
 
 ---
@@ -65,7 +65,7 @@ npm run dev
 Open the URL in the terminal (default [http://localhost:3002](http://localhost:3002)).
 
 1. Tap **Try demo** (or Settings → **Live demo (no key)**) to explore with bundled samples.
-2. For real generation: Settings → **Google Gemini** or **OpenRouter (BYOK)** → paste key (default: tab-scoped `sessionStorage`; optional remember on device). Never committed or bundled. See [`.env.example`](./.env.example).
+2. For real generation: Settings → **Google Gemini**, **OpenAI (direct)** or **OpenRouter (BYOK)** → paste key (default: tab-scoped `sessionStorage`; optional remember on device). Never committed or bundled. See [`.env.example`](./.env.example).
 
 Optional Travel maps: `public/images/world-map.webp`, `public/images/taiwan-map.webp` ([public/images/README.md](public/images/README.md)). Scene refs: [docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md).
 
@@ -73,20 +73,22 @@ Optional Travel maps: `public/images/world-map.webp`, `public/images/taiwan-map.
 
 ## Privacy / BYO key
 
-| Context              | How                                                                                                                                                                                                                                                                                                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Default: `sessionStorage` for this tab only. Opt-in **Remember key on this device** also mirrors keys into `localStorage` (anyone with device/backup access can read them; turning it off wipes the local copy). Never bundled. |
-| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                                                                                                                                                                                           |
-| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                                                                                                                                                                                                 |
+| Context              | How                                                                                                                                                                                                                                                                                                                                                            |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Settings (BYOK)**  | Gear → **Image provider**: `Google Gemini`, `OpenAI (direct)` or `OpenRouter (BYOK)`. Paste the matching key and pick a model. Default: `sessionStorage` for this tab only. Opt-in **Remember key on this device** also mirrors keys into `localStorage` (anyone with device/backup access can read them; turning it off wipes the local copy). Never bundled. |
+| **Get a key**        | Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey). OpenAI: [OpenAI API keys](https://platform.openai.com/api-keys). OpenRouter: [openrouter.ai/keys](https://openrouter.ai/keys).                                                                                                                                                             |
+| **Env / CI / Pages** | No API key env var is used. Do not set `GEMINI_API_KEY` / `OPENROUTER_*` for builds — nothing injects keys into the client.                                                                                                                                                                                                                                    |
+
+OpenAI connects directly to the [Images API](https://developers.openai.com/api/docs/guides/image-generation), using a separate key and model selection. The model catalog includes `gpt-image-2.6-sunburst` (default), `gpt-image-2.6-flare`, and `gpt-image-1.5`. Text-only requests use image generations; uploads and multiple references use image edits. Sunburst and Flare support the app's 1K/2K/4K choices. GPT Image 1.5 uses its nearest supported square, portrait, or landscape size; it does not promise an exact custom aspect ratio. Painted masks use the existing prompt/overlay edit path. OpenAI pricing depends on input, size and quality, so the app leaves cost unknown instead of assuming a fixed charge.
 
 ### What each provider covers
 
-| Surface                                                                                                     | Provider                                                         |
-| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Text-to-image, editor (retouch / filter / adjust), ID photo, portrait, travel, themed, couple/group, try-on | Selected provider (`services/imageProviders/`)                   |
-| Travel **custom-scene prompt optimization** (text)                                                          | **Gemini-only** — skipped on OpenRouter; your raw prompt is used |
-| Home-screen **model compare**                                                                               | **Gemini-only** (compares Gemini model ids)                      |
-| **Local Enhance** (bg remove / 2× upscale)                                                                  | On-device — no provider key                                      |
+| Surface                                                                                                     | Provider                                                                  |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Text-to-image, editor (retouch / filter / adjust), ID photo, portrait, travel, themed, couple/group, try-on | Selected provider (`services/imageProviders/`)                            |
+| Travel **custom-scene prompt optimization** (text)                                                          | **Gemini-only** — skipped on OpenAI / OpenRouter; your raw prompt is used |
+| Home-screen **model compare**                                                                               | **Gemini-only** (compares Gemini model ids)                               |
+| **Local Enhance** (bg remove / 2× upscale)                                                                  | On-device — no provider key                                               |
 
 Prefer image-capable OpenRouter models that mirror Gemini’s Nano Banana family
 (`google/gemini-nano-banana-2.1`, `google/gemini-3.1-flash-lite-image`,
@@ -99,7 +101,7 @@ Prefer image-capable OpenRouter models that mirror Gemini’s Nano Banana family
 - **Runtime** — React 19, TypeScript, Vite 6
 - **Routing** — React Router 7
 - **Editing** — react-image-crop
-- **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini) + OpenRouter Images API via `services/imageProviders/`
+- **AI** — [@google/genai](https://www.npmjs.com/package/@google/genai) (Gemini) + direct OpenAI and OpenRouter Images APIs via `services/imageProviders/`
 - **On-device enhance** — [@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers) (WebGPU + WASM)
 - **Batch download** — JSZip
 - **Styles** — Tailwind CSS 4 via `@tailwindcss/vite` + custom CSS
@@ -116,7 +118,7 @@ Prefer image-capable OpenRouter models that mirror Gemini’s Nano Banana family
 
 ## Architecture
 
-Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface with Gemini, OpenRouter, and offline demo implementations. Feature modules call `runImageGeneration`. BYOK keys: `utils/credentialStorage.ts` (`sessionStorage` by default; optional `localStorage` remember). Local enhance lives in `services/localEnhance/`.
+Image generation goes through `services/imageProviders/`: a shared `ImageProvider` interface with Gemini, direct OpenAI, OpenRouter, and offline demo implementations. Feature modules call `runImageGeneration`. BYOK keys: `utils/credentialStorage.ts` (`sessionStorage` by default; optional `localStorage` remember). Local enhance lives in `services/localEnhance/`.
 
 ---
 

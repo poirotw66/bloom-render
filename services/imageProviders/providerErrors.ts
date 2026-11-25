@@ -9,13 +9,34 @@ function getRawMessage(err: unknown): string {
  * Map provider failures to BloomRender i18n error keys (error.*).
  * Pass-through when the error is already an i18n key.
  */
-export function toProviderI18nError(providerId: 'gemini' | 'openrouter', err: unknown): Error {
+export function toProviderI18nError(
+  providerId: 'gemini' | 'openrouter' | 'openai',
+  err: unknown,
+): Error {
   const raw = getRawMessage(err);
   if (isI18nErrorKey(raw)) {
     return err instanceof Error ? err : createI18nError(raw);
   }
 
   const lower = raw.toLowerCase();
+
+  if (providerId === 'openai') {
+    const details =
+      err && typeof err === 'object' ? (err as { status?: number; code?: string }) : {};
+    if (details.code === 'insufficient_quota' || details.code === 'billing_hard_limit_reached')
+      return createI18nError('error.openai_billing');
+    if (details.code === 'content_policy_violation' || details.code === 'moderation_blocked')
+      return createI18nError('error.safety_filter');
+    if (details.status === 401 || lower.includes('unauthorized') || lower.includes('api key'))
+      return createI18nError('error.openai_invalid_key');
+    if (details.status === 403) return createI18nError('error.openai_permission');
+    if (details.status === 429) return createI18nError('error.openai_rate_limit');
+    if (details.status === 400 || details.status === 404 || details.status === 422)
+      return createI18nError('error.invalid_request');
+    if (err instanceof TypeError || /network|fetch|timeout/.test(lower))
+      return createI18nError('error.network_error');
+    return createI18nError('error.openai_failed');
+  }
 
   if (
     lower.includes('api key') ||

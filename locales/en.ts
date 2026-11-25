@@ -15,7 +15,7 @@ export const enMessages: Record<string, string> = {
     'Retouch a portrait, try a new look, or create an image with words. Start with one photo.',
   'home.upload': 'Upload a photo',
   'home.browse_styles': 'Browse styles',
-  'home.key_note': '2 AI providers. Bring your own key.',
+  'home.key_note': '3 AI providers. Bring your own key.',
   'home.connect_key': 'Connect an API key',
   'home.demo_note': 'Demo mode · Try the studio with pre-made images.',
   'home.sample_error': 'The demo photo could not load. Please try again.',
@@ -44,7 +44,7 @@ export const enMessages: Record<string, string> = {
   'home.close_subtitle': 'Your next edit starts right here.',
   'home.faq_key_title': 'Do I need an API key?',
   'home.faq_key_body':
-    'Use a Gemini or OpenRouter key for new images. Demo mode lets you try pre-made results first.',
+    'Use a Gemini, OpenAI or OpenRouter key for new images. Demo mode lets you try pre-made results first.',
   'home.faq_privacy_title': 'Where do my photos go?',
   'home.faq_privacy_body':
     'AI requests go to your chosen provider. Your generation history stays in this browser.',
@@ -107,7 +107,7 @@ export const enMessages: Record<string, string> = {
   'common.output_quantity': 'Output Quantity',
   'common.output_size': 'Output Size',
   'common.aspect_ratio': 'Aspect Ratio',
-  'common.gemini2_only_1k': 'Gemini 2.5 flash supports 1K only',
+  'common.gemini2_only_1k': 'This model supports 1K output in this app.',
   'common.size_1k': '1K',
   'common.size_2k': '2K',
   'common.size_4k': '4K',
@@ -565,7 +565,7 @@ export const enMessages: Record<string, string> = {
   'tryon.style.soft_glam': 'Soft Glamour',
   'tryon.label.output_size': 'Output Size',
   'tryon.label.aspect_ratio': 'Aspect Ratio',
-  'tryon.gemini2_only_1k': 'Gemini 2.5 flash supports 1K only',
+  'tryon.gemini2_only_1k': 'This model supports 1K output in this app.',
   'tryon.size.1K': '1K',
   'tryon.size.2K': '2K',
   'tryon.size.4K': '4K',
@@ -743,7 +743,7 @@ export const enMessages: Record<string, string> = {
   'travel.custom_btn': 'Custom scene',
   'travel.custom_placeholder': 'e.g. in Tokyo, city street, travel photography',
   'travel.optimize_gemini_only_notice':
-    'Custom-scene prompt optimization is Gemini-only. With OpenRouter, your prompt is used as written.',
+    'Custom-scene prompt optimization requires Gemini. Other providers use your prompt as written.',
   'travel.custom_reference_label': 'Reference scene photo',
   'travel.custom_reference_btn': 'Choose image',
   'travel.custom_reference_remove': 'Remove',
@@ -1177,7 +1177,7 @@ export const enMessages: Record<string, string> = {
   'demo.result_label': 'Sample',
   'demo.banner_title': 'Showing a pre-made sample result',
   'demo.banner_hint': 'No API key or AI network call is used. Outputs come from bundled examples.',
-  'demo.cta_settings': 'Add your own Gemini or OpenRouter key to generate with your photos',
+  'demo.cta_settings': 'Add your own Gemini, OpenAI or OpenRouter key to generate with your photos',
   'demo.sample_input': 'Sample',
   'demo.sample_only_hint':
     'Demo mode uses bundled sample photos only. Add an API key in Settings to upload your own.',
@@ -1244,7 +1244,7 @@ export const enMessages: Record<string, string> = {
   'error.openrouter_model_no_image_ref':
     'This OpenRouter model may not support image references. Try google/gemini-*-image or switch to Gemini.',
   'error.optimize_prompt_gemini_only':
-    'Prompt optimization is Gemini-only. Switch to Gemini in Settings, or continue with your raw prompt.',
+    'This text or planning feature requires Gemini. Switch to Gemini in Settings, or continue with your original prompt.',
   'error.blocked': 'Request was blocked. Please try again or modify your request.',
   'error.safety_filter':
     'Content was filtered by safety settings. Please try a different approach.',
@@ -1409,16 +1409,34 @@ export const enMessages: Record<string, string> = {
 
   'settings.title': 'Settings',
   'settings.provider_section': 'Image provider',
+  'settings.provider.openai': 'OpenAI (direct)',
+  'apikey.notice_hint_openai':
+    'Add your OpenAI API key in Settings. Image requests go directly from your browser to OpenAI.',
+  'error.openai_invalid_key': 'OpenAI API key is missing or invalid. Check the key in Settings.',
+  'error.openai_rate_limit': 'OpenAI rate limit reached. Wait a moment and try again.',
+  'error.openai_failed': 'OpenAI image generation failed. Please try again.',
+  'error.openai_permission':
+    'Your OpenAI account cannot access this image model. Check project permissions and any required organization verification.',
+  'error.openai_billing':
+    'OpenAI billing or usage limit prevents this request. Check your API credit and project budget.',
+  'settings.openai.model': 'OpenAI image model',
+  'settings.openai.model_desc':
+    'Use a GPT Image model. GPT Image 1.5 supports fixed output sizes; newer models use the configured output resolution.',
+  'settings.openai.api_key': 'OpenAI API Key',
+  'settings.openai.api_key_placeholder': 'Enter your OpenAI API key',
+  'settings.openai.api_key_desc':
+    'Your key and image requests are sent directly to OpenAI. The key stays in this browser tab unless you choose to remember it.',
+  'settings.openai.get_key': 'Create or manage an OpenAI API key',
   'settings.provider': 'Provider',
   'settings.provider_desc':
-    'Bring-your-own-key. Gemini uses Google AI Studio keys; OpenRouter uses OpenRouter keys. Keys stay in this browser only.',
+    'Bring your own key for Gemini, OpenAI or OpenRouter. Each provider uses its own key, stored in this browser.',
   'settings.provider_desc_demo':
     'Offline demo: press Generate to see bundled sample results. No API key or AI network call.',
   'settings.provider.gemini': 'Google Gemini',
   'settings.provider.openrouter': 'OpenRouter (BYOK)',
   'settings.provider.demo': 'Live demo (no key)',
   'settings.demo_note':
-    'Demo mode returns pre-made examples from public/examples. Switch to Gemini or OpenRouter and paste a key to generate with your own photos.',
+    'Demo mode returns pre-made examples. Switch to Gemini, OpenAI or OpenRouter and paste a key to generate with your own photos.',
   'settings.model': 'Model',
   'settings.model.nanoBanana21': 'Nano Banana 2.1 (New · Paid)',
   'settings.model.nanoBanana2Lite': 'Nano Banana 2 Lite (Default)',
@@ -1440,7 +1458,7 @@ export const enMessages: Record<string, string> = {
   'settings.openrouter.api_key_desc':
     'By default kept only for this browser tab session and cleared when the tab is closed. Never bundled or sent to our servers.',
   'settings.openrouter.gemini_only_note':
-    'Note: Travel custom-scene prompt optimization is Gemini-only and is skipped on OpenRouter (your raw prompt is used). Model compare on the home screen is also Gemini-only.',
+    'Prompt optimization, text analysis and planning, and homepage model comparison require Gemini. Choose Gemini in Settings to use these features; other providers use your prompt as written.',
   'settings.theme': 'Theme',
   'settings.motion.enable': 'Background animations',
   'settings.motion.enable_desc':
@@ -1454,7 +1472,7 @@ export const enMessages: Record<string, string> = {
     'By default kept only for this browser tab session and cleared when the tab is closed. Never bundled.',
   'settings.remember_api_key': 'Remember key on this device',
   'settings.remember_api_key_desc':
-    'Also stores your Gemini or OpenRouter key in this browser’s localStorage so it survives closing the tab. Anyone with access to this device or its backups can read it. Leave off on shared computers.',
+    'Also stores your provider keys in this browser’s localStorage so they survive closing the tab. Anyone with access to this device or its backups can read them. Leave off on shared computers.',
   'settings.api_key_show': 'Show',
   'settings.api_key_hide': 'Hide',
   'settings.autosave_hint': 'Changes are saved automatically.',
@@ -1810,7 +1828,7 @@ export const enMessages: Record<string, string> = {
   'multi_person.error_need_template': 'Choose a multi-person style.',
   'multi_person.error_need_key': 'Add an API key or turn on demo mode.',
   'multi_person.error_provider':
-    'This image provider cannot accept multiple reference portraits. Switch to Gemini, OpenRouter, or demo mode.',
+    'This image provider cannot accept multiple reference portraits. Switch to Gemini, OpenAI, OpenRouter, or demo mode.',
   'multi_person.error_provider_limit': 'This provider supports up to {max} reference photos.',
   'multi_person.error_failed': 'Multi-person generation failed. Please try again.',
   'viral.filter_holiday': 'Holidays',

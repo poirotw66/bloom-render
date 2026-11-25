@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-25",
+  "baseCommit": "6567cf6",
+  "outcome": "OpenAI direct BYOK provider implemented and verified locally.",
+  "usage": "Settings > Image provider > OpenAI (direct) > paste an OpenAI API key and choose a GPT Image model.",
+  "models": ["gpt-image-2.6-sunburst", "gpt-image-2.6-flare", "gpt-image-1.5"],
+  "defaultModel": "gpt-image-2.6-sunburst",
+  "implementation": {
+    "textToImage": "POST https://api.openai.com/v1/images/generations with JSON",
+    "imageEditing": "POST https://api.openai.com/v1/images/edits with ordered multipart image[] references",
+    "credentials": "Separate OpenAI key, sessionStorage by default; localStorage only with the existing remember-key opt-in.",
+    "routing": "OpenAI keys never enter the Gemini SDK. Gemini-only planning is skipped; original prompts remain usable.",
+    "networkPolicy": "api.openai.com allowed in source and emitted route CSP; service worker uses NetworkOnly.",
+    "errors": "Localized auth, permission, billing, rate-limit and moderation messages; response bodies and keys are not included in provider errors.",
+    "legacyLimits": "GPT Image 1.5 uses its supported square/portrait/landscape sizes. Painted masks retain the existing prompt/overlay fallback.",
+    "pricing": "No fixed direct OpenAI cost assumed; no invented costUsd."
+  },
+  "verification": {
+    "unitTests": {
+      "files": 103,
+      "passed": 544
+    },
+    "browserTests": {
+      "existingRegressionTests": 54,
+      "newOpenAIWorkflowTests": 2,
+      "totalPassed": 56
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "buildAndBundleBudget": "passed",
+    "diffWhitespace": "passed",
+    "layoutGate": "GATE: PASS",
+    "layoutGateRoute": "/try-on",
+    "gateEvidence": "openai-provider-gate-pass.txt",
+    "gateWaivers": "Retains the two existing focus-utility and React-mount waivers; no checker changes.",
+    "visualQA": "OpenAI Settings reviewed at 1440x900 and 390x844.",
+    "paidRequests": 0,
+    "realCredentialsUsed": false,
+    "scope": "Browser requests were intercepted and mocked. Live key access, organization permissions and paid image quality were not tested."
+  },
+  "sources": [
+    "https://developers.openai.com/api/docs/guides/image-generation",
+    "https://developers.openai.com/api/reference/resources/images/methods/edit",
+    "https://developers.openai.com/api/reference/resources/images/methods/generate"
+  ],
+  "deliveryAtVerification": "Local working tree; not committed, pushed or deployed."
+}

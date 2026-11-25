@@ -16,6 +16,9 @@ import { DEFAULT_MODEL, type ModelType, resolveStoredModel } from '../constants/
 import {
   DEMO_MODEL_ID,
   DEFAULT_OPENROUTER_MODEL,
+  DEFAULT_OPENAI_MODEL,
+  resolveStoredOpenAIModel,
+  type OpenAIModel,
   isDemoProvider,
   isImageProviderId,
   resolveStoredOpenRouterModel,
@@ -32,7 +35,7 @@ import {
 import { migratePixshopToBloomKeys } from '../utils/storageMigration';
 
 export type { ModelType } from '../constants/models';
-export type { ImageProviderId, OpenRouterModel };
+export type { ImageProviderId, OpenRouterModel, OpenAIModel };
 
 interface SettingsContextType {
   imageProvider: ImageProviderId;
@@ -45,6 +48,10 @@ interface SettingsContextType {
   setOpenRouterApiKey: (key: string) => void;
   openRouterModel: OpenRouterModel;
   setOpenRouterModel: (model: OpenRouterModel) => void;
+  openAIApiKey: string;
+  setOpenAIApiKey: (key: string) => void;
+  openAIModel: OpenAIModel;
+  setOpenAIModel: (model: OpenAIModel) => void;
   /** Key for the currently selected provider. Demo uses a placeholder so gates pass. */
   effectiveApiKey: string;
   /** Model id for the currently selected provider. */
@@ -53,7 +60,7 @@ interface SettingsContextType {
   isDemoMode: boolean;
   /** Switch to the offline demo provider (Try demo). */
   enableDemoMode: () => void;
-  /** Opt-in: mirror Gemini / OpenRouter keys into localStorage. */
+  /** Opt-in: mirror provider keys into localStorage. */
   rememberApiKey: boolean;
   setRememberApiKey: (enabled: boolean) => void;
   enableImageCompression: boolean;
@@ -70,6 +77,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 const STORAGE_KEY_MODEL = 'bloom_model';
 const STORAGE_KEY_PROVIDER = 'bloom_image_provider';
+const STORAGE_KEY_OPENAI_MODEL = 'bloom_openai_model';
 const STORAGE_KEY_OPENROUTER_MODEL = 'bloom_openrouter_model';
 const STORAGE_KEY_COMPRESSION_ENABLED = 'bloom_compression_enabled';
 const STORAGE_KEY_COMPRESSION_THRESHOLD = 'bloom_compression_threshold';
@@ -91,6 +99,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [openRouterApiKey, setOpenRouterApiKeyState] = useState<string>('');
   const [openRouterModel, setOpenRouterModelState] =
     useState<OpenRouterModel>(DEFAULT_OPENROUTER_MODEL);
+  const [openAIApiKey, setOpenAIApiKeyState] = useState('');
+  const [openAIModel, setOpenAIModelState] = useState<OpenAIModel>(DEFAULT_OPENAI_MODEL);
   const [rememberApiKey, setRememberApiKeyState] = useState<boolean>(false);
   const [enableImageCompression, setEnableImageCompressionState] = useState<boolean>(true);
   const [compressionThresholdMB, setCompressionThresholdMBState] = useState<number>(5);
@@ -101,10 +111,12 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const hydrated = hydrateApiKeys();
     if (hydrated.gemini) setApiKeyState(hydrated.gemini);
     if (hydrated.openrouter) setOpenRouterApiKeyState(hydrated.openrouter);
+    if (hydrated.openai) setOpenAIApiKeyState(hydrated.openai);
     setRememberApiKeyState(isRememberApiKeyEnabled());
 
     const storedModel = localStorage.getItem(STORAGE_KEY_MODEL);
     const storedProvider = localStorage.getItem(STORAGE_KEY_PROVIDER);
+    const storedOpenAIModel = localStorage.getItem(STORAGE_KEY_OPENAI_MODEL);
     const storedOpenRouterModel = localStorage.getItem(STORAGE_KEY_OPENROUTER_MODEL);
     const storedCompressionEnabled = localStorage.getItem(STORAGE_KEY_COMPRESSION_ENABLED);
     const storedCompressionThreshold = localStorage.getItem(STORAGE_KEY_COMPRESSION_THRESHOLD);
@@ -124,6 +136,12 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     setOpenRouterModelState(resolvedOpenRouterModel);
     if (storedOpenRouterModel !== resolvedOpenRouterModel) {
       localStorage.setItem(STORAGE_KEY_OPENROUTER_MODEL, resolvedOpenRouterModel);
+    }
+
+    const resolvedOpenAIModel = resolveStoredOpenAIModel(storedOpenAIModel);
+    setOpenAIModelState(resolvedOpenAIModel);
+    if (storedOpenAIModel !== resolvedOpenAIModel) {
+      localStorage.setItem(STORAGE_KEY_OPENAI_MODEL, resolvedOpenAIModel);
     }
 
     if (storedCompressionEnabled !== null) {
@@ -169,6 +187,16 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(STORAGE_KEY_OPENROUTER_MODEL, m);
   };
 
+  const setOpenAIApiKey = (key: string) => {
+    setOpenAIApiKeyState(key);
+    writeApiKey('openai', key);
+  };
+
+  const setOpenAIModel = (value: OpenAIModel) => {
+    setOpenAIModelState(value);
+    localStorage.setItem(STORAGE_KEY_OPENAI_MODEL, value);
+  };
+
   const setRememberApiKey = useCallback((enabled: boolean) => {
     setRememberApiKeyEnabled(enabled);
     setRememberApiKeyState(enabled);
@@ -194,12 +222,16 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     ? 'demo'
     : imageProvider === 'openrouter'
       ? openRouterApiKey
-      : apiKey;
+      : imageProvider === 'openai'
+        ? openAIApiKey
+        : apiKey;
   const effectiveModel = isDemoMode
     ? DEMO_MODEL_ID
     : imageProvider === 'openrouter'
       ? openRouterModel
-      : model;
+      : imageProvider === 'openai'
+        ? openAIModel
+        : model;
 
   const toServiceSettings = useCallback(
     (abortSignal?: AbortSignal): ServiceSettings => ({
@@ -223,6 +255,10 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       setOpenRouterApiKey,
       openRouterModel,
       setOpenRouterModel,
+      openAIApiKey,
+      setOpenAIApiKey,
+      openAIModel,
+      setOpenAIModel,
       effectiveApiKey,
       effectiveModel,
       isDemoMode,
@@ -244,6 +280,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       model,
       openRouterApiKey,
       openRouterModel,
+      openAIApiKey,
+      openAIModel,
       effectiveApiKey,
       effectiveModel,
       isDemoMode,

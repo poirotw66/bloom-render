@@ -2,7 +2,7 @@
 
 [English](./README.md) | [繁體中文](./README.zh-TW.md)
 
-**瀏覽器裡的 AI 照相館 — 自備 Gemini／OpenRouter 金鑰，或免金鑰離線 Demo。**
+**瀏覽器裡的 AI 照相館 — 自備 Gemini／OpenAI／OpenRouter 金鑰，或免金鑰離線 Demo。**
 
 [![CI](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml/badge.svg)](https://github.com/poirotw66/bloom-render/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
@@ -48,7 +48,7 @@
 - **多人合成** — 上傳 2–4 張人像，套用同框玩法樣板（`/multi-person`）。
 - **歷史 · 分享 · 對比** — 瀏覽紀錄、分享卡片、前後滑桿。
 - **完整歷史匯出** — ZIP 包含結果、原始輸入、參考圖與生成資料，屬私人照片備份；舊紀錄缺少的輸入不會自動補回。素材庫有可搜尋與分享的獨立詳情頁。
-- **設定** — Gemini／OpenRouter／線上 Demo；語系；主題（**繁花**、**深夜**、**新年**）。
+- **設定** — Gemini／OpenAI／OpenRouter／線上 Demo；語系；主題（**繁花**、**深夜**、**新年**）。
 - **多語系** — 英文、繁體中文。支援 **PWA** 靜態建置。
 
 ---
@@ -65,7 +65,7 @@ npm run dev
 依終端網址開啟（預設 [http://localhost:3002](http://localhost:3002)）。
 
 1. 點 **試試 Demo**（或設定 → **線上 Demo（免金鑰）**）用內建範例體驗。
-2. 正式生成：設定 → **Google Gemini** 或 **OpenRouter（自備金鑰）** → 貼上金鑰（預設僅此分頁 `sessionStorage`；可選在裝置記住）。永不提交或打包。見 [`.env.example`](./.env.example)。
+2. 正式生成：設定 → **Google Gemini**、**OpenAI（直接連線）** 或 **OpenRouter（自備金鑰）** → 貼上金鑰（預設僅此分頁 `sessionStorage`；可選在裝置記住）。永不提交或打包。見 [`.env.example`](./.env.example)。
 
 選用旅遊地圖：`public/images/world-map.webp`、`public/images/taiwan-map.webp`（見 [public/images/README.md](public/images/README.md)）。場景參考圖：[docs/SCENE_IMAGES_SOURCES.md](docs/SCENE_IMAGES_SOURCES.md)。
 
@@ -73,20 +73,22 @@ npm run dev
 
 ## 隱私／自備金鑰（BYOK）
 
-| 情境                    | 作法                                                                                                                                                                                                                                                   |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **設定（BYOK）**        | 齒輪 → **影像供應商**：`Google Gemini` 或 `OpenRouter（自備金鑰）`。貼上對應金鑰並選擇模型。預設存於 `sessionStorage`（僅此分頁）。可選 **在此裝置記住金鑰** 同步到 `localStorage`（能使用此裝置或其備份者可能讀到；關閉後會清除本機副本）。永不打包。 |
-| **取得金鑰**            | Gemini：[Google AI Studio](https://aistudio.google.com/app/apikey)。OpenRouter：[openrouter.ai/keys](https://openrouter.ai/keys)。                                                                                                                     |
-| **環境變數／CI／Pages** | 不使用任何 API 金鑰環境變數。建置時請勿設定 `GEMINI_API_KEY`／`OPENROUTER_*` — 前端不會注入金鑰。                                                                                                                                                      |
+| 情境                    | 作法                                                                                                                                                                                                                                                                         |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **設定（BYOK）**        | 齒輪 → **影像供應商**：`Google Gemini`、`OpenAI（直接連線）` 或 `OpenRouter（自備金鑰）`。貼上對應金鑰並選擇模型。預設存於 `sessionStorage`（僅此分頁）。可選 **在此裝置記住金鑰** 同步到 `localStorage`（能使用此裝置或其備份者可能讀到；關閉後會清除本機副本）。永不打包。 |
+| **取得金鑰**            | Gemini：[Google AI Studio](https://aistudio.google.com/app/apikey)。OpenAI：[OpenAI API 金鑰](https://platform.openai.com/api-keys)。OpenRouter：[openrouter.ai/keys](https://openrouter.ai/keys)。                                                                          |
+| **環境變數／CI／Pages** | 不使用任何 API 金鑰環境變數。建置時請勿設定 `GEMINI_API_KEY`／`OPENROUTER_*` — 前端不會注入金鑰。                                                                                                                                                                            |
+
+OpenAI 使用獨立金鑰與模型設定，直接呼叫官方 [Images API](https://developers.openai.com/api/docs/guides/image-generation)。可選 `gpt-image-2.6-sunburst`（預設）、`gpt-image-2.6-flare` 與 `gpt-image-1.5`。純文字走圖片生成，上傳照片或多張參考圖走圖片編輯。Sunburst 與 Flare 支援介面中的 1K／2K／4K；GPT Image 1.5 則使用最接近的官方方形、直式或橫式尺寸，不保證精確的自訂比例。塗抹遮罩沿用現有的提示詞與色彩覆蓋編輯方式。費用取決於輸入、尺寸與品質，因此未提供固定費用估算。
 
 ### 各供應商涵蓋範圍
 
-| 功能                                                                                     | 供應商                                             |
-| ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| 文字生圖、編輯器（修圖／濾鏡／調整）、證件照、形象照、旅遊照、主題寫真、雙人／團體、試穿 | 所選供應商（`services/imageProviders/`）           |
-| 旅遊照「自訂場景」**提示詞優化**（文字）                                                 | **僅 Gemini** — 選 OpenRouter 時略過，直接使用原文 |
-| 首頁 **模型比較**                                                                        | **僅 Gemini**（比較 Gemini 模型 ID）               |
-| **本機強化**（去背／2× 放大）                                                            | 裝置端 — 不需供應商金鑰                            |
+| 功能                                                                                     | 供應商                                                     |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 文字生圖、編輯器（修圖／濾鏡／調整）、證件照、形象照、旅遊照、主題寫真、雙人／團體、試穿 | 所選供應商（`services/imageProviders/`）                   |
+| 旅遊照「自訂場景」**提示詞優化**（文字）                                                 | **僅 Gemini** — 選 OpenAI／OpenRouter 時略過，直接使用原文 |
+| 首頁 **模型比較**                                                                        | **僅 Gemini**（比較 Gemini 模型 ID）                       |
+| **本機強化**（去背／2× 放大）                                                            | 裝置端 — 不需供應商金鑰                                    |
 
 OpenRouter 請優先選支援影像的模型。請勿提交 `.env`／`.env.local`，也勿把金鑰貼到 issue。
 
@@ -97,7 +99,7 @@ OpenRouter 請優先選支援影像的模型。請勿提交 `.env`／`.env.local
 - **Runtime**：React 19、TypeScript、Vite 6
 - **路由**：React Router 7
 - **編輯**：react-image-crop
-- **AI**：[@google/genai](https://www.npmjs.com/package/@google/genai)（Gemini）＋ OpenRouter Images API（`services/imageProviders/`）
+- **AI**：[@google/genai](https://www.npmjs.com/package/@google/genai)（Gemini）＋ OpenAI 與 OpenRouter Images API（`services/imageProviders/`）
 - **本機強化**：[@huggingface/transformers](https://www.npmjs.com/package/@huggingface/transformers)（WebGPU + WASM）
 - **批次下載**：JSZip
 - **樣式**：Tailwind CSS 4（`@tailwindcss/vite`）＋自訂 CSS
@@ -114,7 +116,7 @@ OpenRouter 請優先選支援影像的模型。請勿提交 `.env`／`.env.local
 
 ## 架構
 
-影像生成統一走 `services/imageProviders/`（Gemini／OpenRouter／離線 Demo）。BYOK 金鑰見 `utils/credentialStorage.ts`（預設 `sessionStorage`；可選 `localStorage` 記住）。本機強化在 `services/localEnhance/`。
+影像生成統一走 `services/imageProviders/`（Gemini／OpenAI／OpenRouter／離線 Demo）。BYOK 金鑰見 `utils/credentialStorage.ts`（預設 `sessionStorage`；可選 `localStorage` 記住）。本機強化在 `services/localEnhance/`。
 
 ---
 

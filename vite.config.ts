@@ -143,6 +143,7 @@ export default defineConfig(({ mode }) => {
                 return (
                   host.includes('googleapis.com') ||
                   host.includes('openrouter.ai') ||
+                  host === 'api.openai.com' ||
                   host.includes('huggingface.co') ||
                   host.includes('hf.co') ||
                   host.includes('cdn.jsdelivr.net')

@@ -34,6 +34,9 @@ export async function loadGoogleGenAI(): Promise<typeof import('@google/genai').
 }
 
 export const getClient = async (settings?: ServiceSettings) => {
+  if (settings?.provider && settings.provider !== 'gemini') {
+    throw createI18nError('error.optimize_prompt_gemini_only');
+  }
   const apiKey = settings?.apiKey || '';
   const key = typeof apiKey === 'string' ? apiKey.trim() : '';
   if (!key) {

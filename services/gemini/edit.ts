@@ -65,6 +65,7 @@ ${SAFETY_POLICY}`;
 }
 
 function resolveProviderId(settings?: ServiceSettings): ImageProviderId {
+  if (settings?.provider === 'openai') return 'openai';
   if (settings?.provider === 'openrouter') return 'openrouter';
   if (settings?.provider === 'demo') return 'demo';
   return 'gemini';

@@ -136,7 +136,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   // handleGenerateClick: a visitor who never touches the toggle must keep
   // paying for exactly one API call, byte-for-byte the same as before this
   // feature existed.
-  const [compareEnabled, setCompareEnabled] = useState(false);
+  const [compareRequested, setCompareEnabled] = useState(false);
   const [compareModel, setCompareModel] = useState<ModelType | null>(null);
   const [compareResults, setCompareResults] = useState<CompareSlotResult[]>([]);
   const [compareRunModels, setCompareRunModels] = useState<ModelType[]>([]);
@@ -154,6 +154,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   // render a blank card with nothing to compare against.
   // Model compare is Gemini-only (compares Gemini model ids side-by-side).
   const canCompare = settings.imageProvider === 'gemini' && otherModels.length > 0;
+  const compareEnabled = canCompare && compareRequested;
   const effectiveCompareModel: ModelType =
     compareModel && otherModels.includes(compareModel) ? compareModel : otherModels[0];
 
@@ -791,7 +792,8 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
 
             {error && <ErrorDisplay message={error} className="mt-2" />}
 
-            {(settings.model === 'gemini-nano-banana-2.1' ||
+            {((settings.imageProvider === 'gemini' &&
+              settings.model === 'gemini-nano-banana-2.1') ||
               (compareEnabled && effectiveCompareModel === 'gemini-nano-banana-2.1')) && (
               <p className="text-sm text-gray-300">{t('start.generate_pro_slow_hint')}</p>
             )}

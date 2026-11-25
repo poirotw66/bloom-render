@@ -30,6 +30,23 @@ export type OpenRouterModel = (typeof OPENROUTER_IMAGE_MODELS)[number];
 
 export const DEFAULT_OPENROUTER_MODEL: OpenRouterModel = 'google/gemini-3.1-flash-lite-image';
 
+/** Direct OpenAI Images API models; separate from OpenRouter model IDs. */
+export const OPENAI_IMAGE_MODELS = [
+  'gpt-image-2.6-sunburst',
+  'gpt-image-2.6-flare',
+  'gpt-image-1.5',
+] as const;
+export type OpenAIModel = (typeof OPENAI_IMAGE_MODELS)[number];
+export const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-image-2.6-sunburst';
+
+export function isOpenAIModel(model: string): model is OpenAIModel {
+  return (OPENAI_IMAGE_MODELS as readonly string[]).includes(model);
+}
+
+export function resolveStoredOpenAIModel(stored: string | null): OpenAIModel {
+  return stored && isOpenAIModel(stored) ? stored : DEFAULT_OPENAI_MODEL;
+}
+
 export type ImageResolution = '1K' | '2K' | '4K';
 
 export const OPENROUTER_MODEL_RESOLUTIONS: Record<string, ImageResolution[]> = {
@@ -65,12 +82,14 @@ export function resolveStoredOpenRouterModel(stored: string | null): OpenRouterM
 }
 
 export function modelsForProvider(provider: ImageProviderId): readonly string[] {
+  if (provider === 'openai') return OPENAI_IMAGE_MODELS;
   if (provider === 'openrouter') return OPENROUTER_IMAGE_MODELS;
   if (provider === 'demo') return [DEMO_MODEL_ID];
   return SUPPORTED_MODELS;
 }
 
 export function defaultModelForProvider(provider: ImageProviderId): string {
+  if (provider === 'openai') return DEFAULT_OPENAI_MODEL;
   if (provider === 'openrouter') return DEFAULT_OPENROUTER_MODEL;
   if (provider === 'demo') return DEMO_MODEL_ID;
   return DEFAULT_MODEL;
@@ -82,6 +101,7 @@ export function defaultModelForProvider(provider: ImageProviderId): string {
  */
 export function modelSupportsMultiResolution(model?: string): boolean {
   if (!model) return false;
+  if (isOpenAIModel(model)) return model !== 'gpt-image-1.5';
   if ((MODELS_SUPPORTING_MULTI_RESOLUTION as readonly string[]).includes(model as ModelType)) {
     return true;
   }

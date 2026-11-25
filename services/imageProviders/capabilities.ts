@@ -17,7 +17,7 @@ export const MULTI_PERSON_PROVIDER_MAX = 4;
 export function providerSupportsMultiReference(
   id: ImageProviderId | string | undefined | null,
 ): boolean {
-  return id === 'gemini' || id === 'openrouter' || id === 'demo';
+  return id === 'gemini' || id === 'openrouter' || id === 'openai' || id === 'demo';
 }
 
 export function multiReferenceLimit(

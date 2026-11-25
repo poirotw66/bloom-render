@@ -13,14 +13,14 @@ import { withRetryAndTimeout } from '../retry';
 
 /**
  * Uses Gemini (text mode) to optimize a user's short prompt into a detailed image generation prompt.
- * Throws `error.optimize_prompt_gemini_only` when the selected provider is OpenRouter.
+ * Throws `error.optimize_prompt_gemini_only` when the selected provider is not Gemini.
  */
 export const generateOptimizedPrompt = async (
   userText: string,
   referenceImage?: File,
   settings?: ServiceSettings,
 ): Promise<string> => {
-  if (settings?.provider === 'openrouter') {
+  if (settings?.provider && settings.provider !== 'gemini') {
     throw createI18nError('error.optimize_prompt_gemini_only');
   }
 

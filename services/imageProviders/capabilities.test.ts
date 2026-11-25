@@ -15,6 +15,8 @@ describe('image provider capabilities', () => {
     expect(providerSupportsMultiReference('gemini')).toBe(true);
     expect(providerSupportsMultiReference('openrouter')).toBe(true);
     expect(providerSupportsMultiReference('demo')).toBe(true);
+    expect(providerSupportsMultiReference('openai')).toBe(true);
+    expect(multiReferenceLimit('openai')).toBe(MULTI_PERSON_PROVIDER_MAX);
     expect(providerSupportsMultiReference('unknown')).toBe(false);
     expect(multiReferenceLimit('gemini')).toBe(MULTI_PERSON_PROVIDER_MAX);
     expect(multiReferenceLimit('other')).toBeNull();

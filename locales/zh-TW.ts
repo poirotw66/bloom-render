@@ -14,7 +14,7 @@ export const zhTWMessages: Record<string, string> = {
   'home.subtitle': '修一張人像、換一種風格，或用文字生成圖片。一張照片，就能開始。',
   'home.upload': '上傳照片',
   'home.browse_styles': '挑選風格',
-  'home.key_note': '2 種 AI 供應商，生成需自備金鑰。',
+  'home.key_note': '3 種 AI 供應商，生成需自備金鑰。',
   'home.connect_key': '連接 API 金鑰',
   'home.demo_note': 'Demo 模式 · 以內建圖片體驗編輯流程。',
   'home.sample_error': '暫時無法載入體驗照片，請再試一次。',
@@ -41,7 +41,8 @@ export const zhTWMessages: Record<string, string> = {
   'home.close_title': '從一張照片開始。',
   'home.close_subtitle': '下一張想編輯的照片，就從這裡開始。',
   'home.faq_key_title': '需要 API 金鑰嗎？',
-  'home.faq_key_body': '生成新圖片需使用 Gemini 或 OpenRouter 金鑰。也可以先用 Demo 體驗內建結果。',
+  'home.faq_key_body':
+    '生成新圖片需使用 Gemini、OpenAI 或 OpenRouter 金鑰，也可以先用 Demo 體驗內建結果。',
   'home.faq_privacy_title': '照片會傳送到哪裡？',
   'home.faq_privacy_body': 'AI 請求會傳送至你選擇的供應商。生成紀錄儲存在這個瀏覽器。',
 
@@ -101,7 +102,7 @@ export const zhTWMessages: Record<string, string> = {
   'common.output_quantity': '產出數量',
   'common.output_size': '輸出尺寸',
   'common.aspect_ratio': '輸出比例',
-  'common.gemini2_only_1k': 'Gemini 2.5 flash 僅支援 1K',
+  'common.gemini2_only_1k': '此模型在本應用程式中支援 1K 輸出。',
   'common.size_1k': '1K',
   'common.size_2k': '2K',
   'common.size_4k': '4K',
@@ -534,7 +535,7 @@ export const zhTWMessages: Record<string, string> = {
   'tryon.style.soft_glam': '柔和名媛',
   'tryon.label.output_size': '輸出尺寸',
   'tryon.label.aspect_ratio': '輸出比例',
-  'tryon.gemini2_only_1k': 'Gemini 2.5 flash 僅支援 1K',
+  'tryon.gemini2_only_1k': '此模型在本應用程式中支援 1K 輸出。',
   'tryon.size.1K': '1K',
   'tryon.size.2K': '2K',
   'tryon.size.4K': '4K',
@@ -709,7 +710,7 @@ export const zhTWMessages: Record<string, string> = {
   'travel.custom_btn': '自訂場景',
   'travel.custom_placeholder': '例如：in Tokyo, city street, travel photography',
   'travel.optimize_gemini_only_notice':
-    '自訂場景的提示詞優化僅支援 Gemini。使用 OpenRouter 時會直接使用你輸入的提示詞。',
+    '自訂場景的提示詞優化需要 Gemini，其他供應商會直接使用你輸入的提示詞。',
   'travel.custom_reference_label': '參考場景照片',
   'travel.custom_reference_btn': '選擇圖片',
   'travel.custom_reference_remove': '移除',
@@ -1102,7 +1103,7 @@ export const zhTWMessages: Record<string, string> = {
   'demo.result_label': '示範圖',
   'demo.banner_title': '目前顯示預製範例結果',
   'demo.banner_hint': '不會使用 API 金鑰，也不會連線到 AI 供應商；結果來自內建範例圖。',
-  'demo.cta_settings': '在設定中加入 Gemini 或 OpenRouter 金鑰，即可用自己的照片生成',
+  'demo.cta_settings': '在設定中加入 Gemini、OpenAI 或 OpenRouter 金鑰，即可用自己的照片生成',
   'demo.sample_input': '範例',
   'demo.sample_only_hint':
     'Demo 模式只使用內建範例照片。若要上傳自己的照片，請到設定加入 API 金鑰。',
@@ -1163,7 +1164,7 @@ export const zhTWMessages: Record<string, string> = {
   'error.openrouter_model_no_image_ref':
     '此 OpenRouter 模型可能不支援影像參考。請改用 google/gemini-*-image，或切換到 Gemini。',
   'error.optimize_prompt_gemini_only':
-    '提示詞優化僅支援 Gemini。請在設定切換到 Gemini，或直接使用原始提示詞。',
+    '這項文字或規劃功能需要 Gemini，請在設定切換至 Gemini，或繼續使用原始提示詞。',
   'error.blocked': '請求被阻擋。請重試或修改您的請求。',
   'error.safety_filter': '內容被安全設定過濾。請嘗試其他方式。',
   'error.no_image': 'AI 模型未返回圖片。請重試。',
@@ -1316,16 +1317,33 @@ export const zhTWMessages: Record<string, string> = {
 
   'settings.title': '設定',
   'settings.provider_section': '影像供應商',
+  'settings.provider.openai': 'OpenAI（直接連線）',
+  'apikey.notice_hint_openai':
+    '請在設定中加入 OpenAI API 金鑰。圖片請求會從瀏覽器直接送往 OpenAI。',
+  'error.openai_invalid_key': 'OpenAI API 金鑰缺失或無效，請到設定檢查金鑰。',
+  'error.openai_rate_limit': '已達 OpenAI 請求速率上限，請稍候再試。',
+  'error.openai_failed': 'OpenAI 圖片生成失敗，請重試。',
+  'error.openai_permission':
+    '你的 OpenAI 帳號無法使用此圖片模型，請檢查專案權限及是否需要完成組織驗證。',
+  'error.openai_billing': 'OpenAI 帳務或用量限制導致請求失敗，請檢查 API 餘額與專案預算。',
+  'settings.openai.model': 'OpenAI 圖片模型',
+  'settings.openai.model_desc':
+    '請使用 GPT Image 模型。GPT Image 1.5 僅支援固定輸出尺寸；較新模型可使用設定的輸出解析度。',
+  'settings.openai.api_key': 'OpenAI API 金鑰',
+  'settings.openai.api_key_placeholder': '輸入你的 OpenAI API 金鑰',
+  'settings.openai.api_key_desc':
+    '金鑰與圖片請求會直接送往 OpenAI。預設只在此分頁保留金鑰，勾選記住金鑰後才會持續儲存。',
+  'settings.openai.get_key': '建立或管理 OpenAI API 金鑰',
   'settings.provider': '供應商',
   'settings.provider_desc':
-    '自備金鑰（BYOK）。Gemini 使用 Google AI Studio 金鑰；OpenRouter 使用 OpenRouter 金鑰。金鑰只存在此瀏覽器。',
+    '自備 Gemini、OpenAI 或 OpenRouter 金鑰。各供應商使用獨立金鑰，儲存在此瀏覽器中。',
   'settings.provider_desc_demo':
     '離線 Demo：按下生成即可看到內建範例結果，不需 API 金鑰，也不會連線到 AI。',
   'settings.provider.gemini': 'Google Gemini',
   'settings.provider.openrouter': 'OpenRouter（自備金鑰）',
   'settings.provider.demo': '線上 Demo（免金鑰）',
   'settings.demo_note':
-    'Demo 模式會回傳 public/examples 的預製範例。若要用自己的照片生成，請切換到 Gemini 或 OpenRouter 並貼上金鑰。',
+    'Demo 模式會回傳預製範例。若要用自己的照片生成，請切換至 Gemini、OpenAI 或 OpenRouter 並貼上金鑰。',
   'settings.model': '模型',
   'settings.model.nanoBanana21': 'Nano Banana 2.1（新品 · 付費）',
   'settings.model.nanoBanana2Lite': 'Nano Banana 2 Lite（預設）',
@@ -1347,7 +1365,7 @@ export const zhTWMessages: Record<string, string> = {
   'settings.openrouter.api_key_desc':
     '預設僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包或送到我們的伺服器。',
   'settings.openrouter.gemini_only_note':
-    '注意：旅遊照「自訂場景」的提示詞優化僅支援 Gemini；選 OpenRouter 時會略過優化並使用你輸入的原文。首頁模型比較也僅支援 Gemini。',
+    '提示詞優化、文字分析與規劃，以及首頁模型比較都需要 Gemini。請在設定切換至 Gemini 使用這些功能；其他供應商會直接使用你輸入的提示詞。',
   'settings.theme': '主題',
   'settings.motion.enable': '背景動畫',
   'settings.motion.enable_desc': '頁面背景的星空、花瓣與漸層動態效果。預設關閉以提升流暢度。',
@@ -1359,7 +1377,7 @@ export const zhTWMessages: Record<string, string> = {
   'settings.api_key_desc': '預設僅保留在此瀏覽器分頁工作階段，關閉分頁後即清除。不會打包。',
   'settings.remember_api_key': '在此裝置記住金鑰',
   'settings.remember_api_key_desc':
-    '額外把 Gemini 或 OpenRouter 金鑰存在此瀏覽器的 localStorage，關閉分頁後仍保留。若有人能使用這台裝置或其備份，就可能讀到金鑰。公用電腦請維持關閉。',
+    '將各供應商的金鑰額外存入此瀏覽器的 localStorage，關閉分頁後仍保留。能使用此裝置或其備份的人可能讀到金鑰。公用電腦請維持關閉。',
   'settings.api_key_show': '顯示',
   'settings.api_key_hide': '隱藏',
   'settings.autosave_hint': '設定會自動儲存。',
@@ -1680,7 +1698,7 @@ export const zhTWMessages: Record<string, string> = {
   'multi_person.error_need_template': '請選擇多人樣板。',
   'multi_person.error_need_key': '請先設定 API 金鑰或開啟示範模式。',
   'multi_person.error_provider':
-    '目前影像供應商無法一次接受多張參考人像。請改用 Gemini、OpenRouter 或示範模式。',
+    '目前影像供應商無法一次接受多張參考人像。請改用 Gemini、OpenAI、OpenRouter 或示範模式。',
   'multi_person.error_provider_limit': '此供應商最多支援 {max} 張參考照片。',
   'multi_person.error_failed': '多人合成失敗，請再試一次。',
   'viral.filter_holiday': '節慶',

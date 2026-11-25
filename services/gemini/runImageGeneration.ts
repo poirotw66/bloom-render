@@ -37,6 +37,7 @@ async function filesToImageParts(files: File[]): Promise<ImagePart[]> {
 }
 
 function resolveProvider(settings?: ServiceSettings): ImageProviderId {
+  if (settings?.provider === 'openai') return 'openai';
   if (settings?.provider === 'openrouter') return 'openrouter';
   if (settings?.provider === 'demo') return 'demo';
   return 'gemini';

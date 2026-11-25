@@ -14,6 +14,8 @@ import {
 } from '../constants/models';
 import {
   OPENROUTER_IMAGE_MODELS,
+  OPENAI_IMAGE_MODELS,
+  type OpenAIModel,
   OPENROUTER_MODEL_LABEL_KEYS,
   type ImageProviderId,
   type OpenRouterModel,
@@ -113,6 +115,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     setOpenRouterApiKey,
     openRouterModel,
     setOpenRouterModel,
+    openAIApiKey,
+    setOpenAIApiKey,
+    openAIModel,
+    setOpenAIModel,
     rememberApiKey,
     setRememberApiKey,
     enableImageCompression,
@@ -138,6 +144,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [sessionSpend, setSessionSpend] = useState(0);
   const isDemo = imageProvider === 'demo';
   const isGemini = imageProvider === 'gemini';
+
+  useEffect(() => {
+    setShowApiKey(false);
+  }, [imageProvider, isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -313,6 +323,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   className={`${FIELD_BASE} cursor-pointer ${s.field}`}
                 >
                   <option value="gemini">{t('settings.provider.gemini')}</option>
+                  <option value="openai">{t('settings.provider.openai')}</option>
                   <option value="openrouter">{t('settings.provider.openrouter')}</option>
                   <option value="demo">{t('settings.provider.demo')}</option>
                 </select>
@@ -379,6 +390,69 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <p className={`text-sm mt-2 ${s.hint}`}>{t('settings.api_key_desc')}</p>
                   </div>
+                </>
+              ) : imageProvider === 'openai' ? (
+                <>
+                  <div>
+                    <label
+                      htmlFor={`${baseId}-openai-model`}
+                      className={`block text-sm font-medium mb-2 ${s.label}`}
+                    >
+                      {t('settings.openai.model')}
+                    </label>
+                    <select
+                      id={`${baseId}-openai-model`}
+                      data-testid="openai-model-select"
+                      value={openAIModel}
+                      onChange={(event) => setOpenAIModel(event.target.value as OpenAIModel)}
+                      className={`${FIELD_BASE} cursor-pointer ${s.field}`}
+                    >
+                      {OPENAI_IMAGE_MODELS.map((modelId) => (
+                        <option key={modelId} value={modelId}>
+                          {modelId}
+                        </option>
+                      ))}
+                    </select>
+                    <p className={`text-sm mt-2 ${s.hint}`}>{t('settings.openai.model_desc')}</p>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor={`${baseId}-openai-key`}
+                      className={`block text-sm font-medium mb-2 ${s.label}`}
+                    >
+                      {t('settings.openai.api_key')}
+                    </label>
+                    <div className="relative">
+                      <input
+                        id={`${baseId}-openai-key`}
+                        type={showApiKey ? 'text' : 'password'}
+                        value={openAIApiKey}
+                        onChange={(event) => setOpenAIApiKey(event.target.value)}
+                        placeholder={t('settings.openai.api_key_placeholder')}
+                        autoComplete="off"
+                        spellCheck={false}
+                        className={`${FIELD_BASE} pr-20 ${s.field}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey((previous) => !previous)}
+                        aria-pressed={showApiKey}
+                        className={`absolute inset-y-0 right-2 my-auto h-7 px-2 rounded-md text-sm font-medium cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 ${s.iconBtn}`}
+                      >
+                        {showApiKey ? t('settings.api_key_hide') : t('settings.api_key_show')}
+                      </button>
+                    </div>
+                    <p className={`text-sm mt-2 ${s.hint}`}>{t('settings.openai.api_key_desc')}</p>
+                    <a
+                      href="https://platform.openai.com/api-keys"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm underline"
+                    >
+                      {t('settings.openai.get_key')}
+                    </a>
+                  </div>
+                  <p className={`text-sm ${s.hint}`}>{t('settings.openrouter.gemini_only_note')}</p>
                 </>
               ) : (
                 <>

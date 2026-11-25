@@ -8,6 +8,7 @@
 
 export const GEMINI_API_KEY_STORAGE_KEY = 'bloom_api_key';
 export const OPENROUTER_API_KEY_STORAGE_KEY = 'bloom_openrouter_api_key';
+export const OPENAI_API_KEY_STORAGE_KEY = 'bloom_openai_api_key';
 export const REMEMBER_API_KEY_STORAGE_KEY = 'bloom_remember_api_key';
 
 /** @deprecated Use GEMINI_API_KEY_STORAGE_KEY; kept for migration tests. */
@@ -15,10 +16,14 @@ export const LEGACY_GEMINI_API_KEY_STORAGE_KEY = 'pixshop_api_key';
 /** @deprecated Use OPENROUTER_API_KEY_STORAGE_KEY. */
 export const LEGACY_OPENROUTER_API_KEY_STORAGE_KEY = 'pixshop_openrouter_api_key';
 
-export type ApiKeyKind = 'gemini' | 'openrouter';
+export type ApiKeyKind = 'gemini' | 'openrouter' | 'openai';
 
 function storageKeyFor(kind: ApiKeyKind): string {
-  return kind === 'openrouter' ? OPENROUTER_API_KEY_STORAGE_KEY : GEMINI_API_KEY_STORAGE_KEY;
+  return {
+    gemini: GEMINI_API_KEY_STORAGE_KEY,
+    openrouter: OPENROUTER_API_KEY_STORAGE_KEY,
+    openai: OPENAI_API_KEY_STORAGE_KEY,
+  }[kind];
 }
 
 export function isRememberApiKeyEnabled(storage: Pick<Storage, 'getItem'> = localStorage): boolean {
@@ -31,14 +36,14 @@ export function isRememberApiKeyEnabled(storage: Pick<Storage, 'getItem'> = loca
 
 /**
  * Toggle persistent key storage. When disabled, wipe any localStorage copies
- * of Gemini / OpenRouter keys (sessionStorage values are kept).
+ * of provider keys (sessionStorage values are kept).
  */
 export function setRememberApiKeyEnabled(enabled: boolean): void {
   try {
     if (enabled) {
       localStorage.setItem(REMEMBER_API_KEY_STORAGE_KEY, 'true');
       // Mirror whatever is currently in the session so a refresh keeps working.
-      for (const kind of ['gemini', 'openrouter'] as const) {
+      for (const kind of ['gemini', 'openrouter', 'openai'] as const) {
         const value = sessionStorage.getItem(storageKeyFor(kind));
         if (value) localStorage.setItem(storageKeyFor(kind), value);
       }
@@ -46,6 +51,7 @@ export function setRememberApiKeyEnabled(enabled: boolean): void {
       localStorage.setItem(REMEMBER_API_KEY_STORAGE_KEY, 'false');
       localStorage.removeItem(GEMINI_API_KEY_STORAGE_KEY);
       localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
+      localStorage.removeItem(OPENAI_API_KEY_STORAGE_KEY);
     }
   } catch {
     // ignore quota / private mode
@@ -56,11 +62,11 @@ export function setRememberApiKeyEnabled(enabled: boolean): void {
  * Load keys for boot: session first; when remember is on, fill from localStorage
  * into session. When remember is off, strip any leftover local copies.
  */
-export function hydrateApiKeys(): { gemini: string; openrouter: string } {
+export function hydrateApiKeys(): Record<ApiKeyKind, string> {
   const remember = isRememberApiKeyEnabled();
-  const out = { gemini: '', openrouter: '' as string };
+  const out: Record<ApiKeyKind, string> = { gemini: '', openrouter: '', openai: '' };
 
-  for (const kind of ['gemini', 'openrouter'] as const) {
+  for (const kind of ['gemini', 'openrouter', 'openai'] as const) {
     const key = storageKeyFor(kind);
     let sessionVal = '';
     try {
@@ -116,10 +122,7 @@ export function migrateApiKeyFromLocalStorage(kind: ApiKeyKind): string {
 }
 
 /** @deprecated Prefer hydrateApiKeys. */
-export function migrateAllApiKeysFromLocalStorage(): {
-  gemini: string;
-  openrouter: string;
-} {
+export function migrateAllApiKeysFromLocalStorage(): Record<ApiKeyKind, string> {
   return hydrateApiKeys();
 }
 

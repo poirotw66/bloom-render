@@ -325,7 +325,7 @@ export function useTravel() {
         try {
           if (!rawPrompt) {
             scenePrompt = '';
-          } else if (settings.imageProvider === 'openrouter') {
+          } else if (settings.imageProvider !== 'gemini') {
             scenePrompt = rawPrompt;
           } else {
             scenePrompt = await generateOptimizedPrompt(

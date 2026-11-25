@@ -70,7 +70,19 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = f
   if (settings.isDemoMode || settings.effectiveApiKey.trim()) return null;
 
   const isOpenRouter = settings.imageProvider === 'openrouter';
-  const getKeyUrl = isOpenRouter ? OPENROUTER_KEY_CONSOLE_URL : API_KEY_CONSOLE_URL;
+  const isOpenAI = settings.imageProvider === 'openai';
+  const getKeyUrl = isOpenAI
+    ? 'https://platform.openai.com/api-keys'
+    : isOpenRouter
+      ? OPENROUTER_KEY_CONSOLE_URL
+      : API_KEY_CONSOLE_URL;
+  const hint = t(
+    isOpenAI
+      ? 'apikey.notice_hint_openai'
+      : isOpenRouter
+        ? 'apikey.notice_hint_openrouter'
+        : 'apikey.notice_hint',
+  );
 
   if (compact)
     return (
@@ -79,7 +91,7 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = f
         className={`tool-key-notice ${className}`}
         aria-label={t('apikey.notice_title')}
       >
-        <p>{isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}</p>
+        <p>{hint}</p>
         <div className="tool-key-notice-actions">
           <button
             type="button"
@@ -100,7 +112,7 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = f
         <details>
           <summary>{t('settings.provider_section')}</summary>
           <div className="tool-key-notice-actions">
-            <OpenRouterSignInButton compact />
+            {!isOpenAI && <OpenRouterSignInButton compact />}
             <a
               href={getKeyUrl}
               target="_blank"
@@ -125,11 +137,9 @@ const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = f
         <CogIcon className="w-4 h-4 shrink-0" />
         {t('apikey.notice_title')}
       </p>
-      <p className={`text-base mt-1 ${noticeBody[theme]}`}>
-        {isOpenRouter ? t('apikey.notice_hint_openrouter') : t('apikey.notice_hint')}
-      </p>
+      <p className={`text-base mt-1 ${noticeBody[theme]}`}>{hint}</p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <OpenRouterSignInButton compact />
+        {!isOpenAI && <OpenRouterSignInButton compact />}
         <button
           type="button"
           data-testid="try-demo-button"

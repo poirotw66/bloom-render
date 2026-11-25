@@ -362,7 +362,7 @@ const TravelForm: React.FC<TravelFormProps> = ({
               </button>
               {selectedSceneId === 'custom' && (
                 <div className="space-y-2">
-                  {imageProvider === 'openrouter' && (
+                  {imageProvider !== 'gemini' && (
                     <p className="text-sm brand-text brand-bg-tint border theme-border rounded-lg px-3 py-2">
                       {t('travel.optimize_gemini_only_notice')}
                     </p>

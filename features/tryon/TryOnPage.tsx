@@ -266,7 +266,7 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                     : 'Provider ready · Photos go to your selected service.'
                   : zh
                     ? '在設定中連接 API 金鑰，或由上方選單試用示範模式。'
-                    : `Connect your ${imageProvider === 'openrouter' ? 'OpenRouter' : 'Gemini'} key in Settings, or choose Try demo above.`}
+                    : `Connect your ${imageProvider === 'openai' ? 'OpenAI' : imageProvider === 'openrouter' ? 'OpenRouter' : 'Gemini'} key in Settings, or choose Try demo above.`}
             </p>
             <p>
               {zh

@@ -16,6 +16,7 @@ describe('CONTENT_SECURITY_POLICY', () => {
   it('limits connect-src to known AI / model hosts', () => {
     expect(CONTENT_SECURITY_POLICY).toContain('https://generativelanguage.googleapis.com');
     expect(CONTENT_SECURITY_POLICY).toContain('https://openrouter.ai');
+    expect(CONTENT_SECURITY_POLICY).toContain('https://api.openai.com');
     expect(CONTENT_SECURITY_POLICY).toContain('https://huggingface.co');
     expect(CONTENT_SECURITY_POLICY).toContain('https://cdn.jsdelivr.net');
     expect(CONTENT_SECURITY_POLICY).toContain('blob:');

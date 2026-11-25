@@ -74,7 +74,8 @@ async function renderGenerate(quantity = 4) {
       view.rerender(
         <StartScreen tab="upload" onImageSelected={onImageSelected} navigate={vi.fn()} />,
       ),
-    switchProvider: () => settingsRef.current?.setImageProvider('openrouter'),
+    switchProvider: (provider: 'openrouter' | 'openai' = 'openrouter') =>
+      settingsRef.current?.setImageProvider(provider),
   };
 }
 
@@ -202,6 +203,22 @@ describe('StartScreen text-to-image batches', () => {
     expect(
       screen.getByRole('button', { name: 'Generate New Images' }).hasAttribute('disabled'),
     ).toBe(false);
+  });
+
+  it('uses the selected OpenAI provider after switching away from Gemini comparison', async () => {
+    sessionStorage.setItem('bloom_openai_api_key', 'mock-openai-key');
+    vi.mocked(runImageGeneration).mockResolvedValue(imageUrl(0));
+    const { switchProvider } = await renderGenerate(1);
+    fireEvent.click(screen.getByRole('checkbox'));
+    expect(screen.getByRole('button', { name: 'Generate & Compare' })).toBeTruthy();
+    await act(async () => switchProvider('openai'));
+    fireEvent.click(await screen.findByRole('button', { name: 'Generate Image' }));
+    await waitFor(() => expect(runImageGeneration).toHaveBeenCalledOnce());
+    expect(vi.mocked(runImageGeneration).mock.calls[0][0].settings).toMatchObject({
+      provider: 'openai',
+      apiKey: 'mock-openai-key',
+      model: 'gpt-image-2.6-sunburst',
+    });
   });
 
   it('preserves model comparison and retries only its failed model', async () => {

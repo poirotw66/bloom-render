@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   GEMINI_API_KEY_STORAGE_KEY,
   OPENROUTER_API_KEY_STORAGE_KEY,
+  OPENAI_API_KEY_STORAGE_KEY,
   REMEMBER_API_KEY_STORAGE_KEY,
   clearApiKey,
   hydrateApiKeys,
@@ -44,11 +45,14 @@ describe('credentialStorage', () => {
     setRememberApiKeyEnabled(true);
     writeApiKey('gemini', 'AIza-keep');
     writeApiKey('openrouter', 'sk-or-keep');
+    writeApiKey('openai', 'sk-openai-keep');
     expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('AIza-keep');
     setRememberApiKeyEnabled(false);
     expect(localStorage.getItem(REMEMBER_API_KEY_STORAGE_KEY)).toBe('false');
     expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(OPENAI_API_KEY_STORAGE_KEY)).toBeNull();
+    expect(sessionStorage.getItem(OPENAI_API_KEY_STORAGE_KEY)).toBe('sk-openai-keep');
     // Session copies remain so the current tab keeps working.
     expect(sessionStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('AIza-keep');
     expect(sessionStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('sk-or-keep');
@@ -80,7 +84,25 @@ describe('credentialStorage', () => {
 
   it('enabling remember mirrors existing session keys', () => {
     writeApiKey('gemini', 'session-only');
+    writeApiKey('openrouter', 'router-session');
+    writeApiKey('openai', 'openai-session');
     setRememberApiKeyEnabled(true);
     expect(localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY)).toBe('session-only');
+    expect(localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY)).toBe('router-session');
+    expect(localStorage.getItem(OPENAI_API_KEY_STORAGE_KEY)).toBe('openai-session');
+  });
+  it('hydrates and clears OpenAI independently with session precedence', () => {
+    setRememberApiKeyEnabled(true);
+    writeApiKey('gemini', 'gemini-keep');
+    writeApiKey('openai', 'openai-session');
+    localStorage.setItem(OPENAI_API_KEY_STORAGE_KEY, 'openai-old');
+    expect(hydrateApiKeys()).toMatchObject({ gemini: 'gemini-keep', openai: 'openai-session' });
+    expect(localStorage.getItem(OPENAI_API_KEY_STORAGE_KEY)).toBe('openai-session');
+    sessionStorage.removeItem(OPENAI_API_KEY_STORAGE_KEY);
+    expect(hydrateApiKeys().openai).toBe('openai-session');
+    clearApiKey('openai');
+    expect(readApiKey('openai')).toBe('');
+    expect(localStorage.getItem(OPENAI_API_KEY_STORAGE_KEY)).toBeNull();
+    expect(readApiKey('gemini')).toBe('gemini-keep');
   });
 });
