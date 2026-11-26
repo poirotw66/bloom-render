@@ -20,7 +20,7 @@ export default function TryOnOptionSelectors({
   disabled = false,
   backgroundDisabled = false,
 }: TryOnOptionSelectorsProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   return (
     <div className="tryon-field-grid">
       <label className="tryon-field">
@@ -48,7 +48,11 @@ export default function TryOnOptionSelectors({
         >
           {TRYON_STYLES.map((option) => (
             <option key={option.id} value={option.id}>
-              {t(option.nameKey)}
+              {option.id === 'original'
+                ? language === 'zh-TW'
+                  ? '保留原有風格'
+                  : 'Keep original finish'
+                : t(option.nameKey)}
             </option>
           ))}
         </select>

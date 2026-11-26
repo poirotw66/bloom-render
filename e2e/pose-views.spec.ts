@@ -1,3 +1,4 @@
+import { openWorkspace as command } from './helpers/workspace';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
@@ -19,22 +20,6 @@ async function seed(page: Page, theme = 'bloom') {
     localStorage.setItem('bloom_image_provider', 'openrouter');
     sessionStorage.setItem('bloom_openrouter_api_key', 'mock-pose-views-never-send');
   }, theme);
-}
-
-async function command(page: Page, name: string) {
-  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-  const direct = nav.getByRole('button', { name, exact: true });
-  if (await direct.isVisible()) await direct.click();
-  else {
-    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-    await page
-      .getByRole('dialog', { name: 'All photo tools', exact: true })
-      .getByRole('button', { name, exact: true })
-      .click();
-  }
-  const dialog = page.getByRole('dialog', { name, exact: true });
-  await expect(dialog).toBeVisible();
-  return dialog;
 }
 
 for (const theme of ['bloom', 'night', 'newyear']) {

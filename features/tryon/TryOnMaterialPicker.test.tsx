@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TRYON_MATERIALS } from '../../constants/tryOnMaterials';
+import { groupMaterials } from '../../constants/materialGroups';
 import TryOnMaterialPicker from './TryOnMaterialPicker';
 
 vi.mock('../../contexts/LanguageContext', () => ({
@@ -34,13 +35,51 @@ describe('TryOnMaterialPicker', () => {
     mount();
     fireEvent.click(screen.getByRole('button', { name: 'Pose' }));
     expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(
-      TRYON_MATERIALS.filter((material) => material.role === 'pose').length,
+      groupMaterials(TRYON_MATERIALS.filter((material) => material.role === 'pose')).length,
     );
     expect(screen.queryByRole('button', { name: 'Select Oxford shirt' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'All' }));
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: '陶土' } });
     expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(1);
     expect(screen.getByRole('button', { name: 'Select Midi dress' })).toBeTruthy();
+  });
+
+  it('opens directly at the requested workflow role', () => {
+    mount({ initialRole: 'clothing' });
+    expect(screen.getByRole('button', { name: 'Clothing' }).getAttribute('aria-pressed')).toBe(
+      'true',
+    );
+    expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(3);
+    expect(screen.queryByRole('button', { name: 'Select Relaxed front' })).toBeNull();
+  });
+
+  it('browses one pose card across views and applies the exact variant', async () => {
+    const { onSelect } = mount({ initialRole: 'pose' });
+    const group = screen.getByRole('group', { name: 'Seated study views' });
+    fireEvent.click(group.querySelector('button[aria-pressed="false"]')!);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Select Seated study · Three-quarter · Line art' }),
+    );
+    await waitFor(() =>
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'seated-study-three-quarter-lineart' }),
+      ),
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Select Seated study · Front · Line art' }),
+    ).toBeNull();
+  });
+
+  it('opens a grouped card at the exact selected view and representation', () => {
+    mount({ initialRole: 'pose', selectedIds: ['seated-study-profile-depth'] });
+    expect(
+      screen
+        .getByRole('button', { name: 'Remove Seated study · Profile · Depth map' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(
+      screen.queryByRole('button', { name: 'Select Seated study · Front · Line art' }),
+    ).toBeNull();
   });
 
   it('selects a reference and lets selected references be removed at the clothing limit', async () => {
@@ -94,10 +133,6 @@ describe('TryOnMaterialPicker', () => {
         .getByTestId('tryon-material-standing-study-front-lineart')
         .getAttribute('aria-pressed'),
     ).toBe('true');
-    expect(
-      screen
-        .getByTestId('tryon-material-standing-study-profile-lineart')
-        .getAttribute('aria-pressed'),
-    ).toBe('false');
+    expect(screen.queryByTestId('tryon-material-standing-study-profile-lineart')).toBeNull();
   });
 });

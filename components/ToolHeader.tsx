@@ -2,6 +2,7 @@ import React, { useId, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
+import { TOOL_NAVIGATION, type ToolNavigationItem } from '../constants/toolNavigation';
 import { GITHUB_REPO_URL } from '../constants/site';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCommandPalette } from '../contexts/CommandPaletteContext';
@@ -10,26 +11,8 @@ import { useToolCommands, type ToolCommand } from '../contexts/ToolCommandsConte
 import { useDialog } from '../hooks/useDialog';
 import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
 import { publicAssetUrl } from '../utils/publicAsset';
-import { ChevronDownIcon, CogIcon, ListBulletIcon, XMarkIcon } from './icons';
+import { ChevronDownIcon, ListBulletIcon, XMarkIcon } from './icons';
 import '../styles/tool-header.css';
-
-type ToolNavigationItem = { path: string; labelKey: string };
-
-const TOOL_NAVIGATION: readonly ToolNavigationItem[] = [
-  { path: ROUTES.HOME, labelKey: 'start.tab_upload' },
-  { path: ROUTES.GENERATE, labelKey: 'start.tab_generate' },
-  { path: ROUTES.PHOTOGRAPHY_SERVICE, labelKey: 'start.tab_service' },
-  { path: ROUTES.ID_PHOTO, labelKey: 'start.tab_idphoto' },
-  { path: ROUTES.PORTRAIT, labelKey: 'start.tab_portrait' },
-  { path: ROUTES.TRAVEL, labelKey: 'start.tab_travel' },
-  { path: ROUTES.THEMED, labelKey: 'start.tab_themed' },
-  { path: ROUTES.COUPLE_GROUP, labelKey: 'start.tab_couple_group' },
-  { path: ROUTES.TRY_ON, labelKey: 'start.tab_tryon' },
-  { path: ROUTES.ENHANCE, labelKey: 'start.tab_enhance' },
-  { path: ROUTES.RESTORE, labelKey: 'start.tab_restore' },
-  { path: ROUTES.PROMPT_GALLERY, labelKey: 'prompt_gallery.title' },
-  { path: ROUTES.MATERIALS, labelKey: 'materials.title' },
-];
 
 interface ToolHeaderProps {
   settingsOpen: boolean;
@@ -71,15 +54,15 @@ export default function ToolHeader({
   const menuId = useId();
   const closeMenu = () => setMenuOpen(false);
   const dialog = useDialog<HTMLDivElement>(menuOpen, closeMenu);
-  const current = TOOL_NAVIGATION.find(
-    (item) => item.path !== ROUTES.HOME && location.pathname.startsWith(item.path),
+  const current = TOOL_NAVIGATION.flatMap((group) => group.items).find(
+    (item) => item.path === location.pathname,
   );
   const label = (item: ToolNavigationItem) =>
     item.labelKey === 'materials.title'
       ? language === 'zh-TW'
         ? '參考素材'
         : 'Reference materials'
-      : t(item.labelKey);
+      : `${t(item.labelKey)}${item.detailKey ? ` · ${t(item.detailKey)}` : ''}`;
   const navigate = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!confirmDiscardUnsavedWork(t('main.unsaved_confirm'))) event.preventDefault();
     else closeMenu();
@@ -122,41 +105,73 @@ export default function ToolHeader({
           <img src={publicAssetUrl('logo/bloomrender_bg.png')} width="32" height="32" alt="" />
           <span>BloomRender</span>
         </Link>
+        <div
+          className="tool-header__primary"
+          aria-label={language === 'zh-TW' ? '創作與素材' : 'Studio and materials'}
+        >
+          <Link
+            to={ROUTES.TRY_ON}
+            onClick={navigate}
+            aria-current={location.pathname === ROUTES.TRY_ON ? 'page' : undefined}
+          >
+            {t('start.tab_tryon')}
+          </Link>
+          <Link
+            to={ROUTES.MATERIALS}
+            onClick={navigate}
+            aria-current={location.pathname === ROUTES.MATERIALS ? 'page' : undefined}
+          >
+            {language === 'zh-TW' ? '參考素材' : 'Reference materials'}
+          </Link>
+        </div>
         <div className="tool-header__actions">
-          {workspaceCommands.length > 0 && (
-            <div
-              className="tool-header__commands"
-              role="group"
-              aria-label={language === 'zh-TW' ? '工作區操作' : 'Workspace actions'}
+          {palette && (
+            <button
+              type="button"
+              className="tool-control tool-button tool-button-secondary tool-header__search"
+              data-testid="command-palette-trigger"
+              aria-label={language === 'zh-TW' ? '搜尋工具與素材' : 'Search tools and materials'}
+              onClick={palette.openPalette}
             >
-              {workspaceCommands.map((command) => (
-                <button
-                  key={command.id}
-                  data-testid={
-                    command.id === 'command-palette' ? 'command-palette-trigger' : undefined
-                  }
-                  aria-label={
-                    command.id === 'material-basket'
-                      ? basketLabel
-                      : command.id === 'command-palette'
-                        ? language === 'zh-TW'
-                          ? '搜尋工具與素材'
-                          : 'Search tools and materials'
-                        : undefined
-                  }
-                  type="button"
-                  className="tool-control tool-button tool-button-secondary"
-                  onClick={command.onSelect}
-                >
-                  {command.label}
-                </button>
-              ))}
-            </div>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                aria-hidden="true"
+              >
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="m16 16 4.5 4.5" />
+              </svg>
+              <span>{language === 'zh-TW' ? '搜尋工具與素材' : 'Search tools and materials'}</span>
+              <kbd>⌘ K</kbd>
+            </button>
           )}
+          <button
+            type="button"
+            className="tool-control tool-button tool-button-secondary tool-header__basket"
+            aria-label={basketLabel}
+            onClick={basket.openBasket}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden="true"
+            >
+              <path d="m4 9 2 11h12l2-11H4ZM8 9l4-6 4 6M9 12v5m6-5v5" />
+            </svg>
+            <span>{basket.materialIds.length}</span>
+          </button>
           {languageButtons(true)}
           <button
             type="button"
-            className="tool-control tool-button tool-button-secondary tool-header__icon"
+            className="tool-control tool-button tool-button-secondary tool-header__icon tool-header__history"
             aria-label={t('history.title')}
             title={t('history.title')}
             aria-haspopup="dialog"
@@ -174,7 +189,17 @@ export default function ToolHeader({
             aria-expanded={settingsOpen}
             onClick={onOpenSettings}
           >
-            <CogIcon className="w-5 h-5" />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden="true"
+            >
+              <path d="M4 7h16M4 17h16M8 4v6M16 14v6" strokeLinecap="round" />
+            </svg>
           </button>
           <button
             type="button"
@@ -185,10 +210,20 @@ export default function ToolHeader({
             aria-controls={menuId}
             onClick={() => setMenuOpen(true)}
           >
-            <span className="tool-header__current">
-              {current ? label(current) : t('home.all_tools')}
-            </span>
-            <ChevronDownIcon className="w-5 h-5" />
+            <span className="tool-header__current">{t('home.all_tools')}</span>
+            <ChevronDownIcon className="w-5 h-5 tool-header__chevron" />
+            <svg
+              className="tool-header__menu-glyph"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden="true"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
+            </svg>
           </button>
         </div>
       </nav>
@@ -250,22 +285,31 @@ export default function ToolHeader({
                 ))}
               </div>
             )}
-            <div className="tool-header__tools">
-              {TOOL_NAVIGATION.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  aria-current={current?.path === item.path ? 'page' : undefined}
-                  onClick={navigate}
+            <div className="tool-header__groups">
+              {TOOL_NAVIGATION.map((group) => (
+                <section
+                  key={group.id}
+                  className="tool-header__group"
+                  aria-labelledby={`${menuId}-${group.id}`}
                 >
-                  {label(item)}
-                </Link>
+                  <h3 id={`${menuId}-${group.id}`}>{group.label[language]}</h3>
+                  <div className="tool-header__tools">
+                    {group.items.map((item) => (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        aria-current={current?.path === item.path ? 'page' : undefined}
+                        onClick={navigate}
+                      >
+                        {label(item)}
+                        <span aria-hidden="true">↗</span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
             <div className="tool-header__menu-extra">
-              <Link to={ROUTES.HISTORY} onClick={navigate}>
-                {t('history.title')}
-              </Link>
               <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
                 {t('a11y.github')}
               </a>

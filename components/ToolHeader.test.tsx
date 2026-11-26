@@ -84,8 +84,10 @@ describe('tool navigation', () => {
     expect(screen.getByTestId('basket-open').textContent).toBe('open');
   });
 
-  it('runs registered commands directly from the toolbar', () => {
+  it('keeps task commands in the tools menu without crowding the toolbar', () => {
     mount(true);
+    expect(screen.queryByRole('button', { name: 'Materials' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'All photo tools' }));
     fireEvent.click(screen.getByRole('button', { name: 'Materials' }));
     expect(document.activeElement).toBe(
       screen.getByRole('dialog', { name: 'Workspace materials' }),
@@ -105,14 +107,14 @@ describe('tool navigation', () => {
     );
   });
 
-  it('keeps history and settings directly available and labels the current tool', () => {
+  it('keeps history and settings directly available beside the grouped tools entry', () => {
     const { onOpenHistory, onOpenSettings } = mount();
     fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
     fireEvent.click(screen.getByRole('button', { name: 'Generation History' }));
     expect(onOpenSettings).toHaveBeenCalledOnce();
     expect(onOpenHistory).toHaveBeenCalledOnce();
     expect(screen.getByRole('button', { name: 'All photo tools' }).textContent).toContain(
-      'AI Try-On',
+      'All photo tools',
     );
     expect(screen.queryByRole('dialog')).toBeNull();
   });
@@ -124,12 +126,24 @@ describe('tool navigation', () => {
     fireEvent.click(trigger);
     const dialog = screen.getByRole('dialog', { name: 'All photo tools' });
     expect(document.activeElement).toBe(dialog);
-    expect(screen.getByRole('link', { name: 'AI Try-On' }).getAttribute('aria-current')).toBe(
-      'page',
+    expect(
+      within(dialog).getByRole('link', { name: 'AI Try-On' }).getAttribute('aria-current'),
+    ).toBe('page');
+    expect(
+      within(dialog).getByRole('link', { name: 'Reference materials' }).getAttribute('href'),
+    ).toBe('/materials');
+    expect(within(dialog).getByRole('heading', { name: 'Create' })).toBeTruthy();
+    expect(within(dialog).getByRole('heading', { name: 'Photo tools' })).toBeTruthy();
+    expect(within(dialog).getByRole('heading', { name: 'Your library' })).toBeTruthy();
+    expect(within(dialog).getByRole('link', { name: 'Multi-person' }).getAttribute('href')).toBe(
+      '/multi-person',
     );
-    expect(screen.getByRole('link', { name: 'Reference materials' }).getAttribute('href')).toBe(
-      '/materials',
-    );
+    expect(
+      within(dialog).getByRole('link', { name: 'Multi-style collage' }).getAttribute('href'),
+    ).toBe('/style-collage');
+    expect(
+      within(dialog).getByRole('link', { name: 'ID Photo · Batch Upload' }).getAttribute('href'),
+    ).toBe('/idphoto/batch');
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(document.activeElement).toBe(trigger);

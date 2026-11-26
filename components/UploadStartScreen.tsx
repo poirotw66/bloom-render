@@ -11,6 +11,7 @@ import { openSettingsPanel } from '../utils/settingsPanel';
 import { ROUTES } from '../constants/routes';
 import CompareSlider from './CompareSlider';
 import { ErrorDisplay } from './ErrorDisplay';
+import '../styles/studio-home.css';
 
 const ViralTemplatesSection = lazy(() => import('./ViralTemplatesSection'));
 const Arrow = () => (
@@ -31,7 +32,7 @@ export default function UploadStartScreen({
 }
 
 function HomePage({ onImageSelected }: { onImageSelected: (file: File) => void }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const settings = useSettings();
   const [dragging, setDragging] = useState(false);
   const [preview, setPreview] = useState<'editor' | 'restore'>('editor');
@@ -50,7 +51,7 @@ function HomePage({ onImageSelected }: { onImageSelected: (file: File) => void }
       <section
         id="top"
         ref={dropZone}
-        className={`home-hero hero hero--centred ${dragging ? 'home-hero--dragging' : ''}`}
+        className={`home-hero studio-home hero hero--split ${dragging ? 'home-hero--dragging' : ''}`}
         data-enter
         aria-labelledby="home-title"
         onDragOver={(event) => {
@@ -74,43 +75,45 @@ function HomePage({ onImageSelected }: { onImageSelected: (file: File) => void }
         <div className="wrap home-wrap">
           <div className="hero-text home-hero__content">
             <div className="home-hero__text">
-              <p className="home-eyebrow">{t('home.eyebrow')}</p>
               <h1 id="home-title" data-enter-whole>
-                {t('home.title')}
+                {language === 'zh-TW' ? '人物照片的' : 'AI photo studio'}
                 <br />
-                <span>{t('home.title_second')}</span>
+                <span>{language === 'zh-TW' ? 'AI 創作工作台' : 'for your portraits'}</span>
               </h1>
-              <p className="hero__lead">{t('home.subtitle')}</p>
+              <p className="hero__lead">
+                {language === 'zh-TW'
+                  ? '先選人物與服裝，再決定姿勢。在同一個工作台確認參考，開始生成。'
+                  : 'Choose a person, an outfit and a pose. Review your references together before you generate.'}
+              </p>
               <div className="home-actions btn-row">
+                <Link to={ROUTES.TRY_ON} className="btn btn--primary">
+                  {language === 'zh-TW' ? '開始換裝創作' : 'Start a try-on'} <Arrow />
+                </Link>
                 <button
                   type="button"
-                  className="btn btn--primary"
+                  className="btn btn--secondary"
                   onClick={() => void startEditing()}
                   disabled={openingSample}
                 >
                   {upload}
                 </button>
-                {!settings.isDemoMode && !hasKey ? (
-                  <button
-                    type="button"
-                    className="btn btn--secondary"
-                    data-testid="try-demo-button"
-                    onClick={settings.enableDemoMode}
-                  >
-                    {t('demo.try_demo')} <span aria-hidden="true">↗</span>
-                  </button>
-                ) : (
-                  <a className="btn btn--secondary" href="#styles">
-                    {t('home.browse_styles')} <span aria-hidden="true">↓</span>
-                  </a>
-                )}
               </div>
               {!settings.isDemoMode && !hasKey && (
                 <p className="home-key-note" data-testid="api-key-notice">
                   <span>{t('home.key_note')}</span>{' '}
-                  <button type="button" className="link" onClick={openSettingsPanel}>
-                    {t('home.connect_key')}
-                  </button>
+                  <span className="studio-home__connection-actions">
+                    <button type="button" className="link" onClick={openSettingsPanel}>
+                      {t('home.connect_key')}
+                    </button>
+                    <button
+                      type="button"
+                      className="link"
+                      data-testid="try-demo-button"
+                      onClick={settings.enableDemoMode}
+                    >
+                      {t('demo.try_demo')}
+                    </button>
+                  </span>
                 </p>
               )}
               {settings.isDemoMode && (

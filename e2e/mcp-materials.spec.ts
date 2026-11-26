@@ -1,3 +1,4 @@
+import { openWorkspace } from './helpers/workspace';
 import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
 import { Client } from '@modelcontextprotocol/client';
@@ -39,23 +40,15 @@ test('a recipe composed over MCP opens the selected materials in the real try-on
     await page.goto(recipeUrl);
     await expect(page).toHaveURL(/\/try-on$/);
     await expect(page.getByTestId('tryon-person-input')).toBeEnabled();
-    const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-    const library = nav.getByRole('button', { name: 'Reference library', exact: true });
-    if (await library.isVisible()) await library.click();
-    else {
-      await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-      await page
-        .getByRole('dialog', { name: 'All photo tools', exact: true })
-        .getByRole('button', { name: 'Reference library', exact: true })
-        .click();
-    }
+    await openWorkspace(page, 'Reference library');
     for (const id of ids)
       await expect(page.getByTestId(`tryon-material-${id}`)).toHaveAttribute(
         'aria-pressed',
         'true',
       );
     await page.keyboard.press('Escape');
-    await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeDisabled();
+    await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
+    await expect(page.getByRole('alert')).toContainText('Please upload your photo first.');
     expect(apiRequests).toEqual([]);
   } finally {
     await client.close();

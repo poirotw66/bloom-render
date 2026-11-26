@@ -102,6 +102,51 @@ describe('useTryOn handleGenerate', () => {
     );
   });
 
+  it('preserves the last result through edits and failed replacement, then retries its own snapshot', async () => {
+    generateVirtualTryOn.mockResolvedValueOnce('data:image/png;base64,first');
+    const { result } = renderHook(() => useTryOn(), { wrapper });
+    await waitFor(() => expect(result.current.draftStatus).not.toBe('loading'));
+    const firstPerson = samplePhoto('first-person.png');
+    act(() => {
+      result.current.setPerson(firstPerson);
+      result.current.addClothing([samplePhoto('first-shirt.png')]);
+    });
+    await act(async () => {
+      await result.current.handleGenerate();
+    });
+    const firstOriginal = result.current.resultPersonPreviewUrl;
+    expect(result.current.style).toBe('original');
+    expect(result.current.keepBackground).toBe(true);
+    expect(result.current.automaticPrompt).not.toContain('High fashion editorial');
+    act(() => {
+      result.current.setPerson(samplePhoto('second-person.png'));
+      result.current.clearClothing();
+      result.current.addClothing([samplePhoto('second-shirt.png')]);
+    });
+    expect(result.current.result).toBe('data:image/png;base64,first');
+    expect(result.current.resultPersonPreviewUrl).toBe(firstOriginal);
+    generateVirtualTryOn.mockRejectedValueOnce(new Error('Provider unavailable'));
+    await act(async () => {
+      await result.current.handleGenerate();
+    });
+    expect(result.current.result).toBe('data:image/png;base64,first');
+    expect(result.current.resultPersonPreviewUrl).toBe(firstOriginal);
+    act(() => {
+      result.current.setPerson(samplePhoto('third-person.png'));
+      result.current.clearClothing();
+      result.current.addClothing([samplePhoto('third-shirt.png')]);
+    });
+    generateVirtualTryOn.mockResolvedValueOnce('data:image/png;base64,retried-second');
+    await act(async () => {
+      await result.current.handleRetryFailed();
+    });
+    expect(generateVirtualTryOn.mock.calls.at(-1)?.[0].name).toBe('second-person.png');
+    expect(generateVirtualTryOn.mock.calls.at(-1)?.[1][0].name).toBe('second-shirt.png');
+    expect(result.current.results).toEqual(['data:image/png;base64,retried-second']);
+    expect(result.current.result).toBeNull();
+    expect(result.current.personFile?.name).toBe('third-person.png');
+  });
+
   it('surfaces the first rejection reason when the whole batch fails', async () => {
     generateVirtualTryOn.mockRejectedValue(new Error('error.api_key_missing'));
     const { result } = renderHook(() => useTryOn(), { wrapper });
@@ -277,7 +322,7 @@ describe('try-on composition recovery', () => {
     expect(saveDraft).not.toHaveBeenCalled();
   });
 
-  it('applies shared settings before any saved draft and returns to the form after a result', async () => {
+  it('applies shared settings before any saved draft and keeps the completed result while editing', async () => {
     const { result } = renderHook(() => useTryOn(), {
       wrapper: withState({ tryOnRecipe: savedRecipe }),
     });
@@ -294,8 +339,9 @@ describe('try-on composition recovery', () => {
     });
     expect(result.current.hasResults).toBe(true);
     act(() => result.current.applyRecipe(savedRecipe));
-    await waitFor(() => expect(result.current.hasResults).toBe(false));
-    expect(result.current.quantity).toBe(3);
+    await waitFor(() => expect(result.current.quantity).toBe(3));
+    expect(result.current.hasResults).toBe(true);
+    expect(result.current.result).toBe('data:image/png;base64,tryon');
   });
 });
 
@@ -399,6 +445,38 @@ it('recovers the saved draft when an incoming recipe cannot download its materia
   fetchMock.mockRestore();
 });
 
+it('preserves a new person when a failed incoming recipe falls back to saved references', async () => {
+  let rejectMaterial!: (error: Error) => void;
+  const material = vi.spyOn(materialFiles, 'materialFile').mockReturnValue(
+    new Promise((_, reject) => {
+      rejectMaterial = reject;
+    }),
+  );
+  loadDraft.mockResolvedValue({
+    person: { blob: samplePhoto('old-person.png'), name: 'old-person.png' },
+    references: [
+      { role: 'clothing', blob: samplePhoto('saved-shirt.png'), name: 'saved-shirt.png' },
+    ],
+    recipe: savedRecipe,
+  } satisfies TryOnDraft);
+  try {
+    const incoming = { ...savedRecipe, materialIds: ['white-oxford-shirt'] };
+    const { result } = renderHook(() => useTryOn(), {
+      wrapper: withState({ tryOnRecipe: incoming }),
+    });
+    await waitFor(() => expect(result.current.materialLoading).toBe(true));
+    const person = samplePhoto('new-person.png');
+    act(() => result.current.setPerson(person));
+    await act(async () => rejectMaterial(new Error('error.network_error')));
+    await waitFor(() => expect(result.current.materialLoading).toBe(false));
+    expect(result.current.personFile).toBe(person);
+    expect(result.current.clothingFiles[0].name).toBe('saved-shirt.png');
+    expect(result.current.draftStatus).not.toBe('loading');
+  } finally {
+    material.mockRestore();
+  }
+});
+
 describe('try-on editable prompt', () => {
   it('keeps manual wording across settings and preserves the captured batch on retry', async () => {
     generateVirtualTryOn
@@ -479,6 +557,72 @@ describe('basket route consumption', () => {
   function useRouteComposition() {
     return { tryOn: useTryOn(), location: useLocation(), navigate: useNavigate() };
   }
+
+  it('keeps an immediate person upload while all basket references finish loading', async () => {
+    const ids = ['white-oxford-shirt', 'pose-hand-on-hip', 'lighting-soft-window'];
+    const completions = new Map<string, (file: File) => void>();
+    const material = vi
+      .spyOn(materialFiles, 'materialFile')
+      .mockImplementation(
+        (reference) => new Promise((resolve) => completions.set(reference.id, resolve)),
+      );
+    try {
+      const state = { ...transfer, tryOnRecipe: { ...basketRecipe, materialIds: ids } };
+      const { result } = renderHook(useRouteComposition, { wrapper: routeWrapper(state) });
+      await waitFor(() => expect(result.current.tryOn.materialLoading).toBe(true));
+      const person = samplePhoto('new-person.png');
+      act(() => result.current.tryOn.setPerson(person));
+      await act(async () => {
+        for (const [id, complete] of completions) complete(samplePhoto(`${id}.png`));
+      });
+      await waitFor(() => expect(result.current.tryOn.materialLoading).toBe(false));
+      expect(result.current.tryOn.personFile).toBe(person);
+      expect(result.current.tryOn.materialIds).toEqual(ids);
+      expect(result.current.tryOn.referenceMap.map((reference) => reference.role)).toEqual([
+        'person',
+        'clothing',
+        'pose',
+        'lighting',
+      ]);
+      expect(result.current.tryOn.canGenerate).toBe(true);
+      expect(result.current.location.state).toEqual({ retained: 'other-state' });
+    } finally {
+      material.mockRestore();
+    }
+  });
+
+  it.each(['clothing', 'pose'] as const)(
+    'does not overwrite a newer %s upload when an older basket finishes loading',
+    async (role) => {
+      const completions: Array<(file: File) => void> = [];
+      const material = vi
+        .spyOn(materialFiles, 'materialFile')
+        .mockImplementation(() => new Promise((resolve) => completions.push(resolve)));
+      try {
+        const state = {
+          ...transfer,
+          tryOnRecipe: { ...basketRecipe, materialIds: ['white-oxford-shirt', 'pose-hand-on-hip'] },
+        };
+        const { result } = renderHook(useRouteComposition, { wrapper: routeWrapper(state) });
+        await waitFor(() => expect(result.current.tryOn.materialLoading).toBe(true));
+        const uploaded = samplePhoto(`new-${role}.png`);
+        act(() => {
+          if (role === 'clothing') result.current.tryOn.addClothing([uploaded]);
+          else result.current.tryOn.setReference('pose', uploaded);
+        });
+        await act(async () => {
+          for (const complete of completions) complete(samplePhoto('old-reference.png'));
+        });
+        await waitFor(() => expect(result.current.tryOn.materialLoading).toBe(false));
+        expect(result.current.tryOn.materialIds).toEqual([]);
+        if (role === 'clothing') expect(result.current.tryOn.clothingFiles).toEqual([uploaded]);
+        else expect(result.current.tryOn.referenceFiles.pose).toBe(uploaded);
+        expect(result.current.location.state).toEqual(state);
+      } finally {
+        material.mockRestore();
+      }
+    },
+  );
 
   it('consumes a successful basket merge once, keeping other state and removed materials removed after reload', async () => {
     let complete!: (file: File) => void;

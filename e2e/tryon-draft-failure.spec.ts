@@ -44,7 +44,7 @@ test('a failed draft save warns outside the closed dialog and keeps uploaded pho
     .toBeGreaterThanOrEqual(2);
   await expect(draftDialog).toBeHidden();
   await expect(warning).toBeVisible();
-  for (const name of ['Person', 'Clothing 1']) {
+  for (const name of ['Person photo', 'Clothing 1']) {
     const photo = page.getByRole('img', { name, exact: true });
     await expect(photo).toBeVisible();
     await expect

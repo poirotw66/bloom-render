@@ -1,0 +1,4 @@
+/* Keep the creation canvas still while a photo task is in progress. */
+.tool-shell {
+  background: var(--bg-main);
+}

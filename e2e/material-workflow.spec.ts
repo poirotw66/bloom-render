@@ -1,3 +1,4 @@
+import { openWorkspace as command } from './helpers/workspace';
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import JSZip from 'jszip';
@@ -14,23 +15,6 @@ async function seed(page: Page) {
     localStorage.setItem('bloom_image_provider', 'openrouter');
     sessionStorage.setItem('bloom_openrouter_api_key', 'mock-workflow-key-private');
   });
-}
-
-async function command(page: Page, name: string) {
-  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-  const pattern = new RegExp(`^${name}(?:\\s|$)`);
-  const button = nav.getByRole('button', { name: pattern });
-  if (await button.isVisible()) await button.click();
-  else {
-    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-    await page
-      .getByRole('dialog', { name: 'All photo tools', exact: true })
-      .getByRole('button', { name: pattern })
-      .click();
-  }
-  const dialog = page.getByRole('dialog', { name, exact: true });
-  await expect(dialog).toBeVisible();
-  return dialog;
 }
 
 async function collect(page: Page) {
@@ -172,6 +156,7 @@ test('generation sends every basket reference and history export retains the inp
   await page.getByRole('button', { name: 'Generate Image', exact: true }).click();
   await expect.poll(() => requests.length).toBe(2);
   for (const request of requests) expect(request.input_references).toHaveLength(3);
+  await expect(page.locator('img[src^="data:image/png"]')).toHaveCount(2);
   await page.goto('/history');
   await expect(page.getByRole('button', { name: 'Generate again', exact: true })).toHaveCount(2);
   const downloading = page.waitForEvent('download');
@@ -196,9 +181,7 @@ test('generation sends every basket reference and history export retains the inp
   expect(requests[2].input_references).toEqual(requests[0].input_references);
 });
 
-test('mobile basket uses the tools menu and restores focus without overflowing the viewport', async ({
-  page,
-}) => {
+test('mobile basket restores focus without overflowing the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await seed(page);
   await collect(page);
@@ -209,7 +192,12 @@ test('mobile basket uses the tools menu and restores focus without overflowing t
     .toBe(true);
   await page.keyboard.press('Escape');
   await expect(basket).not.toBeVisible();
-  await expect(page.getByRole('button', { name: 'All photo tools', exact: true })).toBeFocused();
+  await expect(
+    page
+      .getByRole('button', { name: /^(?:Basket|Material basket)(?:\s|$)/ })
+      .filter({ visible: true })
+      .first(),
+  ).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const reopened = await command(page, 'Material basket');
   await reopened.getByRole('button', { name: 'Clear basket', exact: true }).click();

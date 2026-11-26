@@ -1,10 +1,9 @@
+import { openWorkspace } from './helpers/workspace';
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 
-const MATERIAL_COUNT = JSON.parse(
-  readFileSync(new URL('../constants/tryOnMaterials.json', import.meta.url), 'utf8'),
-).length as number;
+const MATERIAL_GROUP_COUNT = 11;
 
 async function openTryOn(page: Page, theme = 'bloom') {
   await page.addInitScript((selectedTheme) => {
@@ -19,49 +18,28 @@ async function openTryOn(page: Page, theme = 'bloom') {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }
 
-async function openWorkspace(page: Page, name: string) {
-  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-  const command = nav.getByRole('button', { name, exact: true });
-  if (await command.isVisible()) await command.click();
-  else {
-    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-    await page
-      .getByRole('dialog', { name: 'All photo tools', exact: true })
-      .getByRole('button', { name, exact: true })
-      .click();
-  }
-  const dialog = page.getByRole('dialog', { name, exact: true });
-  await expect(dialog).toBeVisible();
-  return dialog;
-}
-
 for (const width of [390, 1440]) {
-  test(`viewport workspace keeps generation and comparison reachable at ${width}px`, async ({
+  test(`workspace keeps generation and reference review reachable at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 844 });
     await openTryOn(page);
     const workspace = page.locator('.tryon-workspace');
-    const bounds = await workspace.boundingBox();
-    expect(bounds).not.toBeNull();
-    expect(bounds!.y).toBeGreaterThanOrEqual(-1);
-    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(845);
-    expect(bounds!.height).toBeGreaterThanOrEqual(843);
-
-    const studio = page.locator('.tryon-studio');
+    await expect(workspace).toBeVisible();
     const generate = page.getByRole('button', { name: 'Generate Try-On', exact: true });
     await generate.scrollIntoViewIfNeeded();
     await expect(generate).toBeInViewport({ ratio: 1 });
-    if (width === 390)
-      expect(await studio.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
-
-    const slider = page.getByRole('slider');
-    await slider.scrollIntoViewIfNeeded();
-    await expect(slider).toBeInViewport({ ratio: 1 });
-    await slider.focus();
-    await slider.press('End');
-    await expect(slider).toHaveAttribute('aria-valuenow', '100');
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(generate).toBeEnabled();
+    await generate.click();
+    await expect(page.getByRole('alert')).toContainText('Please upload your photo first.');
+    const board = page.getByTestId('tryon-reference-board');
+    await board.scrollIntoViewIfNeeded();
+    await expect(board).toBeVisible();
+    await expect(board.locator('img')).toHaveCount(0);
+    await expect(page.getByRole('slider')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
     await expect(page.locator('[data-moment="cursor-spotlight"]')).toHaveAttribute(
       'data-moment-mounted',
       '1',
@@ -141,10 +119,7 @@ for (const width of [390, 1440]) {
         .toBe(true);
       await page.keyboard.press('Escape');
       await expect(dialog).not.toBeVisible();
-      const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-      await expect(
-        nav.getByRole('button', { name: width === 390 ? 'All photo tools' : name, exact: true }),
-      ).toBeFocused();
+      await expect(page.getByText('Workspace tools', { exact: true })).toBeFocused();
     }
   });
 }
@@ -170,17 +145,20 @@ test('first-time mobile visitors can open both file pickers by keyboard', async 
   for (const name of ['Your Photo', 'Add']) {
     const button =
       name === 'Your Photo'
-        ? page.getByTestId('tryon-person-input')
+        ? page.getByRole('button', { name: 'Your Photo', exact: true })
         : page.getByRole('button', { name, exact: true });
     await expect(button).toBeEnabled();
     const choosing = page.waitForEvent('filechooser');
     await button.press('Enter');
     await (await choosing).setFiles(photo);
     await expect(
-      page.getByRole('img', { name: name === 'Your Photo' ? 'Person' : 'Clothing 1', exact: true }),
+      page.getByRole('img', {
+        name: name === 'Your Photo' ? 'Person photo' : 'Clothing 1',
+        exact: true,
+      }),
     ).toBeVisible();
   }
-  await expect(page.getByRole('img', { name: 'Person', exact: true })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Person photo', exact: true })).toBeVisible();
   await expect(page.getByRole('img', { name: 'Clothing 1', exact: true })).toBeVisible();
 });
 
@@ -190,9 +168,10 @@ for (const width of [320, 390, 768, 1024, 1440]) {
     await openTryOn(page);
     const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
     await expect(nav.getByRole('button', { name: 'Settings', exact: true })).toBeVisible();
-    await expect(
-      nav.getByRole('button', { name: 'Generation History', exact: true }),
-    ).toBeVisible();
+    if (width >= 768)
+      await expect(
+        nav.getByRole('button', { name: 'Generation History', exact: true }),
+      ).toBeVisible();
 
     const navigationProblems = await nav.evaluate((element) => {
       const problems: string[] = [];
@@ -218,22 +197,24 @@ for (const width of [320, 390, 768, 1024, 1440]) {
     ).toBe(true);
 
     await openWorkspace(page, 'Reference library');
-    const materialImages = page.getByTestId(/^tryon-material-/).locator('img');
-    await expect(materialImages).toHaveCount(MATERIAL_COUNT);
-    await expect
-      .poll(() =>
-        materialImages.evaluateAll(
-          (images) =>
-            images.filter(
-              (image) =>
-                (image as HTMLImageElement).complete &&
-                (image as HTMLImageElement).naturalWidth > 0,
-            ).length,
-        ),
-      )
-      .toBe(MATERIAL_COUNT);
+    const materialImages = page
+      .getByRole('dialog', { name: 'Reference library', exact: true })
+      .getByRole('img');
+    await expect(materialImages).toHaveCount(MATERIAL_GROUP_COUNT);
+    for (const image of await materialImages.all()) {
+      await image.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
+          ),
+        )
+        .toBe(true);
+    }
     await page.keyboard.press('Escape');
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
   });
 }
 
@@ -264,18 +245,37 @@ test('mobile tools menu exposes language, restores focus and opens the material 
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await expect(page.getByRole('dialog', { name: 'Settings', exact: true })).toBeVisible();
   await page.keyboard.press('Escape');
-  await page.getByRole('button', { name: 'Generation History', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Generation History', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'All photo tools', exact: true }).click();
+  await page
+    .getByRole('dialog', { name: 'All photo tools', exact: true })
+    .getByRole('link', { name: 'Generation History', exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/history$/);
+  await expect(
+    page.getByRole('heading', { name: 'Generation History', exact: true }),
+  ).toBeVisible();
 });
 
 test('optional reference uploads have visible, accessible role labels', async ({ page }) => {
   await openTryOn(page);
-  const details = page.getByTestId('tryon-reference-pose').locator('xpath=ancestor::details[1]');
-  if ((await details.getAttribute('open')) === null) await details.locator('summary').click();
+  await page.getByText('Advanced settings and references', { exact: true }).click();
+  await page.getByText('Upload extra references (optional)', { exact: true }).click();
   for (const role of ['pose', 'expression', 'scene', 'lighting']) {
-    const input = page.getByTestId(`tryon-reference-${role}`);
-    await expect(input).toBeVisible();
-    await expect(input).toHaveAccessibleName(`Upload ${role} reference`);
+    const name = `Upload ${role} reference`;
+    const upload = page.getByRole('button', { name, exact: true });
+    await expect(upload).toBeVisible();
+    const choosing = page.waitForEvent('filechooser');
+    await upload.press('Enter');
+    await (
+      await choosing
+    ).setFiles({
+      name: `${role}.png`,
+      mimeType: 'image/png',
+      buffer: readFileSync(new URL('./fixtures/sample.png', import.meta.url)),
+    });
+    await expect(
+      page.getByTestId(`tryon-reference-${role}`).locator('..').getByRole('img'),
+    ).toBeVisible();
   }
 });
 

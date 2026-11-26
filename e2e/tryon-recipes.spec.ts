@@ -1,3 +1,4 @@
+import { openWorkspace } from './helpers/workspace';
 import { readFileSync } from 'node:fs';
 import { test, expect, type Page } from '@playwright/test';
 import JSZip from 'jszip';
@@ -11,22 +12,6 @@ async function seed(page: Page, provider = 'openrouter') {
       localStorage.setItem('bloom_image_provider', selectedProvider);
     sessionStorage.setItem('bloom_openrouter_api_key', 'mock-key-private');
   }, provider);
-}
-
-async function openWorkspace(page: Page, name: 'Reference library' | 'Recipes' | 'Draft') {
-  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-  const command = nav.getByRole('button', { name, exact: true });
-  if (await command.isVisible()) await command.click();
-  else {
-    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-    await page
-      .getByRole('dialog', { name: 'All photo tools', exact: true })
-      .getByRole('button', { name, exact: true })
-      .click();
-  }
-  const dialog = page.getByRole('dialog', { name, exact: true });
-  await expect(dialog).toBeVisible();
-  return dialog;
 }
 
 async function closeWorkspace(page: Page) {
@@ -68,7 +53,8 @@ test('draft survives reload and can be explicitly cleared', async ({ page }) => 
   await page.getByTestId('tryon-clear-draft').click();
   await expect(page.getByTestId('tryon-clear-draft')).toBeEnabled();
   await closeWorkspace(page);
-  await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('Please upload your photo first.');
   await page.reload();
   await openWorkspace(page, 'Reference library');
   await expect(page.getByTestId('tryon-material-white-oxford-shirt')).toHaveAttribute(
@@ -76,7 +62,8 @@ test('draft survives reload and can be explicitly cleared', async ({ page }) => 
     'false',
   );
   await closeWorkspace(page);
-  await expect(page.getByRole('button', { name: 'Generate Try-On', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('Please upload your photo first.');
 });
 
 test('generation roles, history replay and full archive retain all inputs', async ({ page }) => {
@@ -95,6 +82,7 @@ test('generation roles, history replay and full archive retain all inputs', asyn
   await page
     .getByTestId('tryon-person-input')
     .setInputFiles({ name: 'person.png', mimeType: 'image/png', buffer: SAMPLE });
+  await page.getByText('Advanced settings and references', { exact: true }).click();
   await page.getByTestId('tryon-keep-background').check();
   await chooseMaterials(page);
   await expect(page.getByTestId('tryon-keep-background')).toBeDisabled();
@@ -173,9 +161,8 @@ test('recipe links carry materials and settings into another browser without pri
     'true',
   );
   await closeWorkspace(recipient);
-  await expect(
-    recipient.getByRole('button', { name: 'Generate Try-On', exact: true }),
-  ).toBeDisabled();
+  await recipient.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
+  await expect(recipient.getByRole('alert')).toContainText('Please upload your photo first.');
   await context.close();
 });
 

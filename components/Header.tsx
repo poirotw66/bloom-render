@@ -3,12 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 import React, { Suspense, lazy, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import HeaderLoadingDialog from './HeaderLoadingDialog';
-import HomeHeader from './HomeHeader';
 import ToolHeader from './ToolHeader';
-import { ROUTES } from '../constants/routes';
 import {
   closeSettingsPanel,
   openSettingsPanel,
@@ -28,20 +25,15 @@ const Header: React.FC<HeaderProps> = ({ onImageSelected }) => {
   // opens this dialog too.
   const isSettingsOpen = useSettingsPanelOpen();
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const location = useLocation();
 
   return (
     <>
-      {location.pathname === ROUTES.HOME ? (
-        <HomeHeader settingsOpen={isSettingsOpen} onOpenHistory={() => setIsHistoryOpen(true)} />
-      ) : (
-        <ToolHeader
-          settingsOpen={isSettingsOpen}
-          historyOpen={isHistoryOpen}
-          onOpenHistory={() => setIsHistoryOpen(true)}
-          onOpenSettings={openSettingsPanel}
-        />
-      )}
+      <ToolHeader
+        settingsOpen={isSettingsOpen}
+        historyOpen={isHistoryOpen}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        onOpenSettings={openSettingsPanel}
+      />
       {(isSettingsOpen || isHistoryOpen) && (
         <Suspense
           fallback={

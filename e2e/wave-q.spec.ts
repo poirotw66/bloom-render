@@ -25,8 +25,9 @@ test.describe('Homepage first screen', () => {
       '1',
     );
     await expect(page.locator('vite-error-overlay')).toHaveCount(0);
+    await page.getByRole('button', { name: 'All photo tools', exact: true }).click();
     await page
-      .locator('.home-nav__links')
+      .getByRole('dialog', { name: 'All photo tools', exact: true })
       .getByRole('link', { name: 'Generate Image', exact: true })
       .click();
     await page.goBack();
@@ -46,7 +47,7 @@ test.describe('Homepage first screen', () => {
     [1024, 900],
     [1440, 900],
   ]) {
-    test(`upload, demo and comparison fit the first screen at ${width}×${height}`, async ({
+    test(`primary actions lead and comparison stays reachable at ${width}×${height}`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height });
@@ -56,7 +57,9 @@ test.describe('Homepage first screen', () => {
       const upload = hero.getByRole('button', { name: 'Upload a photo' });
       await expect(upload).toBeInViewport({ ratio: 1 });
       await expect(page.getByTestId('try-demo-button')).toBeInViewport({ ratio: 1 });
-      await expect(hero.getByRole('slider')).toBeInViewport({ ratio: 1 });
+      const comparison = hero.getByRole('slider');
+      if (height < 760) await comparison.scrollIntoViewIfNeeded();
+      await expect(comparison).toBeInViewport({ ratio: 1 });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
         true,
       );
@@ -68,9 +71,9 @@ test.describe('Homepage first screen', () => {
     await page.goto('/');
     const menu = page.locator('button[aria-label="All photo tools"]');
     await menu.click();
-    await expect(page.getByRole('navigation', { name: 'All photo tools' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'All photo tools', exact: true })).toBeVisible();
     await page.keyboard.press('Escape');
-    await expect(page.getByRole('navigation', { name: 'All photo tools' })).toBeHidden();
+    await expect(page.getByRole('dialog', { name: 'All photo tools', exact: true })).toHaveCount(0);
     await expect(menu).toBeFocused();
     await expect(menu).toHaveCSS('outline-style', 'solid');
     await expect(menu).toHaveCSS('outline-width', '2px');

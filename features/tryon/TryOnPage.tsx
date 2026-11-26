@@ -1,14 +1,15 @@
 import { useToolDesign } from '../../hooks/useHomeDesign';
 import React, { useEffect, useMemo, useState } from 'react';
 import { dataURLtoFile } from '../../utils/fileUtils';
-import { publicAssetUrl } from '../../utils/publicAsset';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import HistoryStorageNotice from '../../components/HistoryStorageNotice';
 import { useToolCommands } from '../../contexts/ToolCommandsContext';
 import TryOnWorkspaceDialog from './TryOnWorkspaceDialog';
 import TryOnPromptEditor from './TryOnPromptEditor';
-import CompareSlider from '../../components/CompareSlider';
+import TryOnReferenceBoard from './TryOnReferenceBoard';
+import { openSettingsPanel } from '../../utils/settingsPanel';
+import type { TryOnReferenceRole } from '../../types/tryOnRecipe';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import GenerationFailureNotice from '../../components/GenerationFailureNotice';
 import TryOnOptionSelectors from './TryOnOptionSelectors';
@@ -20,6 +21,7 @@ import TryOnReferenceControls from './TryOnReferenceControls';
 import TryOnRecipeActions from './TryOnRecipeActions';
 import { useTryOn } from './useTryOn';
 import '../../styles/tryon-workspace.css';
+import '../../styles/tryon-workflow.css';
 
 interface TryOnPageProps {
   onImageSelected: (file: File) => void;
@@ -33,12 +35,21 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
   const [activeDialog, setActiveDialog] = useState<
     'materials' | 'recipes' | 'draft' | 'prompt' | null
   >(null);
+  const [materialRole, setMaterialRole] = useState<TryOnReferenceRole | 'all'>('all');
+  const openMaterials = (role: TryOnReferenceRole | 'all') => {
+    setMaterialRole(role);
+    setActiveDialog('materials');
+  };
   const tryOn = useTryOn();
   const zh = language === 'zh-TW';
   const [clearingDraft, setClearingDraft] = useState(false);
   const [draftError, setDraftError] = useState<string | null>(null);
   const formDisabled =
-    tryOn.loading || tryOn.materialLoading || tryOn.draftStatus === 'loading' || clearingDraft;
+    tryOn.isRunning ||
+    tryOn.loading ||
+    tryOn.materialLoading ||
+    tryOn.draftStatus === 'loading' ||
+    clearingDraft;
   const backgroundOverride = Boolean(
     tryOn.referencePreviewUrls.scene || tryOn.referencePreviewUrls.lighting,
   );
@@ -55,7 +66,10 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
       {
         id: 'tryon-materials',
         label: zh ? '參考素材庫' : 'Reference library',
-        onSelect: () => setActiveDialog('materials'),
+        onSelect: () => {
+          setMaterialRole('all');
+          setActiveDialog('materials');
+        },
       },
       {
         id: 'tryon-recipes',
@@ -89,6 +103,38 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
     }
   }
 
+  const references = (variant: 'pose' | 'extra') => (
+    <TryOnReferenceControls
+      variant={variant}
+      keepBackground={tryOn.keepBackground}
+      keepPose={tryOn.keepPose}
+      referencePreviewUrls={tryOn.referencePreviewUrls}
+      onKeepBackgroundChange={tryOn.setKeepBackground}
+      onKeepPoseChange={tryOn.setKeepPose}
+      onReferenceChange={tryOn.setReference}
+      onChoosePose={() => openMaterials('pose')}
+      disabled={formDisabled || isDemoMode}
+    />
+  );
+  const board = (
+    <TryOnReferenceBoard
+      personPreviewUrl={tryOn.personPreviewUrl}
+      clothingPreviewUrls={tryOn.clothingPreviewUrls}
+      referencePreviewUrls={tryOn.referencePreviewUrls}
+      keepPose={tryOn.keepPose}
+      onChooseClothing={() => openMaterials('clothing')}
+      onChoosePose={() => openMaterials('pose')}
+      disabled={formDisabled || isDemoMode}
+    />
+  );
+  const generate = () => {
+    if (tryOn.canGenerate && !isDemoMode && !effectiveApiKey.trim()) {
+      openSettingsPanel();
+      return;
+    }
+    void tryOn.handleGenerate();
+  };
+
   return (
     <section className="tryon-workspace hero" aria-labelledby="tryon-title" data-enter>
       <div className="wrap tool-shell-wrap">
@@ -99,40 +145,52 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
         >
           <header className="tryon-page-heading">
             <div>
-              <h1 id="tryon-title">
-                {zh ? (
-                  <>
-                    AI 試穿 · <span lang="en">Virtual try-on</span>
-                  </>
-                ) : (
-                  'AI virtual try-on'
-                )}
-              </h1>
+              <h1 id="tryon-title">{zh ? 'AI 試穿 · Virtual try-on' : 'AI virtual try-on'}</h1>
               <p>
                 {zh
-                  ? '上傳人物照，選擇服裝，預覽新的穿搭。'
-                  : 'Upload your photo, choose clothing and preview a new outfit.'}
+                  ? '人物、服裝、姿勢。在同一個工作台完成試穿。'
+                  : 'Person, clothing, pose. Build your next outfit in one workspace.'}
               </p>
             </div>
+            <details className="tryon-local-tools">
+              <summary className="tool-button tool-button-secondary">
+                {zh ? '工作區工具' : 'Workspace tools'}
+              </summary>
+              <div
+                className="tryon-local-tools-menu"
+                aria-label={zh ? '試穿工作區操作' : 'Try-on workspace actions'}
+              >
+                {commands.map((command) => (
+                  <button
+                    key={command.id}
+                    type="button"
+                    className="tool-button tool-button-secondary"
+                    onClick={(event) => {
+                      const tools = event.currentTarget.closest('details');
+                      tools?.removeAttribute('open');
+                      tools?.querySelector('summary')?.focus();
+                      command.onSelect();
+                    }}
+                  >
+                    {command.label}
+                  </button>
+                ))}
+              </div>
+            </details>
           </header>
           <div className="app-frame tryon-studio">
             <fieldset className="tryon-panel tryon-setup">
-              <legend id="tryon-setup-title">{zh ? '照片與設定' : 'Photos and settings'}</legend>
-              <div
-                className="tryon-pane-scroll"
-                tabIndex={0}
-                role="region"
-                aria-labelledby="tryon-setup-title"
-              >
+              <legend id="tryon-setup-title">{zh ? '準備試穿' : 'Prepare your try-on'}</legend>
+              <div className="tryon-pane-scroll" role="region" aria-labelledby="tryon-setup-title">
                 <HistoryStorageNotice />
                 <TryOnUploadSection
                   personPreviewUrl={tryOn.personPreviewUrl}
                   clothingPreviewUrls={tryOn.clothingPreviewUrls}
                   error={tryOn.error}
                   loading={tryOn.loading}
-                  disabled={formDisabled || hasResults}
+                  disabled={formDisabled}
                   isDraggingOver={tryOn.isDraggingOver}
-                  canGenerate={tryOn.canGenerate && !formDisabled && !hasResults}
+                  canGenerate={tryOn.canGenerate && !formDisabled}
                   minClothing={tryOn.minClothing}
                   maxClothing={tryOn.maxClothing}
                   quantity={tryOn.quantity}
@@ -140,7 +198,9 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                   onPersonFileChange={tryOn.handlePersonFileChange}
                   onClothingFileChange={tryOn.handleClothingFileChange}
                   onRemoveClothing={tryOn.removeClothing}
-                  onGenerate={tryOn.handleGenerate}
+                  onGenerate={generate}
+                  onChooseClothing={() => openMaterials('clothing')}
+                  poseControls={references('pose')}
                   onDragOver={tryOn.handleDragOver}
                   onDragLeave={tryOn.handleDragLeave}
                   onDropPerson={tryOn.handleDropPerson}
@@ -151,7 +211,7 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                     style={tryOn.style}
                     onBackgroundChange={tryOn.setBackground}
                     onStyleChange={tryOn.setStyle}
-                    disabled={formDisabled || hasResults}
+                    disabled={formDisabled}
                     backgroundDisabled={tryOn.keepBackground || backgroundOverride}
                   />
                   <TryOnOutputOptions
@@ -159,17 +219,9 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                     aspectRatio={tryOn.aspectRatio}
                     onOutputSizeChange={tryOn.setOutputSize}
                     onAspectRatioChange={tryOn.setAspectRatio}
-                    disabled={formDisabled || hasResults}
+                    disabled={formDisabled}
                   />
-                  <TryOnReferenceControls
-                    keepBackground={tryOn.keepBackground}
-                    keepPose={tryOn.keepPose}
-                    referencePreviewUrls={tryOn.referencePreviewUrls}
-                    onKeepBackgroundChange={tryOn.setKeepBackground}
-                    onKeepPoseChange={tryOn.setKeepPose}
-                    onReferenceChange={tryOn.setReference}
-                    disabled={formDisabled || hasResults || isDemoMode}
-                  />
+                  {references('extra')}
                 </TryOnUploadSection>
               </div>
             </fieldset>
@@ -180,37 +232,44 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                     ? '生成結果'
                     : 'Your results'
                   : zh
-                    ? '試穿範例'
-                    : 'Try-on example'}
+                    ? '參考畫板'
+                    : 'Reference board'}
               </legend>
               <div
                 className="tryon-pane-scroll"
-                tabIndex={0}
                 role="region"
                 aria-labelledby="tryon-preview-title"
               >
-                {tryOn.loading ? (
+                {tryOn.loading && (
                   <ProgressIndicator
                     progress={tryOn.progress}
                     statusMessages={['tryon.generating']}
                     onCancel={tryOn.cancelGeneration}
                   />
-                ) : hasResults ? (
+                )}
+                {(hasResults || tryOn.failures.length > 0) && (
+                  <GenerationFailureNotice
+                    failures={tryOn.failures}
+                    requestedCount={tryOn.requestedCount}
+                    succeededCount={tryOn.succeededCount}
+                    isRetrying={tryOn.isRetrying}
+                    onRetry={tryOn.handleRetryFailed}
+                    context="tryon"
+                  />
+                )}
+                {hasResults ? (
                   <>
-                    <GenerationFailureNotice
-                      failures={tryOn.failures}
-                      requestedCount={tryOn.requestedCount}
-                      succeededCount={tryOn.succeededCount}
-                      isRetrying={tryOn.isRetrying}
-                      onRetry={tryOn.handleRetryFailed}
-                      context="tryon"
-                    />
+                    <p className="tryon-hint">
+                      {zh
+                        ? '可直接調整左側設定，再生成下一次試穿。這張結果會保留到新圖片完成。'
+                        : 'Adjust your references and generate again. This result stays until the next image is ready.'}
+                    </p>
                     <div className="tryon-results">
                       {resultList.map((dataUrl, index) => (
                         <TryOnResult
                           key={`${index}-${dataUrl}`}
                           result={dataUrl}
-                          originalUrl={tryOn.personPreviewUrl}
+                          originalUrl={tryOn.resultPersonPreviewUrl}
                           label={
                             resultList.length > 1 ? `${t('tryon.style')} ${index + 1}` : undefined
                           }
@@ -234,20 +293,21 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                       <button
                         type="button"
                         onClick={tryOn.clearResult}
+                        disabled={formDisabled}
                         className="tool-button tool-button-secondary"
                       >
-                        {t('tryon.again')}
+                        {zh ? '清除顯示結果' : 'Clear displayed results'}
                       </button>
                     </div>
+                    <details className="tryon-disclosure tryon-result-references">
+                      <summary>
+                        {zh ? '檢視下一次試穿的參考圖' : 'Review references for your next try-on'}
+                      </summary>
+                      {board}
+                    </details>
                   </>
                 ) : (
-                  <div className="tryon-sample-image">
-                    <CompareSlider
-                      originalUrl={publicAssetUrl('examples/tryon-before.webp')}
-                      currentUrl={publicAssetUrl('examples/tryon-after.webp')}
-                      imageClassName="tryon-comparison-image"
-                    />
-                  </div>
+                  board
                 )}
               </div>
             </fieldset>
@@ -273,13 +333,22 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                     ? '供應商已就緒 · 照片將送至你選擇的服務。'
                     : 'Provider ready · Photos go to your selected service.'
                   : zh
-                    ? '在設定中連接 API 金鑰，或由上方選單試用示範模式。'
-                    : `Connect your ${imageProvider === 'openai' ? 'OpenAI' : imageProvider === 'openrouter' ? 'OpenRouter' : 'Gemini'} key in Settings, or choose Try demo above.`}
+                    ? '連接 API 金鑰後即可生成，也可先試用示範模式。'
+                    : `Connect your ${imageProvider === 'openai' ? 'OpenAI' : imageProvider === 'openrouter' ? 'OpenRouter' : 'Gemini'} key in Settings, or choose Try demo.`}
             </p>
+            {!isDemoMode && !effectiveApiKey.trim() && (
+              <button
+                type="button"
+                className="tool-button tool-button-secondary"
+                onClick={() => openSettingsPanel()}
+              >
+                {zh ? '連接模型供應商' : 'Connect image provider'}
+              </button>
+            )}
             <p>
               {zh
-                ? '內建素材 CC0 · 範例照片僅供示範'
-                : 'Built-in materials CC0 · Example photos for demonstration'}
+                ? '內建素材 CC0 · 草稿僅儲存在此裝置'
+                : 'Built-in materials CC0 · Drafts stay on this device'}
             </p>
           </footer>
         </div>
@@ -295,7 +364,7 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
             promptOverride={tryOn.promptOverride}
             referenceMap={tryOn.referenceMap}
             onChange={tryOn.setPromptOverride}
-            disabled={formDisabled || hasResults || isDemoMode}
+            disabled={formDisabled || isDemoMode}
           />
         </TryOnWorkspaceDialog>
         <TryOnWorkspaceDialog
@@ -305,9 +374,11 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
           id="tryon-materials-dialog"
         >
           <TryOnMaterialPicker
+            key={`${activeDialog}:${materialRole}`}
+            initialRole={materialRole}
             selectedIds={tryOn.materialIds}
             canAddClothing={tryOn.clothingPreviewUrls.length < tryOn.maxClothing}
-            disabled={formDisabled || hasResults || isDemoMode}
+            disabled={formDisabled || isDemoMode}
             onSelect={tryOn.addMaterial}
             onRemove={tryOn.removeMaterial}
           />

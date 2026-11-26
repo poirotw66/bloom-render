@@ -10,9 +10,8 @@
 .tool-header__bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   min-height: 80px;
-  gap: 16px;
+  gap: 32px;
 }
 
 .tool-shell--tryon .tool-header {
@@ -29,53 +28,98 @@
   flex-shrink: 0;
   color: var(--ink);
   font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-weight: 650;
+  letter-spacing: -0.04em;
   white-space: nowrap;
   text-decoration: none;
 }
 
 .tool-header__brand img {
   display: block;
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
 }
 
+.tool-header__primary,
 .tool-header__actions,
-.tool-header__commands,
 .tool-header__language {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  gap: 6px;
+  gap: 4px;
 }
 
-.tool-header__menu-commands {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--brand-border-soft);
+.tool-header__actions {
+  margin-left: auto;
+}
+.tool-header__primary {
+  gap: 22px;
+}
+.tool-header__primary a {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  min-height: 48px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 550;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.tool-header__primary a[aria-current='page'] {
+  color: var(--ink);
+}
+.tool-header__primary a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--brand-accent);
 }
 
 .tool-header .tool-control {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-width: 44px;
   width: auto;
   min-height: 44px;
   padding: 10px;
+  border-color: transparent;
+  border-radius: 8px;
   color: var(--ink-soft);
-  font-size: 14px;
+  background: transparent;
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
 }
-
+.tool-header .tool-control:hover {
+  color: var(--ink);
+  background: var(--bg-surface);
+}
+.tool-header .tool-header__search {
+  justify-content: flex-start;
+  min-width: 230px;
+  margin-right: 8px;
+  padding-inline: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--brand-border-soft);
+}
+.tool-header__search kbd {
+  margin-left: auto;
+  padding-left: 12px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+.tool-header .tool-header__basket {
+  gap: 5px;
+}
+.tool-header__basket span {
+  font-variant-numeric: tabular-nums;
+}
 .tool-header__language [aria-pressed='true'] {
   color: var(--ink);
   text-decoration: underline;
@@ -83,22 +127,25 @@
   text-underline-offset: 5px;
   text-decoration-thickness: 2px;
 }
-
 .tool-header .tool-header__icon {
   width: 44px;
   height: 44px;
 }
-
 .tool-header .tool-header__menu-trigger {
-  gap: 12px;
+  gap: 8px;
+  margin-left: 4px;
+  border-left: 1px solid var(--brand-border-soft);
+  border-radius: 0;
+  padding-left: 16px;
 }
-
+.tool-header__menu-glyph {
+  display: none;
+}
 .tool-header__current {
-  max-width: 220px;
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .tool-header a:focus-visible,
 .tool-header button:focus-visible,
 .tool-header__menu:focus-visible {
@@ -112,55 +159,78 @@
   z-index: 80;
   display: grid;
   place-items: start center;
-  padding: 100px 24px 24px;
+  padding: 96px 24px 24px;
   overflow-y: auto;
   background: rgb(0 0 0 / 65%);
 }
-
 .tool-header__menu {
-  width: min(760px, 100%);
-  max-height: calc(100svh - 124px);
+  width: min(920px, 100%);
+  max-height: calc(100svh - 120px);
   overflow-y: auto;
   border: 1px solid var(--brand-border-soft);
   border-radius: 16px;
-  padding: 24px;
+  padding: 28px;
   color: var(--ink);
   background: var(--bg-surface);
   box-shadow: 0 24px 80px rgb(0 0 0 / 35%);
 }
-
 .tool-header__menu-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
-
 .tool-header__menu-heading h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
+  letter-spacing: -0.03em;
 }
-
-.tool-header__tools {
+.tool-header__menu-commands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--brand-border-soft);
+}
+.tool-header .tool-header__menu-commands button {
+  border: 1px solid var(--brand-border-soft);
+  padding-inline: 14px;
+}
+.tool-header__groups {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px 16px;
+  gap: 28px;
 }
-
+.tool-header__group h3 {
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.tool-header__tools {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .tool-header__tools a,
 .tool-header__menu-extra a {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  min-height: 48px;
+  min-height: 44px;
   padding: 10px 0;
   color: var(--ink-soft);
   font-size: 15px;
   line-height: 1.4;
   text-decoration: none;
 }
-
+.tool-header__tools a span {
+  opacity: 0.45;
+}
 .tool-header__tools a:hover,
 .tool-header__menu-extra a:hover,
 .tool-header__tools a[aria-current='page'] {
@@ -169,89 +239,126 @@
   text-underline-offset: 5px;
   text-decoration-color: var(--brand-accent);
 }
-
 .tool-header__menu-extra {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 24px;
-  margin-top: 20px;
+  margin-top: 24px;
   padding-top: 12px;
   border-top: 1px solid var(--brand-border-soft);
 }
-
 .tool-header__menu-language {
   display: none;
 }
 
-@media (max-width: 1100px) {
-  .tool-header__commands {
+@media (max-width: 1250px) {
+  .tool-header__bar {
+    gap: 24px;
+  }
+  .tool-header .tool-header__search {
+    min-width: 44px;
+    width: 44px;
+    margin-right: 0;
+    padding: 10px;
+    justify-content: center;
+    background: transparent;
+    border-color: transparent;
+  }
+  .tool-header__search span,
+  .tool-header__search kbd {
     display: none;
   }
+  .tool-header__current,
+  .tool-header__chevron {
+    display: none;
+  }
+  .tool-header .tool-header__menu-glyph {
+    display: block;
+  }
+  .tool-header .tool-header__menu-trigger {
+    width: 44px;
+    padding: 10px;
+    border: 0;
+  }
 }
-
+@media (max-width: 900px) {
+  .tool-header__primary {
+    gap: 16px;
+  }
+  .tool-header__language--bar {
+    display: none;
+  }
+  .tool-header__menu-language {
+    display: block;
+    margin-bottom: 20px;
+  }
+}
 @media (max-width: 760px) {
   .tool-shell--tryon .tool-header {
     height: 72px;
   }
-
   .tool-header__bar {
     min-height: 72px;
     gap: 8px;
   }
-
-  .tool-header__current {
+  .tool-header__primary {
     display: none;
   }
-
-  .tool-header .tool-header__menu-trigger {
-    width: 44px;
-    height: 44px;
-  }
-}
-
-@media (max-width: 640px) {
   .tool-header__brand {
     font-size: 17px;
   }
-
-  .tool-header__brand img,
-  .tool-header__language--bar {
+  .tool-header__brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .tool-header .tool-header__basket,
+  .tool-header .tool-header__history {
     display: none;
   }
-
   .tool-header__actions {
-    gap: 4px;
+    gap: 2px;
   }
-
   .tool-header__backdrop {
-    padding: 12px;
-    place-items: start stretch;
+    padding: 0;
+    place-items: stretch;
   }
-
   .tool-header__menu {
     width: 100%;
-    max-height: calc(100svh - 24px);
-    padding: 16px;
+    min-height: 100svh;
+    max-height: 100svh;
+    padding: 24px;
+    border-radius: 0;
+    border: 0;
   }
-
-  .tool-header__menu-language {
-    display: block;
-    margin-bottom: 16px;
+  .tool-header__groups {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 20px;
   }
-
-  .tool-header__tools {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px 12px;
+  .tool-header__group:last-child {
+    grid-column: 1 / -1;
+  }
+  .tool-header__group:last-child .tool-header__tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 20px;
   }
 }
-
+@media (max-width: 360px) {
+  .tool-header__brand {
+    font-size: 15px;
+    gap: 6px;
+  }
+  .tool-header__brand img {
+    display: none;
+  }
+  .tool-header__menu {
+    padding: 16px;
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
-  .tool-header__brand,
-  .tool-header__tools a,
-  .tool-header__menu-extra a {
+  .tool-header__brand {
     transition: opacity 160ms ease;
   }
-
   .tool-header__brand:hover {
     opacity: 0.8;
   }

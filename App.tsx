@@ -9,7 +9,6 @@ import Header from './components/Header';
 import SiteFooter from './components/SiteFooter';
 import HomeFooter from './components/HomeFooter';
 import StarNudge from './components/StarNudge';
-import StickyDemoCta from './components/StickyDemoCta';
 import Spinner from './components/Spinner';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import StartScreen from './components/StartScreen';
@@ -20,6 +19,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import { applyValidatedImageFile } from './utils/applyValidatedImageFile';
 import { consumePendingRemix } from './utils/pendingRemix';
 import './styles/tool-shell.css';
+import './styles/studio-shell.css';
 import MaterialBasket from './components/MaterialBasket';
 import { MaterialBasketProvider } from './contexts/MaterialBasketContext';
 import { ToolCommandsProvider } from './contexts/ToolCommandsContext';
@@ -197,7 +197,6 @@ const App: React.FC = () => {
             ) : (
               !isTryOnRoute && <SiteFooter />
             )}
-            {!isHomeRoute && location.pathname !== ROUTES.TRY_ON && <StickyDemoCta />}
             <StarNudge />
             <MaterialBasket />
           </div>

@@ -65,7 +65,7 @@ function emptyInputs(): TryOnInputs {
       outputSize: DEFAULT_TRYON_OUTPUT_SIZE,
       aspectRatio: DEFAULT_TRYON_ASPECT_RATIO,
       quantity: 1,
-      keepBackground: false,
+      keepBackground: true,
       keepPose: true,
     },
   };
@@ -167,11 +167,13 @@ export function useTryOn() {
   const [materialLoading, setMaterialLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [results, setResults] = useState<string[]>([]);
+  const [resultPerson, setResultPerson] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const revision = useRef(0);
+  const compositionRevision = useRef(0);
   const explicitInput = useRef(false);
   const pendingRecipe = useRef<TryOnRecipe | null>(null);
   const persistedInputs = useRef(inputs);
@@ -185,6 +187,8 @@ export function useTryOn() {
     metadata: { imageProvider: string; model: string };
   } | null>(null);
 
+  const displayedBatch = useRef<typeof batch.current>(null);
+
   useEffect(() => {
     mounted.current = true;
     const requests = materialRequests.current;
@@ -195,11 +199,18 @@ export function useTryOn() {
     };
   }, []);
 
-  const updateInputs = useCallback((change: (current: TryOnInputs) => TryOnInputs) => {
-    revision.current += 1;
-    setInputs(change);
-    setError(null);
-  }, []);
+  const updateInputs = useCallback(
+    (
+      change: (current: TryOnInputs) => TryOnInputs,
+      scope: 'person' | 'composition' = 'composition',
+    ) => {
+      revision.current += 1;
+      if (scope === 'composition') compositionRevision.current += 1;
+      setInputs(change);
+      setError(null);
+    },
+    [],
+  );
   const updateSettings = useCallback(
     <K extends keyof TryOnRecipe['settings']>(key: K, value: TryOnRecipe['settings'][K]) => {
       updateInputs((current) => ({ ...current, settings: { ...current.settings, [key]: value } }));
@@ -208,9 +219,7 @@ export function useTryOn() {
   );
   const setPerson = useCallback(
     (file: File | null) => {
-      updateInputs((current) => ({ ...current, person: file }));
-      setResult(null);
-      setResults([]);
+      updateInputs((current) => ({ ...current, person: file }), 'person');
     },
     [updateInputs],
   );
@@ -223,8 +232,6 @@ export function useTryOn() {
           MAX_CLOTHING_IMAGES,
         ),
       }));
-      setResult(null);
-      setResults([]);
     },
     [updateInputs],
   );
@@ -286,7 +293,9 @@ export function useTryOn() {
       }
       explicitInput.current = true;
       revision.current += 1;
+      compositionRevision.current += 1;
       const currentRevision = revision.current;
+      const currentCompositionRevision = compositionRevision.current;
       for (const request of materialRequests.current.values()) request.abort();
       recipeRequest.current?.abort();
       const controller = new AbortController();
@@ -299,13 +308,16 @@ export function useTryOn() {
         })),
       )
         .then((files) => {
-          if (!mounted.current || controller.signal.aborted || revision.current !== currentRevision)
+          if (
+            !mounted.current ||
+            controller.signal.aborted ||
+            compositionRevision.current !== currentCompositionRevision
+          )
             return;
           attempts.cancel();
           resetRun();
           batch.current = null;
-          setResult(null);
-          setResults([]);
+          displayedBatch.current = null;
           setLoading(false);
           setProgress(0);
           setInputs((current) => {
@@ -330,7 +342,11 @@ export function useTryOn() {
           onApplied?.();
         })
         .catch(async (err) => {
-          if (!mounted.current || controller.signal.aborted || revision.current !== currentRevision)
+          if (
+            !mounted.current ||
+            controller.signal.aborted ||
+            compositionRevision.current !== currentCompositionRevision
+          )
             return;
           setError(formatApiErrorMessage(err, t, 'tryon'));
           if (draftStatus !== 'loading') return;
@@ -339,7 +355,7 @@ export function useTryOn() {
             if (
               !mounted.current ||
               controller.signal.aborted ||
-              revision.current !== currentRevision
+              compositionRevision.current !== currentCompositionRevision
             )
               return;
             if (draft) {
@@ -353,7 +369,11 @@ export function useTryOn() {
                 draft.references,
               );
               persistedInputs.current = restored;
-              setInputs(restored);
+              setInputs((current) =>
+                revision.current === currentRevision
+                  ? restored
+                  : { ...restored, person: current.person },
+              );
             }
             setDraftReady(true);
             setDraftStatus(draft ? 'saved' : 'empty');
@@ -361,7 +381,7 @@ export function useTryOn() {
             if (
               mounted.current &&
               !controller.signal.aborted &&
-              revision.current === currentRevision
+              compositionRevision.current === currentCompositionRevision
             ) {
               setDraftReady(true);
               setDraftStatus('error');
@@ -383,6 +403,7 @@ export function useTryOn() {
     for (const request of materialRequests.current.values()) request.abort();
     explicitInput.current = true;
     revision.current += 1;
+    compositionRevision.current += 1;
     const currentRevision = revision.current;
     setDraftReady(true);
     const opts = payload.options ?? {};
@@ -490,9 +511,12 @@ export function useTryOn() {
       setProgress(0);
       setMaterialLoading(false);
       revision.current += 1;
+      compositionRevision.current += 1;
       recipeRequest.current?.abort();
       for (const request of materialRequests.current.values()) request.abort();
       setInputs(emptyInputs());
+      displayedBatch.current = null;
+      setResultPerson(null);
       setResult(null);
       setResults([]);
       setError(null);
@@ -569,6 +593,14 @@ export function useTryOn() {
 
   const [personPreviewUrl, setPersonPreviewUrl] = useState<string | null>(null);
   const [clothingPreviewUrls, setClothingPreviewUrls] = useState<string[]>([]);
+  const [resultPersonPreviewUrl, setResultPersonPreviewUrl] = useState<string | null>(null);
+  useEffect(() => {
+    const url = resultPerson ? URL.createObjectURL(resultPerson) : null;
+    setResultPersonPreviewUrl(url);
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [resultPerson]);
   const [referencePreviewUrls, setReferencePreviewUrls] = useState<
     Partial<Record<TryOnOptionalReferenceRole, string>>
   >({});
@@ -603,6 +635,7 @@ export function useTryOn() {
       if (material.role === 'clothing' && inputs.clothing.length >= MAX_CLOTHING_IMAGES)
         return false;
       revision.current += 1;
+      compositionRevision.current += 1;
       const controller = new AbortController();
       materialRequests.current.set(material.id, controller);
       try {
@@ -665,6 +698,7 @@ export function useTryOn() {
   );
   const clearDraft = useCallback(async () => {
     revision.current += 1;
+    compositionRevision.current += 1;
     const clearRevision = revision.current;
     recipeRequest.current?.abort();
     for (const controller of materialRequests.current.values()) controller.abort();
@@ -674,6 +708,8 @@ export function useTryOn() {
         const cleared = emptyInputs();
         persistedInputs.current = cleared;
         setInputs(cleared);
+        displayedBatch.current = null;
+        setResultPerson(null);
         setResult(null);
         setResults([]);
         setError(null);
@@ -763,8 +799,6 @@ export function useTryOn() {
     if (!attempt.isCurrent()) return;
     setLoading(true);
     setError(null);
-    setResult(null);
-    setResults([]);
     setProgress(0);
     resetRun();
     const total = inputs.settings.quantity;
@@ -781,8 +815,10 @@ export function useTryOn() {
       );
       if (outcome.cancelled || !attempt.isCurrent()) return;
       if (!outcome.results.length) throw allFailedError(outcome.failures);
-      if (outcome.results.length === 1 && total === 1) setResult(outcome.results[0]);
-      else setResults(outcome.results);
+      displayedBatch.current = snapshot;
+      setResultPerson(snapshot.inputs.person);
+      setResult(outcome.results.length === 1 && total === 1 ? outcome.results[0] : null);
+      setResults(total === 1 ? [] : outcome.results);
     } catch (err) {
       if (attempt.isCurrent()) {
         setError(formatApiErrorMessage(err, t, 'tryon'));
@@ -805,16 +841,22 @@ export function useTryOn() {
         generateOne(snapshot, index, snapshot.inputs.settings.quantity, signal),
       );
       if (outcome.cancelled || !attempt.isCurrent() || !outcome.results.length) return;
-      setResults((previous) => [...previous, ...outcome.results]);
+      const sameBatch = displayedBatch.current === snapshot;
+      const previous = sameBatch ? (results.length ? results : result ? [result] : []) : [];
+      displayedBatch.current = snapshot;
+      setResultPerson(snapshot.inputs.person);
+      setResults([...previous, ...outcome.results]);
       setResult(null);
     } catch (err) {
       if (attempt.isCurrent()) setError(formatApiErrorMessage(err, t, 'tryon'));
     } finally {
       attempts.finish(attempt);
     }
-  }, [attempts, run, generateOne, t]);
+  }, [attempts, run, generateOne, t, result, results]);
   const clearResult = useCallback(() => {
     cancelGeneration();
+    displayedBatch.current = null;
+    setResultPerson(null);
     setResult(null);
     setResults([]);
     setError(null);
@@ -923,6 +965,7 @@ export function useTryOn() {
     materialLoading,
     result,
     results,
+    resultPersonPreviewUrl,
     loading,
     error,
     progress,

@@ -1,0 +1,552 @@
+/* One document flow: inputs stay editable while the last completed look remains visible. */
+.tryon-workspace.hero {
+  height: auto;
+  min-height: calc(100svh - 72px);
+  padding: 0;
+}
+.tryon-workspace > .wrap {
+  height: auto;
+}
+.tryon-workspace-inner {
+  height: auto;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 24px;
+  padding-block: 104px 32px;
+}
+.tryon-page-heading {
+  position: relative;
+  scroll-margin-top: 96px;
+  align-items: start;
+  gap: 24px;
+}
+.tryon-workspace-inner[data-moment='cursor-spotlight'] > .tryon-page-heading {
+  z-index: 10;
+}
+.tryon-page-heading h1 {
+  font-size: clamp(24px, 2.2vw, 32px);
+}
+.tryon-page-heading p {
+  max-width: 52ch;
+  font-size: 14px;
+}
+.tryon-local-tools {
+  display: block;
+  position: relative;
+  flex: none;
+  max-width: none;
+  width: auto;
+}
+.tryon-local-tools > summary {
+  display: flex;
+  list-style: none;
+  cursor: pointer;
+  white-space: nowrap;
+  gap: 8px;
+}
+.tryon-local-tools > summary::-webkit-details-marker {
+  display: none;
+}
+.tryon-local-tools > summary::after {
+  content: '+';
+  font-size: 16px;
+}
+.tryon-local-tools[open] > summary::after {
+  content: '−';
+}
+.tryon-local-tools-menu {
+  scroll-margin-top: 96px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 200px;
+  display: grid;
+  gap: 8px;
+  background: var(--tool-surface);
+  border: 1px solid var(--tool-line);
+  padding: 12px;
+  border-radius: 12px;
+  z-index: 5;
+}
+.tryon-local-tools-menu .tool-button {
+  scroll-margin-top: 96px;
+  width: 100%;
+  justify-content: start;
+  text-align: left;
+}
+.tryon-workspace .tryon-local-tools .tool-button {
+  min-height: 44px;
+  font-size: 13px;
+  padding: 8px 12px;
+}
+.tryon-studio {
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  gap: 32px;
+  overflow: visible;
+  align-items: start;
+}
+.tryon-panel,
+.tryon-pane-scroll {
+  min-height: auto;
+}
+.tryon-panel > legend {
+  font-size: 15px;
+  padding-bottom: 16px;
+}
+.tryon-pane-scroll {
+  overflow: visible;
+  overscroll-behavior: auto;
+  scrollbar-gutter: auto;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+.tryon-input-form {
+  gap: 16px;
+}
+.tryon-upload-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.tryon-workflow-step {
+  display: grid;
+  gap: 12px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.tryon-step-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  width: 100%;
+}
+.tryon-step-heading h3,
+.tryon-workspace .tryon-step-heading h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.5;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.tryon-step-number {
+  font-size: 13px;
+  color: var(--tool-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 24px;
+}
+.tryon-step-state {
+  margin-left: auto;
+  color: var(--tool-muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+.tryon-step-heading .tryon-count {
+  margin-left: auto;
+  font-size: 13px;
+}
+.tryon-workspace .tryon-person-drop {
+  width: 100%;
+  min-height: 128px;
+  height: auto;
+  background: var(--tool-surface);
+  border-color: var(--tool-line);
+  border-radius: 12px;
+  font-size: 14px;
+}
+.tryon-workspace .tryon-person-drop.has-photo {
+  height: 192px;
+  min-height: 192px;
+}
+.tryon-person-drop.has-photo img {
+  height: 192px;
+  min-height: 0;
+}
+.tryon-drop-mark {
+  font-size: 28px;
+  color: var(--tool-muted);
+  line-height: 1;
+}
+.tryon-person-drop small {
+  font-size: 13px;
+}
+.tryon-person-drop:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.tryon-person-preview img {
+  height: 192px;
+}
+.tryon-role-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tryon-role-actions > .tool-button {
+  flex: 1;
+  font-size: 13px;
+  min-width: 0;
+  padding-inline: 12px;
+}
+.tryon-clothing-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.tryon-clothing-thumb img {
+  height: 112px;
+}
+.tryon-pose-step > legend {
+  float: none;
+  padding: 0 0 12px;
+  width: 100%;
+}
+.tryon-pose-step .tryon-preservation-grid {
+  grid-template-columns: 1fr;
+}
+.tryon-pose-step .tryon-preservation {
+  justify-content: space-between;
+}
+.tryon-pose-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+}
+.tryon-pose-actions .tryon-reference-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.tryon-pose-actions .tool-button {
+  font-size: 13px;
+  padding-inline: 8px;
+}
+.tryon-pose-actions .tryon-role-actions {
+  display: grid;
+}
+.tryon-pose-actions .tryon-reference-field {
+  min-width: 0;
+}
+.tryon-pose-actions .tryon-reference-preview {
+  padding-top: 8px;
+}
+.tryon-reference-controls .tryon-preservation-grid {
+  grid-template-columns: 1fr;
+}
+.tryon-reference-controls .tryon-preservation {
+  font-size: 13px;
+}
+.tryon-workspace .tryon-hint,
+.tryon-workspace-status {
+  font-size: 13px;
+}
+.tryon-reference-label {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.tryon-advanced {
+  border-bottom: 1px solid var(--tool-line);
+  padding-bottom: 4px;
+}
+.tryon-advanced-content {
+  padding-block: 12px 20px;
+  display: grid;
+  gap: 24px;
+}
+.tryon-advanced-content .tryon-field-grid {
+  gap: 12px;
+}
+.tryon-generation-controls {
+  display: grid;
+  gap: 8px;
+}
+.tryon-generate-row {
+  align-items: end;
+}
+.tryon-quantity {
+  flex-direction: row;
+  align-items: center;
+  width: 112px;
+  flex: none;
+}
+.tryon-quantity .tool-control {
+  width: 64px;
+  flex: 1;
+}
+.tryon-workspace .tryon-field {
+  font-size: 13px;
+}
+.tryon-preview .tryon-pane-scroll {
+  gap: 16px;
+}
+.tryon-reference-board {
+  border: 1px solid var(--tool-line);
+  background: var(--tool-surface);
+  border-radius: 12px;
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.tryon-board-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+.tryon-board-heading h3 {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 600;
+}
+.tryon-board-heading .tryon-count {
+  font-size: 13px;
+}
+.tryon-board-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+.tryon-board-person,
+.tryon-board-slot {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+}
+.tryon-board-label {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tool-muted);
+}
+.tryon-board-person > img {
+  width: 100%;
+  height: 352px;
+  min-height: 352px;
+  object-fit: contain;
+  background: var(--tool-raised);
+  border-radius: 8px;
+}
+.tryon-board-references {
+  display: grid;
+  gap: 16px;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  min-width: 0;
+}
+.tryon-board-slot > img {
+  width: 100%;
+  height: 148px;
+  min-height: 148px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: var(--tool-raised);
+}
+.tryon-board-garments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 8px;
+  min-width: 0;
+  background: var(--tool-raised);
+  border-radius: 8px;
+}
+.tryon-board-garments img {
+  width: 100%;
+  height: 148px;
+  min-height: 148px;
+  object-fit: contain;
+}
+.tryon-board-empty {
+  border: 1px dashed var(--tool-line);
+  border-radius: 8px;
+  background: var(--tool-raised);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  min-width: 0;
+  width: 100%;
+  color: var(--tool-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+button.tryon-board-empty {
+  cursor: pointer;
+  min-height: 148px;
+}
+.tryon-board-person > .tryon-board-empty {
+  min-height: 352px;
+}
+.tryon-board-person > .tryon-board-empty > span {
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  opacity: 0.6;
+}
+button.tryon-board-empty > span:first-child {
+  font-size: 24px;
+}
+.tryon-board-link {
+  color: var(--tool-focus);
+}
+.tryon-board-extras {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.tryon-board-extras > div {
+  display: grid;
+  gap: 8px;
+}
+.tryon-board-extras img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  background: var(--tool-raised);
+  border-radius: 8px;
+}
+.tryon-result-references .tryon-reference-board {
+  margin-top: 12px;
+}
+.tryon-workspace-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  border-top: 1px solid var(--tool-line);
+  padding-top: 16px;
+}
+.tryon-workspace-status > p:last-child {
+  flex-basis: 100%;
+  margin-left: 0;
+}
+.tryon-workspace-status .tool-button {
+  font-size: 13px;
+}
+.tryon-results .tryon-result-image img {
+  max-height: 560px;
+}
+@media (max-width: 1100px) {
+  .tryon-studio {
+    grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+  .tryon-reference-board {
+    padding: 16px;
+    gap: 16px;
+  }
+}
+@media (max-width: 900px) {
+  .tryon-workspace.hero {
+    min-height: 0;
+    height: auto;
+  }
+  .tryon-workspace-inner {
+    padding-top: 96px;
+  }
+  .tryon-page-heading {
+    flex-direction: row;
+  }
+  .tryon-page-heading > div:first-child {
+    min-width: 0;
+  }
+  .tryon-page-heading p {
+    max-width: 40ch;
+  }
+  .tryon-studio {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .tryon-upload-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .tryon-reference-controls.tryon-pose-step {
+    max-width: none;
+  }
+}
+@media (max-width: 600px) {
+  .tryon-workspace-inner {
+    padding-block: 88px 24px;
+  }
+  .tryon-page-heading {
+    gap: 12px;
+  }
+  .tryon-page-heading p {
+    font-size: 13px;
+  }
+  .tryon-page-heading h1 {
+    font-size: 24px;
+  }
+  .tryon-local-tools > summary {
+    font-size: 13px;
+    padding-inline: 12px;
+  }
+  .tryon-upload-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tryon-board-grid {
+    gap: 12px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+  .tryon-board-person > img,
+  .tryon-board-person > .tryon-board-empty {
+    height: 292px;
+    min-height: 292px;
+  }
+  .tryon-board-slot > img,
+  .tryon-board-garments img,
+  button.tryon-board-empty {
+    height: 118px;
+    min-height: 118px;
+  }
+  .tryon-board-empty {
+    padding: 8px;
+  }
+  .tryon-board-person > .tryon-board-empty > span {
+    font-size: 32px;
+  }
+  .tryon-board-heading {
+    flex-wrap: wrap;
+  }
+  .tryon-reference-board {
+    padding: 16px;
+  }
+  .tryon-reference-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 359px) {
+  .tryon-page-heading {
+    flex-wrap: wrap;
+  }
+  .tryon-local-tools-menu {
+    left: 0;
+    right: auto;
+  }
+  .tryon-board-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tryon-board-references {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+  .tryon-board-person > img,
+  .tryon-board-person > .tryon-board-empty {
+    min-height: 208px;
+    height: 208px;
+  }
+}

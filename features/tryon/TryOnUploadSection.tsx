@@ -22,10 +22,12 @@ interface TryOnUploadSectionProps {
   onClothingFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveClothing: (index: number) => void;
   onGenerate: () => void;
+  onChooseClothing?: () => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDropPerson: (e: React.DragEvent) => void;
   onDropClothing: (e: React.DragEvent) => void;
+  poseControls?: React.ReactNode;
   children?: React.ReactNode;
 }
 
@@ -44,10 +46,12 @@ export default function TryOnUploadSection({
   onClothingFileChange,
   onRemoveClothing,
   onGenerate,
+  onChooseClothing,
   onDragOver,
   onDragLeave,
   onDropPerson,
   onDropClothing,
+  poseControls,
   children,
 }: TryOnUploadSectionProps) {
   const { t, language } = useLanguage();
@@ -89,31 +93,72 @@ export default function TryOnUploadSection({
           ref={personZoneRef}
           role="group"
           aria-label={t('tryon.person_photo')}
-          className={`tryon-upload ${isDraggingOver ? 'is-dragging' : ''}`}
+          className={`tryon-upload tryon-workflow-step ${isDraggingOver ? 'is-dragging' : ''}`}
           onDragOver={isDemoMode ? (event) => event.preventDefault() : onDragOver}
           onDragLeave={isDemoMode ? undefined : onDragLeave}
           onDrop={isDemoMode || isDisabled ? (event) => event.preventDefault() : onDropPerson}
         >
-          <div className="tryon-upload-heading">
-            <span>{t('tryon.person_photo')}</span>
-            {isDemoMode && <span className="tryon-badge">{t('demo.sample_input')}</span>}
+          <div className="tryon-step-heading">
+            <h3>
+              <span className="tryon-step-number">01</span>
+              {zh ? '人物照片' : 'Person photo'}
+            </h3>
+            {personPreviewUrl && (
+              <span className="tryon-step-state">{zh ? '已加入' : 'Added'}</span>
+            )}
           </div>
-          {personPreviewUrl && (
+          {isDemoMode ? (
             <div className="tryon-person-preview">
-              <img src={personPreviewUrl} alt="Person" width="300" height="360" />
+              {personPreviewUrl && (
+                <img
+                  src={personPreviewUrl}
+                  alt={zh ? '人物照片' : 'Person photo'}
+                  width="300"
+                  height="360"
+                />
+              )}
             </div>
-          )}
-          {!isDemoMode && (
-            <input
-              ref={personInputRef}
-              type="file"
-              className="tryon-person-input"
-              data-testid="tryon-person-input"
-              accept="image/*"
-              aria-label={personPreviewUrl ? t('tryon.change_person') : t('tryon.person_photo')}
-              disabled={isDisabled}
-              onChange={onPersonFileChange}
-            />
+          ) : (
+            <>
+              <button
+                type="button"
+                className={`tryon-person-drop ${personPreviewUrl ? 'has-photo' : ''}`}
+                disabled={isDisabled}
+                onClick={() => personInputRef.current?.click()}
+                aria-label={personPreviewUrl ? t('tryon.change_person') : t('tryon.person_photo')}
+              >
+                {personPreviewUrl ? (
+                  <img
+                    src={personPreviewUrl}
+                    alt={zh ? '人物照片' : 'Person photo'}
+                    width="300"
+                    height="360"
+                  />
+                ) : (
+                  <>
+                    <span className="tryon-drop-mark" aria-hidden="true">
+                      ＋
+                    </span>
+                    <span>{zh ? '上傳人物照片' : 'Upload person photo'}</span>
+                    <small>{zh ? '也可拖放或貼上圖片' : 'Or drop or paste an image'}</small>
+                  </>
+                )}
+                {personPreviewUrl && (
+                  <span className="tryon-image-label">{t('tryon.change_person')}</span>
+                )}
+              </button>
+              <input
+                ref={personInputRef}
+                type="file"
+                className="tryon-person-input"
+                data-testid="tryon-person-input"
+                accept="image/*"
+                aria-label={personPreviewUrl ? t('tryon.change_person') : t('tryon.person_photo')}
+                disabled={isDisabled}
+                onChange={onPersonFileChange}
+                hidden
+              />
+            </>
           )}
         </div>
         <div
@@ -121,96 +166,137 @@ export default function TryOnUploadSection({
           role="group"
           aria-label={t('tryon.clothing_photos')}
           aria-describedby={clothingHintId}
-          className={`tryon-upload ${isDraggingOver ? 'is-dragging' : ''}`}
+          className={`tryon-upload tryon-workflow-step ${isDraggingOver ? 'is-dragging' : ''}`}
           onDragOver={isDemoMode ? (event) => event.preventDefault() : onDragOver}
           onDragLeave={isDemoMode ? undefined : onDragLeave}
           onDrop={isDemoMode || isDisabled ? (event) => event.preventDefault() : onDropClothing}
         >
-          <div className="tryon-upload-heading">
-            <span>{t('tryon.clothing_photos')}</span>
+          <div className="tryon-step-heading">
+            <h3>
+              <span className="tryon-step-number">02</span>
+              {zh ? '服裝搭配' : 'Clothing'}
+            </h3>
             <span className="tryon-count">
               {clothingPreviewUrls.length} / {maxClothing}
             </span>
           </div>
-          <div className="tryon-clothing-grid">
-            {clothingPreviewUrls.map((url, index) => (
-              <div key={url} className="tryon-clothing-thumb">
-                <img src={url} alt={`Clothing ${index + 1}`} width="140" height="180" />
-                {!isDemoMode && (
-                  <button
-                    type="button"
-                    disabled={isDisabled}
-                    onClick={() => onRemoveClothing(index)}
-                    className="tryon-remove"
-                    aria-label={t('tryon.remove_clothing')}
-                  >
-                    <XMarkIcon className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            ))}
-            {canAddClothing && (
-              <>
+          {clothingPreviewUrls.length > 0 && (
+            <div className="tryon-clothing-grid">
+              {clothingPreviewUrls.map((url, index) => (
+                <div key={url} className="tryon-clothing-thumb">
+                  <img
+                    src={url}
+                    alt={`${zh ? '服裝' : 'Clothing'} ${index + 1}`}
+                    width="140"
+                    height="180"
+                  />
+                  {!isDemoMode && (
+                    <button
+                      type="button"
+                      disabled={isDisabled}
+                      onClick={() => onRemoveClothing(index)}
+                      className="tryon-remove"
+                      aria-label={t('tryon.remove_clothing')}
+                    >
+                      <XMarkIcon className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {!isDemoMode && (
+            <div className="tryon-role-actions">
+              <button
+                type="button"
+                className="tool-button tool-button-secondary"
+                disabled={!canAddClothing}
+                onClick={() => clothingInputRef.current?.click()}
+              >
+                {t('tryon.add_clothing')}
+              </button>
+              {onChooseClothing && (
                 <button
                   type="button"
-                  className="tryon-add-clothing"
-                  aria-label={t('tryon.add_clothing')}
-                  aria-describedby={clothingHintId}
-                  onClick={() => clothingInputRef.current?.click()}
+                  className="tool-button tool-button-secondary"
+                  disabled={!canAddClothing}
+                  onClick={onChooseClothing}
                 >
-                  <span aria-hidden="true">＋</span>
-                  <span>{t('tryon.add_clothing')}</span>
+                  {zh ? '挑選服裝' : 'Choose clothing'}
                 </button>
-                <input
-                  ref={clothingInputRef}
-                  type="file"
-                  data-testid="tryon-clothing-input"
-                  accept="image/*"
-                  multiple
-                  aria-label={t('tryon.add_clothing')}
-                  aria-describedby={clothingHintId}
-                  disabled={isDisabled}
-                  onChange={onClothingFileChange}
-                  hidden
-                />
-              </>
-            )}
-          </div>
+              )}
+            </div>
+          )}
+          <input
+            ref={clothingInputRef}
+            type="file"
+            data-testid="tryon-clothing-input"
+            accept="image/*"
+            multiple
+            aria-label={t('tryon.add_clothing')}
+            aria-describedby={clothingHintId}
+            disabled={!canAddClothing}
+            onChange={onClothingFileChange}
+            hidden
+          />
+          <p id={clothingHintId} className="tryon-hint">
+            {zh
+              ? '加入商品圖，可將多件服裝組合成一套。'
+              : 'Add product photos to combine garments into one outfit.'}
+          </p>
         </div>
       </div>
-      <p id={clothingHintId} className="tryon-hint">
-        {zh
-          ? '上傳商品圖，或從上方參考素材庫選擇。'
-          : 'Upload product photos or choose from the reference library.'}
-      </p>
-      {children}
-      <div className="tryon-generate-row">
-        <label className="tryon-field tryon-quantity">
-          <span>{zh ? '張數' : 'Images'}</span>
-          <select
-            value={quantity}
-            onChange={(event) => onQuantityChange(Number(event.target.value))}
+      {poseControls}
+      {children && (
+        <details className="tryon-disclosure tryon-advanced">
+          <summary>{zh ? '進階設定與其他參考' : 'Advanced settings and references'}</summary>
+          <div className="tryon-advanced-content">{children}</div>
+        </details>
+      )}
+      <div className="tryon-generation-controls">
+        <div className="tryon-generate-row">
+          <label className="tryon-field tryon-quantity">
+            <span>{zh ? '張數' : 'Images'}</span>
+            <select
+              value={quantity}
+              onChange={(event) => onQuantityChange(Number(event.target.value))}
+              disabled={isDisabled}
+              className="tool-control"
+            >
+              {[1, 2, 3, 4].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            onClick={onGenerate}
             disabled={isDisabled}
-            className="tool-control"
+            className="tool-button tool-button-primary tryon-generate"
           >
-            {[1, 2, 3, 4].map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button
-          type="button"
-          onClick={onGenerate}
-          disabled={isDisabled || !canGenerate}
-          className="tool-button tool-button-primary tryon-generate"
-        >
-          {loading ? t('tryon.generating') : t('tryon.generate_btn')}
-        </button>
+            {loading ? t('tryon.generating') : t('tryon.generate_btn')}
+          </button>
+        </div>
+        {!canGenerate && !loading && (
+          <p className="tryon-hint">
+            {!personPreviewUrl
+              ? zh
+                ? '先加入人物照片，再選擇服裝。'
+                : 'Add a person photo, then choose clothing.'
+              : clothingPreviewUrls.length === 0
+                ? zh
+                  ? '加入至少一件服裝，即可生成。'
+                  : 'Add at least one garment to generate.'
+                : zh
+                  ? '確認照片與提示詞後即可生成。'
+                  : 'Review your photos and prompt before generating.'}
+          </p>
+        )}
+        <CostEstimateBadge quantity={quantity} />
+        {error && <ErrorDisplay message={error} />}
       </div>
-      <CostEstimateBadge quantity={quantity} />
-      {error && <ErrorDisplay message={error} />}
     </div>
   );
 }

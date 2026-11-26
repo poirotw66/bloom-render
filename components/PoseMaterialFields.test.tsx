@@ -5,7 +5,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { MaterialBasketProvider } from '../contexts/MaterialBasketContext';
-import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
 import { MATERIAL_BASKET_STORAGE_KEY } from '../utils/materialBasket';
 import MaterialsPage from '../features/materials/MaterialsPage';
 import TryOnMaterialPicker from '../features/tryon/TryOnMaterialPicker';
@@ -76,20 +75,20 @@ describe('pose material controls', () => {
     renderMaterials();
     fireEvent.click(screen.getByTestId('basket-add-pose-relaxed-front'));
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'pose' } });
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(
-      TRYON_MATERIALS.filter((material) => material.role === 'pose').length,
-    );
+    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(6);
     fireEvent.change(screen.getByLabelText('Posture'), { target: { value: 'seated' } });
     fireEvent.change(screen.getByLabelText('View', { exact: true }), {
       target: { value: 'profile' },
     });
     expect(
       screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual([
-      'basket-add-pose-seated-profile',
-      'basket-add-seated-study-profile-lineart',
-      'basket-add-seated-study-profile-depth',
-    ]);
+    ).toEqual(['basket-add-pose-seated-profile', 'basket-add-seated-study-profile-lineart']);
+    fireEvent.change(screen.getByLabelText('Reference representation'), {
+      target: { value: 'seated-study-profile-depth' },
+    });
+    expect(
+      screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual(['basket-add-pose-seated-profile', 'basket-add-seated-study-profile-depth']);
     await waitFor(() =>
       expect(
         JSON.parse(localStorage.getItem(MATERIAL_BASKET_STORAGE_KEY)!).materialBasket.materialIds,
@@ -97,7 +96,7 @@ describe('pose material controls', () => {
     );
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'all' } });
     expect(screen.queryByLabelText('Posture')).toBeNull();
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(TRYON_MATERIALS.length);
+    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(11);
     expect(screen.getByTestId('basket-add-pose-relaxed-front').getAttribute('aria-pressed')).toBe(
       'true',
     );
@@ -115,7 +114,12 @@ describe('pose material controls', () => {
     });
     expect(
       screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual(['basket-add-seated-study-back-lineart', 'basket-add-seated-study-back-depth']);
+    ).toEqual(['basket-add-seated-study-back-lineart']);
+    fireEvent.change(screen.getByLabelText('Reference representation'), {
+      target: { value: 'seated-study-back-depth' },
+    });
+    expect(screen.getByTestId('basket-add-seated-study-back-depth')).toBeTruthy();
+    expect(screen.queryByTestId('basket-add-seated-study-back-lineart')).toBeNull();
     fireEvent.change(screen.getByLabelText('Search materials'), {
       target: { value: 'hand-on-hip' },
     });
@@ -127,15 +131,25 @@ describe('pose material controls', () => {
     renderMaterials();
     const query = screen.getByLabelText('Search materials');
     fireEvent.change(query, { target: { value: '四分之三側面' } });
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(
-      TRYON_MATERIALS.filter((material) => material.pose?.view === 'three-quarter').length,
-    );
+    expect(
+      screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual([
+      'basket-add-pose-hand-on-hip',
+      'basket-add-standing-study-three-quarter-lineart',
+      'basket-add-hand-on-hip-study-three-quarter-lineart',
+      'basket-add-seated-study-three-quarter-lineart',
+    ]);
     expect(screen.getByTestId('basket-add-pose-hand-on-hip')).toBeTruthy();
     fireEvent.change(query, { target: { value: 'ＴＨＲＥＥ－ＱＵＡＲＴＥＲ' } });
     expect(screen.getByTestId('basket-add-pose-hand-on-hip')).toBeTruthy();
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(
-      TRYON_MATERIALS.filter((material) => material.pose?.view === 'three-quarter').length,
-    );
+    expect(
+      screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual([
+      'basket-add-pose-hand-on-hip',
+      'basket-add-standing-study-three-quarter-lineart',
+      'basket-add-hand-on-hip-study-three-quarter-lineart',
+      'basket-add-seated-study-three-quarter-lineart',
+    ]);
     fireEvent.change(query, { target: { value: 'relaxed-standing' } });
     expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(1);
     expect(screen.getByTestId('basket-add-pose-relaxed-front')).toBeTruthy();
@@ -158,7 +172,7 @@ describe('pose material controls', () => {
 
   it('preserves selected references while the try-on picker filters and resets categories', async () => {
     renderPicker();
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(TRYON_MATERIALS.length);
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(11);
     fireEvent.click(screen.getByRole('button', { name: 'Pose' }));
     fireEvent.change(screen.getByLabelText('View', { exact: true }), {
       target: { value: 'front' },
@@ -175,12 +189,10 @@ describe('pose material controls', () => {
     expect(
       screen.getByTestId('tryon-material-pose-relaxed-front').getAttribute('aria-pressed'),
     ).toBe('true');
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(TRYON_MATERIALS.length);
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(11);
     fireEvent.click(screen.getByRole('button', { name: 'Pose' }));
     expect((screen.getByLabelText('View', { exact: true }) as HTMLSelectElement).value).toBe('');
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(
-      TRYON_MATERIALS.filter((material) => material.role === 'pose').length,
-    );
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(6);
   });
 
   it('finds metadata text in the try-on reference picker without changing the selected reference', () => {
@@ -190,9 +202,14 @@ describe('pose material controls', () => {
     fireEvent.change(screen.getByLabelText('Search references'), {
       target: { value: 'three-quarter' },
     });
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(
-      TRYON_MATERIALS.filter((material) => material.pose?.view === 'three-quarter').length,
-    );
+    expect(
+      screen.getAllByTestId(/^tryon-material-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual([
+      'tryon-material-pose-hand-on-hip',
+      'tryon-material-standing-study-three-quarter-lineart',
+      'tryon-material-hand-on-hip-study-three-quarter-lineart',
+      'tryon-material-seated-study-three-quarter-lineart',
+    ]);
     expect(screen.getByTestId('tryon-material-pose-hand-on-hip')).toBeTruthy();
   });
 
@@ -235,13 +252,11 @@ describe('pose material controls', () => {
         screen.getByTestId('tryon-material-standing-study-back-depth').getAttribute('aria-pressed'),
       ).toBe('true'),
     );
-    expect(
-      screen
-        .getByTestId('tryon-material-standing-study-front-lineart')
-        .getAttribute('aria-pressed'),
-    ).toBe('false');
-    expect(
-      screen.getByTestId('tryon-material-standing-study-back-lineart').getAttribute('aria-pressed'),
-    ).toBe('false');
+    expect(screen.queryByTestId('tryon-material-standing-study-front-lineart')).toBeNull();
+    expect(screen.queryByTestId('tryon-material-standing-study-back-lineart')).toBeNull();
+    expect((screen.getByTestId('pose-view-select') as HTMLSelectElement).value).toBe('back');
+    expect((screen.getByTestId('pose-representation-select') as HTMLSelectElement).value).toBe(
+      'depth',
+    );
   });
 });

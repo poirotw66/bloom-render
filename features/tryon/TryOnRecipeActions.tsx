@@ -20,15 +20,9 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function share() {
+    let url: string;
     try {
-      const url = buildRemixUrl({ v: 1, f: 'tryon', recipe: sharedRecipe });
-      setShareUrl(url);
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-        setMessage(zh ? '配方連結已複製。' : 'Recipe link copied.');
-      } else {
-        setMessage(zh ? '請複製下方連結。' : 'Copy the link below.');
-      }
+      url = buildRemixUrl({ v: 1, f: 'tryon', recipe: sharedRecipe });
     } catch {
       setShareUrl('');
       setMessage(
@@ -36,6 +30,16 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
           ? '無法建立連結，提示詞可能過長。請下載配方 JSON 分享。'
           : 'Could not create the link; the prompt may be too long. Download the recipe JSON to share it.',
       );
+      return;
+    }
+
+    setShareUrl(url);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(url);
+      setMessage(zh ? '配方連結已複製。' : 'Recipe link copied.');
+    } catch {
+      setMessage(zh ? '請複製下方連結。' : 'Copy the link below.');
     }
   }
 

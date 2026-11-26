@@ -10,6 +10,9 @@ import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { recordMaterialUse, useMaterialPreferences } from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
+import MaterialGroupCard from '../../components/MaterialGroupCard';
+import { groupMaterials } from '../../constants/materialGroups';
+import '../../styles/material-browser.css';
 import PoseVariantControls from '../../components/PoseVariantControls';
 import {
   MaterialCollectionFilters,
@@ -45,7 +48,7 @@ function recipeForMaterial(material: TryOnMaterial): TryOnRecipe {
       outputSize: '1K',
       aspectRatio: '9:16',
       quantity: 1,
-      keepBackground: false,
+      keepBackground: true,
       keepPose: true,
     },
   };
@@ -109,7 +112,7 @@ export default function MaterialsPage() {
   }
 
   return (
-    <div className={`${UI_PAGE} space-y-7`}>
+    <div className="material-browser">
       {viewer && (
         <MaterialViewer
           material={viewer}
@@ -121,7 +124,7 @@ export default function MaterialsPage() {
           }}
         />
       )}
-      <header className="space-y-3">
+      <header className="material-browser-header">
         {selected && (
           <Link
             to={ROUTES.MATERIALS}
@@ -130,7 +133,7 @@ export default function MaterialsPage() {
             {zh ? '所有參考素材' : 'All reference materials'}
           </Link>
         )}
-        <h1 className={UI_TITLE}>
+        <h1 className="material-browser-title">
           {selected
             ? zh
               ? selected.titleZh
@@ -139,7 +142,7 @@ export default function MaterialsPage() {
               ? '試穿參考素材'
               : 'Try-on reference materials'}
         </h1>
-        <p className="theme-ink-muted max-w-2xl">
+        <p className="material-browser-description">
           {selected
             ? zh
               ? selected.descriptionZh
@@ -151,7 +154,7 @@ export default function MaterialsPage() {
         <button type="button" className={UI_BTN_SECONDARY} onClick={basket.openBasket}>
           {zh ? '素材籃' : 'Material basket'} ({basket.materialIds.length})
         </button>
-        <p role="status" className="text-sm theme-ink-muted">
+        <p role="status" className="material-browser-message">
           {materialBasketMessage(basket.message, zh)}
         </p>
       </header>
@@ -246,9 +249,9 @@ export default function MaterialsPage() {
         </div>
       ) : (
         <>
-          <MaterialCollectionFilters value={collection} onChange={setCollection} />
-          <div className="flex flex-wrap gap-3">
-            <label className="flex-1 min-w-0 text-sm theme-ink-muted">
+          <div className="material-browser-toolbar">
+            <MaterialCollectionFilters value={collection} onChange={setCollection} />
+            <label className="material-browser-search">
               {zh ? '搜尋素材' : 'Search materials'}
               <input
                 className={`block mt-1 w-full ${UI_INPUT}`}
@@ -257,7 +260,7 @@ export default function MaterialsPage() {
                 onChange={(event) => setQuery(event.target.value)}
               />
             </label>
-            <label className="text-sm theme-ink-muted">
+            <label className="material-browser-role">
               {zh ? '素材類型' : 'Material type'}
               <select
                 className={`block mt-1 ${UI_INPUT}`}
@@ -276,63 +279,57 @@ export default function MaterialsPage() {
             </label>
           </div>
           {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {items.map((material) => (
-              <article
-                key={material.id}
-                className="rounded-xl border theme-border overflow-hidden theme-raised"
+          <p className="material-browser-count" role="status">
+            {zh
+              ? `${groupMaterials(items).length} 組素材`
+              : `${groupMaterials(items).length} references`}
+          </p>
+          <div className="material-browser-grid">
+            {groupMaterials(items).map((group) => (
+              <MaterialGroupCard
+                key={group.id}
+                group={group}
+                selectedIds={basket.materialIds}
+                onPreview={(material) => {
+                  recordMaterialUse(material.id);
+                  setViewer(material);
+                }}
               >
-                <Link
-                  to={`${ROUTES.MATERIALS}/${material.id}`}
-                  className="group block focus-visible:outline-2 focus-visible:outline-offset-4"
-                >
-                  <img
-                    src={publicAssetUrl(material.image)}
-                    alt={zh ? material.titleZh : material.title}
-                    loading="lazy"
-                    className="w-full aspect-[4/3] object-contain transition-transform group-hover:scale-[1.02]"
-                  />
-                  <h2 className="px-4 py-3 text-base font-semibold theme-ink">
-                    {zh ? material.titleZh : material.title}
-                  </h2>
-                </Link>
-                <div className="px-4 pb-4 material-card-actions">
-                  <button
-                    type="button"
-                    className={UI_BTN_SECONDARY}
-                    data-testid={`basket-add-${material.id}`}
-                    aria-pressed={basket.materialIds.includes(material.id)}
-                    onClick={() =>
-                      basket.materialIds.includes(material.id)
-                        ? basket.removeMaterial(material.id)
-                        : basket.addMaterial(material.id)
-                    }
-                  >
-                    {basket.materialIds.includes(material.id)
-                      ? zh
-                        ? '從素材籃移除'
-                        : 'Remove from basket'
-                      : zh
-                        ? '加入素材籃'
-                        : 'Add to basket'}
-                  </button>
-                  <MaterialFavoriteButton
-                    id={material.id}
-                    title={zh ? material.titleZh : material.title}
-                  />
-                  <button
-                    type="button"
-                    className={UI_BTN_SECONDARY}
-                    aria-label={`${zh ? '檢視大圖' : 'View image'} ${zh ? material.titleZh : material.title}`}
-                    onClick={() => {
-                      recordMaterialUse(material.id);
-                      setViewer(material);
-                    }}
-                  >
-                    {zh ? '檢視大圖' : 'View image'}
-                  </button>
-                </div>
-              </article>
+                {(material) => (
+                  <>
+                    <button
+                      type="button"
+                      className={UI_BTN_PRIMARY}
+                      data-testid={`basket-add-${material.id}`}
+                      aria-pressed={basket.materialIds.includes(material.id)}
+                      onClick={() =>
+                        basket.materialIds.includes(material.id)
+                          ? basket.removeMaterial(material.id)
+                          : basket.addMaterial(material.id)
+                      }
+                    >
+                      {basket.materialIds.includes(material.id)
+                        ? zh
+                          ? '從素材籃移除'
+                          : 'Remove from basket'
+                        : zh
+                          ? '加入素材籃'
+                          : 'Add to basket'}
+                    </button>
+                    <MaterialFavoriteButton
+                      id={material.id}
+                      title={zh ? material.titleZh : material.title}
+                    />
+                    <Link
+                      className={UI_BTN_SECONDARY}
+                      to={`${ROUTES.MATERIALS}/${material.id}`}
+                      aria-label={`${zh ? material.titleZh : material.title} ${zh ? '素材詳情' : 'details'}`}
+                    >
+                      {zh ? '素材詳情' : 'Details'}
+                    </Link>
+                  </>
+                )}
+              </MaterialGroupCard>
             ))}
           </div>
           {items.length === 0 && (

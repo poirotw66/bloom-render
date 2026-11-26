@@ -1,10 +1,9 @@
+import { openWorkspace } from './helpers/workspace';
 import { readFileSync, copyFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const MATERIAL_COUNT = JSON.parse(
-  readFileSync(new URL('../constants/tryOnMaterials.json', import.meta.url), 'utf8'),
-).length as number;
+const MATERIAL_GROUP_COUNT = 11;
 
 async function seed(page: Page, theme = 'bloom') {
   await page.addInitScript((selectedTheme) => {
@@ -14,19 +13,7 @@ async function seed(page: Page, theme = 'bloom') {
 }
 
 async function basket(page: Page) {
-  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-  const direct = nav.getByRole('button', { name: /^(?:Basket|Material basket)(?:\s|$)/ });
-  if (await direct.isVisible()) await direct.click();
-  else {
-    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-    await page
-      .getByRole('dialog', { name: 'All photo tools', exact: true })
-      .getByRole('button', { name: /^(?:Basket|Material basket)(?:\s|$)/ })
-      .click();
-  }
-  const dialog = page.getByRole('dialog', { name: 'Material basket', exact: true });
-  await expect(dialog).toBeVisible();
-  return dialog;
+  return openWorkspace(page, 'Material basket');
 }
 
 async function assertAccessible(page: Page) {
@@ -117,7 +104,10 @@ test('material favorites and recent use persist independently of basket selectio
     'aria-pressed',
     'true',
   );
-  await page.getByRole('heading', { name: 'Seated profile', exact: true }).click();
+  await page
+    .locator('[data-material-group="pose-seated-profile"]')
+    .getByRole('link', { name: 'Seated profile details', exact: true })
+    .click();
   await expect(page).toHaveURL(/\/materials\/pose-seated-profile$/);
   await expect(page.getByTestId('pose-metadata')).toBeVisible();
   await expect
@@ -160,7 +150,7 @@ test('malformed material preferences recover without breaking the material libra
   await seed(page);
   await page.addInitScript(() => localStorage.setItem('bloom_material_preferences', '{broken'));
   await page.goto('/materials');
-  await expect(page.locator('[data-testid^="basket-add-"]')).toHaveCount(MATERIAL_COUNT);
+  await expect(page.locator('[data-testid^="basket-add-"]')).toHaveCount(MATERIAL_GROUP_COUNT);
   await page.getByTestId('favorite-material-white-oxford-shirt').click();
   await expect(page.getByTestId('favorite-material-white-oxford-shirt')).toHaveAttribute(
     'aria-pressed',

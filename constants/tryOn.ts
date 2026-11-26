@@ -23,6 +23,7 @@ export type TryOnBackgroundId =
   | 'old_street_jiufen';
 
 export type TryOnStyleId =
+  | 'original'
   | 'equestrian_chic'
   | 'winter_wonderland'
   | 'luxury_travel'
@@ -159,6 +160,7 @@ export const TRYON_BACKGROUNDS: TryOnBackgroundOption[] = [
 ];
 
 export const TRYON_STYLES: TryOnStyleOption[] = [
+  { id: 'original', nameKey: 'tryon.style.original', emoji: '', promptHint: '' },
   {
     id: 'equestrian_chic',
     nameKey: 'tryon.style.equestrian_chic',
@@ -246,4 +248,4 @@ export const TRYON_STYLES: TryOnStyleOption[] = [
 ];
 
 export const DEFAULT_TRYON_BACKGROUND: TryOnBackgroundId = 'studio';
-export const DEFAULT_TRYON_STYLE: TryOnStyleId = 'editorial_high';
+export const DEFAULT_TRYON_STYLE: TryOnStyleId = 'original';

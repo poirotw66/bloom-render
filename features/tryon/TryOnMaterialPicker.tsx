@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMaterials';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnReferenceRole } from '../../types/tryOnRecipe';
-import { publicAssetUrl } from '../../utils/publicAsset';
+import { groupMaterials } from '../../constants/materialGroups';
+import MaterialGroupCard from '../../components/MaterialGroupCard';
 import { recordMaterialUse, useMaterialPreferences } from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
 import PoseVariantControls from '../../components/PoseVariantControls';
@@ -25,6 +26,7 @@ export const REFERENCE_ROLE_LABELS: Record<TryOnReferenceRole, [string, string]>
 
 interface TryOnMaterialPickerProps {
   selectedIds: string[];
+  initialRole?: TryOnReferenceRole | 'all';
   canAddClothing: boolean;
   disabled?: boolean;
   onSelect: (material: TryOnMaterial) => Promise<void | boolean>;
@@ -33,6 +35,7 @@ interface TryOnMaterialPickerProps {
 
 export default function TryOnMaterialPicker({
   selectedIds,
+  initialRole = 'all',
   canAddClothing,
   disabled = false,
   onSelect,
@@ -40,7 +43,7 @@ export default function TryOnMaterialPicker({
 }: TryOnMaterialPickerProps) {
   const { language } = useLanguage();
   const zh = language === 'zh-TW';
-  const [role, setRole] = useState<TryOnReferenceRole | 'all'>('all');
+  const [role, setRole] = useState<TryOnReferenceRole | 'all'>(initialRole);
   const [search, setSearch] = useState('');
   const preferences = useMaterialPreferences();
   const previousSelected = useRef(selectedIds);
@@ -187,66 +190,65 @@ export default function TryOnMaterialPicker({
           className="tool-control"
         />
       </label>
-      <div className="tryon-material-grid">
-        {materials.map((material) => {
-          const selected = selectedIds.includes(material.id);
-          const title = zh ? material.titleZh : material.title;
-          const full = material.role === 'clothing' && !canAddClothing && !selected;
-          return (
-            <article key={material.id} className="tryon-material-card">
-              <button
-                type="button"
-                data-testid={`tryon-material-${material.id}`}
-                disabled={disabled || pendingId !== null || full}
-                aria-label={`${selected ? (zh ? '移除' : 'Remove') : zh ? '選擇' : 'Select'} ${title}`}
-                aria-pressed={selected}
-                aria-busy={pendingId === material.id}
-                onClick={() => void select(material)}
-                className="tryon-material-button"
-              >
-                <img
-                  src={publicAssetUrl(material.image)}
-                  alt=""
-                  loading="eager"
-                  decoding="async"
-                  width="600"
-                  height="800"
-                  className="tryon-material-image"
-                />
-                <span className="tryon-material-title">{title}</span>
-                {selected && (
-                  <span className="tryon-material-selected">{zh ? '已選' : 'Selected'}</span>
-                )}
-                {pendingId === material.id && (
-                  <span className="sr-only">{zh ? '載入中' : 'Loading'}</span>
-                )}
-              </button>
-              <div className="tryon-material-card-tools">
-                <button
-                  type="button"
-                  className="tool-button tool-button-secondary"
-                  aria-label={`${zh ? '檢視大圖' : 'View image'} ${title}`}
-                  onClick={() => {
-                    recordMaterialUse(material.id);
-                    setViewerTracksSelection(selectedIds.includes(material.id));
-                    setViewer(material);
-                  }}
-                >
-                  {zh ? '檢視大圖' : 'View image'}
-                </button>
-                <MaterialFavoriteButton id={material.id} title={title} />
-              </div>
-              <Link
-                to={`/materials/${material.id}`}
-                onClick={() => recordMaterialUse(material.id)}
-                className="tryon-material-details"
-                aria-label={zh ? `${title} 素材詳情` : `${title} details`}
-              >
-                {zh ? '素材詳情' : 'Details'}
-              </Link>
-            </article>
-          );
-        })}
+      <p className="material-browser-count" role="status">
+        {zh
+          ? `${groupMaterials(materials).length} 組素材`
+          : `${groupMaterials(materials).length} references`}
+      </p>
+      <div className="material-browser-grid material-browser-grid--picker">
+        {groupMaterials(materials).map((group) => (
+          <MaterialGroupCard
+            key={group.id}
+            group={group}
+            selectedIds={selectedIds}
+            onPreview={(material) => {
+              recordMaterialUse(material.id);
+              setViewerTracksSelection(selectedIds.includes(material.id));
+              setViewer(material);
+            }}
+          >
+            {(material) => {
+              const selected = selectedIds.includes(material.id);
+              const title = zh ? material.titleZh : material.title;
+              const full = material.role === 'clothing' && !canAddClothing && !selected;
+              return (
+                <>
+                  <button
+                    type="button"
+                    data-testid={`tryon-material-${material.id}`}
+                    disabled={disabled || pendingId !== null || full}
+                    aria-label={`${selected ? (zh ? '移除' : 'Remove') : zh ? '選擇' : 'Select'} ${title}`}
+                    aria-pressed={selected}
+                    aria-busy={pendingId === material.id}
+                    onClick={() => void select(material)}
+                    className={`tool-button ${selected ? 'tool-button-secondary' : 'tool-button-primary'}`}
+                  >
+                    {pendingId === material.id
+                      ? zh
+                        ? '載入中'
+                        : 'Loading'
+                      : selected
+                        ? zh
+                          ? '移除素材'
+                          : 'Remove reference'
+                        : zh
+                          ? '選用素材'
+                          : 'Select reference'}
+                  </button>
+                  <MaterialFavoriteButton id={material.id} title={title} />
+                  <Link
+                    to={`/materials/${material.id}`}
+                    onClick={() => recordMaterialUse(material.id)}
+                    className="tool-button tool-button-secondary"
+                    aria-label={zh ? `${title} 素材詳情` : `${title} details`}
+                  >
+                    {zh ? '素材詳情' : 'Details'}
+                  </Link>
+                </>
+              );
+            }}
+          </MaterialGroupCard>
+        ))}
       </div>
       {materials.length === 0 && (
         <p className="tryon-hint">{zh ? '沒有符合的素材。' : 'No matching references.'}</p>

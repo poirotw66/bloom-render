@@ -1,3 +1,4 @@
+import { openWorkspace as command } from './helpers/workspace';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { test, expect, type Page } from '@playwright/test';
@@ -14,21 +15,7 @@ async function seed(page: Page, theme = 'bloom') {
     sessionStorage.setItem('bloom_openrouter_api_key', 'mock-pose-camera-key');
   }, theme);
 }
-async function command(page: Page, name: string) {
-  const nav = page.getByRole('navigation', { name: 'Primary', exact: true });
-  const button = nav.getByRole('button', { name, exact: true });
-  if (await button.isVisible()) await button.click();
-  else {
-    await nav.getByRole('button', { name: 'All photo tools', exact: true }).click();
-    await page
-      .getByRole('dialog', { name: 'All photo tools', exact: true })
-      .getByRole('button', { name, exact: true })
-      .click();
-  }
-  const dialog = page.getByRole('dialog', { name, exact: true });
-  await expect(dialog).toBeVisible();
-  return dialog;
-}
+
 async function provider(page: Page) {
   const requests: Array<{ prompt: string; input_references: unknown[] }> = [];
   await page.route('https://openrouter.ai/api/v1/images', async (route) => {
@@ -56,7 +43,10 @@ for (const theme of ['bloom', 'night', 'newyear']) {
       await expect(page.getByTestId('basket-add-pose-seated-profile')).toBeVisible();
       await expect(page.getByTestId('basket-add-pose-relaxed-front')).toHaveCount(0);
       await expect(page.getByTestId('basket-add-white-oxford-shirt')).toHaveCount(0);
-      await page.getByRole('heading', { name: 'Seated profile', exact: true }).click();
+      await page
+        .locator('[data-material-group="pose-seated-profile"]')
+        .getByRole('link', { name: 'Seated profile details', exact: true })
+        .click();
       const metadata = page.getByTestId('pose-metadata');
       await expect(metadata).toContainText(/seated/i);
       await expect(metadata).toContainText(/profile/i);

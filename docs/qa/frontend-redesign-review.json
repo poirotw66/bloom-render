@@ -1,0 +1,215 @@
+{
+  "goal": "Redesign BloomRender frontend using PoseWear interaction references and the taste skill, with a clear person/clothing/pose try-on workflow.",
+  "date": "2026-11-26",
+  "previousWorkCommit": "04e04d7",
+  "reference": {
+    "repository": "https://github.com/atuizz/posewear",
+    "commit": "f9f55db356464af87f97b39f5bb57930ed0cd6df",
+    "inspection": "Live gallery and studio plus README, studio and styling source. Independently implemented grouping, role-based inputs and navigation; no upstream code or pictures copied."
+  },
+  "implementation": [
+    "One shared home/tool navigation, primary try-on/material entries and grouped tool drawer; existing routes and three themes retained.",
+    "Homepage uses a split live-editor preview, task-first actions, consistent grid and reachable provider/demo controls on short screens.",
+    "Try-on uses ordered person, clothing and optional pose steps with actual selected-reference board. Advanced settings, prompts, drafts and recipes are secondary.",
+    "Inputs stay editable after generation. Previous results survive editing, replacement progress and failure. Comparison/retry uses generation-time input snapshots.",
+    "New sessions preserve the original background and use the original style; explicit existing recipe/history settings remain unchanged.",
+    "32 atomic material IDs appear as 11 grouped cards. Paired poses offer camera views and optional depth representations; favorites, recent items, basket, viewer and exact recipe IDs remain.",
+    "Independent person/composition revisions prevent immediate person uploads from discarding a pending material transfer while keeping newer reference edits protected.",
+    "Clipboard denial preserves valid recipe links for manual copying."
+  ],
+  "verification": {
+    "unit": {
+      "files": 118,
+      "passed": 779,
+      "command": "npm test"
+    },
+    "browser": {
+      "passed": 165,
+      "failed": 0,
+      "command": "PLAYWRIGHT_PORT=4210 npx playwright test --workers=4",
+      "paidRequests": false
+    },
+    "responsive": [
+      {
+        "route": "/",
+        "width": 1440,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "人物照片的AI 創作工作台"
+      },
+      {
+        "route": "/try-on",
+        "width": 1440,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "AI 試穿 · Virtual try-on"
+      },
+      {
+        "route": "/materials",
+        "width": 1440,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "試穿參考素材"
+      },
+      {
+        "route": "/",
+        "width": 1024,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "人物照片的AI 創作工作台"
+      },
+      {
+        "route": "/try-on",
+        "width": 1024,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "AI 試穿 · Virtual try-on"
+      },
+      {
+        "route": "/materials",
+        "width": 1024,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "試穿參考素材"
+      },
+      {
+        "route": "/",
+        "width": 768,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "人物照片的AI 創作工作台"
+      },
+      {
+        "route": "/try-on",
+        "width": 768,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "AI 試穿 · Virtual try-on"
+      },
+      {
+        "route": "/materials",
+        "width": 768,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "試穿參考素材"
+      },
+      {
+        "route": "/",
+        "width": 390,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "人物照片的AI 創作工作台"
+      },
+      {
+        "route": "/try-on",
+        "width": 390,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "AI 試穿 · Virtual try-on"
+      },
+      {
+        "route": "/materials",
+        "width": 390,
+        "overflow": false,
+        "brokenImages": [],
+        "heading": "試穿參考素材"
+      }
+    ],
+    "accessibility": "Keyboard file selection, modal focus restoration, reduced motion, visible controls and serious/critical axe checks in Bloom, Night and NewYear themes passed.",
+    "static": {
+      "typecheck": "passed",
+      "lint": "passed",
+      "format": "passed",
+      "productionBuild": "passed",
+      "sourceCsp": "608 catalog asset references passed",
+      "builtCsp": "53 HTML shells passed",
+      "bundleBudget": {
+        "entryGzipBytes": 123446,
+        "homeGzipBytesByLanguage": {
+          "en": 162038,
+          "zh-TW": 165730
+        },
+        "budgetBytes": 179200
+      },
+      "bundleSize": "passed"
+    },
+    "layoutGates": [
+      {
+        "route": "/",
+        "result": "PASS",
+        "openFailures": 0,
+        "evidence": "docs/qa/frontend-home-gate-pass.txt",
+        "waivers": [
+          {
+            "check": "focus-ring",
+            "target": ".focus\\:outline-none:focus",
+            "reason": "Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads."
+          },
+          {
+            "check": "container-edges",
+            "target": "div#root \"",
+            "reason": "This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout."
+          },
+          {
+            "check": "card-layout",
+            "target": "section#styles > div.wrap.home-wrap > ul.home-style-grid \"♡ 公仔盒玩 試試這個 ↗\"",
+            "reason": "This is the existing interactive style catalog. Consistent photographic cards let users compare, favorite and apply styles. It is not repeated marketing feature content; the photographs and actual actions differ for each style."
+          },
+          {
+            "check": "copy-headline",
+            "target": "h1#home-title \"人物照片的 AI 創作工作台\"",
+            "reason": "The Traditional Chinese headline explicitly identifies a creative AI studio for portrait photographs. The checker matches English category tokens; the English locale says AI photo studio for your portraits. Both localized headings name the product and subject accurately."
+          }
+        ]
+      },
+      {
+        "route": "/try-on",
+        "result": "PASS",
+        "openFailures": 0,
+        "evidence": "docs/qa/frontend-tryon-gate-pass.txt",
+        "waivers": [
+          {
+            "check": "focus-ring",
+            "target": ".focus\\:outline-none:focus",
+            "reason": "Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads."
+          },
+          {
+            "check": "container-edges",
+            "target": "div#root \"",
+            "reason": "This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout."
+          },
+          {
+            "check": "copy-actions",
+            "target": "div.tryon-upload-grid > div.tryon-upload.tryon-workflow-step:nth-of-type(2) > div.tryon-role-actions",
+            "reason": "This is the interactive try-on form, not a marketing hero. Uploading person/clothing/pose inputs, opening optional workspace tools and generating are distinct required task actions. Advanced actions are collapsed; real keyboard and pointer tests cover the visible controls."
+          },
+          {
+            "check": "hero-screen",
+            "target": "main#main-content > section.tryon-workspace.hero \"",
+            "reason": "The try-on route is an application form with selected references and retained generation results. Natural document scrolling keeps the complete workflow reachable on small screens and with expanded settings. A fixed marketing-screen height previously caused nested-scroll and hidden-action problems."
+          },
+          {
+            "check": "hero-fold",
+            "target": "section.tryon-workspace.hero section.tryon-workspace.hero \"",
+            "reason": "This application workspace deliberately scrolls as one document. Its form, reference board, optional settings and retained results must remain reachable at zoom and mobile widths; restricting it to a single marketing fold would recreate the usability issue the user asked to fix."
+          }
+        ]
+      }
+    ],
+    "layoutGateNotes": "Homepage gate used a query containing the actual built CSS SHA256 prefix to avoid the gate reusing a stale framework-bundle report. Form-only hero action/fold waivers preserve natural application scrolling rather than recreating the prior nested-scroll problem. No kit/checker files were modified.",
+    "screenshots": "Local .taste-skill/shots/redesign contains home, try-on and materials at 1440, 1024, 768 and 390px plus a selected-reference board using existing public app assets."
+  },
+  "privacy": {
+    "privatePortraitAndOutfitImagesUsed": false,
+    "privateGeneratedTestImageUsed": false,
+    "newPublicCaseCreated": false,
+    "newGenerationRequests": 0,
+    "newExternalAssets": false
+  },
+  "voice": "Practical bilingual product UI, fixed photo/clothing/pose/reference/result terms, no invented claims, prices or testimonials.",
+  "assumedPricesOrHours": [],
+  "git": {
+    "committed": false,
+    "pushed": false
+  }
+}

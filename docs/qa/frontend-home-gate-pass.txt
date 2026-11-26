@@ -1,0 +1,8 @@
+gate: checking http://127.0.0.1:4210/?build=ed53afb9a6d4 (software); this takes a few minutes on a CPU Chrome
+gate: no open FAIL
+  WAIVED card-layout section#styles > div.wrap.home-wrap > ul.home-style-grid "♡ 公仔盒玩 試試這個 ↗": This is the existing interactive style catalog. Consistent photographic cards let users compare, favorite and apply styles. It is not repeated marketing feature content; the photographs and actual actions differ for each style.
+  WAIVED copy-headline h1#home-title "人物照片的 AI 創作工作台": The Traditional Chinese headline explicitly identifies a creative AI studio for portrait photographs. The checker matches English category tokens; the English locale says AI photo studio for your portraits. Both localized headings name the product and subject accurately.
+  WAIVED focus-ring .focus\:outline-none:focus: Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads.
+  WAIVED container-edges div#root "跳至主要內容BloomRenderAI 試衣參考素材搜尋工具與素材⌘ K0中EN": This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout.
+  7 WARN (not blocking), first: nav header.tool-header.nav > nav.wrap.tool-s; copy-headline h1#home-title "人物照片的 AI 創作工作台"; copy-buttons header.tool-header.nav > nav.wrap.tool-s; copy-actions (the page); stranded-action div.wrap.home-wrap > div.home-studio__gr
+GATE: PASS
