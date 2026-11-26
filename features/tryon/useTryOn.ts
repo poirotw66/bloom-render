@@ -1,20 +1,21 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useHistory } from '../../hooks/useHistory';
 import { useDemoTryOnSamples } from '../../hooks/useDemoSampleInput';
 import { fileFromSourceUrl, useHistoryReplay } from '../../hooks/useHistoryReplay';
 import { generateVirtualTryOn } from '../../services/geminiService';
+import { generateTryOnPrompt } from '../../services/gemini/prompts/tryOn';
 import { prepareTryOnRequest } from '../../services/gemini/tryOn';
-import { formatApiErrorMessage } from '../../services/gemini/shared';
+import { formatApiErrorMessage, type ServiceSettings } from '../../services/gemini/shared';
 import { logger } from '../../utils/logger';
 import { buildHistoryOptions } from '../../utils/historyOptions';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import { allFailedError } from '../../utils/generationHelpers';
 import { useGenerationFailures } from '../../hooks/useGenerationFailures';
 import { useGenerationAttempt } from '../../hooks/useGenerationAttempt';
-import { publicAssetUrl } from '../../utils/publicAsset';
+import { materialFile } from '../../utils/materialFile';
 import {
   loadTryOnDraft,
   saveTryOnDraft,
@@ -25,6 +26,7 @@ import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMateri
 import {
   TRYON_OPTIONAL_REFERENCE_ROLES,
   parseTryOnRecipe,
+  MAX_TRYON_PROMPT_LENGTH,
   type HistoryReference,
   type TryOnOptionalReferenceRole,
   type TryOnRecipe,
@@ -48,6 +50,7 @@ type TryOnInputs = {
   clothing: ReferenceFile[];
   references: Partial<Record<TryOnOptionalReferenceRole, ReferenceFile>>;
   settings: TryOnRecipe['settings'];
+  promptOverride?: string;
 };
 
 function emptyInputs(): TryOnInputs {
@@ -76,6 +79,7 @@ function recipeFor(inputs: TryOnInputs): TryOnRecipe {
       ...TRYON_OPTIONAL_REFERENCE_ROLES.flatMap((role) => inputs.references[role] ?? []),
     ].flatMap((ref) => (ref.materialId ? [ref.materialId] : [])),
     settings: { ...inputs.settings },
+    ...(inputs.promptOverride !== undefined ? { promptOverride: inputs.promptOverride } : {}),
   };
 }
 
@@ -99,7 +103,12 @@ function restoreInputs(
   person: File | null,
   references: HistoryReference[],
 ): TryOnInputs {
-  const restored = { ...emptyInputs(), person, settings: recipe.settings };
+  const restored: TryOnInputs = {
+    ...emptyInputs(),
+    person,
+    settings: recipe.settings,
+    promptOverride: recipe.promptOverride,
+  };
   for (const ref of references) {
     const value = {
       file: new File([ref.blob], ref.name, { type: ref.blob.type }),
@@ -113,43 +122,37 @@ function restoreInputs(
   return restored;
 }
 
-async function materialFile(material: TryOnMaterial, signal: AbortSignal): Promise<File> {
-  const response = await fetch(publicAssetUrl(material.image), { signal });
-  if (!response.ok) throw new Error('error.network_error');
-  const blob = await response.blob();
-  if (!material.image.endsWith('.svg'))
-    return new File([blob], `${material.id}.webp`, { type: blob.type });
-  const url = URL.createObjectURL(blob);
-  try {
-    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('error.invalid_image'));
-      img.src = url;
-    });
-    signal.throwIfAborted();
-    const canvas = document.createElement('canvas');
-    canvas.width = image.naturalWidth || 768;
-    canvas.height = image.naturalHeight || 1024;
-    const context = canvas.getContext('2d');
-    if (!context) throw new Error('error.invalid_image');
-    context.drawImage(image, 0, 0);
-    const png = await new Promise<Blob>((resolve, reject) =>
-      canvas.toBlob(
-        (value) => (value ? resolve(value) : reject(new Error('error.invalid_image'))),
-        'image/png',
-      ),
-    );
-    return new File([png], `${material.id}.png`, { type: 'image/png' });
-  } finally {
-    URL.revokeObjectURL(url);
-  }
+function requestOptions(current: TryOnInputs, settings?: ServiceSettings, variationIndex?: number) {
+  return {
+    settings,
+    variationIndex,
+    promptOverride: current.promptOverride,
+    backgroundHint: TRYON_BACKGROUNDS.find((item) => item.id === current.settings.background)
+      ?.promptHint,
+    styleHint: TRYON_STYLES.find((item) => item.id === current.settings.style)?.promptHint,
+    outputSize: current.settings.outputSize,
+    aspectRatio: current.settings.aspectRatio,
+    keepBackground: current.settings.keepBackground,
+    keepPose: current.settings.keepPose,
+    referenceFiles: Object.fromEntries(
+      Object.entries(current.references).map(([role, ref]) => [role, ref.file]),
+    ),
+    referenceHints: Object.fromEntries(
+      Object.entries(current.references).flatMap(([role, ref]) => {
+        const material = TRYON_MATERIALS.find((item) => item.id === ref.materialId);
+        return material ? [[role, material.prompt]] : [];
+      }),
+    ),
+  };
 }
 
 export function useTryOn() {
   const { t } = useLanguage();
   const settings = useSettings();
   const location = useLocation();
+  const navigate = useNavigate();
+  const latestLocation = useRef(location);
+  latestLocation.current = location;
   const { addToHistory } = useHistory();
   const run = useGenerationFailures();
   const resetRun = run.reset;
@@ -236,7 +239,7 @@ export function useTryOn() {
   useDemoTryOnSamples(demoPerson, demoClothing);
 
   const applyRecipe = useCallback(
-    (value: TryOnRecipe) => {
+    (value: TryOnRecipe, merge = false, onApplied?: () => void) => {
       const recipe = parseTryOnRecipe(value);
       if (!recipe) {
         setError(t('tryon.recipe_invalid'));
@@ -255,6 +258,25 @@ export function useTryOn() {
       ) {
         setError(t('tryon.recipe_material_missing'));
         return;
+      }
+      if (merge) {
+        const newClothing = materials.filter(
+          (material) =>
+            material?.role === 'clothing' &&
+            !inputs.clothing.some((ref) => ref.materialId === material?.id),
+        );
+        if (inputs.clothing.length + newClothing.length > MAX_CLOTHING_IMAGES) {
+          setError(t('tryon.error_too_many_clothing'));
+          return;
+        }
+        const replacesReference = materials.some(
+          (material) =>
+            material &&
+            material.role !== 'clothing' &&
+            inputs.references[material.role] &&
+            inputs.references[material.role]?.materialId !== material.id,
+        );
+        if (replacesReference && !window.confirm(t('main.unsaved_confirm'))) return;
       }
       if (settings.isDemoMode) {
         pendingRecipe.current = recipe;
@@ -288,19 +310,23 @@ export function useTryOn() {
           setInputs((current) => {
             const next: TryOnInputs = {
               ...current,
-              clothing: [],
-              references: {},
-              settings: recipe.settings,
+              clothing: merge ? [...current.clothing] : [],
+              references: merge ? { ...current.references } : {},
+              settings: merge ? current.settings : recipe.settings,
+              promptOverride: merge ? current.promptOverride : recipe.promptOverride,
             };
             for (const { material, file } of files) {
               const ref = { file, materialId: material.id };
-              if (material.role === 'clothing') next.clothing.push(ref);
-              else next.references[material.role] = ref;
+              if (material.role === 'clothing') {
+                if (!next.clothing.some((item) => item.materialId === material.id))
+                  next.clothing.push(ref);
+              } else next.references[material.role] = ref;
             }
             return next;
           });
           setDraftReady(true);
           setError(null);
+          onApplied?.();
         })
         .catch(async (err) => {
           if (!mounted.current || controller.signal.aborted || revision.current !== currentRevision)
@@ -345,7 +371,7 @@ export function useTryOn() {
           if (mounted.current && recipeRequest.current === controller) setMaterialLoading(false);
         });
     },
-    [t, attempts, resetRun, settings.isDemoMode, draftStatus],
+    [t, attempts, resetRun, settings.isDemoMode, draftStatus, inputs],
   );
   const applyRecipeRef = useRef(applyRecipe);
   applyRecipeRef.current = applyRecipe;
@@ -398,22 +424,58 @@ export function useTryOn() {
       });
   });
 
-  const sharedRecipe = (location.state as { tryOnRecipe?: unknown } | null)?.tryOnRecipe;
-  const appliedSharedRecipe = useRef<unknown>(null);
+  const routeState = location.state as {
+    tryOnRecipe?: unknown;
+    fromMaterialBasket?: boolean;
+  } | null;
+  const sharedRecipe = routeState?.tryOnRecipe;
+  const fromBasket = routeState?.fromMaterialBasket === true;
+  const appliedSharedRecipe = useRef<{ value: unknown; key: string } | null>(null);
   useEffect(() => {
     if (
       !sharedRecipe ||
-      (appliedSharedRecipe.current === sharedRecipe && !recipeRequest.current?.signal.aborted)
+      (fromBasket && (!draftReady || settings.isDemoMode)) ||
+      (appliedSharedRecipe.current?.value === sharedRecipe &&
+        (!fromBasket || appliedSharedRecipe.current.key === location.key) &&
+        !recipeRequest.current?.signal.aborted)
     )
       return;
-    appliedSharedRecipe.current = sharedRecipe;
+    appliedSharedRecipe.current = { value: sharedRecipe, key: location.key };
     const parsed = parseTryOnRecipe(sharedRecipe);
-    if (parsed) applyRecipe(parsed);
-    else {
+    if (parsed) {
+      const transferKey = location.key;
+      applyRecipe(
+        parsed,
+        fromBasket,
+        fromBasket
+          ? () => {
+              const current = latestLocation.current;
+              if (current.key !== transferKey || current.state?.tryOnRecipe !== sharedRecipe)
+                return;
+              const remainingState = { ...current.state };
+              delete remainingState.tryOnRecipe;
+              delete remainingState.fromMaterialBasket;
+              navigate(current.pathname + current.search + current.hash, {
+                replace: true,
+                state: Object.keys(remainingState).length ? remainingState : null,
+              });
+            }
+          : undefined,
+      );
+    } else {
       explicitInput.current = true;
       setError(t('tryon.recipe_invalid'));
     }
-  }, [sharedRecipe, applyRecipe, t]);
+  }, [
+    sharedRecipe,
+    applyRecipe,
+    t,
+    fromBasket,
+    draftReady,
+    settings.isDemoMode,
+    location.key,
+    navigate,
+  ]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -633,26 +695,11 @@ export function useTryOn() {
       signal: AbortSignal,
     ) => {
       const current = snapshot.inputs;
-      const options = {
-        settings: { ...snapshot.serviceSettings, abortSignal: signal },
-        variationIndex: total > 1 ? index : undefined,
-        backgroundHint: TRYON_BACKGROUNDS.find((item) => item.id === current.settings.background)
-          ?.promptHint,
-        styleHint: TRYON_STYLES.find((item) => item.id === current.settings.style)?.promptHint,
-        outputSize: current.settings.outputSize,
-        aspectRatio: current.settings.aspectRatio,
-        keepBackground: current.settings.keepBackground,
-        keepPose: current.settings.keepPose,
-        referenceFiles: Object.fromEntries(
-          Object.entries(current.references).map(([role, ref]) => [role, ref.file]),
-        ),
-        referenceHints: Object.fromEntries(
-          Object.entries(current.references).flatMap(([role, ref]) => {
-            const material = TRYON_MATERIALS.find((item) => item.id === ref.materialId);
-            return material ? [[role, material.prompt]] : [];
-          }),
-        ),
-      };
+      const options = requestOptions(
+        current,
+        { ...snapshot.serviceSettings, abortSignal: signal },
+        total > 1 ? index : undefined,
+      );
       const clothing = current.clothing.map((ref) => ref.file);
       const prepared = prepareTryOnRequest(current.person!, clothing, options);
       return generateVirtualTryOn(current.person!, clothing, options).then((dataUrl) => {
@@ -691,6 +738,13 @@ export function useTryOn() {
       return;
     }
     if (materialLoading) return;
+    if (
+      inputs.promptOverride !== undefined &&
+      (!inputs.promptOverride.trim() || inputs.promptOverride.length > MAX_TRYON_PROMPT_LENGTH)
+    ) {
+      setError(t('error.invalid_request'));
+      return;
+    }
     const serviceSettings = settings.toServiceSettings();
     const snapshot = {
       inputs,
@@ -813,7 +867,35 @@ export function useTryOn() {
     [addClothing],
   );
   const recipe = useMemo(() => recipeFor(inputs), [inputs]);
+  const automaticPrompt = useMemo(
+    () =>
+      generateTryOnPrompt({
+        ...requestOptions(inputs, undefined, inputs.settings.quantity > 1 ? 0 : undefined),
+        clothingCount: inputs.clothing.length,
+        referenceRoles: TRYON_OPTIONAL_REFERENCE_ROLES.filter((role) => inputs.references[role]),
+      }),
+    [inputs],
+  );
+  const resolvedPrompt = inputs.promptOverride ?? automaticPrompt;
+  const referenceMap = [
+    { role: 'person', name: inputs.person?.name ?? '' },
+    ...inputs.clothing.map((ref) => ({ role: 'clothing', name: ref.file.name })),
+    ...TRYON_OPTIONAL_REFERENCE_ROLES.flatMap((role) =>
+      inputs.references[role] ? [{ role, name: inputs.references[role]!.file.name }] : [],
+    ),
+  ];
   return {
+    automaticPrompt,
+    resolvedPrompt,
+    promptOverride: inputs.promptOverride,
+    referenceMap,
+    setPromptOverride: useCallback(
+      (value: string | undefined) => {
+        if (value !== undefined && value.length > MAX_TRYON_PROMPT_LENGTH) return;
+        updateInputs((current) => ({ ...current, promptOverride: value }));
+      },
+      [updateInputs],
+    ),
     personFile: inputs.person,
     personPreviewUrl,
     setPerson,
@@ -890,7 +972,8 @@ export function useTryOn() {
       inputs.person &&
       inputs.clothing.length >= MIN_CLOTHING_IMAGES &&
       inputs.clothing.length <= MAX_CLOTHING_IMAGES &&
-      !materialLoading,
+      !materialLoading &&
+      resolvedPrompt.trim(),
     ),
     hasResults: results.length > 0 || result !== null,
     minClothing: MIN_CLOTHING_IMAGES,

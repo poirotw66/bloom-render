@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-26",
+  "goal": "Add a read-only material MCP server as the next roadmap item while preserving the existing uncommitted creative workflow changes.",
+  "outcome": "Implemented and verified locally.",
+  "tools": [
+    "bloomrender_list_collections",
+    "bloomrender_search_references",
+    "bloomrender_get_reference",
+    "bloomrender_compose_brief"
+  ],
+  "implementation": {
+    "transport": "Local stdio, official MCP SDK v2.4.0; no network listener.",
+    "catalog": "Reads the existing constants/tryOnMaterials.json from a fixed module-relative path; eight entries in three populated categories.",
+    "languages": ["zh-TW", "en"],
+    "formats": "Existing SVG references carry mimeType and requiresRasterization metadata; the brief explains conversion or use through the web app.",
+    "recipe": "Uses the existing browser-compatible v1 try-on recipe format. Shared URLs contain catalog IDs and default settings, never custom brief text.",
+    "privacy": "Does not read browser photos, keys, drafts, history or baskets, and does not call image providers.",
+    "configuration": "BLOOMRENDER_SITE_URL controls the returned deployment base URL without fetching it. Credential-bearing URLs, queries and fragments are rejected.",
+    "dependencies": "Server, client and Zod are development tooling dependencies. MCP modules are absent from the production browser manifest."
+  },
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Verified current official SDK API and npm versions, inspected existing catalog/recipe contracts, then fixed tool input/output shapes.",
+    "independentWorkstreams": "One implementation owner handled MCP modules/dependencies/docs; root independently authored real protocol and browser bridge tests; a separate reviewer audited the result.",
+    "sharedMutableState": "Package files had one owner. No previous UI implementation files were modified by the MCP owner.",
+    "smallestSafeDecomposition": "One small read-only server plus independent verification, without a new web service or browser-side SDK integration."
+  },
+  "verification": {
+    "fullVitestSuite": {
+      "files": 107,
+      "passed": 626
+    },
+    "mcpCatalogTests": 38,
+    "realStdioTests": 9,
+    "protocolCases": [
+      "Current SDK client handshake and calls from a foreign working directory",
+      "2025-06-18 compatibility handshake",
+      "All four tools and advertised output schemas",
+      "Strict invalid arguments and conflicting references with server remaining alive",
+      "Browser recipe/hash/basket parser compatibility",
+      "Custom prompt excluded from recipe URL",
+      "Clean child-process shutdown",
+      "Invalid startup configuration sanitized with stdout empty"
+    ],
+    "browserTests": {
+      "passed": 12,
+      "includes": [
+        "Actual MCP-composed link opens the correct try-on materials without API requests",
+        "Existing material basket/prompt/draft/history workflows",
+        "Removed references remain removed after reload",
+        "Open-dialog accessibility at 390 and 1440 in all three themes"
+      ]
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuildAndBundleBudget": "passed",
+    "diffWhitespace": "passed",
+    "publicAssetProbe": "HEAD for the canonical Oxford-shirt SVG returned HTTP 200 with image/svg+xml.",
+    "paidAPIRequests": 0,
+    "review": "Independent read-only review found no actionable new defect.",
+    "layoutScope": "This continuation adds local tooling and documentation only. The existing UI source was preserved; the prior creative-workflow GATE: PASS was not rerun."
+  },
+  "setupDocumentation": "../../mcp/README.md",
+  "sources": [
+    "https://ts.sdk.modelcontextprotocol.io/v2/get-started/first-server",
+    "https://ts.sdk.modelcontextprotocol.io/v2/clients/connect",
+    "https://ts.sdk.modelcontextprotocol.io/v2/serving/stdio"
+  ],
+  "deliveryAtVerification": "Not registered in Codex settings, committed, pushed or deployed. The prior creative workflow changes remain in the working tree."
+}

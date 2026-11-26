@@ -1,0 +1,74 @@
+.material-basket-dialog {
+  width: min(680px, calc(100vw - 32px));
+  max-height: calc(100svh - 48px);
+  padding: 24px;
+  margin: auto;
+  overflow-y: auto;
+  border: 1px solid var(--tool-line, #8d6d7b);
+  border-radius: 12px;
+  background: var(--bg-surface, #251c22);
+  color: var(--ink, #faedf3);
+}
+.material-basket-dialog::backdrop {
+  background: rgb(10 5 9 / 76%);
+}
+.material-basket-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+.material-basket-heading h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.material-basket-note,
+.material-basket-status {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--ink-soft, #d7c0cb);
+}
+.material-basket-status:empty {
+  display: none;
+}
+.material-basket-items {
+  display: grid;
+  padding: 0;
+  margin-block: 24px;
+  list-style: none;
+  gap: 12px;
+}
+.material-basket-items li {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.material-basket-items img {
+  flex: none;
+  object-fit: contain;
+  background: var(--bg-raised);
+  border-radius: 6px;
+}
+.material-basket-items span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.material-basket-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+.material-basket-dialog :is(button, a):focus-visible {
+  outline: 2px solid var(--tool-focus, #ffc0d4);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .material-basket-dialog {
+    padding: 16px;
+  }
+  .material-basket-items li {
+    gap: 8px;
+  }
+}

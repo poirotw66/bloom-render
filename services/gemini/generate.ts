@@ -11,7 +11,14 @@ import { runImageGeneration } from './runImageGeneration';
 import { supportsMultiResolution, type ServiceSettings } from './shared';
 
 /** Builds the text prompt; appends reference guidance when an image is attached. */
-export function buildGeneratePrompt(userPrompt: string, hasReferenceImage: boolean): string {
+export function buildGeneratePrompt(
+  userPrompt: string,
+  hasReferenceImage: boolean,
+  referenceHints?: string[],
+): string {
+  if (referenceHints?.length) {
+    return `${userPrompt}\n\nReference images, in input order:\n${referenceHints.map((hint, index) => `Image ${index + 1}: ${hint}`).join('\n')}\nEach reference controls only its declared role. Follow the user prompt for the final scene.`;
+  }
   if (!hasReferenceImage) return userPrompt;
   return (
     `${userPrompt}\n\n` +
@@ -32,19 +39,29 @@ export const generateImageFromText = async (
   aspectRatio: '1:1' | '3:4' | '4:3' | '16:9' | '9:16' = '1:1',
   numberOfImages: number = 1,
   settings?: ServiceSettings,
-  referenceImage?: File | null,
-  options?: { viralTemplateId?: string },
+  referenceImage?: File | File[] | null,
+  options?: { viralTemplateId?: string; referenceHints?: string[] },
 ): Promise<string[]> => {
-  const hasReference = !!referenceImage;
+  const images = Array.isArray(referenceImage)
+    ? [...referenceImage]
+    : referenceImage
+      ? [referenceImage]
+      : [];
+  const hasReference = images.length > 0;
+  if (
+    images.length > 16 ||
+    (options?.referenceHints && options.referenceHints.length !== images.length)
+  ) {
+    throw new Error('error.invalid_request');
+  }
   logger.debug(
     `Starting text-to-image generation: ${prompt}, Aspect Ratio: ${aspectRatio}, Count: ${numberOfImages}` +
       (hasReference ? ' (with reference image)' : ''),
   );
 
-  const textPrompt = buildGeneratePrompt(prompt, hasReference);
+  const textPrompt = buildGeneratePrompt(prompt, hasReference, options?.referenceHints);
   const model = settings?.model;
   const imageSize = supportsMultiResolution(model) ? ('1K' as const) : undefined;
-  const images = referenceImage ? [referenceImage] : [];
 
   const promises = Array.from({ length: numberOfImages }).map(async () =>
     runImageGeneration({

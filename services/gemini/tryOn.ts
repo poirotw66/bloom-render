@@ -4,11 +4,13 @@ import { supportsMultiResolution, type ServiceSettings } from './shared';
 import { generateTryOnPrompt } from './prompts/tryOn';
 import {
   TRYON_OPTIONAL_REFERENCE_ROLES,
+  MAX_TRYON_PROMPT_LENGTH,
   type TryOnOptionalReferenceRole,
 } from '../../types/tryOnRecipe';
 
 export interface GenerateTryOnOptions {
   settings?: ServiceSettings;
+  promptOverride?: string;
   variationIndex?: number;
   backgroundHint?: string;
   styleHint?: string;
@@ -28,11 +30,14 @@ export function prepareTryOnRequest(
   const referenceRoles = TRYON_OPTIONAL_REFERENCE_ROLES.filter(
     (role) => options.referenceFiles?.[role],
   );
-  const prompt = generateTryOnPrompt({
+  const automaticPrompt = generateTryOnPrompt({
     ...options,
     clothingCount: clothingImages.length,
     referenceRoles,
   });
+  const prompt = options.promptOverride ?? automaticPrompt;
+  if (!prompt.trim() || prompt.length > MAX_TRYON_PROMPT_LENGTH)
+    throw new Error('error.invalid_request');
   const images = [
     personImage,
     ...clothingImages,

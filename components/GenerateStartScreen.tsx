@@ -7,6 +7,12 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UploadIcon, MagicWandIcon, DownloadIcon, EditIcon } from './icons';
 import { generateImageFromText } from '../services/geminiService';
+import { buildGeneratePrompt } from '../services/gemini/generate';
+import { TRYON_MATERIALS, type TryOnMaterial } from '../constants/tryOnMaterials';
+import { materialFile } from '../utils/materialFile';
+import { parseMaterialBasketTransfer, validateMaterialBasketIds } from '../utils/materialBasket';
+import { publicAssetUrl } from '../utils/publicAsset';
+import type { HistoryReference } from '../types/tryOnRecipe';
 import { formatApiErrorMessage } from '../services/gemini/shared';
 import { logger } from '../utils/logger';
 import { dataURLtoFile } from '../utils/fileUtils';
@@ -66,7 +72,17 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   onImageSelected,
   active = true,
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const zh = language === 'zh-TW';
+  const roleLabels = zh
+    ? { clothing: '服裝', pose: '姿勢', expression: '表情', scene: '場景', lighting: '光線' }
+    : {
+        clothing: 'Clothing',
+        pose: 'Pose',
+        expression: 'Expression',
+        scene: 'Scene',
+        lighting: 'Lighting',
+      };
   const settings = useSettings();
   const { theme } = useTheme();
   const { addToHistory } = useHistory();
@@ -83,7 +99,12 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
 
   useEffect(() => {
     if (!galleryPreset) return;
-    routerNavigate(location.pathname, { replace: true, state: null });
+    const nextState = { ...location.state };
+    delete nextState.galleryPreset;
+    routerNavigate(location.pathname, {
+      replace: true,
+      state: Object.keys(nextState).length ? nextState : null,
+    });
     try {
       window.scrollTo(0, 0);
     } catch {
@@ -92,24 +113,6 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
     // eslint-disable-next-line react-hooks/exhaustive-deps -- consume gallery state once on mount
   }, []);
 
-  useHistoryReplay((payload) => {
-    if (payload.type !== 'generate') return;
-    const opts = payload.options ?? {};
-    if (typeof opts.prompt === 'string') setGenerationPrompt(opts.prompt);
-    if (
-      opts.aspectRatio === '1:1' ||
-      opts.aspectRatio === '3:4' ||
-      opts.aspectRatio === '4:3' ||
-      opts.aspectRatio === '16:9' ||
-      opts.aspectRatio === '9:16'
-    ) {
-      setAspectRatio(opts.aspectRatio);
-    }
-    if (typeof opts.numberOfImages === 'number') setNumberOfImages(opts.numberOfImages);
-    if (payload.sourceUrl) {
-      void fileFromSourceUrl(payload.sourceUrl, 'generate-reference.png').then(setReferenceFile);
-    }
-  });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
@@ -121,6 +124,117 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   const generatedSlotsRef = useRef<Array<{ index: number; url: string }>>([]);
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
   const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
+  const [materialReferences, setMaterialReferences] = useState<
+    Array<{ material: TryOnMaterial; file: File }>
+  >([]);
+  const [referencesLoading, setReferencesLoading] = useState(false);
+  const [basketReady, setBasketReady] = useState(false);
+  const referenceLoad = useRef<AbortController | null>(null);
+
+  useHistoryReplay((payload) => {
+    if (payload.type !== 'generate') return;
+    const controller = new AbortController();
+    referenceLoad.current?.abort();
+    referenceLoad.current = controller;
+    setReferencesLoading(true);
+    const opts = payload.options ?? {};
+    const restore = async () => {
+      const references = payload.references ?? [];
+      if (!Array.isArray(references) || references.length > 9)
+        throw new Error('error.invalid_request');
+      const restored = references.map((reference) => {
+        const material = TRYON_MATERIALS.find(
+          (item) => item.id === reference.materialId && item.role === reference.role,
+        );
+        if (!material || !(reference.blob instanceof Blob) || typeof reference.name !== 'string')
+          throw new Error('error.invalid_request');
+        return {
+          material,
+          file: new File([reference.blob], reference.name, { type: reference.blob.type }),
+        };
+      });
+      const restoredIds = restored.map(({ material }) => material.id);
+      if (
+        !validateMaterialBasketIds(restoredIds) ||
+        (opts.materialIds !== undefined &&
+          (!validateMaterialBasketIds(opts.materialIds) ||
+            JSON.stringify(opts.materialIds) !== JSON.stringify(restoredIds)))
+      ) {
+        throw new Error('error.invalid_request');
+      }
+      const uploaded =
+        payload.sourceBlob instanceof Blob
+          ? new File([payload.sourceBlob], 'generate-reference.png', {
+              type: payload.sourceBlob.type,
+            })
+          : payload.sourceUrl
+            ? await fileFromSourceUrl(payload.sourceUrl, 'generate-reference.png')
+            : null;
+      if (controller.signal.aborted) return;
+      if (typeof opts.prompt === 'string') setGenerationPrompt(opts.prompt);
+      if (['1:1', '3:4', '4:3', '16:9', '9:16'].includes(opts.aspectRatio as string))
+        setAspectRatio(opts.aspectRatio as typeof aspectRatio);
+      if (typeof opts.numberOfImages === 'number') setNumberOfImages(opts.numberOfImages);
+      setReferenceFile(uploaded);
+      setMaterialReferences(restored);
+    };
+    void restore()
+      .catch((cause: unknown) => {
+        if (!controller.signal.aborted) setError(formatApiErrorMessage(cause, t));
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setReferencesLoading(false);
+      });
+  });
+
+  useEffect(() => {
+    if (!active) return;
+    const ids = parseMaterialBasketTransfer(location.state);
+    if (!ids) {
+      if (
+        location.state &&
+        typeof location.state === 'object' &&
+        'materialBasket' in location.state
+      )
+        setError(t('error.invalid_request'));
+      return;
+    }
+    const controller = new AbortController();
+    referenceLoad.current?.abort();
+    referenceLoad.current = controller;
+    setReferencesLoading(true);
+    setError(null);
+    void Promise.all(
+      ids.map(async (id) => {
+        const material = TRYON_MATERIALS.find((item) => item.id === id)!;
+        return { material, file: await materialFile(material, controller.signal) };
+      }),
+    )
+      .then((references) => {
+        if (controller.signal.aborted) return;
+        setMaterialReferences(references);
+        setBasketReady(true);
+        setGenerationPrompt((current) =>
+          current.trim() ? current : references.map(({ material }) => material.prompt).join('\n'),
+        );
+        setReferencesLoading(false);
+        const nextState = { ...location.state };
+        delete nextState.materialBasket;
+        routerNavigate(location.pathname + location.search, {
+          replace: true,
+          state: Object.keys(nextState).length ? nextState : null,
+        });
+      })
+      .catch((cause: unknown) => {
+        if (!controller.signal.aborted) {
+          setError(formatApiErrorMessage(cause, t));
+          setReferencesLoading(false);
+        }
+      });
+    return () => controller.abort();
+  }, [active, location.key, location.pathname, location.search, location.state, routerNavigate, t]);
+
+  useEffect(() => () => referenceLoad.current?.abort(), []);
 
   useEffect(() => {
     if (!referenceFile) {
@@ -142,6 +256,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   const [compareRunModels, setCompareRunModels] = useState<ModelType[]>([]);
   const compareRun = useGenerationFailures();
   const compareAttempts = useGenerationAttempt();
+  const compareTaskRef = useRef<IndexedGenerationTask<CompareSlotResult> | null>(null);
   const cancelGenerationRun = generationRun.cancel;
   const cancelComparisonRun = compareRun.cancel;
 
@@ -161,8 +276,11 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   // Only one of the two flows can occupy the button at a time, but flipping
   // the toggle mid-request must not silently swap which flow "isGenerating"
   // is guarding — so anything that can start a new run checks both.
-  const anyRunning = isGenerating || generationRun.isRunning || compareRun.isRunning;
-  const busy = compareEnabled ? compareRun.isRunning : isGenerating || generationRun.isRunning;
+  const anyRunning =
+    referencesLoading || isGenerating || generationRun.isRunning || compareRun.isRunning;
+  const busy =
+    referencesLoading ||
+    (compareEnabled ? compareRun.isRunning : isGenerating || generationRun.isRunning);
 
   const handleReferenceFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -172,6 +290,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   };
 
   const handleGenerateClick = async () => {
+    if (referencesLoading) return;
     if (!generationPrompt.trim()) {
       setError(t('start.error_no_prompt'));
       return;
@@ -180,6 +299,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
     const attempt = generationAttempts.begin();
     if (!attempt.isCurrent()) return;
     setIsGenerating(true);
+    setBasketReady(false);
     setError(null);
     setGeneratedImages([]);
     generatedSlotsRef.current = [];
@@ -188,11 +308,35 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
     // Capture this run's inputs so retrying a failed slot uses the same prompt,
     // reference and provider even if settings change while results are visible.
     const serviceSettings = settings.toServiceSettings();
+    const capturedMaterials = [...materialReferences];
+    const capturedReference = referenceFile;
+    const images = [
+      ...(capturedReference ? [capturedReference] : []),
+      ...capturedMaterials.map((reference) => reference.file),
+    ];
+    const referenceHints = capturedMaterials.length
+      ? [
+          ...(capturedReference
+            ? [
+                'Uploaded reference: visual inspiration for style, lighting, composition and atmosphere.',
+              ]
+            : []),
+          ...capturedMaterials.map(({ material }) => `${material.role}: ${material.prompt}`),
+        ]
+      : undefined;
+    const references: HistoryReference[] = capturedMaterials.map(({ material, file }) => ({
+      role: material.role,
+      blob: file,
+      name: file.name,
+      materialId: material.id,
+    }));
     const historyOptions = buildHistoryOptions('generate', serviceSettings, {
       prompt: generationPrompt,
       aspectRatio,
       numberOfImages,
-      hasReference: Boolean(referenceFile),
+      hasReference: images.length > 0,
+      resolvedPrompt: buildGeneratePrompt(generationPrompt, images.length > 0, referenceHints),
+      materialIds: capturedMaterials.map(({ material }) => material.id),
     });
     const task: IndexedGenerationTask<{ index: number; url: string }> = async (index, signal) => {
       const [url] = await generateImageFromText(
@@ -200,11 +344,17 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
         aspectRatio,
         1,
         { ...serviceSettings, abortSignal: signal },
-        referenceFile,
-        { viralTemplateId },
+        images,
+        { viralTemplateId, referenceHints },
       );
       if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
-      void addToHistory('generate', url, { ...historyOptions, variationIndex: index });
+      void addToHistory(
+        'generate',
+        url,
+        { ...historyOptions, variationIndex: index },
+        capturedReference,
+        references,
+      );
       return { index, url };
     };
     generationTaskRef.current = task;
@@ -260,41 +410,6 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
     generationRun.reset();
   };
 
-  const runCompareSlot = (model: ModelType, slotIndex: number, signal: AbortSignal) => {
-    const start = performance.now();
-    // Model compare is Gemini-only (compares Gemini model ids).
-    return generateImageFromText(generationPrompt, aspectRatio, 1, {
-      provider: 'gemini',
-      apiKey: settings.apiKey,
-      model,
-      abortSignal: signal,
-    }).then((urls): CompareSlotResult => {
-      if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
-      const url = urls[0];
-      void addToHistory(
-        'generate',
-        url,
-        buildHistoryOptions(
-          'generate',
-          { imageProvider: 'gemini', model },
-          {
-            prompt: generationPrompt,
-            aspectRatio,
-            numberOfImages: 1,
-            compare: true,
-            slotIndex,
-          },
-        ),
-      );
-      return {
-        model,
-        url,
-        elapsedMs: performance.now() - start,
-        slotIndex,
-      };
-    });
-  };
-
   const handleCompareGenerateClick = async () => {
     if (!generationPrompt.trim()) {
       setError(t('start.error_no_prompt'));
@@ -303,15 +418,79 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
 
     const attempt = compareAttempts.begin();
     if (!attempt.isCurrent()) return;
+    if (referencesLoading) return;
     const modelsToRun: ModelType[] = [settings.model, effectiveCompareModel];
+    const capturedPrompt = generationPrompt;
+    const capturedAspectRatio = aspectRatio;
+    const capturedKey = settings.apiKey;
+    const capturedReference = referenceFile;
+    const capturedMaterials = [...materialReferences];
+    const images = [
+      ...(capturedReference ? [capturedReference] : []),
+      ...capturedMaterials.map((reference) => reference.file),
+    ];
+    const referenceHints = capturedMaterials.length
+      ? [
+          ...(capturedReference
+            ? [
+                'Uploaded reference: visual inspiration for style, lighting, composition and atmosphere.',
+              ]
+            : []),
+          ...capturedMaterials.map(({ material }) => `${material.role}: ${material.prompt}`),
+        ]
+      : undefined;
+    const references: HistoryReference[] = capturedMaterials.map(({ material, file }) => ({
+      role: material.role,
+      blob: file,
+      name: file.name,
+      materialId: material.id,
+    }));
+    const task: IndexedGenerationTask<CompareSlotResult> = async (slotIndex, signal) => {
+      const start = performance.now();
+      const model = modelsToRun[slotIndex];
+      const [url] = await generateImageFromText(
+        capturedPrompt,
+        capturedAspectRatio,
+        1,
+        {
+          provider: 'gemini',
+          apiKey: capturedKey,
+          model,
+          abortSignal: signal,
+        },
+        images,
+        { referenceHints },
+      );
+      if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      void addToHistory(
+        'generate',
+        url,
+        buildHistoryOptions(
+          'generate',
+          { imageProvider: 'gemini', model },
+          {
+            prompt: capturedPrompt,
+            resolvedPrompt: buildGeneratePrompt(capturedPrompt, images.length > 0, referenceHints),
+            materialIds: capturedMaterials.map(({ material }) => material.id),
+            aspectRatio: capturedAspectRatio,
+            numberOfImages: 1,
+            hasReference: images.length > 0,
+            compare: true,
+            slotIndex,
+          },
+        ),
+        capturedReference,
+        references,
+      );
+      return { model, url, elapsedMs: performance.now() - start, slotIndex };
+    };
+    compareTaskRef.current = task;
     setCompareRunModels(modelsToRun);
     setError(null);
     setCompareResults([]);
 
     try {
-      const { results, failures, cancelled } = await compareRun.runBatch(2, (index, signal) =>
-        runCompareSlot(modelsToRun[index], index, signal),
-      );
+      const { results, failures, cancelled } = await compareRun.runBatch(2, task);
       if (cancelled || !attempt.isCurrent()) return;
 
       // Both models failing almost always shares one cause (bad key, blocked
@@ -331,11 +510,12 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
   };
 
   const handleCompareRetryFailed = async () => {
+    if (!compareTaskRef.current) return;
     const attempt = compareAttempts.begin();
     if (!attempt.isCurrent()) return;
     try {
-      const { results: recovered, cancelled } = await compareRun.retryFailed((index, signal) =>
-        runCompareSlot(compareRunModels[index], index, signal),
+      const { results: recovered, cancelled } = await compareRun.retryFailed(
+        compareTaskRef.current,
       );
       if (cancelled || !attempt.isCurrent() || recovered.length === 0) return;
       setCompareResults((prev) => [...prev, ...recovered]);
@@ -357,6 +537,7 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
     compareAttempts.cancel();
     setCompareResults([]);
     setCompareRunModels([]);
+    compareTaskRef.current = null;
     compareRun.reset();
   };
 
@@ -394,6 +575,8 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
 
   useEffect(() => {
     if (active) return;
+    referenceLoad.current?.abort();
+    setReferencesLoading(false);
     generationAttempts.cancel();
     cancelGenerationRun();
     compareAttempts.cancel();
@@ -406,6 +589,13 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
     <div className={`${UI_PAGE} ${getPageSurface(theme)}`}>
       <div className="flex flex-col items-center gap-8 max-[640px]:gap-3 animate-fade-in">
         <StartScreenIntro />
+        {basketReady && generatedImages.length > 0 && (
+          <p role="status" className="text-sm theme-ink-muted max-w-2xl">
+            {zh
+              ? '素材已備妥。選擇「生成新圖片」即可使用，先前成品仍保留在此。'
+              : 'Your materials are ready. Choose Generate New Images to use them; your current results remain available.'}
+          </p>
+        )}
         {generatedImages.length > 0 ? (
           <div
             className={`flex flex-col items-center gap-6 w-full max-w-4xl animate-fade-in bg-gray-800/40 p-6 rounded-2xl border ${s.borderCard}`}
@@ -666,6 +856,58 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
                 </label>
               )}
             </div>
+
+            {(referencesLoading || materialReferences.length > 0) && (
+              <section
+                className="w-full text-left space-y-3"
+                aria-label={zh ? '已選參考素材' : 'Selected reference materials'}
+              >
+                <h2 className="text-base font-semibold theme-ink">
+                  {zh ? '已選參考素材' : 'Selected reference materials'}
+                </h2>
+                {referencesLoading && (
+                  <p role="status" className="text-sm theme-ink-muted">
+                    {zh ? '正在載入參考素材…' : 'Loading reference materials…'}
+                  </p>
+                )}
+                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {materialReferences.map(({ material }, index) => (
+                    <li key={material.id} className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={publicAssetUrl(material.image)}
+                        alt={zh ? material.titleZh : material.title}
+                        className="w-16 h-16 object-contain shrink-0 rounded-lg theme-raised"
+                      />
+                      <div className="min-w-0 flex-1 text-sm">
+                        <p className="theme-ink">
+                          {index + (referenceFile ? 2 : 1)} ·{' '}
+                          {zh ? material.titleZh : material.title}
+                        </p>
+                        <p className="theme-ink-muted">{roleLabels[material.role]}</p>
+                      </div>
+                      <button
+                        type="button"
+                        className={UI_BTN_SECONDARY}
+                        disabled={anyRunning}
+                        onClick={() =>
+                          setMaterialReferences((current) =>
+                            current.filter((reference) => reference.material.id !== material.id),
+                          )
+                        }
+                        aria-label={zh ? `移除${material.titleZh}` : `Remove ${material.title}`}
+                      >
+                        {zh ? '移除' : 'Remove'}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+                <p className="text-sm theme-ink-muted">
+                  {zh
+                    ? '圖片依顯示順序送出，人物上傳圖會排在最前面。素材籃的原始選擇會保留。'
+                    : 'Images are sent in the displayed order, after your uploaded reference. Your basket selections stay saved.'}
+                </p>
+              </section>
+            )}
 
             <div className="w-full flex flex-col md:flex-row gap-6">
               <div className="flex-grow">

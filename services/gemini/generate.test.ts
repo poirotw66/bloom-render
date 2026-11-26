@@ -27,6 +27,53 @@ describe('buildGeneratePrompt', () => {
 });
 
 describe('generateImageFromText', () => {
+  it('sends every ordered reference with declared roles', async () => {
+    const uploaded = new File(['uploaded'], 'uploaded.png', { type: 'image/png' });
+    const clothing = new File(['shirt'], 'shirt.png', { type: 'image/png' });
+    const pose = new File(['pose'], 'pose.png', { type: 'image/png' });
+    vi.mocked(runImageGeneration).mockResolvedValue('image-0');
+    await generateImageFromText(
+      'A fashion photo',
+      '3:4',
+      1,
+      undefined,
+      [uploaded, clothing, pose],
+      {
+        referenceHints: [
+          'Uploaded style reference',
+          'clothing: blue shirt',
+          'pose: seated side profile',
+        ],
+      },
+    );
+    const request = vi.mocked(runImageGeneration).mock.calls[0][0];
+    expect(request.images).toEqual([uploaded, clothing, pose]);
+    expect(request.prompt).toContain('Image 1: Uploaded style reference');
+    expect(request.prompt).toContain('Image 2: clothing: blue shirt');
+    expect(request.prompt).toContain('Image 3: pose: seated side profile');
+    expect(request.prompt).not.toContain('Do NOT copy the reference exactly');
+  });
+
+  it('keeps the legacy single uploaded reference behavior', async () => {
+    const reference = new File(['photo'], 'photo.png', { type: 'image/png' });
+    vi.mocked(runImageGeneration).mockResolvedValue('image-0');
+    await generateImageFromText('A balloon', '1:1', 1, undefined, reference);
+    expect(runImageGeneration).toHaveBeenCalledWith(
+      expect.objectContaining({
+        images: [reference],
+        prompt: expect.stringContaining('A reference image is attached'),
+      }),
+    );
+  });
+
+  it('rejects role mappings that do not match the ordered image inputs', async () => {
+    const reference = new File(['photo'], 'photo.png', { type: 'image/png' });
+    await expect(
+      generateImageFromText('A balloon', '1:1', 1, undefined, [reference], { referenceHints: [] }),
+    ).rejects.toThrow('error.invalid_request');
+    expect(runImageGeneration).not.toHaveBeenCalled();
+  });
+
   it('retains successful images when another slot fails', async () => {
     vi.mocked(runImageGeneration)
       .mockResolvedValueOnce('image-0')

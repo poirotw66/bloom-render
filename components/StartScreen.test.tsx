@@ -15,23 +15,35 @@ import { LanguageProvider } from '../contexts/LanguageContext';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { runImageGeneration } from '../services/gemini/runImageGeneration';
 import StartScreen from './StartScreen';
+import { materialFile } from '../utils/materialFile';
+import type { HistoryReference } from '../types/tryOnRecipe';
+import type { HistoryReplayState } from '../utils/historyReplay';
 
 const addToHistory = vi.fn().mockResolvedValue('history-id');
 vi.mock('../hooks/useHistory', () => ({
   useHistory: () => ({ addToHistory }),
 }));
+const replay = vi.hoisted(() => ({
+  apply: undefined as ((payload: HistoryReplayState['bloomHistoryReplay']) => void) | undefined,
+}));
 vi.mock('../hooks/useHistoryReplay', () => ({
-  useHistoryReplay: () => undefined,
+  useHistoryReplay: (apply: typeof replay.apply) => {
+    replay.apply = apply;
+  },
   fileFromSourceUrl: vi.fn(),
 }));
 vi.mock('../services/gemini/runImageGeneration', () => ({ runImageGeneration: vi.fn() }));
 vi.mock('./ViralTemplatesSection', () => ({ default: () => null }));
 vi.mock('./ExampleShowcase', () => ({ default: () => null }));
 vi.mock('./ResultActions', () => ({ default: () => null }));
+vi.mock('../utils/materialFile', () => ({ materialFile: vi.fn() }));
+vi.mock('../utils/imageValidation', () => ({
+  validateImageUploadMessage: vi.fn().mockResolvedValue(null),
+}));
 
 const imageUrl = (index: number) => `data:image/png;base64,${btoa(`image-${index}`)}`;
 
-async function renderGenerate(quantity = 4) {
+async function renderGenerate(quantity = 4, materialIds?: string[]) {
   const onImageSelected = vi.fn();
   const settingsRef: { current: ReturnType<typeof useSettings> | null } = { current: null };
   function SettingsProbe() {
@@ -47,7 +59,10 @@ async function renderGenerate(quantity = 4) {
         initialEntries={[
           {
             pathname: '/generate',
-            state: { galleryPreset: { prompt: 'A red balloon', quantity, aspectRatio: '3:4' } },
+            state: {
+              galleryPreset: { prompt: 'A red balloon', quantity, aspectRatio: '3:4' },
+              ...(materialIds ? { materialBasket: { v: 1, materialIds } } : {}),
+            },
           },
         ]}
       >
@@ -85,9 +100,114 @@ beforeEach(() => {
   localStorage.setItem('bloom_language', 'en');
   vi.mocked(runImageGeneration).mockReset();
   addToHistory.mockClear();
+  vi.mocked(materialFile).mockReset();
+  vi.mocked(materialFile).mockImplementation(
+    async (material) => new File([material.id], `${material.id}.png`, { type: 'image/png' }),
+  );
 });
 
 describe('StartScreen text-to-image batches', () => {
+  it('preserves uploaded reference and all basket inputs in requests, history and retries', async () => {
+    vi.mocked(runImageGeneration)
+      .mockResolvedValueOnce(imageUrl(0))
+      .mockRejectedValueOnce(new Error('error.quota_exceeded'))
+      .mockResolvedValueOnce(imageUrl(1));
+    const { switchProvider } = await renderGenerate(2, [
+      'white-oxford-shirt',
+      'pose-seated-profile',
+    ]);
+    await screen.findByRole('region', { name: 'Selected reference materials' });
+    await waitFor(() => expect(screen.queryByText('Loading reference materials…')).toBeNull());
+    expect(vi.mocked(runImageGeneration)).not.toHaveBeenCalled();
+    const png =
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    const uploaded = new File(
+      [Uint8Array.from(atob(png), (char) => char.charCodeAt(0))],
+      'personal.png',
+      { type: 'image/png' },
+    );
+    fireEvent.change(document.querySelector('#generate-reference-upload')!, {
+      target: { files: [uploaded] },
+    });
+    await screen.findByRole('button', { name: 'Remove' });
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
+    await screen.findByText('Generated 1 of 2 images');
+    const first = vi.mocked(runImageGeneration).mock.calls[0][0];
+    expect(first.images?.map((file) => file.name)).toEqual([
+      'personal.png',
+      'white-oxford-shirt.png',
+      'pose-seated-profile.png',
+    ]);
+    expect(first.prompt).toContain('Image 2: clothing:');
+    expect(first.prompt).toContain('Image 3: pose:');
+    expect(addToHistory.mock.calls[0][3]).toBe(uploaded);
+    expect(
+      (addToHistory.mock.calls[0][4] as HistoryReference[]).map((ref) => ref.materialId),
+    ).toEqual(['white-oxford-shirt', 'pose-seated-profile']);
+    expect(addToHistory.mock.calls[0][2].resolvedPrompt).toBe(first.prompt);
+    act(() => switchProvider('openai'));
+    fireEvent.click(screen.getByRole('button', { name: 'Retry 1 failed' }));
+    await waitFor(() => expect(addToHistory).toHaveBeenCalledTimes(2));
+    const retry = vi.mocked(runImageGeneration).mock.calls[2][0];
+    expect(retry.prompt).toBe(first.prompt);
+    expect(retry.images).toEqual(first.images);
+    expect(retry.settings?.provider).toBe(first.settings?.provider);
+    expect(retry.settings?.model).toBe(first.settings?.model);
+  });
+
+  it('restores every archived input before replaying generation', async () => {
+    vi.mocked(runImageGeneration).mockResolvedValue(imageUrl(0));
+    await renderGenerate(2);
+    const person = new File(['person'], 'private.png', { type: 'image/png' });
+    const references: HistoryReference[] = [
+      {
+        role: 'clothing',
+        materialId: 'white-oxford-shirt',
+        name: 'shirt.png',
+        blob: new Blob(['shirt'], { type: 'image/png' }),
+      },
+      {
+        role: 'pose',
+        materialId: 'pose-seated-profile',
+        name: 'pose.png',
+        blob: new Blob(['pose'], { type: 'image/png' }),
+      },
+    ];
+    await act(async () =>
+      replay.apply?.({
+        type: 'generate',
+        options: { prompt: 'Replay this scene', numberOfImages: 2 },
+        sourceBlob: person,
+        references,
+      }),
+    );
+    await screen.findByRole('region', { name: 'Selected reference materials' });
+    expect(runImageGeneration).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Generate Image' }));
+    await waitFor(() => expect(runImageGeneration).toHaveBeenCalledTimes(2));
+    const request = vi.mocked(runImageGeneration).mock.calls[0][0];
+    expect(request.prompt).toContain('Replay this scene');
+    expect(request.images?.map((file) => file.name)).toEqual([
+      'generate-reference.png',
+      'shirt.png',
+      'pose.png',
+    ]);
+    expect(addToHistory.mock.calls[0][4]).toEqual(
+      references.map((ref, index) => ({ ...ref, blob: request.images![index + 1] })),
+    );
+  });
+
+  it('does not partially apply basket references when one image fails to load', async () => {
+    vi.mocked(materialFile).mockImplementation(async (material) => {
+      if (material.role === 'pose') throw new Error('error.network_error');
+      return new File(['shirt'], 'shirt.png', { type: 'image/png' });
+    });
+    await renderGenerate(2, ['white-oxford-shirt', 'pose-seated-profile']);
+    await screen.findByText(/network error/i);
+    expect(screen.queryByRole('img', { name: 'Oxford shirt' })).toBeNull();
+    expect(runImageGeneration).not.toHaveBeenCalled();
+  });
+
   it('keeps three successes and their history, then retries only the failed slot in original order', async () => {
     vi.mocked(runImageGeneration)
       .mockResolvedValueOnce(imageUrl(0))

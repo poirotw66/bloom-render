@@ -22,10 +22,13 @@ export interface HistoryReference {
   materialId?: string;
 }
 
+export const MAX_TRYON_PROMPT_LENGTH = 8000;
+
 export interface TryOnRecipe {
   v: 1;
   kind: 'tryon';
   materialIds: string[];
+  promptOverride?: string;
   settings: {
     background: TryOnBackgroundId;
     style: TryOnStyleId;
@@ -37,7 +40,7 @@ export interface TryOnRecipe {
   };
 }
 
-const RECIPE_KEYS = new Set(['v', 'kind', 'materialIds', 'settings']);
+const RECIPE_KEYS = new Set(['v', 'kind', 'materialIds', 'settings', 'promptOverride']);
 const SETTING_KEYS = new Set([
   'background',
   'style',
@@ -53,6 +56,12 @@ export function parseTryOnRecipe(value: unknown): TryOnRecipe | null {
   const data = value as Record<string, unknown>;
   if (Object.keys(data).some((key) => !RECIPE_KEYS.has(key))) return null;
   if (data.v !== 1 || data.kind !== 'tryon') return null;
+  if (
+    data.promptOverride !== undefined &&
+    (typeof data.promptOverride !== 'string' ||
+      data.promptOverride.length > MAX_TRYON_PROMPT_LENGTH)
+  )
+    return null;
   if (!Array.isArray(data.materialIds) || data.materialIds.length > 9) return null;
   if (
     data.materialIds.some(
@@ -83,5 +92,6 @@ export function parseTryOnRecipe(value: unknown): TryOnRecipe | null {
     kind: 'tryon',
     materialIds: [...data.materialIds] as string[],
     settings: { ...settings } as TryOnRecipe['settings'],
+    ...(typeof data.promptOverride === 'string' ? { promptOverride: data.promptOverride } : {}),
   };
 }

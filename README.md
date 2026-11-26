@@ -35,7 +35,7 @@
 Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID photo** → **Portrait** → **Travel** → **Themed** → **Couple / group** → **Try-on** → **Enhance**.
 
 - **Upload / editor** — Point-and-prompt retouch, **brush mask**, filters, adjustments, free/ID crop; undo, redo, compare, download.
-- **Text to image** — Prompt, aspect ratio, 1–4 images; download or send to the editor.
+- **Text to image** — Prompt, aspect ratio, 1–4 images; combine uploaded inspiration with every selected basket reference. History export and replay retain the input images.
 - **Photography Studio** — Hub into ID, portrait, themed, couple/group, and promo looks (no prices).
 - **AI ID photo** — Specs, retouch, clothing; before/after; **4×6″ print sheet** (JPG/PDF); single + batch ZIP.
 - **Portrait / travel / themed / couple·group / try-on** — Dedicated generators with demo samples.
@@ -45,8 +45,11 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 - **Multi-style collage** — Pick 4–6 玩法 styles from one photo and download a labeled collage (`/style-collage`).
 - **Multi-person synthesis** — Upload 2–4 portraits into a shared-frame viral style (`/multi-person`).
 - **History · share · compare** — Browse past runs; share cards; before/after slider.
+- **Agent material tools (MCP)** — Read-only catalog browsing, bilingual keyword search, reference lookup and prompt/recipe composition over local stdio. See [MCP setup](mcp/README.md); no browser photos, keys or provider calls.
+- **Material basket** — Select built-in references across tool pages and reloads, then use them in try-on or generation. Stores catalog IDs only. Adding to an existing try-on preserves your person photo, clothing, settings and custom prompt; replacing another reference requires confirmation.
+- **Try-on prompt editor** — Open **Prompt** to inspect image order, copy the automatic prompt, switch to Manual, or reset to Automatic. Manual text stays unchanged when references/settings change and survives drafts, history replay and failed-slot retries. Batch automatic preview shows image 1; manual mode uses the same text for every image.
 - **Try-on references and drafts** — Original CC0 clothing, pose and lighting illustrations, plus optional uploaded pose, expression, scene and lighting references. Preserve the original background or pose; drafts keep input images in IndexedDB and can be cleared. Demo uses samples only.
-- **Try-on recipes** — Share links and import/export JSON contain built-in material IDs and settings, without uploaded images or API keys. History replay restores saved person, clothing and other references.
+- **Try-on recipes** — Share links and import/export JSON contain built-in material IDs and settings by default. Custom prompt text is shared only with explicit opt-in; uploaded images and API keys remain excluded. History replay restores saved person, clothing and other references.
 - **Full history export** — ZIP backups include results, source photos, references and generation metadata. Older records may lack original inputs. Reference materials have searchable, shareable detail pages.
 - **Settings** — Gemini / OpenAI / OpenRouter / Live demo; language; themes (**Bloom**, **Night**, **New Year**).
 - **i18n** — English & Traditional Chinese. **PWA**-ready static build.
@@ -148,6 +151,7 @@ Image generation goes through `services/imageProviders/`: a shared `ImageProvide
 See [docs/README.md](docs/README.md). Highlights:
 
 - **[Showcase assets](docs/showcase/README.md)** — README screenshots & core-flow GIF (Wave K/L UI)
+- **[Material MCP server](mcp/README.md)** — Connect Codex or another stdio MCP client
 - **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese)
 - **[Scene image sources](docs/SCENE_IMAGES_SOURCES.md)** / **[status](docs/SCENE_IMAGES_STATUS.md)**
 - **[Type layout](docs/TYPES.md)**

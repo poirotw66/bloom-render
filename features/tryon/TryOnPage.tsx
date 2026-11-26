@@ -7,6 +7,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import HistoryStorageNotice from '../../components/HistoryStorageNotice';
 import { useToolCommands } from '../../contexts/ToolCommandsContext';
 import TryOnWorkspaceDialog from './TryOnWorkspaceDialog';
+import TryOnPromptEditor from './TryOnPromptEditor';
 import CompareSlider from '../../components/CompareSlider';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import GenerationFailureNotice from '../../components/GenerationFailureNotice';
@@ -29,7 +30,9 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
   const { t, language } = useLanguage();
   const { isDemoMode, effectiveApiKey, imageProvider, enableDemoMode } = useSettings();
   const { setCommands } = useToolCommands();
-  const [activeDialog, setActiveDialog] = useState<'materials' | 'recipes' | 'draft' | null>(null);
+  const [activeDialog, setActiveDialog] = useState<
+    'materials' | 'recipes' | 'draft' | 'prompt' | null
+  >(null);
   const tryOn = useTryOn();
   const zh = language === 'zh-TW';
   const [clearingDraft, setClearingDraft] = useState(false);
@@ -44,6 +47,11 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
 
   const commands = useMemo(
     () => [
+      {
+        id: 'tryon-prompt',
+        label: zh ? '提示詞' : 'Prompt',
+        onSelect: () => setActiveDialog('prompt'),
+      },
       {
         id: 'tryon-materials',
         label: zh ? '參考素材庫' : 'Reference library',
@@ -275,6 +283,21 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
             </p>
           </footer>
         </div>
+        <TryOnWorkspaceDialog
+          open={activeDialog === 'prompt'}
+          onClose={() => setActiveDialog(null)}
+          title={zh ? '提示詞' : 'Prompt'}
+          id="tryon-prompt-dialog"
+        >
+          <TryOnPromptEditor
+            automaticPrompt={tryOn.automaticPrompt}
+            quantity={tryOn.quantity}
+            promptOverride={tryOn.promptOverride}
+            referenceMap={tryOn.referenceMap}
+            onChange={tryOn.setPromptOverride}
+            disabled={formDisabled || hasResults || isDemoMode}
+          />
+        </TryOnWorkspaceDialog>
         <TryOnWorkspaceDialog
           open={activeDialog === 'materials'}
           onClose={() => setActiveDialog(null)}

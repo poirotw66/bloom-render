@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MaterialBasketProvider, useMaterialBasket } from '../contexts/MaterialBasketContext';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { ToolCommandsProvider, useToolCommands } from '../contexts/ToolCommandsContext';
 import { useDialog } from '../hooks/useDialog';
@@ -10,6 +11,11 @@ import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
 import ToolHeader from './ToolHeader';
 
 vi.mock('../hooks/useUnsavedWork', () => ({ confirmDiscardUnsavedWork: vi.fn(() => true) }));
+
+function BasketProbe() {
+  const basket = useMaterialBasket();
+  return <output data-testid="basket-open">{basket.isOpen ? 'open' : 'closed'}</output>;
+}
 
 function CurrentRoute() {
   return <output data-testid="current-route">{useLocation().pathname}</output>;
@@ -38,16 +44,19 @@ function mount(withCommand = false) {
   render(
     <MemoryRouter initialEntries={['/try-on']}>
       <LanguageProvider>
-        <ToolCommandsProvider>
-          <ToolHeader
-            settingsOpen={false}
-            historyOpen={false}
-            onOpenHistory={onOpenHistory}
-            onOpenSettings={onOpenSettings}
-          />
-          <CurrentRoute />
-          {withCommand && <WorkspaceCommand />}
-        </ToolCommandsProvider>
+        <MaterialBasketProvider>
+          <ToolCommandsProvider>
+            <ToolHeader
+              settingsOpen={false}
+              historyOpen={false}
+              onOpenHistory={onOpenHistory}
+              onOpenSettings={onOpenSettings}
+            />
+            <CurrentRoute />
+            <BasketProbe />
+            {withCommand && <WorkspaceCommand />}
+          </ToolCommandsProvider>
+        </MaterialBasketProvider>
       </LanguageProvider>
     </MemoryRouter>,
   );
@@ -60,6 +69,21 @@ beforeEach(() => {
 });
 
 describe('tool navigation', () => {
+  it('opens the persistent basket from a route-independent command', () => {
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Material basket' }));
+    expect(screen.getByTestId('basket-open').textContent).toBe('open');
+  });
+
+  it('closes the mobile tools menu before opening the basket', () => {
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'All photo tools' }));
+    const menu = screen.getByRole('dialog', { name: 'All photo tools' });
+    fireEvent.click(within(menu).getByRole('button', { name: 'Material basket' }));
+    expect(screen.queryByRole('dialog', { name: 'All photo tools' })).toBeNull();
+    expect(screen.getByTestId('basket-open').textContent).toBe('open');
+  });
+
   it('runs registered commands directly from the toolbar', () => {
     mount(true);
     fireEvent.click(screen.getByRole('button', { name: 'Materials' }));

@@ -9,7 +9,8 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
+import * as materialFiles from '../../utils/materialFile';
 import { SettingsProvider, useSettings } from '../../contexts/SettingsContext';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { useTryOn } from './useTryOn';
@@ -396,4 +397,209 @@ it('recovers the saved draft when an incoming recipe cannot download its materia
   expect(saveDraft).not.toHaveBeenCalled();
   expect(result.current.error).toBeTruthy();
   fetchMock.mockRestore();
+});
+
+describe('try-on editable prompt', () => {
+  it('keeps manual wording across settings and preserves the captured batch on retry', async () => {
+    generateVirtualTryOn
+      .mockResolvedValueOnce('first')
+      .mockRejectedValueOnce(new Error('error.blocked'))
+      .mockResolvedValueOnce('retried');
+    const { result } = renderHook(() => useTryOn(), { wrapper });
+    await waitFor(() => expect(result.current.draftStatus).not.toBe('loading'));
+    act(() => {
+      result.current.setPerson(samplePhoto('person.png'));
+      result.current.addClothing([samplePhoto('shirt.png')]);
+      result.current.setQuantity(2);
+      result.current.setPromptOverride('My captured prompt.');
+    });
+    act(() => result.current.setKeepPose(false));
+    expect(result.current.resolvedPrompt).toBe('My captured prompt.');
+    expect(result.current.referenceMap.map((ref) => ref.role)).toEqual(['person', 'clothing']);
+    await act(async () => result.current.handleGenerate());
+    expect(addToHistory.mock.calls[0][2].prompt).toBe('My captured prompt.');
+    act(() => result.current.setPromptOverride('A later edit.'));
+    await act(async () => result.current.handleRetryFailed());
+    expect(generateVirtualTryOn.mock.calls[2][2].promptOverride).toBe('My captured prompt.');
+    expect(addToHistory.mock.calls[1][2].recipe.promptOverride).toBe('My captured prompt.');
+    act(() => result.current.setPromptOverride(undefined));
+    expect(result.current.promptOverride).toBeUndefined();
+    expect(result.current.resolvedPrompt).toBe(result.current.automaticPrompt);
+  });
+  it('restores custom wording from the saved draft and blocks blank manual generation', async () => {
+    const recipe = {
+      v: 1,
+      kind: 'tryon',
+      materialIds: [],
+      promptOverride: 'Draft wording.',
+      settings: {
+        background: 'studio',
+        style: 'editorial_high',
+        quantity: 1,
+        outputSize: '1K',
+        aspectRatio: '9:16',
+        keepBackground: false,
+        keepPose: true,
+      },
+    };
+    loadDraft.mockResolvedValue({
+      person: { blob: samplePhoto('person.png'), name: 'person.png' },
+      references: [{ role: 'clothing', blob: samplePhoto('shirt.png'), name: 'shirt.png' }],
+      recipe,
+    });
+    const { result } = renderHook(() => useTryOn(), { wrapper });
+    await waitFor(() => expect(result.current.resolvedPrompt).toBe('Draft wording.'));
+    act(() => result.current.setPromptOverride('   '));
+    expect(result.current.canGenerate).toBe(false);
+    await act(async () => result.current.handleGenerate());
+    expect(generateVirtualTryOn).not.toHaveBeenCalled();
+    await waitFor(() => expect(saveDraft).toHaveBeenCalled());
+    expect(saveDraft.mock.calls.at(-1)?.[0].recipe.promptOverride).toBe('   ');
+  });
+});
+
+describe('basket route consumption', () => {
+  const basketRecipe: TryOnRecipe = { ...savedRecipe, materialIds: ['white-oxford-shirt'] };
+  const transfer = { tryOnRecipe: basketRecipe, fromMaterialBasket: true, retained: 'other-state' };
+  function routeWrapper(state: unknown) {
+    return function BasketRouteWrapper({ children }: { children: ReactNode }) {
+      return (
+        <MemoryRouter
+          initialEntries={[
+            { pathname: '/try-on', search: '?source=basket', hash: '#workspace', state },
+          ]}
+        >
+          <SettingsProvider>
+            <LanguageProvider>{children}</LanguageProvider>
+          </SettingsProvider>
+        </MemoryRouter>
+      );
+    };
+  }
+  function useRouteComposition() {
+    return { tryOn: useTryOn(), location: useLocation(), navigate: useNavigate() };
+  }
+
+  it('consumes a successful basket merge once, keeping other state and removed materials removed after reload', async () => {
+    let complete!: (file: File) => void;
+    const material = vi.spyOn(materialFiles, 'materialFile').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          complete = resolve;
+        }),
+    );
+    try {
+      const first = renderHook(useRouteComposition, { wrapper: routeWrapper(transfer) });
+      await waitFor(() => expect(first.result.current.tryOn.materialLoading).toBe(true));
+      expect(first.result.current.location.state).toEqual(transfer);
+      await act(async () => complete(samplePhoto('shirt.png')));
+      await waitFor(() =>
+        expect(first.result.current.location.state).toEqual({ retained: 'other-state' }),
+      );
+      expect(first.result.current.location.search).toBe('?source=basket');
+      expect(first.result.current.location.hash).toBe('#workspace');
+      expect(first.result.current.tryOn.materialIds).toEqual(['white-oxford-shirt']);
+      act(() => first.result.current.tryOn.removeMaterial('white-oxford-shirt'));
+      await waitFor(() => expect(saveDraft.mock.lastCall?.[0].recipe.materialIds).toEqual([]));
+      const restoredState = first.result.current.location.state;
+      const saved = saveDraft.mock.lastCall![0];
+      first.unmount();
+      loadDraft.mockResolvedValue(saved);
+      const reloaded = renderHook(useRouteComposition, { wrapper: routeWrapper(restoredState) });
+      await waitFor(() => expect(reloaded.result.current.tryOn.draftStatus).not.toBe('loading'));
+      expect(reloaded.result.current.tryOn.materialIds).toEqual([]);
+      expect(material).toHaveBeenCalledOnce();
+    } finally {
+      material.mockRestore();
+    }
+  });
+
+  it('retains a failed transfer for retry without clearing its route state', async () => {
+    const material = vi
+      .spyOn(materialFiles, 'materialFile')
+      .mockRejectedValue(new Error('error.network_error'));
+    try {
+      const { result } = renderHook(useRouteComposition, { wrapper: routeWrapper(transfer) });
+      await waitFor(() => expect(result.current.tryOn.error).toBeTruthy());
+      expect(result.current.location.state).toEqual(transfer);
+      expect(result.current.tryOn.materialIds).toEqual([]);
+    } finally {
+      material.mockRestore();
+    }
+  });
+
+  it('does not consume a basket replacement declined by the user', async () => {
+    loadDraft.mockResolvedValue({
+      person: null,
+      references: [
+        {
+          role: 'pose',
+          blob: samplePhoto('original-pose.png'),
+          name: 'original-pose.png',
+          materialId: 'pose-relaxed-front',
+        },
+      ],
+      recipe: { ...savedRecipe, materialIds: ['pose-relaxed-front'] },
+    });
+    const declined = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const material = vi.spyOn(materialFiles, 'materialFile');
+    const incoming = {
+      ...transfer,
+      tryOnRecipe: { ...basketRecipe, materialIds: ['pose-hand-on-hip'] },
+    };
+    try {
+      const { result } = renderHook(useRouteComposition, { wrapper: routeWrapper(incoming) });
+      await waitFor(() => expect(declined).toHaveBeenCalledOnce());
+      expect(result.current.location.state).toEqual(incoming);
+      expect(result.current.tryOn.materialIds).toEqual(['pose-relaxed-front']);
+      expect(material).not.toHaveBeenCalled();
+    } finally {
+      declined.mockRestore();
+      material.mockRestore();
+    }
+  });
+
+  it('never clears newer navigation state when an earlier transfer finishes', async () => {
+    let complete!: (file: File) => void;
+    const material = vi.spyOn(materialFiles, 'materialFile').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          complete = resolve;
+        }),
+    );
+    try {
+      const { result } = renderHook(useRouteComposition, { wrapper: routeWrapper(transfer) });
+      await waitFor(() => expect(result.current.tryOn.materialLoading).toBe(true));
+      act(() => result.current.navigate('/try-on?new=1#new', { state: { retained: 'new-state' } }));
+      await act(async () => complete(samplePhoto('shirt.png')));
+      await waitFor(() => expect(result.current.tryOn.materialLoading).toBe(false));
+      expect(result.current.location.state).toEqual({ retained: 'new-state' });
+      expect(result.current.location.search).toBe('?new=1');
+      expect(result.current.location.hash).toBe('#new');
+    } finally {
+      material.mockRestore();
+    }
+  });
+
+  it('can apply the same basket again through a new same-route navigation', async () => {
+    const material = vi
+      .spyOn(materialFiles, 'materialFile')
+      .mockResolvedValue(samplePhoto('shirt.png'));
+    try {
+      const { result } = renderHook(useRouteComposition, { wrapper: routeWrapper(transfer) });
+      await waitFor(() =>
+        expect(result.current.location.state).toEqual({ retained: 'other-state' }),
+      );
+      act(() => result.current.tryOn.removeMaterial('white-oxford-shirt'));
+      expect(result.current.tryOn.materialIds).toEqual([]);
+      act(() => result.current.navigate('/try-on', { state: transfer }));
+      await waitFor(() => expect(result.current.tryOn.materialIds).toEqual(['white-oxford-shirt']));
+      await waitFor(() =>
+        expect(result.current.location.state).toEqual({ retained: 'other-state' }),
+      );
+      expect(material).toHaveBeenCalledTimes(2);
+    } finally {
+      material.mockRestore();
+    }
+  });
 });

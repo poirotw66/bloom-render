@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-25",
+  "baseCommit": "09d71ff",
+  "goal": "Implement editable pre-generation try-on prompts and a persistent material basket, preserving existing image, draft, history and provider workflows.",
+  "outcome": "Implemented and verified locally; GATE: PASS.",
+  "features": {
+    "promptEditor": [
+      "Automatic/manual mode, ordered image-role map, copy and reset.",
+      "Manual text remains unchanged when settings/references change. Blank manual text survives draft storage but blocks generation.",
+      "Draft, history replay and failed-slot retries retain the captured custom prompt.",
+      "Public recipe links/JSON exclude custom text by default; explicit opt-in includes it. Oversized share links suggest JSON download.",
+      "Automatic batch preview identifies image 1 and explains variation; manual batches use identical text for every slot."
+    ],
+    "materialBasket": [
+      "Catalog IDs only, across tool-page navigation and reloads. No personal images or API keys stored.",
+      "Add/remove/clear with duplicate and role/count validation, plus visible replacement/limit feedback.",
+      "Use in try-on merges into the existing draft, retaining the person photo, clothing, settings and prompt; reference replacement requires confirmation.",
+      "Use in generation sends every selected reference, with roles/order retained in request snapshots, history export and replay.",
+      "Successful try-on transfer consumes only its own route state. Failed/declined transfers and newer navigation are preserved."
+    ]
+  },
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Traced draft/recipe/router/request contracts before fan-out; verified clean starting commit and existing passing checks.",
+    "independentWorkstreams": "One integration owner coordinated disjoint basket and generation workers; root independently authored browser tests and reviewed artifacts.",
+    "sharedMutableState": "Shared catalog-file conversion extracted once. Hook/recipe/prompt ownership stayed with the integrator; root browser tests and QA docs remained separate.",
+    "smallestSafeDecomposition": "Three implementation slices with one integration owner, followed by a read-only reviewer and a narrowly scoped routing bug fix."
+  },
+  "verification": {
+    "unitTests": {
+      "files": 105,
+      "passed": 579
+    },
+    "browserTests": {
+      "regressionAndWorkflowSuitePassed": 61,
+      "additionalOpenDialogAccessibilityPassed": 6,
+      "totalPassed": 67
+    },
+    "themes": ["bloom", "night", "newyear"],
+    "dialogAccessibilityWidths": [390, 1440],
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuildAndBundleBudget": "passed",
+    "diffWhitespace": "passed",
+    "layoutGate": "GATE: PASS",
+    "gateRoute": "http://127.0.0.1:4196/try-on?build=fa4c3aa5edc3",
+    "gateEvidence": "creative-workflow-gate-pass.txt",
+    "gateWaivers": ["Existing focus utility override", "Existing React mount container"],
+    "gateWarnings": ["copy-buttons", "skip-link", "lang"],
+    "reviewFinding": "Reproduced removed material returning after reload on the first build; fixed one-shot route-state consumption and passed the same browser regression on the final build.",
+    "screenshots": [
+      ".taste-skill/shots/workflow-basket-1440.png",
+      ".taste-skill/shots/workflow-basket-390.png",
+      ".taste-skill/shots/workflow-prompt-1440.png",
+      ".taste-skill/shots/workflow-prompt-390.png"
+    ],
+    "paidAPIRequests": 0,
+    "liveProviderQualityTested": false
+  },
+  "deliveryAtVerification": "Local working tree only; not committed, pushed or deployed."
+}

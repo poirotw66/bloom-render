@@ -14,7 +14,7 @@ const COMMON_OPTIONS = [
   'variationIndex',
 ];
 const FEATURE_OPTIONS: Record<string, readonly string[]> = {
-  generate: ['numberOfImages', 'hasReference', 'compare', 'slotIndex'],
+  generate: ['numberOfImages', 'hasReference', 'compare', 'slotIndex', 'resolvedPrompt'],
   editor: ['tab', 'retouchMode'],
   idphoto: ['retouchLevel', 'idType', 'outputSpec', 'printSize', 'clothingOption', 'batchIndex'],
   portrait: ['portraitType', 'outputSpec'],
@@ -40,13 +40,28 @@ export function historyArchiveOptions(item: StoredHistoryItem): Record<string, u
   const result: Record<string, unknown> = {};
   for (const key of [...COMMON_OPTIONS, ...(FEATURE_OPTIONS[item.type] ?? [])]) {
     const value = source[key];
-    if (typeof value === 'string') result[key] = safeText(value, key === 'prompt' ? 16000 : 2000);
+    if (typeof value === 'string')
+      result[key] = safeText(value, key === 'prompt' || key === 'resolvedPrompt' ? 16000 : 2000);
     else if (typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value)))
       result[key] = value;
   }
   if (item.type === 'tryon') {
     const recipe = parseTryOnRecipe(source.recipe);
-    if (recipe) result.recipe = recipe;
+    if (recipe)
+      result.recipe =
+        recipe.promptOverride === undefined
+          ? recipe
+          : { ...recipe, promptOverride: safeText(recipe.promptOverride, 8000) };
+  }
+  if (
+    item.type === 'generate' &&
+    Array.isArray(source.materialIds) &&
+    source.materialIds.length <= 9 &&
+    source.materialIds.every(
+      (id) => typeof id === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) && id.length <= 64,
+    )
+  ) {
+    result.materialIds = [...source.materialIds];
   }
   return result;
 }

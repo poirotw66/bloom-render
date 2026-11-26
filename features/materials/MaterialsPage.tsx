@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMaterials';
 import { DEFAULT_TRYON_BACKGROUND, DEFAULT_TRYON_STYLE } from '../../constants/tryOn';
 import { ROUTES } from '../../constants/routes';
+import { useMaterialBasket } from '../../contexts/MaterialBasketContext';
+import { materialBasketMessage } from '../../utils/materialBasket';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
@@ -34,6 +36,7 @@ function recipeForMaterial(material: TryOnMaterial): TryOnRecipe {
 export default function MaterialsPage() {
   const { id } = useParams();
   const { language } = useLanguage();
+  const basket = useMaterialBasket();
   const navigate = useNavigate();
   const zh = language === 'zh-TW';
   const [query, setQuery] = useState('');
@@ -94,6 +97,12 @@ export default function MaterialsPage() {
               ? '挑選服裝、姿勢與光線，再用自己的照片試穿。'
               : 'Choose clothing, poses and lighting, then try them with your own photo.'}
         </p>
+        <button type="button" className={UI_BTN_SECONDARY} onClick={basket.openBasket}>
+          {zh ? '素材籃' : 'Material basket'} ({basket.materialIds.length})
+        </button>
+        <p role="status" className="text-sm theme-ink-muted">
+          {materialBasketMessage(basket.message, zh)}
+        </p>
       </header>
 
       {selected ? (
@@ -116,6 +125,25 @@ export default function MaterialsPage() {
               }
             >
               {zh ? '套用到試穿' : 'Use in try-on'}
+            </button>
+            <button
+              type="button"
+              className={UI_BTN_SECONDARY}
+              data-testid={`basket-add-${selected.id}`}
+              aria-pressed={basket.materialIds.includes(selected.id)}
+              onClick={() =>
+                basket.materialIds.includes(selected.id)
+                  ? basket.removeMaterial(selected.id)
+                  : basket.addMaterial(selected.id)
+              }
+            >
+              {basket.materialIds.includes(selected.id)
+                ? zh
+                  ? '從素材籃移除'
+                  : 'Remove from basket'
+                : zh
+                  ? '加入素材籃'
+                  : 'Add to basket'}
             </button>
             <p className="text-sm theme-ink-muted">
               {zh
@@ -168,21 +196,46 @@ export default function MaterialsPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((material) => (
-              <Link
+              <article
                 key={material.id}
-                to={`${ROUTES.MATERIALS}/${material.id}`}
-                className="group block rounded-xl border theme-border overflow-hidden theme-raised focus-visible:outline-2 focus-visible:outline-offset-4"
+                className="rounded-xl border theme-border overflow-hidden theme-raised"
               >
-                <img
-                  src={publicAssetUrl(material.image)}
-                  alt={zh ? material.titleZh : material.title}
-                  loading="lazy"
-                  className="w-full aspect-[4/3] object-contain transition-transform group-hover:scale-[1.02]"
-                />
-                <h2 className="px-4 py-3 text-base font-semibold theme-ink">
-                  {zh ? material.titleZh : material.title}
-                </h2>
-              </Link>
+                <Link
+                  to={`${ROUTES.MATERIALS}/${material.id}`}
+                  className="group block focus-visible:outline-2 focus-visible:outline-offset-4"
+                >
+                  <img
+                    src={publicAssetUrl(material.image)}
+                    alt={zh ? material.titleZh : material.title}
+                    loading="lazy"
+                    className="w-full aspect-[4/3] object-contain transition-transform group-hover:scale-[1.02]"
+                  />
+                  <h2 className="px-4 py-3 text-base font-semibold theme-ink">
+                    {zh ? material.titleZh : material.title}
+                  </h2>
+                </Link>
+                <div className="px-4 pb-4">
+                  <button
+                    type="button"
+                    className={UI_BTN_SECONDARY}
+                    data-testid={`basket-add-${material.id}`}
+                    aria-pressed={basket.materialIds.includes(material.id)}
+                    onClick={() =>
+                      basket.materialIds.includes(material.id)
+                        ? basket.removeMaterial(material.id)
+                        : basket.addMaterial(material.id)
+                    }
+                  >
+                    {basket.materialIds.includes(material.id)
+                      ? zh
+                        ? '從素材籃移除'
+                        : 'Remove from basket'
+                      : zh
+                        ? '加入素材籃'
+                        : 'Add to basket'}
+                  </button>
+                </div>
+              </article>
             ))}
           </div>
           {items.length === 0 && (

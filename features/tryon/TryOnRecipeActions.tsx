@@ -14,11 +14,14 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
   const [message, setMessage] = useState('');
   const [shareUrl, setShareUrl] = useState('');
   const [busy, setBusy] = useState(false);
+  const [includePrompt, setIncludePrompt] = useState(false);
+  const { promptOverride, ...baseRecipe } = recipe;
+  const sharedRecipe = includePrompt ? recipe : baseRecipe;
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function share() {
     try {
-      const url = buildRemixUrl({ v: 1, f: 'tryon', recipe });
+      const url = buildRemixUrl({ v: 1, f: 'tryon', recipe: sharedRecipe });
       setShareUrl(url);
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
@@ -27,14 +30,17 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
         setMessage(zh ? '請複製下方連結。' : 'Copy the link below.');
       }
     } catch {
+      setShareUrl('');
       setMessage(
-        zh ? '請複製下方連結，或下載配方。' : 'Copy the link below or download the recipe.',
+        zh
+          ? '無法建立連結，提示詞可能過長。請下載配方 JSON 分享。'
+          : 'Could not create the link; the prompt may be too long. Download the recipe JSON to share it.',
       );
     }
   }
 
   function download() {
-    const valid = parseTryOnRecipe(recipe);
+    const valid = parseTryOnRecipe(sharedRecipe);
     if (!valid) return;
     const blob = new Blob([JSON.stringify(valid, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -75,9 +81,30 @@ export default function TryOnRecipeActions({ recipe, onApply }: Props) {
       <h2 className="tryon-subheading">{zh ? '儲存與分享配方' : 'Save and share a recipe'}</h2>
       <p className="tryon-hint">
         {zh
-          ? '連結與配方只含內建素材及設定，不包含你的照片、上傳參考圖或金鑰。自訂參考圖需由使用者重新上傳。'
-          : 'Links and recipes contain built-in materials and settings only. Photos, uploaded references and keys stay private. Custom references must be uploaded again.'}
+          ? '連結與配方包含內建素材及設定；你可另選是否分享自訂提示詞。照片、上傳參考圖與金鑰不會分享，自訂參考圖需重新上傳。'
+          : 'Links and recipes contain built-in materials and settings, with custom prompt text only when you choose to include it. Photos, uploaded references and keys stay private. Custom references must be uploaded again.'}
       </p>
+      {promptOverride !== undefined && (
+        <label className="tryon-preservation">
+          <input
+            type="checkbox"
+            checked={includePrompt}
+            onChange={(event) => {
+              setIncludePrompt(event.target.checked);
+              setShareUrl('');
+              setMessage('');
+            }}
+          />
+          <span>{zh ? '在配方中包含自訂提示詞' : 'Include custom prompt in recipe'}</span>
+        </label>
+      )}
+      {promptOverride !== undefined && (
+        <p className="tryon-hint">
+          {zh
+            ? '勾選後，自訂文字會包含在下載的 JSON 與配方連結中；請先檢查有無個人資訊。'
+            : 'When checked, your custom text is included in downloaded JSON and recipe links. Review it for personal information before sharing.'}
+        </p>
+      )}
       <div className="tryon-action-row">
         <button
           type="button"

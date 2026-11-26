@@ -15,6 +15,13 @@ const recipe: TryOnRecipe = {
   },
 };
 describe('try-on recipe boundary', () => {
+  it('retains an explicit custom prompt without changing legacy recipes', () => {
+    expect(
+      parseTryOnRecipe({ ...recipe, promptOverride: 'Keep the blue jacket.' })?.promptOverride,
+    ).toBe('Keep the blue jacket.');
+    expect(parseTryOnRecipe({ ...recipe, promptOverride: 'x'.repeat(8001) })).toBeNull();
+    expect(parseTryOnRecipe({ ...recipe, promptOverride: 5 })).toBeNull();
+  });
   it('accepts portable settings and material ids', () =>
     expect(parseTryOnRecipe(recipe)).toEqual(recipe));
   it.each([

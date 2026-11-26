@@ -10,6 +10,23 @@ const photo = (name: string) => new File([name], name, { type: 'image/png' });
 beforeEach(() => vi.mocked(runImageGeneration).mockClear());
 
 describe('try-on reference requests', () => {
+  it('uses a manual prompt exactly while preserving image ordering', () => {
+    const person = photo('person'),
+      shirt = photo('shirt'),
+      pose = photo('pose');
+    const prepared = prepareTryOnRequest(person, [shirt], {
+      promptOverride: 'My exact prompt.\nKeep this line.',
+      referenceFiles: { pose },
+      variationIndex: 2,
+    });
+    expect(prepared.prompt).toBe('My exact prompt.\nKeep this line.');
+    expect(prepared.images).toEqual([person, shirt, pose]);
+  });
+  it.each(['', '   ', 'x'.repeat(8001)])('rejects an unusable manual prompt', (promptOverride) => {
+    expect(() =>
+      prepareTryOnRequest(photo('person'), [photo('shirt')], { promptOverride }),
+    ).toThrow('error.invalid_request');
+  });
   it('sends person, garments and optional references in a stable declared order', async () => {
     const person = photo('person'),
       shirt = photo('shirt'),

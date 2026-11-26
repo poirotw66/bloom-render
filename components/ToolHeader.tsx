@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { GITHUB_REPO_URL } from '../constants/site';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useMaterialBasket } from '../contexts/MaterialBasketContext';
 import { useToolCommands, type ToolCommand } from '../contexts/ToolCommandsContext';
 import { useDialog } from '../hooks/useDialog';
 import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
@@ -44,6 +45,16 @@ export default function ToolHeader({
 }: ToolHeaderProps) {
   const { t, language, setLanguage } = useLanguage();
   const { commands } = useToolCommands();
+  const basket = useMaterialBasket();
+  const basketLabel = language === 'zh-TW' ? '素材籃' : 'Material basket';
+  const workspaceCommands = [
+    {
+      id: 'material-basket',
+      label: `${language === 'zh-TW' ? '素材籃' : 'Basket'} (${basket.materialIds.length})`,
+      onSelect: basket.openBasket,
+    },
+    ...commands,
+  ];
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
@@ -101,15 +112,16 @@ export default function ToolHeader({
           <span>BloomRender</span>
         </Link>
         <div className="tool-header__actions">
-          {commands.length > 0 && (
+          {workspaceCommands.length > 0 && (
             <div
               className="tool-header__commands"
               role="group"
               aria-label={language === 'zh-TW' ? '工作區操作' : 'Workspace actions'}
             >
-              {commands.map((command) => (
+              {workspaceCommands.map((command) => (
                 <button
                   key={command.id}
+                  aria-label={command.id === 'material-basket' ? basketLabel : undefined}
                   type="button"
                   className="tool-control tool-button tool-button-secondary"
                   onClick={command.onSelect}
@@ -186,15 +198,16 @@ export default function ToolHeader({
               </button>
             </div>
             <div className="tool-header__menu-language">{languageButtons(false)}</div>
-            {commands.length > 0 && (
+            {workspaceCommands.length > 0 && (
               <div
                 className="tool-header__menu-commands"
                 role="group"
                 aria-label={language === 'zh-TW' ? '工作區操作' : 'Workspace actions'}
               >
-                {commands.map((command) => (
+                {workspaceCommands.map((command) => (
                   <button
                     key={command.id}
+                    aria-label={command.id === 'material-basket' ? basketLabel : undefined}
                     type="button"
                     className="tool-control tool-button tool-button-secondary"
                     onClick={() => selectMenuCommand(command)}
