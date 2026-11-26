@@ -23,6 +23,7 @@ import './styles/tool-shell.css';
 import MaterialBasket from './components/MaterialBasket';
 import { MaterialBasketProvider } from './contexts/MaterialBasketContext';
 import { ToolCommandsProvider } from './contexts/ToolCommandsContext';
+import { CommandPaletteProvider } from './contexts/CommandPaletteContext';
 
 const HistoryPage = lazy(() => import('./features/history/HistoryPage'));
 const IdPhotoPage = lazy(() => import('./features/idphoto/IdPhotoPage'));
@@ -85,120 +86,122 @@ const App: React.FC = () => {
   return (
     <MaterialBasketProvider>
       <ToolCommandsProvider>
-        <div
-          className={`min-h-svh text-gray-100 flex flex-col ${isHomeRoute ? 'home-app' : `tool-shell${isTryOnRoute ? ' tool-shell--tryon' : ''}`}`}
-        >
-          <a href="#main-content" className="skip-link">
-            {t('a11y.skip_to_content')}
-          </a>
-          <Header onImageSelected={handleImageUpload} />
-          <main
-            id="main-content"
-            tabIndex={-1}
-            className={
-              isHomeRoute
-                ? 'home-main flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none max-[640px]:pb-24 items-center'
-                : isTryOnRoute
-                  ? 'tool-main tool-main--workbench'
-                  : `tool-main wrap tool-shell-wrap flex-grow min-w-0 ${isEditRoute ? 'items-start' : 'items-center'}`
-            }
+        <CommandPaletteProvider>
+          <div
+            className={`min-h-svh text-gray-100 flex flex-col ${isHomeRoute ? 'home-app' : `tool-shell${isTryOnRoute ? ' tool-shell--tryon' : ''}`}`}
           >
-            {!isTryOnRoute && <HistoryStorageNotice />}
-            {uploadError && !isEditRoute && (
-              <div className="w-full max-w-2xl mb-4">
-                <ErrorDisplay message={uploadError} />
-              </div>
-            )}
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center min-h-[40vh]">
-                  <Spinner />
-                </div>
+            <a href="#main-content" className="skip-link">
+              {t('a11y.skip_to_content')}
+            </a>
+            <Header onImageSelected={handleImageUpload} />
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className={
+                isHomeRoute
+                  ? 'home-main flex-grow w-full max-w-[1600px] mx-auto px-5 py-4 sm:p-6 md:p-8 flex flex-col justify-center min-w-0 focus:outline-none max-[640px]:pb-24 items-center'
+                  : isTryOnRoute
+                    ? 'tool-main tool-main--workbench'
+                    : `tool-main wrap tool-shell-wrap flex-grow min-w-0 ${isEditRoute ? 'items-start' : 'items-center'}`
               }
             >
-              <Routes>
-                <Route
-                  path={ROUTES.HOME}
-                  element={
-                    <StartScreen
-                      tab="upload"
-                      onImageSelected={handleImageUpload}
-                      navigate={navigate}
-                    />
-                  }
-                />
-                <Route
-                  path={ROUTES.GENERATE}
-                  element={
-                    <StartScreen
-                      tab="generate"
-                      onImageSelected={handleImageUpload}
-                      navigate={navigate}
-                    />
-                  }
-                />
-                <Route
-                  path={ROUTES.HISTORY}
-                  element={<HistoryPage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.ID_PHOTO}
-                  element={<IdPhotoPage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.ID_PHOTO_BATCH}
-                  element={<IdPhotoBatchPage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.PORTRAIT}
-                  element={<PortraitPage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.TRAVEL}
-                  element={<TravelPage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.THEMED}
-                  element={<ThemedPage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.COUPLE_GROUP}
-                  element={<CoupleGroupPage onImageSelected={handleImageUpload} />}
-                />
-                <Route path={ROUTES.STYLE_COLLAGE} element={<StyleCollagePage />} />
-                <Route path={ROUTES.MULTI_PERSON} element={<MultiPersonPage />} />
-                <Route
-                  path={ROUTES.TRY_ON}
-                  element={<TryOnPage onImageSelected={handleImageUpload} />}
-                />
-                <Route path={ROUTES.MATERIALS} element={<MaterialsPage />} />
-                <Route path={`${ROUTES.MATERIALS}/:id`} element={<MaterialsPage />} />
-                <Route
-                  path={ROUTES.ENHANCE}
-                  element={<EnhancePage onImageSelected={handleImageUpload} />}
-                />
-                <Route
-                  path={ROUTES.RESTORE}
-                  element={<RestorePage onImageSelected={handleImageUpload} />}
-                />
-                <Route path={ROUTES.PHOTOGRAPHY_SERVICE} element={<PhotographyServicePage />} />
-                <Route path={ROUTES.EDIT} element={<EditorPage />} />
-                <Route path={ROUTES.PROMPT_GALLERY} element={<PromptGalleryPage />} />
-                <Route path={ROUTES.REMIX} element={<RemixPage />} />
-                <Route path={ROUTES.OPENROUTER_OAUTH} element={<OpenRouterCallbackPage />} />
-                <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
-              </Routes>
-            </Suspense>
-          </main>
-          {isHomeRoute ? (
-            <HomeFooter onImageSelected={handleImageUpload} />
-          ) : (
-            !isTryOnRoute && <SiteFooter />
-          )}
-          {!isHomeRoute && location.pathname !== ROUTES.TRY_ON && <StickyDemoCta />}
-          <StarNudge />
-          <MaterialBasket />
-        </div>
+              {!isTryOnRoute && <HistoryStorageNotice />}
+              {uploadError && !isEditRoute && (
+                <div className="w-full max-w-2xl mb-4">
+                  <ErrorDisplay message={uploadError} />
+                </div>
+              )}
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center min-h-[40vh]">
+                    <Spinner />
+                  </div>
+                }
+              >
+                <Routes>
+                  <Route
+                    path={ROUTES.HOME}
+                    element={
+                      <StartScreen
+                        tab="upload"
+                        onImageSelected={handleImageUpload}
+                        navigate={navigate}
+                      />
+                    }
+                  />
+                  <Route
+                    path={ROUTES.GENERATE}
+                    element={
+                      <StartScreen
+                        tab="generate"
+                        onImageSelected={handleImageUpload}
+                        navigate={navigate}
+                      />
+                    }
+                  />
+                  <Route
+                    path={ROUTES.HISTORY}
+                    element={<HistoryPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.ID_PHOTO}
+                    element={<IdPhotoPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.ID_PHOTO_BATCH}
+                    element={<IdPhotoBatchPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.PORTRAIT}
+                    element={<PortraitPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.TRAVEL}
+                    element={<TravelPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.THEMED}
+                    element={<ThemedPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.COUPLE_GROUP}
+                    element={<CoupleGroupPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route path={ROUTES.STYLE_COLLAGE} element={<StyleCollagePage />} />
+                  <Route path={ROUTES.MULTI_PERSON} element={<MultiPersonPage />} />
+                  <Route
+                    path={ROUTES.TRY_ON}
+                    element={<TryOnPage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route path={ROUTES.MATERIALS} element={<MaterialsPage />} />
+                  <Route path={`${ROUTES.MATERIALS}/:id`} element={<MaterialsPage />} />
+                  <Route
+                    path={ROUTES.ENHANCE}
+                    element={<EnhancePage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route
+                    path={ROUTES.RESTORE}
+                    element={<RestorePage onImageSelected={handleImageUpload} />}
+                  />
+                  <Route path={ROUTES.PHOTOGRAPHY_SERVICE} element={<PhotographyServicePage />} />
+                  <Route path={ROUTES.EDIT} element={<EditorPage />} />
+                  <Route path={ROUTES.PROMPT_GALLERY} element={<PromptGalleryPage />} />
+                  <Route path={ROUTES.REMIX} element={<RemixPage />} />
+                  <Route path={ROUTES.OPENROUTER_OAUTH} element={<OpenRouterCallbackPage />} />
+                  <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+                </Routes>
+              </Suspense>
+            </main>
+            {isHomeRoute ? (
+              <HomeFooter onImageSelected={handleImageUpload} />
+            ) : (
+              !isTryOnRoute && <SiteFooter />
+            )}
+            {!isHomeRoute && location.pathname !== ROUTES.TRY_ON && <StickyDemoCta />}
+            <StarNudge />
+            <MaterialBasket />
+          </div>
+        </CommandPaletteProvider>
       </ToolCommandsProvider>
     </MaterialBasketProvider>
   );

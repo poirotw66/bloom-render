@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMaterials';
 import { DEFAULT_TRYON_BACKGROUND, DEFAULT_TRYON_STYLE } from '../../constants/tryOn';
@@ -8,6 +8,13 @@ import { materialBasketMessage } from '../../utils/materialBasket';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
+import { recordMaterialUse, useMaterialPreferences } from '../../utils/materialPreferences';
+import MaterialViewer from '../../components/MaterialViewer';
+import {
+  MaterialCollectionFilters,
+  MaterialFavoriteButton,
+  type MaterialCollection,
+} from '../../components/MaterialPreferenceControls';
 import {
   getMaterialPrompt,
   getPoseSearchText,
@@ -50,11 +57,24 @@ export default function MaterialsPage() {
   const navigate = useNavigate();
   const zh = language === 'zh-TW';
   const [query, setQuery] = useState('');
+  const preferences = useMaterialPreferences();
+  const [collection, setCollection] = useState<MaterialCollection>('all');
+  const [viewer, setViewer] = useState<TryOnMaterial | null>(null);
   const [role, setRole] = useState('all');
   const [poseFilters, setPoseFilters] = useState<PoseFilterValues>({ posture: '', view: '' });
   const selected = id ? TRYON_MATERIALS.find((material) => material.id === id) : undefined;
-  const items = TRYON_MATERIALS.filter(
+  useEffect(() => {
+    if (selected) recordMaterialUse(selected.id);
+  }, [selected]);
+  const pool =
+    collection === 'recent'
+      ? preferences.recentIds
+          .map((recentId) => TRYON_MATERIALS.find((material) => material.id === recentId)!)
+          .filter(Boolean)
+      : TRYON_MATERIALS;
+  const items = pool.filter(
     (material) =>
+      (collection !== 'favorites' || preferences.favoriteIds.includes(material.id)) &&
       (role === 'all' || material.role === role) &&
       (role !== 'pose' || matchesPoseFilters(material, poseFilters)) &&
       [
@@ -89,6 +109,7 @@ export default function MaterialsPage() {
 
   return (
     <div className={`${UI_PAGE} space-y-7`}>
+      {viewer && <MaterialViewer material={viewer} onClose={() => setViewer(null)} />}
       <header className="space-y-3">
         {selected && (
           <Link
@@ -126,11 +147,29 @@ export default function MaterialsPage() {
 
       {selected ? (
         <div className="grid gap-7 md:grid-cols-2 items-start">
-          <img
-            src={publicAssetUrl(selected.image)}
-            alt={zh ? selected.titleZh : selected.title}
-            className="w-full max-h-[540px] object-contain rounded-xl theme-raised"
-          />
+          <div className="space-y-3">
+            <img
+              src={publicAssetUrl(selected.image)}
+              alt={zh ? selected.titleZh : selected.title}
+              className="w-full max-h-[540px] object-contain rounded-xl theme-raised"
+            />
+            <div className="material-card-actions">
+              <button
+                type="button"
+                className={UI_BTN_SECONDARY}
+                onClick={() => {
+                  recordMaterialUse(selected.id);
+                  setViewer(selected);
+                }}
+              >
+                {zh ? '檢視大圖' : 'View image'}
+              </button>
+              <MaterialFavoriteButton
+                id={selected.id}
+                title={zh ? selected.titleZh : selected.title}
+              />
+            </div>
+          </div>
           <div className="space-y-5 min-w-0">
             <h2 className="text-lg font-semibold theme-ink">
               {zh ? '參考圖提示詞' : 'Reference prompt'}
@@ -142,9 +181,10 @@ export default function MaterialsPage() {
             <button
               type="button"
               className={UI_BTN_PRIMARY}
-              onClick={() =>
-                navigate(ROUTES.TRY_ON, { state: { tryOnRecipe: recipeForMaterial(selected) } })
-              }
+              onClick={() => {
+                recordMaterialUse(selected.id);
+                navigate(ROUTES.TRY_ON, { state: { tryOnRecipe: recipeForMaterial(selected) } });
+              }}
             >
               {zh ? '套用到試穿' : 'Use in try-on'}
             </button>
@@ -191,6 +231,7 @@ export default function MaterialsPage() {
         </div>
       ) : (
         <>
+          <MaterialCollectionFilters value={collection} onChange={setCollection} />
           <div className="flex flex-wrap gap-3">
             <label className="flex-1 min-w-0 text-sm theme-ink-muted">
               {zh ? '搜尋素材' : 'Search materials'}
@@ -240,7 +281,7 @@ export default function MaterialsPage() {
                     {zh ? material.titleZh : material.title}
                   </h2>
                 </Link>
-                <div className="px-4 pb-4">
+                <div className="px-4 pb-4 material-card-actions">
                   <button
                     type="button"
                     className={UI_BTN_SECONDARY}
@@ -259,6 +300,21 @@ export default function MaterialsPage() {
                       : zh
                         ? '加入素材籃'
                         : 'Add to basket'}
+                  </button>
+                  <MaterialFavoriteButton
+                    id={material.id}
+                    title={zh ? material.titleZh : material.title}
+                  />
+                  <button
+                    type="button"
+                    className={UI_BTN_SECONDARY}
+                    aria-label={`${zh ? '檢視大圖' : 'View image'} ${zh ? material.titleZh : material.title}`}
+                    onClick={() => {
+                      recordMaterialUse(material.id);
+                      setViewer(material);
+                    }}
+                  >
+                    {zh ? '檢視大圖' : 'View image'}
                   </button>
                 </div>
               </article>

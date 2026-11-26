@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { GITHUB_REPO_URL } from '../constants/site';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useCommandPalette } from '../contexts/CommandPaletteContext';
 import { useMaterialBasket } from '../contexts/MaterialBasketContext';
 import { useToolCommands, type ToolCommand } from '../contexts/ToolCommandsContext';
 import { useDialog } from '../hooks/useDialog';
@@ -46,6 +47,7 @@ export default function ToolHeader({
   const { t, language, setLanguage } = useLanguage();
   const { commands } = useToolCommands();
   const basket = useMaterialBasket();
+  const palette = useCommandPalette();
   const basketLabel = language === 'zh-TW' ? '素材籃' : 'Material basket';
   const workspaceCommands = [
     {
@@ -53,6 +55,15 @@ export default function ToolHeader({
       label: `${language === 'zh-TW' ? '素材籃' : 'Basket'} (${basket.materialIds.length})`,
       onSelect: basket.openBasket,
     },
+    ...(palette
+      ? [
+          {
+            id: 'command-palette',
+            label: language === 'zh-TW' ? '搜尋' : 'Search',
+            onSelect: palette.openPalette,
+          },
+        ]
+      : []),
     ...commands,
   ];
   const location = useLocation();
@@ -121,7 +132,18 @@ export default function ToolHeader({
               {workspaceCommands.map((command) => (
                 <button
                   key={command.id}
-                  aria-label={command.id === 'material-basket' ? basketLabel : undefined}
+                  data-testid={
+                    command.id === 'command-palette' ? 'command-palette-trigger' : undefined
+                  }
+                  aria-label={
+                    command.id === 'material-basket'
+                      ? basketLabel
+                      : command.id === 'command-palette'
+                        ? language === 'zh-TW'
+                          ? '搜尋工具與素材'
+                          : 'Search tools and materials'
+                        : undefined
+                  }
                   type="button"
                   className="tool-control tool-button tool-button-secondary"
                   onClick={command.onSelect}
@@ -207,7 +229,18 @@ export default function ToolHeader({
                 {workspaceCommands.map((command) => (
                   <button
                     key={command.id}
-                    aria-label={command.id === 'material-basket' ? basketLabel : undefined}
+                    data-testid={
+                      command.id === 'command-palette' ? 'command-palette-trigger' : undefined
+                    }
+                    aria-label={
+                      command.id === 'material-basket'
+                        ? basketLabel
+                        : command.id === 'command-palette'
+                          ? language === 'zh-TW'
+                            ? '搜尋工具與素材'
+                            : 'Search tools and materials'
+                          : undefined
+                    }
                     type="button"
                     className="tool-control tool-button tool-button-secondary"
                     onClick={() => selectMenuCommand(command)}

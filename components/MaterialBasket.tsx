@@ -10,6 +10,8 @@ import { createMaterialBasketTransfer, materialBasketMessage } from '../utils/ma
 import { publicAssetUrl } from '../utils/publicAsset';
 import type { TryOnRecipe } from '../types/tryOnRecipe';
 import '../styles/material-basket.css';
+import MaterialBoardExport from './MaterialBoardExport';
+import { recordMaterialUse } from '../utils/materialPreferences';
 
 export default function MaterialBasket() {
   const basket = useMaterialBasket();
@@ -36,6 +38,7 @@ export default function MaterialBasket() {
   function transfer(target: 'tryon' | 'generate') {
     if (!basket.materialIds.length || !confirmDiscardUnsavedWork(t('main.unsaved_confirm'))) return;
     const materialIds = [...basket.materialIds];
+    materialIds.forEach(recordMaterialUse);
     closeBasket();
     if (target === 'generate') {
       navigate(ROUTES.GENERATE, { state: createMaterialBasketTransfer(materialIds) });
@@ -109,6 +112,13 @@ export default function MaterialBasket() {
             ? '素材籃還是空的。先到參考素材庫挑選素材。'
             : 'Your basket is empty. Choose references from the material library.'}
         </p>
+      )}
+      {isOpen && (
+        <MaterialBoardExport
+          materials={basket.materialIds.map(
+            (id) => TRYON_MATERIALS.find((item) => item.id === id)!,
+          )}
+        />
       )}
       <div className="material-basket-actions">
         <button

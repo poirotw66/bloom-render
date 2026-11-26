@@ -1,0 +1,93 @@
+.command-palette {
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100svh - 32px);
+  margin: auto;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid var(--tool-line, #8d6d7b);
+  border-radius: 12px;
+  background: var(--bg-surface, #251c22);
+  color: var(--ink, #faedf3);
+}
+.command-palette::backdrop {
+  background: rgb(10 5 9 / 76%);
+}
+.command-palette__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.command-palette__heading h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.command-palette__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+}
+.command-palette__search {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid var(--tool-line, #8d6d7b);
+  border-radius: 6px;
+  background: var(--bg-raised, #30252d);
+  color: var(--ink, #faedf3);
+  font-size: 1rem;
+}
+.command-palette__results {
+  max-height: min(420px, calc(100svh - 260px));
+  margin-top: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.command-palette__result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+.command-palette__result[aria-selected='true'] {
+  background: var(--bg-raised, #30252d);
+  outline: 1px solid var(--tool-line, #8d6d7b);
+  outline-offset: -1px;
+}
+.command-palette__category {
+  flex: none;
+  color: var(--ink-soft, #d7c0cb);
+  font-size: 0.75rem;
+}
+.command-palette__hint,
+.command-palette__empty {
+  margin: 12px 0 0;
+  color: var(--ink-soft, #d7c0cb);
+  font-size: 0.875rem;
+}
+.command-palette :is(button, input):focus-visible {
+  outline: 2px solid var(--tool-focus, #ffc0d4);
+  outline-offset: 3px;
+}
+.command-palette button {
+  min-width: 44px;
+  min-height: 44px;
+}
+@media (max-width: 480px) {
+  .command-palette {
+    padding: 16px;
+  }
+  .command-palette__result {
+    gap: 8px;
+  }
+  .command-palette__category {
+    max-width: 90px;
+    text-align: right;
+  }
+}

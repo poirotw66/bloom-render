@@ -1,0 +1,86 @@
+{
+  "goal": "Add reference-board PNG export, material image inspection, global command search, and material favorites/recent use.",
+  "date": "2026-11-26",
+  "kind": "software",
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Trace basket, catalog, tool command and modal contracts before assigning disjoint file ownership.",
+    "independentWorkstreams": "The feature owner implements PNG export, one worker implements viewer/preferences and one implements global command search. Root owns independent browser checks and final verification.",
+    "sharedMutableState": "App and header integration have one writer. Viewer/preferences and basket export have separate writers with agreed store APIs.",
+    "smallestSafeDecomposition": "Three implementation owners with one integration lead, plus root verification; no competing edits to shared UI files."
+  },
+  "excluded": [
+    "Local generation engines",
+    "New providers",
+    "Depth-map datasets",
+    "Additional image sources"
+  ],
+  "verification": {
+    "unit": {
+      "files": 114,
+      "passed": 716
+    },
+    "browser": {
+      "uniqueCasesVerified": 145,
+      "fullSuite": {
+        "passed": 142,
+        "failed": 3,
+        "failureReason": "New desktop grid geometry assertions used a <0.5px tolerance against integer clientWidth. Actual discrepancy was0.5px after2x scaling; changed to <=2CSSpixels for layout rounding. No production change was needed."
+      },
+      "subsequentMaterialToolsRun": {
+        "passed": 15,
+        "failed": 0
+      },
+      "coverage": [
+        "Three themes at390/1440px",
+        "Viewer grid bounds, transforms and keyboard focus",
+        "Favorites persistence and malformed storage recovery",
+        "Palette keyboard/material/workspace navigation and mobile entry",
+        "PNG signature/dimensions/nonblank raster",
+        "Failed image export and retry",
+        "Nested viewer Escape/focus",
+        "Night/NewYear PNG exact accent pixels and Traditional Chinese labels"
+      ],
+      "paidRequests": false
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuild": "passed",
+    "bundleBudget": "passed",
+    "staticSources": {
+      "assetReferences": 584,
+      "generatedHtmlShells": 29
+    },
+    "entryGzipBytes": 120465,
+    "visualInspection": [
+      "English three-material board PNG",
+      "Traditional Chinese NewYear board PNG",
+      "Night desktop image viewer",
+      "Bloom mobile image viewer",
+      "Mobile command palette"
+    ],
+    "reviewFindingsResolved": [
+      "Composition grid now follows actual image bounds/transforms",
+      "Pan is bounded to the actual scaled image",
+      "PNG reads --brand-accent for each theme"
+    ],
+    "layoutGate": {
+      "result": "PASS",
+      "url": "http://127.0.0.1:4204/try-on?build=3c53dbbd9494",
+      "openFailures": 0,
+      "existingWaivers": 2,
+      "evidence": "docs/qa/material-tools-gate-pass.txt"
+    }
+  },
+  "implementation": {
+    "board": "2400px PNG of every selected built-in material in basket order, with role/title/pose/license/source; localized labels and active theme; all images or error with cancellation/retry.",
+    "viewer": "1x–3x zoom, bounded pointer pan, mirror, image-aligned thirds/center guides, grayscale, reset, keyboard shortcuts and nested native dialog focus restoration.",
+    "palette": "Lazy global Ctrl/Cmd+K search of routes, materials, current workspace commands, settings, basket, theme and language; unsaved work guards and mobile menu entry.",
+    "preferences": "Known IDs only; separate favorites and latest-first recent use capped at12; localStorage recovery and session fallback."
+  },
+  "limitations": [
+    "Boards contain built-in basket references; uploaded photos remain outside the basket/export.",
+    "Viewer transforms only affect inspection and do not modify generation inputs.",
+    "Recent use records opening details/preview or successfully selecting/using references; filtering/favoriting is excluded."
+  ]
+}

@@ -1,5 +1,7 @@
 /** @license SPDX-License-Identifier: MIT */
 import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { useCommandPalette } from '../contexts/CommandPaletteContext';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ROUTES } from '../constants/routes';
@@ -28,6 +30,7 @@ export default function HomeHeader({
   onOpenHistory: () => void;
 }) {
   const { t, language, setLanguage } = useLanguage();
+  const palette = useCommandPalette();
   const menu = useRef<HTMLDivElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -128,6 +131,19 @@ export default function HomeHeader({
                 ))}
               </div>
               <div className="home-menu__extra">
+                {palette && (
+                  <button
+                    type="button"
+                    data-testid="command-palette-trigger"
+                    onClick={() => {
+                      flushSync(closeMenu);
+                      menuButton.current?.focus();
+                      palette.openPalette();
+                    }}
+                  >
+                    {language === 'zh-TW' ? '搜尋工具與素材' : 'Search tools and materials'}
+                  </button>
+                )}
                 <a href="#styles">{t('home.nav_styles')}</a>
                 <Link to={ROUTES.PROMPT_GALLERY}>{t('prompt_gallery.title')}</Link>
                 <button
