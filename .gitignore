@@ -46,3 +46,9 @@ public/images/scenes/*.png
 .taste-skill/
 **/design-taste-frontend/
 skills-lock.json
+
+# Private paid evaluation inputs, results and spending ledger
+/.pose-eval/
+
+# Local generated images and personal reference photos
+/output/imagegen/
