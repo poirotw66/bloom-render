@@ -189,7 +189,13 @@ test('MCP exposes structured pose filters and preserves existing recipe identifi
     await client.listTools();
     const result = await client.callTool({
       name: 'bloomrender_search_references',
-      arguments: { role: 'pose', posture: 'seated', view: 'profile', language: 'en' },
+      arguments: {
+        role: 'pose',
+        posture: 'seated',
+        view: 'profile',
+        groupId: 'seated',
+        language: 'en',
+      },
     });
     expect(result.isError).not.toBe(true);
     const search = result.structuredContent as {

@@ -155,7 +155,9 @@ describe('BloomRender MCP over real stdio', () => {
       role: 'pose',
       language: 'en',
     });
-    expect(english.items.map((item) => item.id)).toEqual([target.id]);
+    expect(english.items.map((item) => item.id)).toEqual(
+      TRYON_MATERIALS.filter((item) => item.pose?.posture === 'seated').map((item) => item.id),
+    );
     const first = await call<Search>(client, 'bloomrender_search_references', {
       role: 'pose',
       offset: 0,

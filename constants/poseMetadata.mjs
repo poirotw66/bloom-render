@@ -23,6 +23,8 @@ const LABELS = {
     'hand-on-hip': ['Hand on hip', '單手叉腰'],
     seated: ['Seated', '坐姿'],
     'standing-study': ['Standing study', '站姿研究'],
+    'hand-on-hip-study': ['Hand-on-hip study', '叉腰姿勢研究'],
+    'seated-study': ['Seated study', '坐姿研究'],
   },
   posture: { standing: ['Standing', '站姿'], seated: ['Seated', '坐姿'] },
   view: {

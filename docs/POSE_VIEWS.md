@@ -1,9 +1,12 @@
 # Pose views and paired references
 
 A pose reference is one exact material ID. The original materials keep their
-existing IDs. The standing study adds four actual camera views of one fixed
-synthetic mannequin pose: front, three-quarter, profile and back. Each camera has
-one line-art render and one normalized depth render.
+existing IDs. Three original studies provide relaxed standing, one hand on the hip and seated
+poses. Each fixed 3D pose has four actual camera views: front, three-quarter,
+profile and back. Each camera has one line-art render and one normalized depth
+render. The seated mannequin has bent knees, both feet on the floor and hands
+resting on its knees. The hand-on-hip study bends one elbow outward while the
+opposite arm stays relaxed.
 
 For example, `standing-study-profile-depth` means the profile camera's depth
 image. `standing-study-profile-lineart` is its aligned line-art partner. Both
@@ -43,10 +46,12 @@ that meaning and use one camera view. Manual prompt text remains unchanged.
 
 ## Source and reproducibility
 
-The eight PNG files and `standing-study-manifest.json` live in
-`public/images/tryon-materials/` and are released as original CC0-1.0 assets. The
-manifest records all camera parameters, generator/geometry SHA-256 values and
-per-image SHA-256 values. The same scene geometry and camera produce each pair.
+The twenty-four PNG files and the `standing-study`, `hand-on-hip-study` and
+`seated-study` manifests live in `public/images/tryon-materials/` and are released as original CC0-1.0 assets. Each
+manifest records its posture, all camera parameters, generator/geometry SHA-256 values and
+per-image SHA-256 values. The same scene geometry and camera produce each pair. Each study declares its
+own depth range and framing. The original standing PNGs remain byte-identical
+when the library expands; existing material IDs keep their meaning.
 
 To regenerate or verify the assets, use Python with NumPy and Pillow. The checked
 outputs were generated with NumPy 1.26.4 and Pillow 12.0.0:
@@ -59,6 +64,9 @@ python3 scripts/generate-pose-study.py --check
 `--check` rerenders the scene and verifies deterministic output, paired
 silhouettes and depth variation. It is separate from the normal Node build;
 NumPy and Pillow are not production or build dependencies.
+
+`constants/poseStudies.mjs` explicitly registers the supported studies; manifests
+cannot automatically grant trust to new groups or arbitrary files.
 
 `npm run check:csp` checks catalog pair identity, shared pose/camera metadata,
 manifest camera consistency, generator hash, actual PNG hashes and dimensions.

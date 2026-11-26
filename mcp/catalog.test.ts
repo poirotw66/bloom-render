@@ -67,7 +67,9 @@ describe('read-only material catalog', () => {
     );
     expect(catalog.searchReferences({ query: 'Not specified' }).items).toHaveLength(3);
     expect(catalog.searchReferences({ query: '未標示' }).items).toHaveLength(3);
-    expect(catalog.searchReferences({ posture: 'seated', view: 'front' }).items).toEqual([]);
+    expect(
+      catalog.searchReferences({ posture: 'seated', view: 'front' }).items.map((item) => item.id),
+    ).toEqual(['seated-study-front-lineart', 'seated-study-front-depth']);
     expect(outputSchemas.searchReferences.safeParse(seated).success).toBe(true);
   });
 
@@ -322,7 +324,11 @@ describe('paired camera material catalog', () => {
   });
   it('filters representation without treating it as a pose-metadata field', () => {
     const result = catalog.searchReferences({ view: 'back', representation: 'depth' });
-    expect(result.items.map((item) => item.id)).toEqual(['standing-study-back-depth']);
+    expect(result.items.map((item) => item.id)).toEqual([
+      'standing-study-back-depth',
+      'hand-on-hip-study-back-depth',
+      'seated-study-back-depth',
+    ]);
     expect(catalog.searchReferences({ role: 'clothing', representation: 'depth' }).items).toEqual(
       [],
     );
@@ -338,4 +344,34 @@ describe('paired camera material catalog', () => {
     expect(result.prompt).toMatch(/depth/i);
     expect(parseTryOnRecipe(result.recipe)).toEqual(result.recipe);
   });
+});
+
+describe('expanded pose study recipes', () => {
+  it.each(['hand-on-hip-study', 'seated-study'])(
+    'composes an exact %s pose without mixing other groups',
+    (group) => {
+      const matches = catalog.searchReferences({
+        groupId: group,
+        view: 'profile',
+        representation: 'depth',
+        language: 'en',
+      });
+      expect(matches.items.map((item) => item.id)).toEqual([`${group}-profile-depth`]);
+      const reference = catalog.getReference({ id: `${group}-profile-depth`, language: 'en' });
+      expect(reference.poseAlternatives?.every((item) => item.id.startsWith(`${group}-`))).toBe(
+        true,
+      );
+      const result = catalog.composeBrief({
+        materialIds: ['white-oxford-shirt', `${group}-profile-depth`],
+        language: 'en',
+      });
+      expect(result.recipe.materialIds).toEqual(['white-oxford-shirt', `${group}-profile-depth`]);
+      expect(result.prompt).toContain(
+        `posture=${group === 'seated-study' ? 'seated' : 'standing'}`,
+      );
+      expect(result.prompt).toContain('view=profile');
+      expect(result.prompt).toContain('representation=depth');
+      expect(parseTryOnRecipe(result.recipe)).toEqual(result.recipe);
+    },
+  );
 });

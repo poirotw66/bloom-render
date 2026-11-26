@@ -299,5 +299,373 @@
       "pairId": "standing-study-back",
       "representation": "depth"
     }
+  },
+  {
+    "id": "hand-on-hip-study-front-lineart",
+    "role": "pose",
+    "title": "Hand-on-hip study · Front · Line art",
+    "titleZh": "叉腰姿勢研究・正面・線稿",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the front; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的正面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-front-lineart.png",
+    "prompt": "Single full-body standing pose, front camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-front",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-front-depth",
+    "role": "pose",
+    "title": "Hand-on-hip study · Front · Depth map",
+    "titleZh": "叉腰姿勢研究・正面・深度圖",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the front; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的正面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-front-depth.png",
+    "prompt": "Single full-body standing pose, front camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-front",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-three-quarter-lineart",
+    "role": "pose",
+    "title": "Hand-on-hip study · Three-quarter · Line art",
+    "titleZh": "叉腰姿勢研究・四分之三側面・線稿",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the three-quarter; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的四分之三側面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-three-quarter-lineart.png",
+    "prompt": "Single full-body standing pose, three-quarter camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-three-quarter",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-three-quarter-depth",
+    "role": "pose",
+    "title": "Hand-on-hip study · Three-quarter · Depth map",
+    "titleZh": "叉腰姿勢研究・四分之三側面・深度圖",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the three-quarter; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的四分之三側面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-three-quarter-depth.png",
+    "prompt": "Single full-body standing pose, three-quarter camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-three-quarter",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-profile-lineart",
+    "role": "pose",
+    "title": "Hand-on-hip study · Profile · Line art",
+    "titleZh": "叉腰姿勢研究・側面・線稿",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the profile; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的側面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-profile-lineart.png",
+    "prompt": "Single full-body standing pose, profile camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-profile",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-profile-depth",
+    "role": "pose",
+    "title": "Hand-on-hip study · Profile · Depth map",
+    "titleZh": "叉腰姿勢研究・側面・深度圖",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the profile; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的側面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-profile-depth.png",
+    "prompt": "Single full-body standing pose, profile camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-profile",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-back-lineart",
+    "role": "pose",
+    "title": "Hand-on-hip study · Back · Line art",
+    "titleZh": "叉腰姿勢研究・背面・線稿",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the back; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的背面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-back-lineart.png",
+    "prompt": "Single full-body standing pose, back camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-back",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hand-on-hip-study-back-depth",
+    "role": "pose",
+    "title": "Hand-on-hip study · Back · Depth map",
+    "titleZh": "叉腰姿勢研究・背面・深度圖",
+    "description": "Original synthetic hand-on-hip mannequin viewed from the back; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成叉腰站姿人偶的背面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/hand-on-hip-study-back-depth.png",
+    "prompt": "Single full-body standing pose, back camera view. One hand rests on the hip with its elbow bent outward; the opposite arm is relaxed, with feet apart. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hand-on-hip-study-back",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "seated-study-front-lineart",
+    "role": "pose",
+    "title": "Seated study · Front · Line art",
+    "titleZh": "坐姿研究・正面・線稿",
+    "description": "Original synthetic seated mannequin viewed from the front; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的正面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-front-lineart.png",
+    "prompt": "Single full-body seated pose, front camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-front",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "seated-study-front-depth",
+    "role": "pose",
+    "title": "Seated study · Front · Depth map",
+    "titleZh": "坐姿研究・正面・深度圖",
+    "description": "Original synthetic seated mannequin viewed from the front; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的正面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-front-depth.png",
+    "prompt": "Single full-body seated pose, front camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-front",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "seated-study-three-quarter-lineart",
+    "role": "pose",
+    "title": "Seated study · Three-quarter · Line art",
+    "titleZh": "坐姿研究・四分之三側面・線稿",
+    "description": "Original synthetic seated mannequin viewed from the three-quarter; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的四分之三側面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-three-quarter-lineart.png",
+    "prompt": "Single full-body seated pose, three-quarter camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-three-quarter",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "seated-study-three-quarter-depth",
+    "role": "pose",
+    "title": "Seated study · Three-quarter · Depth map",
+    "titleZh": "坐姿研究・四分之三側面・深度圖",
+    "description": "Original synthetic seated mannequin viewed from the three-quarter; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的四分之三側面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-three-quarter-depth.png",
+    "prompt": "Single full-body seated pose, three-quarter camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-three-quarter",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "seated-study-profile-lineart",
+    "role": "pose",
+    "title": "Seated study · Profile · Line art",
+    "titleZh": "坐姿研究・側面・線稿",
+    "description": "Original synthetic seated mannequin viewed from the profile; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的側面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-profile-lineart.png",
+    "prompt": "Single full-body seated pose, profile camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-profile",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "seated-study-profile-depth",
+    "role": "pose",
+    "title": "Seated study · Profile · Depth map",
+    "titleZh": "坐姿研究・側面・深度圖",
+    "description": "Original synthetic seated mannequin viewed from the profile; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的側面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-profile-depth.png",
+    "prompt": "Single full-body seated pose, profile camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-profile",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "seated-study-back-lineart",
+    "role": "pose",
+    "title": "Seated study · Back · Line art",
+    "titleZh": "坐姿研究・背面・線稿",
+    "description": "Original synthetic seated mannequin viewed from the back; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的背面線稿，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-back-lineart.png",
+    "prompt": "Single full-body seated pose, back camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-back",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "seated-study-back-depth",
+    "role": "pose",
+    "title": "Seated study · Back · Depth map",
+    "titleZh": "坐姿研究・背面・深度圖",
+    "description": "Original synthetic seated mannequin viewed from the back; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成坐姿人偶的背面深度圖，與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/seated-study-back-depth.png",
+    "prompt": "Single full-body seated pose, back camera view. Sit with an upright torso, bent knees, both feet on the floor and hands resting on the knees. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated-study",
+      "posture": "seated",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "seated-study-back",
+      "representation": "depth"
+    }
   }
 ]

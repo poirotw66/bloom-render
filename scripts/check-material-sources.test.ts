@@ -11,6 +11,7 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { CONTENT_SECURITY_POLICY } from '../constants/csp.mjs';
+import { POSE_STUDIES } from '../constants/poseStudies.mjs';
 import {
   ASSET_CATALOGS,
   checkMaterialSources,
@@ -33,18 +34,22 @@ function put(root: string, file: string, value: string) {
   writeFileSync(target, value);
 }
 function copyPoseStudy(assetDir: string) {
-  const manifestPath = 'images/tryon-materials/standing-study-manifest.json';
-  const manifest = JSON.parse(readFileSync(path.resolve('public', manifestPath), 'utf8'));
-  for (const relative of [
-    manifestPath,
-    ...manifest.pairs.flatMap((pair: { lineart: { image: string }; depth: { image: string } }) => [
-      pair.lineart.image,
-      pair.depth.image,
-    ]),
-  ]) {
-    const target = path.join(assetDir, relative);
-    mkdirSync(path.dirname(target), { recursive: true });
-    copyFileSync(path.resolve('public', relative), target);
+  for (const study of POSE_STUDIES) {
+    const manifestPath = study.manifest;
+    const manifest = JSON.parse(readFileSync(path.resolve('public', manifestPath), 'utf8'));
+    for (const relative of [
+      manifestPath,
+      ...manifest.pairs.flatMap(
+        (pair: { lineart: { image: string }; depth: { image: string } }) => [
+          pair.lineart.image,
+          pair.depth.image,
+        ],
+      ),
+    ]) {
+      const target = path.join(assetDir, relative);
+      mkdirSync(path.dirname(target), { recursive: true });
+      copyFileSync(path.resolve('public', relative), target);
+    }
   }
 }
 const html = `<html><head><meta http-equiv="Content-Security-Policy" content="${CONTENT_SECURITY_POLICY}"></head><body></body></html>`;
@@ -179,6 +184,7 @@ describe('material source and CSP build guard', () => {
     );
     expect(checkMaterialSources({ root, built: true }).errors).toEqual([]);
     rmSync(path.join(distDir, 'images/tryon-materials/white-oxford-shirt.svg'));
+    rmSync(path.join(distDir, 'images/tryon-materials/seated-study-manifest.json'));
     rmSync(path.join(distDir, 'materials/white-oxford-shirt/index.html'));
     put(
       distDir,
@@ -187,6 +193,7 @@ describe('material source and CSP build guard', () => {
     );
     const errors = checkMaterialSources({ root, built: true }).errors.join('\n');
     expect(errors).toContain('dist asset');
+    expect(errors).toContain('seated-study-manifest.json');
     expect(errors).toContain('missing route shell');
     expect(errors).toContain('dist/travel/index.html: CSP differs');
   });
@@ -286,6 +293,73 @@ describe('paired pose provenance guard', () => {
     put(root, 'scripts/generate-pose-study.py', 'changed generator');
     const errors = checkMaterialSources({ root }).errors.join('\n');
     expect(errors).toContain('generator hash differs');
+    expect(errors).toContain('inconsistent orthographic camera');
+  });
+});
+
+describe('registered multi-study provenance', () => {
+  it('requires a manifest for each registered catalog group', () => {
+    const root = fixture();
+    rmSync(path.join(root, 'public/images/tryon-materials/seated-study-manifest.json'));
+    expect(checkMaterialSources({ root }).errors.join('\n')).toContain(
+      'pose study seated-study: missing or invalid images/tryon-materials/seated-study-manifest.json',
+    );
+  });
+  it('rejects an incorrect seated posture even when both pair members agree', () => {
+    const root = fixture();
+    mutateMaterials(root, (entries) => {
+      for (const item of entries.filter((entry) =>
+        String(entry.id).startsWith('seated-study-front-'),
+      ))
+        (item.pose as Record<string, unknown>).posture = 'standing';
+    });
+    expect(checkMaterialSources({ root }).errors.join('\n')).toContain(
+      'seated-study-front: depth catalog identity, view or provenance differs',
+    );
+  });
+  it('rejects a partner borrowed from another study', () => {
+    const root = fixture();
+    mutateMaterials(root, (entries) => {
+      const item = entries.find((entry) => entry.id === 'seated-study-front-depth')!;
+      (item.poseReference as Record<string, unknown>).pairId = 'hand-on-hip-study-front';
+    });
+    const errors = checkMaterialSources({ root }).errors.join('\n');
+    expect(errors).toContain('exactly one lineart and one depth');
+    expect(errors).toContain('seated-study-front: depth catalog identity');
+  });
+  it('rejects undeclared groups and removal of a registered catalog group', () => {
+    const root = fixture();
+    mutateMaterials(root, (entries) => {
+      for (const item of entries.filter((entry) => String(entry.id).startsWith('seated-study-')))
+        (item.pose as Record<string, unknown>).groupId = 'unregistered-study';
+    });
+    const errors = checkMaterialSources({ root }).errors.join('\n');
+    expect(errors).toContain('paired pose group is not a registered original study');
+    expect(errors).toContain('pose study seated-study: registered study has no catalog pairs');
+  });
+  it('does not use a manifest-controlled path for image or generator reads', () => {
+    const root = fixture();
+    const file = path.join(root, 'public/images/tryon-materials/hand-on-hip-study-manifest.json');
+    const manifest = JSON.parse(readFileSync(file, 'utf8'));
+    manifest.generator = '../../foreign-generator.py';
+    manifest.pairs[0].depth.image = '../../foreign-image.png';
+    writeFileSync(file, JSON.stringify(manifest));
+    const errors = checkMaterialSources({ root }).errors.join('\n');
+    expect(errors).toContain('unexpected generator path');
+    expect(errors).toContain('depth needs a local PNG path and SHA-256');
+    expect(errors).not.toContain('cannot read depth image');
+  });
+  it('rejects malformed pair descriptors, depth ranges and camera directions', () => {
+    const root = fixture();
+    const file = path.join(root, 'public/images/tryon-materials/seated-study-manifest.json');
+    const manifest = JSON.parse(readFileSync(file, 'utf8'));
+    manifest.pairs[0] = null;
+    manifest.depth.far = manifest.depth.near;
+    manifest.pairs[1].camera.position = [0, 1.3, 4];
+    writeFileSync(file, JSON.stringify(manifest));
+    const errors = checkMaterialSources({ root }).errors.join('\n');
+    expect(errors).toContain('invalid pair identity');
+    expect(errors).toContain('depth must declare normalized synthetic camera depth');
     expect(errors).toContain('inconsistent orthographic camera');
   });
 });

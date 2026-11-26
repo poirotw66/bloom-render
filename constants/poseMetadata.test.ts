@@ -106,12 +106,12 @@ describe('structured pose metadata', () => {
       TRYON_MATERIALS.filter((item) =>
         matchesPoseFilters(item, { posture: 'seated', view: 'profile' }),
       ).map((item) => item.id),
-    ).toEqual([seated.id]);
+    ).toEqual([seated.id, 'seated-study-profile-lineart', 'seated-study-profile-depth']);
     expect(
       TRYON_MATERIALS.filter((item) =>
         matchesPoseFilters(item, { posture: 'seated', view: 'front' }),
-      ),
-    ).toEqual([]);
+      ).map((item) => item.id),
+    ).toEqual(['seated-study-front-lineart', 'seated-study-front-depth']);
     expect(matchesPoseFilters(TRYON_MATERIALS[0], { posture: 'standing' })).toBe(false);
     expect(TRYON_MATERIALS.map((item) => item.id)).toEqual(ids);
     expect(matchesPoseFilters(seated, { groupId: 'seated', cameraHeight: 'unspecified' })).toBe(

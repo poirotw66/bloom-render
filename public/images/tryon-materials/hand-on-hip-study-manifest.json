@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "id": "hand-on-hip-study",
+  "posture": "standing",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "d1a1733caa00c26e8c7aa21744a27d9d738e16ce433f1f9770dca001ba552fac",
+  "geometrySha256": "7388f6d20a3c066bb7c10f6672264ba07aa73f1b095f2f8094e0bbf62fb0cff3",
+  "description": "Original synthetic mannequin with one hand on the hip and the elbow bent outward, opposite arm relaxed. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.2,
+    "far": 4.8,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "hand-on-hip-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, 4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.2,
+        "far": 4.8,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 52474,
+      "lineart": {
+        "image": "images/tryon-materials/hand-on-hip-study-front-lineart.png",
+        "sha256": "41d88d0494355a5f8e2355a31ed66ef24c74e407935f82c68d633b3a167cb58a"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hand-on-hip-study-front-depth.png",
+        "sha256": "eba15d0abe3cf6e28bcade379d64e1c883bcd2aef63a420399a1caa70c8153aa"
+      }
+    },
+    {
+      "pairId": "hand-on-hip-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.7, 2.82842712],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.2,
+        "far": 4.8,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 46710,
+      "lineart": {
+        "image": "images/tryon-materials/hand-on-hip-study-three-quarter-lineart.png",
+        "sha256": "a201ba9ba6f96a387a21334049d30c580486db03d933763a0423333b8f400625"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hand-on-hip-study-three-quarter-depth.png",
+        "sha256": "ef440eddd9c562e58b43a6b620d0cc99a11bf4533e1e39d1fc207024830a316f"
+      }
+    },
+    {
+      "pairId": "hand-on-hip-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.7, 0.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.2,
+        "far": 4.8,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 27529,
+      "lineart": {
+        "image": "images/tryon-materials/hand-on-hip-study-profile-lineart.png",
+        "sha256": "7c6ce287e91f31b6d0b1288f11708db38ab77a552c194fb6bf6104a1a0cb1c02"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hand-on-hip-study-profile-depth.png",
+        "sha256": "f6390efe41902f818d1ce64454b6d8571d8ed25af522d113cede1b44a77c6c50"
+      }
+    },
+    {
+      "pairId": "hand-on-hip-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, -4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.2,
+        "far": 4.8,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 52474,
+      "lineart": {
+        "image": "images/tryon-materials/hand-on-hip-study-back-lineart.png",
+        "sha256": "e1df5147b37df09f090a2ed5fe56d0107d9fb59f6c898eed6d5422c7909fccc8"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hand-on-hip-study-back-depth.png",
+        "sha256": "01857f2b101f658714e956bedf12ada284d776a89207a08d246e46f21a87e749"
+      }
+    }
+  ]
+}

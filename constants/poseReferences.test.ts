@@ -64,3 +64,24 @@ describe('pose view and representation identity', () => {
     expect(parsePoseReference(value)).toBeNull();
   });
 });
+
+describe('expanded pose studies', () => {
+  it.each(['hand-on-hip-study', 'seated-study'])(
+    'keeps %s camera alternatives within its own pose group',
+    (group) => {
+      const selected = material(`${group}-profile-depth`);
+      const alternatives = getPoseAlternatives(selected, TRYON_MATERIALS);
+      expect(alternatives.map((item) => item.id)).toEqual(
+        ['front', 'three-quarter', 'profile', 'back'].map((view) => `${group}-${view}-depth`),
+      );
+      expect(getPairedPoseReference(selected, TRYON_MATERIALS)?.id).toBe(
+        `${group}-profile-lineart`,
+      );
+      expect(
+        getPoseVariant(selected, TRYON_MATERIALS, { view: 'back', representation: 'lineart' })?.id,
+      ).toBe(`${group}-back-lineart`);
+      expect(alternatives.every((item) => item.pose?.groupId === group)).toBe(true);
+      expect(selected.pose?.posture).toBe(group === 'seated-study' ? 'seated' : 'standing');
+    },
+  );
+});

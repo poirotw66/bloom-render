@@ -83,8 +83,13 @@ describe('pose material controls', () => {
     fireEvent.change(screen.getByLabelText('View', { exact: true }), {
       target: { value: 'profile' },
     });
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(1);
-    expect(screen.getByTestId('basket-add-pose-seated-profile')).toBeTruthy();
+    expect(
+      screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual([
+      'basket-add-pose-seated-profile',
+      'basket-add-seated-study-profile-lineart',
+      'basket-add-seated-study-profile-depth',
+    ]);
     await waitFor(() =>
       expect(
         JSON.parse(localStorage.getItem(MATERIAL_BASKET_STORAGE_KEY)!).materialBasket.materialIds,
@@ -101,12 +106,18 @@ describe('pose material controls', () => {
     expect((screen.getByLabelText('View', { exact: true }) as HTMLSelectElement).value).toBe('');
   });
 
-  it('shows an honest empty state for incompatible posture and view filters', () => {
+  it('shows an honest empty state for incompatible posture, view and keyword filters', () => {
     renderMaterials();
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'pose' } });
     fireEvent.change(screen.getByLabelText('Posture'), { target: { value: 'seated' } });
     fireEvent.change(screen.getByLabelText('View', { exact: true }), {
       target: { value: 'back' },
+    });
+    expect(
+      screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual(['basket-add-seated-study-back-lineart', 'basket-add-seated-study-back-depth']);
+    fireEvent.change(screen.getByLabelText('Search materials'), {
+      target: { value: 'hand-on-hip' },
     });
     expect(screen.queryAllByTestId(/^basket-add-/)).toHaveLength(0);
     expect(screen.getByText('No materials match your search.')).toBeTruthy();

@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "id": "seated-study",
+  "posture": "seated",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "d1a1733caa00c26e8c7aa21744a27d9d738e16ce433f1f9770dca001ba552fac",
+  "geometrySha256": "417c88fa456320136ed0aea182620d76c3a5f0cf788c79d8355282ba7389323c",
+  "description": "Original synthetic seated mannequin, torso upright, knees bent, feet on the floor and hands on the knees. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.0,
+    "far": 5.0,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "seated-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.3, 4.0],
+        "targetHeight": 0.78,
+        "verticalFrameOffset": -0.52,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 40200,
+      "lineart": {
+        "image": "images/tryon-materials/seated-study-front-lineart.png",
+        "sha256": "ff22ee252c50cc264339d4a89ac0de4fda271eefa3a780b43d93fad486a84165"
+      },
+      "depth": {
+        "image": "images/tryon-materials/seated-study-front-depth.png",
+        "sha256": "b09a933033ff4a8a25186fc40ab8e700f02ad3027a38d5a9979cd9b619894788"
+      }
+    },
+    {
+      "pairId": "seated-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.3, 2.82842712],
+        "targetHeight": 0.78,
+        "verticalFrameOffset": -0.52,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 39064,
+      "lineart": {
+        "image": "images/tryon-materials/seated-study-three-quarter-lineart.png",
+        "sha256": "97d89610ca2733d888932218de77a9792db38c6829acc6f5915cbc7fee08113f"
+      },
+      "depth": {
+        "image": "images/tryon-materials/seated-study-three-quarter-depth.png",
+        "sha256": "ba1d69cc4e0fe77e61cb5e3db019c4a6a5730679b5858bf9dec420c006bb6f8a"
+      }
+    },
+    {
+      "pairId": "seated-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.3, 0.0],
+        "targetHeight": 0.78,
+        "verticalFrameOffset": -0.52,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 28675,
+      "lineart": {
+        "image": "images/tryon-materials/seated-study-profile-lineart.png",
+        "sha256": "58d9558948abca290a8addc9a84169176a16f29b5d0b80dbf227c52ff7b1d826"
+      },
+      "depth": {
+        "image": "images/tryon-materials/seated-study-profile-depth.png",
+        "sha256": "9c67e87b57b7ed0c09655aab93f9e767f78518dcba253c48a60282bb0bc9a74b"
+      }
+    },
+    {
+      "pairId": "seated-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.3, -4.0],
+        "targetHeight": 0.78,
+        "verticalFrameOffset": -0.52,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 40200,
+      "lineart": {
+        "image": "images/tryon-materials/seated-study-back-lineart.png",
+        "sha256": "7028079e85a230becd770588d51597e1e57ab84d1a02fb6ac00ad558f9e072a7"
+      },
+      "depth": {
+        "image": "images/tryon-materials/seated-study-back-depth.png",
+        "sha256": "78548f6d4b267af2f1ee983ef818167f2960c81ca15d877faf610fba1af186b0"
+      }
+    }
+  ]
+}

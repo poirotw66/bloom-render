@@ -1,0 +1,67 @@
+{
+  "goal": "Expand paired synthetic pose references with hand-on-hip and seated groups while preserving existing material IDs and standing images.",
+  "date": "2026-11-26",
+  "previousWorkCommit": "27f0eec",
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Agree exact group/material IDs, per-study camera/depth ranges and manifest registry before edits.",
+    "independentWorkstreams": "Feature owner owns catalog/docs/MCP integration, asset worker owns renderer/PNGs/manifests, validator worker owns explicit registry/provenance guard. Root owns independent browser and asset verification.",
+    "sharedMutableState": "Each renderer, catalog, validator and browser artifact has one writer.",
+    "smallestSafeDecomposition": "One coupled feature owner with two disjoint workers, plus root verification."
+  },
+  "excluded": ["Local generation engines", "New providers", "External image datasets"],
+  "verification": {
+    "unit": {
+      "files": 116,
+      "passed": 763
+    },
+    "browser": {
+      "status": "passed",
+      "cases": 163,
+      "newCases": 6,
+      "paidRequests": false,
+      "passed": 163,
+      "failed": 0,
+      "command": "PLAYWRIGHT_PORT=4208 npx playwright test --workers=2"
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuild": "passed",
+    "bundleBudget": "passed",
+    "entryGzipBytes": 123737,
+    "sourceValidation": {
+      "assetReferences": 608,
+      "generatedHtmlShells": 53
+    },
+    "renderer": "python3 scripts/generate-pose-study.py --check passed for all 3 studies, 12 cameras and 24 PNGs.",
+    "standingCompatibility": "Root independently compared all 8 standing PNG files with Git commit 27f0eec; byte-identical.",
+    "independentReview": "No confirmed defects. Analytic projected bounds independently show every complete ellipsoid fits each frame and depth range; group isolation and declared source paths confirmed.",
+    "visualInspection": [
+      "Hand-on-hip front lineart and three-quarter depth",
+      "Seated profile lineart and back depth",
+      "Mobile hand-on-hip comparison",
+      "Desktop seated comparison"
+    ],
+    "layoutGate": {
+      "result": "PASS",
+      "url": "http://127.0.0.1:4208/try-on",
+      "openFailures": 0,
+      "existingWaivers": 2,
+      "evidence": "docs/qa/pose-library-gate-pass.txt"
+    }
+  },
+  "implementation": {
+    "catalogMaterials": 32,
+    "newImages": 16,
+    "pairedStudies": 3,
+    "pairedImages": 24,
+    "newGroups": ["hand-on-hip-study", "seated-study"],
+    "provenance": "Explicit registry for all three original CC0 studies; no automatic discovery or trust from catalog values.",
+    "persistence": "Exact material IDs remain compatible with v1 recipes, drafts, history and read-only MCP."
+  },
+  "limitations": [
+    "All new references are original synthetic mannequin geometry and normalized orthographic depth, not human scans or measured distances.",
+    "The seated pose intentionally has no stool asset; prompts do not claim one.",
+    "Python NumPy/Pillow are only required for explicit asset regeneration, not normal production builds."
+  ]
+}
