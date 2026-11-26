@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+import { PROVIDER_ENDPOINTS } from '../../constants/networkSources.mjs';
 import { createI18nError } from '../gemini/shared';
 import { attachHttpMeta, withRetryAndTimeout } from '../retry';
 import { toProviderI18nError } from './providerErrors';
 import type { GenerateImageRequest, ImageProvider, ImagePart } from './types';
 
-const OPENROUTER_IMAGES_URL = 'https://openrouter.ai/api/v1/images';
-const OPENROUTER_MODELS_URL = 'https://openrouter.ai/api/v1/models';
+const OPENROUTER_IMAGES_URL = PROVIDER_ENDPOINTS.openrouterImages;
+const OPENROUTER_MODELS_URL = PROVIDER_ENDPOINTS.openrouterModels;
 
 function toDataUrl(part: ImagePart): string {
   const mime = part.mimeType || 'image/png';

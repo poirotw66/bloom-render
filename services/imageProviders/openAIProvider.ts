@@ -1,10 +1,11 @@
+import { PROVIDER_ENDPOINTS } from '../../constants/networkSources.mjs';
 import { createI18nError } from '../gemini/shared';
 import { attachHttpMeta, isAbortError, withRetryAndTimeout } from '../retry';
 import { isOpenAIModel } from './models';
 import { toProviderI18nError } from './providerErrors';
 import type { GenerateImageRequest, ImagePart, ImageProvider } from './types';
 
-const API_ROOT = 'https://api.openai.com/v1';
+const API_ROOT = PROVIDER_ENDPOINTS.openai;
 const IMAGE_EXTENSIONS: Record<string, string> = {
   'image/png': 'png',
   'image/jpeg': 'jpg',

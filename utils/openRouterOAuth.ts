@@ -6,8 +6,10 @@
  * https://openrouter.ai/docs/guides/overview/auth/oauth
  */
 
-export const OPENROUTER_AUTH_URL = 'https://openrouter.ai/auth';
-export const OPENROUTER_KEYS_EXCHANGE_URL = 'https://openrouter.ai/api/v1/auth/keys';
+import { PROVIDER_ENDPOINTS } from '../constants/networkSources.mjs';
+
+export const OPENROUTER_AUTH_URL = PROVIDER_ENDPOINTS.openrouterAuth;
+export const OPENROUTER_KEYS_EXCHANGE_URL = PROVIDER_ENDPOINTS.openrouterKeys;
 
 export const STORAGE_KEY_OR_OAUTH_VERIFIER = 'bloom_or_oauth_verifier';
 export const STORAGE_KEY_OR_OAUTH_STATE = 'bloom_or_oauth_state';

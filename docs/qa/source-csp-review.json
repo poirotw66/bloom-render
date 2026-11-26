@@ -1,0 +1,52 @@
+{
+  "goal": "Validate declared material sources and CSP automatically during every build.",
+  "date": "2026-11-26",
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Inspect catalog loaders, current CSP and build pipeline before fixing the shared declaration contract.",
+    "independentWorkstreams": "One feature owner delegated the registry/provider integration; root authored independent production-browser checks and a separate reviewer audited the implementation.",
+    "sharedMutableState": "Registry and provider files had one writer; validator/build/docs had one writer; root owned browser tests and this report.",
+    "smallestSafeDecomposition": "One coupled feature owner, one registry worker, independent read-only review and root verification."
+  },
+  "scope": {
+    "catalogAssetReferences": 584,
+    "generatedHtmlShells": 29,
+    "catalogManifest": "constants/assetSources.mjs",
+    "networkManifest": "constants/networkSources.mjs",
+    "policyPermissions": "Existing CSP remains byte-identical; Workbox matching uses exact trusted origins.",
+    "textOnlyScenes": ["london", "havana"],
+    "textOnlyReason": "Removed declarations for six nonexistent image variants. Existing optional-reference fallback is preserved."
+  },
+  "verification": {
+    "unitTests": {
+      "files": 110,
+      "passed": 696
+    },
+    "validatorMutationTests": 28,
+    "browserTests": {
+      "passed": 34,
+      "specs": [
+        "e2e/source-csp.spec.ts",
+        "e2e/openai-provider.spec.ts",
+        "e2e/pose-camera.spec.ts",
+        "e2e/smoke.spec.ts"
+      ],
+      "server": "http://127.0.0.1:4202",
+      "productionPolicyChecks": "Eight allowed connection origins, allowed hosted image, blocked undeclared fetch/image before network, all eight shipped material SVGs load.",
+      "paidRequests": false
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuild": "passed",
+    "bundleBudget": "passed",
+    "independentReview": "Confirmed fixes for missing built assets, inactive CSP markup and ANALYZE environment scoping. No outstanding confirmed defects.",
+    "analyzeBuild": "passed; dist/stats.html generated and nonempty"
+  },
+  "limitations": [
+    "The inventory covers declared catalogs, not arbitrary future application source or dynamic provider result URLs.",
+    "Current catalog loaders accept local public assets; remote catalog URLs fail instead of automatically gaining CSP permissions.",
+    "Attribution URLs are validated as metadata and never grant network access.",
+    "HTML checking covers generated application shells; immutable third-party Taste demos and optional analyzer HTML are outside that set.",
+    "No layout changes were made; verification targeted source integrity, production CSP and existing provider/material workflows."
+  ]
+}

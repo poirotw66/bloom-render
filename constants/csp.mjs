@@ -11,30 +11,19 @@
  * without TypeScript strip-types.
  */
 
+import { CONNECT_ORIGINS, IMAGE_ORIGINS } from './networkSources.mjs';
+
 export const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "script-src 'self' 'wasm-unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self'",
-  "img-src 'self' data: blob: https://www.bloss0m.com",
+  ['img-src', "'self'", 'data:', 'blob:', ...IMAGE_ORIGINS].join(' '),
   "media-src 'self' blob: data:",
   "worker-src 'self' blob:",
   "child-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  [
-    'connect-src',
-    "'self'",
-    'https://generativelanguage.googleapis.com',
-    'https://openrouter.ai',
-    'https://api.openai.com',
-    'https://huggingface.co',
-    'https://cdn-lfs.huggingface.co',
-    'https://cdn-lfs-us-1.huggingface.co',
-    'https://hf.co',
-    'https://cdn.jsdelivr.net',
-    'blob:',
-    'data:',
-  ].join(' '),
+  ['connect-src', "'self'", ...CONNECT_ORIGINS, 'blob:', 'data:'].join(' '),
 ].join('; ');

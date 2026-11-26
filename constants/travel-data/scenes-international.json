@@ -44,7 +44,6 @@
     "continent": "europe",
     "x": 48,
     "y": 27,
-    "referenceImagePath": "/images/scenes/london.webp",
     "descriptionKey": "travel.scene.london.desc"
   },
   {
@@ -476,7 +475,6 @@
     "continent": "namerica",
     "x": 27,
     "y": 44,
-    "referenceImagePath": "/images/scenes/havana.webp",
     "descriptionKey": "travel.scene.havana.desc"
   },
   {

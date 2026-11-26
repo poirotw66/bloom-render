@@ -48,7 +48,7 @@ Repo 內實際提交的是優化後資產：`thumbs/256|512/<id>.webp`（UI）�
 | **N. America** | `san_francisco`  | `travel.scene.san_francisco`  | 金門大橋         | `san_francisco.webp`  | ✅ 已就緒 |
 | **N. America** | `banff`          | `travel.scene.banff`          | 加拿大班夫       | `banff.webp`          | ✅ 已就緒 |
 | **N. America** | `mexico`         | `travel.scene.mexico`         | 墨西哥金字塔     | `mexico.webp`         | ✅ 已就緒 |
-| **N. America** | `havana`         | `travel.scene.havana`         | 古巴哈瓦那       | `havana.webp`         | ✅ 已就緒 |
+| **N. America** | `havana`         | `travel.scene.havana`         | 古巴哈瓦那       | `havana.webp`         | ❌ 缺圖   |
 | **S. America** | `machu_picchu`   | `travel.scene.machu_picchu`   | 馬丘比丘         | `machu_picchu.webp`   | ✅ 已就緒 |
 | **S. America** | `rio`            | `travel.scene.rio`            | 里約熱內盧       | `rio.webp`            | ✅ 已就緒 |
 | **S. America** | `galapagos`      | `travel.scene.galapagos`      | 加拉巴哥群島     | `galapagos.webp`      | ✅ 已就緒 |

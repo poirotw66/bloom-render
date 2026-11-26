@@ -8,6 +8,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { NETWORK_ONLY_PATTERN } from './constants/networkSources.mjs';
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
@@ -138,17 +139,7 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               // Never cache AI / model host traffic.
-              urlPattern: ({ url }) => {
-                const host = url.hostname;
-                return (
-                  host.includes('googleapis.com') ||
-                  host.includes('openrouter.ai') ||
-                  host === 'api.openai.com' ||
-                  host.includes('huggingface.co') ||
-                  host.includes('hf.co') ||
-                  host.includes('cdn.jsdelivr.net')
-                );
-              },
+              urlPattern: NETWORK_ONLY_PATTERN,
               handler: 'NetworkOnly',
             },
           ],

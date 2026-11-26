@@ -154,6 +154,7 @@ See [docs/README.md](docs/README.md). Highlights:
 - **[Showcase assets](docs/showcase/README.md)** — README screenshots & core-flow GIF (Wave K/L UI)
 - **[Material MCP server](mcp/README.md)** — Connect Codex or another stdio MCP client
 - **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese)
+- **[Material sources and CSP checks](docs/MATERIAL_SOURCES_CSP.md)** — automatic catalog, asset, provider-origin and generated HTML validation.
 - **[Scene image sources](docs/SCENE_IMAGES_SOURCES.md)** / **[status](docs/SCENE_IMAGES_STATUS.md)**
 - **[Type layout](docs/TYPES.md)**
 
