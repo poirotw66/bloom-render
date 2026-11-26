@@ -8,6 +8,14 @@ import {
   matchesPoseFilters,
 } from '../constants/poseMetadata.mjs';
 
+import {
+  POSE_REPRESENTATIONS,
+  parsePoseReference,
+  validatePoseReferences,
+  getPoseAlternatives,
+  getPairedPoseReference,
+} from '../constants/poseReferences.mjs';
+
 export const DEFAULT_SITE_URL = 'https://www.bloss0m.com/bloom-render/';
 const roles = ['clothing', 'pose', 'expression', 'scene', 'lighting'];
 const language = z.enum(['en', 'zh-TW']).default('zh-TW');
@@ -22,7 +30,19 @@ const poseShape = {
   ),
 };
 const poseSchema = z.object(poseShape).strict();
+const poseReferenceSchema = z
+  .object({ pairId: id, representation: z.enum(POSE_REPRESENTATIONS) })
+  .strict();
 function validatePoseRole(material, context) {
+  if (
+    material.poseReference !== undefined &&
+    (material.role !== 'pose' || !parsePoseReference(material.poseReference))
+  )
+    context.addIssue({
+      code: 'custom',
+      path: ['poseReference'],
+      message: 'Paired references require a pose, pair ID and valid representation.',
+    });
   if (!isValidMaterialPose(material))
     context.addIssue({
       code: 'custom',
@@ -35,6 +55,7 @@ export const materialSchema = z
     id,
     role: z.enum(roles),
     pose: poseSchema.optional(),
+    poseReference: poseReferenceSchema.optional(),
     title: z.string(),
     titleZh: z.string(),
     description: z.string(),
@@ -53,6 +74,8 @@ const materials = z
   );
 const byId = new Map(materials.map((material) => [material.id, material]));
 if (byId.size !== materials.length) throw new Error('The material catalog contains duplicate IDs.');
+const pairErrors = validatePoseReferences(materials);
+if (pairErrors.length) throw new Error(pairErrors.join('\n'));
 
 export const inputSchemas = {
   listCollections: z.object({ language }).strict(),
@@ -61,6 +84,7 @@ export const inputSchemas = {
       query: z.string().max(200).default(''),
       role: z.enum(roles).optional(),
       groupId: id.optional(),
+      representation: z.enum(POSE_REPRESENTATIONS).optional(),
       ...Object.fromEntries(
         Object.entries(POSE_METADATA_FIELDS).map(([field, values]) => [
           field,
@@ -91,6 +115,7 @@ const referenceSchema = z
     id,
     role: z.enum(roles),
     pose: poseSchema.optional(),
+    poseReference: poseReferenceSchema.optional(),
     title: z.string(),
     description: z.string(),
     prompt: z.string(),
@@ -100,6 +125,28 @@ const referenceSchema = z
     pageUrl: z.url(),
     mimeType: z.enum(['image/svg+xml', 'image/png', 'image/jpeg', 'image/webp']),
     requiresRasterization: z.boolean(),
+    poseAlternatives: z
+      .array(
+        z
+          .object({
+            id,
+            view: z.enum(POSE_METADATA_FIELDS.view),
+            representation: z.enum(POSE_REPRESENTATIONS).optional(),
+            imageUrl: z.url(),
+            pageUrl: z.url(),
+          })
+          .strict(),
+      )
+      .optional(),
+    pairedReference: z
+      .object({
+        id,
+        representation: z.enum(POSE_REPRESENTATIONS),
+        imageUrl: z.url(),
+        pageUrl: z.url(),
+      })
+      .strict()
+      .optional(),
   })
   .strict()
   .superRefine(validatePoseRole);
@@ -196,10 +243,35 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
       jpeg: 'image/jpeg',
       webp: 'image/webp',
     }[extension];
+    const paired = getPairedPoseReference(material, materials);
     return {
       id: material.id,
       role: material.role,
       ...(material.pose ? { pose: { ...material.pose } } : {}),
+      ...(material.poseReference ? { poseReference: { ...material.poseReference } } : {}),
+      ...(material.pose
+        ? {
+            poseAlternatives: getPoseAlternatives(material, materials).map((alternative) => ({
+              id: alternative.id,
+              view: alternative.pose.view,
+              ...(alternative.poseReference
+                ? { representation: alternative.poseReference.representation }
+                : {}),
+              imageUrl: new URL(alternative.image, base).href,
+              pageUrl: new URL(`materials/${alternative.id}`, base).href,
+            })),
+          }
+        : {}),
+      ...(paired
+        ? {
+            pairedReference: {
+              id: paired.id,
+              representation: paired.poseReference.representation,
+              imageUrl: new URL(paired.image, base).href,
+              pageUrl: new URL(`materials/${paired.id}`, base).href,
+            },
+          }
+        : {}),
       title: english ? material.title : material.titleZh,
       description: english ? material.description : material.descriptionZh,
       prompt: getMaterialPrompt(material, language),
@@ -228,11 +300,13 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
       };
     },
     searchReferences(input = {}) {
-      const { query, role, offset, limit, language, ...poseFilters } =
+      const { query, role, offset, limit, language, representation, ...poseFilters } =
         inputSchemas.searchReferences.parse(input);
       const terms = normalize(query).trim().split(/\s+/).filter(Boolean);
       const matching = materials.filter((material) => {
         if (role && material.role !== role) return false;
+        if (representation && material.poseReference?.representation !== representation)
+          return false;
         if (!matchesPoseFilters(material, poseFilters)) return false;
         const searchable = normalize(
           [

@@ -1,0 +1,129 @@
+{
+  "v": 1,
+  "id": "standing-study",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "dd9db56651b9e6a1f0e9df3cc96861aa29bbc5683bdcac31407c95684f63be4b",
+  "geometrySha256": "bb58694ced713848680e83d37a5dafb6063a7d1fb05dbbdfb53a2ec8e40eab5f",
+  "description": "Original synthetic mannequin. One fixed pose, four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.5,
+    "far": 4.5,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "standing-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, 4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.5,
+        "far": 4.5,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 52282,
+      "lineart": {
+        "image": "images/tryon-materials/standing-study-front-lineart.png",
+        "sha256": "ef9a094e8156ffc7ea6b8d220e2343a6f9d773878e1e175e0643fce315f22581"
+      },
+      "depth": {
+        "image": "images/tryon-materials/standing-study-front-depth.png",
+        "sha256": "771946be5f84879cb0916758b38e6d7c01eddaf3fd51e0dadb05002f5b960f5c"
+      }
+    },
+    {
+      "pairId": "standing-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.7, 2.82842712],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.5,
+        "far": 4.5,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 46480,
+      "lineart": {
+        "image": "images/tryon-materials/standing-study-three-quarter-lineart.png",
+        "sha256": "31664976abba82091eaf78cc27a470e6e9ada852e3c43687c29fe10888f1ce0a"
+      },
+      "depth": {
+        "image": "images/tryon-materials/standing-study-three-quarter-depth.png",
+        "sha256": "444e806fbb2357f417668d5978ae91d7dbb17d4af5e8ec9d5a14dc9a417f122e"
+      }
+    },
+    {
+      "pairId": "standing-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.7, 0.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.5,
+        "far": 4.5,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 27469,
+      "lineart": {
+        "image": "images/tryon-materials/standing-study-profile-lineart.png",
+        "sha256": "6cdc45d0c14de6822168660740494054ed754362300ee383d74b6f9e2d6358d8"
+      },
+      "depth": {
+        "image": "images/tryon-materials/standing-study-profile-depth.png",
+        "sha256": "8c4c89018261d25a8ce7ac471d7e606c9eafe0f987e4eb1b1ef8d2c73eef903a"
+      }
+    },
+    {
+      "pairId": "standing-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, -4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.5,
+        "far": 4.5,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 52282,
+      "lineart": {
+        "image": "images/tryon-materials/standing-study-back-lineart.png",
+        "sha256": "75bf2666e97730a5a21bd4211b9f4156c860347fa7a886196f629b6a05b3d0b5"
+      },
+      "depth": {
+        "image": "images/tryon-materials/standing-study-back-depth.png",
+        "sha256": "2dc194278d76a48f94709163036a0074d876de4014c50c9183b0b028bd4c7ecf"
+      }
+    }
+  ]
+}

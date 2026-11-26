@@ -6,7 +6,7 @@
 
 這個本機 stdio MCP 服務讓 Codex 等 agent 搜尋 BloomRender 的內建素材，取得參考圖資訊，組裝提示詞及可開啟的試穿配方。它直接讀取專案的 `constants/tryOnMaterials.json`，不依賴執行時所在目錄，也不需要先啟動網站。
 
-目前目錄有 8 個原創 CC0 素材，分為服裝、姿勢與光線三類。工具不會讀取瀏覽器的照片、草稿、歷史或金鑰，不會寫入素材籃，也不會呼叫圖片供應商。個人照片請在 BloomRender 網頁中加入。
+目前目錄有 16 個原創 CC0 素材，分為服裝、姿勢與光線三類。工具不會讀取瀏覽器的照片、草稿、歷史或金鑰，不會寫入素材籃，也不會呼叫圖片供應商。個人照片請在 BloomRender 網頁中加入。
 
 ### 安裝及接入
 
@@ -52,13 +52,13 @@ codex mcp add bloomrender -- node "$PWD/mcp/server.mjs"
 
 姿勢素材會回傳 `pose` 物件；服裝、光線等其他素材不會帶有此欄位。欄位值為語言無關的代碼：
 
-| 欄位           | 意義與允許值                                                          |
-| -------------- | --------------------------------------------------------------------- |
-| `groupId`      | 穩定姿勢群組 ID；目前為 `relaxed-standing`、`hand-on-hip`、`seated`。 |
-| `posture`      | `standing`、`seated`。                                                |
-| `view`         | `front`、`three-quarter`、`profile`。                                 |
-| `cameraHeight` | `eye-level`、`high-angle`、`low-angle`、`unspecified`。               |
-| `framing`      | `full-body`、`upper-body`、`close-up`。                               |
+| 欄位           | 意義與允許值                                                                            |
+| -------------- | --------------------------------------------------------------------------------------- |
+| `groupId`      | 穩定姿勢群組 ID；目前為 `relaxed-standing`、`hand-on-hip`、`seated`、`standing-study`。 |
+| `posture`      | `standing`、`seated`。                                                                  |
+| `view`         | `front`、`three-quarter`、`profile`、`back`。                                           |
+| `cameraHeight` | `eye-level`、`high-angle`、`low-angle`、`unspecified`。                                 |
+| `framing`      | `full-body`、`upper-body`、`close-up`。                                                 |
 
 搜尋工具接受上述欄位作為可選篩選，並以交集比對。例如：
 
@@ -66,7 +66,7 @@ codex mcp add bloomrender -- node "$PWD/mcp/server.mjs"
 { "role": "pose", "posture": "seated", "view": "profile", "language": "zh-TW" }
 ```
 
-目前三個姿勢群組各只有一張實際參考圖；全部為全身取景，機位高度均未標示。`unspecified` 不會被提示詞組裝器轉成猜測的平視、俯視或仰視指令，也沒有深度圖或精確角度。篩選尚無素材的值會回傳空結果；服裝類別搭配姿勢篩選也回傳空結果，不會忽略條件。文字搜尋同時涵蓋中英文姿勢／機位標籤。
+原有三個姿勢群組各保留一張參考圖與未標示的機位高度；新增 `standing-study` 使用同一個原創合成人偶，提供四個真實正交機位及各自配對的線稿／深度圖。這些深度圖是合成場景的正規化相機深度，不是人體量測。`unspecified` 仍不會被提示詞組裝器轉成猜測的機位指令。篩選尚無素材的值會回傳空結果；服裝類別搭配姿勢篩選也回傳空結果，不會忽略條件。文字搜尋同時涵蓋中英文姿勢／機位標籤。
 
 參考圖的 `prompt` 與預設組合提示詞會附加共用的姿勢及機位指令，與網頁自動生成使用相同資料。自訂 `prompt` 仍原樣保留，配方仍只儲存既有素材 ID 與設定。
 
@@ -116,7 +116,7 @@ Use `npm run --silent mcp` for a quiet manual launch. Plain npm banners must not
 
 The four tools are `bloomrender_list_collections`, `bloomrender_search_references`, `bloomrender_get_reference`, and `bloomrender_compose_brief`. They expose structured input/output schemas. Labels and descriptions support `en` and `zh-TW` (default); source material prompts remain in their catalog language, English. Keyword search covers both languages, IDs and prompts, with offset/limit pagination.
 
-The current catalog contains eight original CC0 references across clothing, pose and lighting. Pose references include `pose: {groupId, posture, view, cameraHeight, framing}`; other roles omit `pose`. There are three stable pose groups, each with one actual view. All current poses use `full-body` framing and `unspecified` camera height; no numeric camera angles, depth maps or unprovided view variants are invented. Every current image is SVG and is marked as requiring rasterization. Convert SVG to PNG/JPEG before using an image model that cannot accept SVG; BloomRender performs this conversion when references are used through its web interface.
+The current catalog contains sixteen original CC0 references across clothing, pose and lighting. Pose references include `pose: {groupId, posture, view, cameraHeight, framing}`; other roles omit `pose`. Three legacy pose groups retain one view each with unspecified camera height. The original synthetic standing study adds front, three-quarter, profile and back views with aligned line-art/depth PNG pairs. These depth maps encode normalized camera-relative depth, not measured human depth. SVG entries require rasterization; PNG entries can be used directly. BloomRender automatically rasterizes SVG references when using them through its web interface.
 
 Search also accepts optional `posture`, `view`, `groupId`, `cameraHeight`, and `framing` filters. Supported values are listed in the table above and advertised in the tool schema. Filters intersect, so a non-pose role combined with a pose filter returns no matches. Keyword search includes the shared English/Traditional Chinese metadata labels. For example, `{"role":"pose","posture":"seated","view":"profile"}` resolves the existing seated-profile reference. Pose metadata values are language-independent codes. The reference prompt and automatic brief use the same structured pose/camera instructions as browser generation; unspecified camera height adds no fabricated height instruction.
 
@@ -131,3 +131,17 @@ Implementation uses the official [MCP TypeScript SDK v2](https://ts.sdk.modelcon
 ```sh
 npx vitest run mcp/
 ```
+
+### Exact pose views and representations
+
+Search with `groupId: "standing-study"`, `view: "back"` and
+`representation: "depth"` to select the exact `standing-study-back-depth` material.
+Results include `poseReference`, actual `poseAlternatives` for the same
+representation and the aligned opposite `pairedReference`. Pass the selected ID
+to `bloomrender_compose_brief`; its v1 recipe keeps the exact camera and image.
+Only one pose material is allowed in a recipe. Pair comparison is an inspection
+feature, not a request to send two pose images. The study's depth maps are
+synthetic normalized camera depth, not measured human depth.
+
+See [pose views and provenance](../docs/POSE_VIEWS.md) for regeneration and
+validation details.

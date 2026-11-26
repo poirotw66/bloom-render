@@ -10,6 +10,7 @@ import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { recordMaterialUse, useMaterialPreferences } from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
+import PoseVariantControls from '../../components/PoseVariantControls';
 import {
   MaterialCollectionFilters,
   MaterialFavoriteButton,
@@ -109,7 +110,17 @@ export default function MaterialsPage() {
 
   return (
     <div className={`${UI_PAGE} space-y-7`}>
-      {viewer && <MaterialViewer material={viewer} onClose={() => setViewer(null)} />}
+      {viewer && (
+        <MaterialViewer
+          material={viewer}
+          onClose={() => setViewer(null)}
+          onMaterialChange={(next) => {
+            recordMaterialUse(next.id);
+            setViewer(next);
+            if (selected) navigate(`${ROUTES.MATERIALS}/${next.id}`);
+          }}
+        />
+      )}
       <header className="space-y-3">
         {selected && (
           <Link
@@ -148,6 +159,10 @@ export default function MaterialsPage() {
       {selected ? (
         <div className="grid gap-7 md:grid-cols-2 items-start">
           <div className="space-y-3">
+            <PoseVariantControls
+              material={selected}
+              onChange={(next) => navigate(`${ROUTES.MATERIALS}/${next.id}`)}
+            />
             <img
               src={publicAssetUrl(selected.image)}
               alt={zh ? selected.titleZh : selected.title}

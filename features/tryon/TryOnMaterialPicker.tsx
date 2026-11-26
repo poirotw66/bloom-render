@@ -6,6 +6,7 @@ import type { TryOnReferenceRole } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import { recordMaterialUse, useMaterialPreferences } from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
+import PoseVariantControls from '../../components/PoseVariantControls';
 import {
   MaterialCollectionFilters,
   MaterialFavoriteButton,
@@ -26,7 +27,7 @@ interface TryOnMaterialPickerProps {
   selectedIds: string[];
   canAddClothing: boolean;
   disabled?: boolean;
-  onSelect: (material: TryOnMaterial) => Promise<void>;
+  onSelect: (material: TryOnMaterial) => Promise<void | boolean>;
   onRemove: (id: string) => void;
 }
 
@@ -49,6 +50,13 @@ export default function TryOnMaterialPicker({
   }, [selectedIds]);
   const [collection, setCollection] = useState<MaterialCollection>('all');
   const [viewer, setViewer] = useState<TryOnMaterial | null>(null);
+  const [viewerTracksSelection, setViewerTracksSelection] = useState(false);
+  const selectedPose = TRYON_MATERIALS.find(
+    (material) => material.role === 'pose' && selectedIds.includes(material.id),
+  );
+  useEffect(() => {
+    if (viewerTracksSelection && selectedPose) setViewer(selectedPose);
+  }, [viewerTracksSelection, selectedPose]);
   const [poseFilters, setPoseFilters] = useState<PoseFilterValues>({ posture: '', view: '' });
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +94,11 @@ export default function TryOnMaterialPicker({
     }
     setPendingId(material.id);
     try {
-      await onSelect(material);
+      const applied = await onSelect(material);
+      if (applied === false)
+        setError(
+          zh ? '素材無法載入，請再試一次。' : 'Could not load this reference. Please try again.',
+        );
     } catch {
       setError(
         zh ? '素材無法載入，請再試一次。' : 'Could not load this reference. Please try again.',
@@ -98,7 +110,33 @@ export default function TryOnMaterialPicker({
 
   return (
     <section className="tryon-library" aria-labelledby="tryon-materials-title">
-      {viewer && <MaterialViewer material={viewer} onClose={() => setViewer(null)} />}
+      {viewer && (
+        <MaterialViewer
+          material={viewer}
+          onClose={() => {
+            setViewer(null);
+            setViewerTracksSelection(false);
+          }}
+          onMaterialChange={(next) => {
+            if (viewerTracksSelection) void select(next);
+            else {
+              recordMaterialUse(next.id);
+              setViewer(next);
+            }
+          }}
+          disabled={disabled || pendingId !== null}
+          selectionError={error}
+          selectionHint={
+            viewerTracksSelection
+              ? zh
+                ? '切換版本會更新目前選取的姿勢參考圖。'
+                : 'Changing a variant updates the selected pose reference.'
+              : zh
+                ? '目前僅檢視素材；關閉後可在素材庫選取參考圖。'
+                : 'Preview only. Close the viewer to select a reference in the library.'
+          }
+        />
+      )}
       <div className="tryon-library-toolbar">
         <h2 id="tryon-materials-title" className="tryon-library-title">
           {zh ? '參考素材' : 'Reference library'}
@@ -129,6 +167,16 @@ export default function TryOnMaterialPicker({
       </div>
       <MaterialCollectionFilters value={collection} onChange={setCollection} />
       {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
+      {selectedPose && (
+        <div className="tryon-selected-pose" data-testid="selected-pose-variants">
+          <p className="tryon-hint">{zh ? '目前選取的姿勢參考' : 'Selected pose reference'}</p>
+          <PoseVariantControls
+            material={selectedPose}
+            onChange={(next) => void select(next)}
+            disabled={disabled || pendingId !== null}
+          />
+        </div>
+      )}
       <label className="tryon-field tryon-material-search">
         <span>{zh ? '搜尋參考素材' : 'Search references'}</span>
         <input
@@ -180,6 +228,7 @@ export default function TryOnMaterialPicker({
                   aria-label={`${zh ? '檢視大圖' : 'View image'} ${title}`}
                   onClick={() => {
                     recordMaterialUse(material.id);
+                    setViewerTracksSelection(selectedIds.includes(material.id));
                     setViewer(material);
                   }}
                 >

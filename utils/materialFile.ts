@@ -5,8 +5,18 @@ export async function materialFile(material: TryOnMaterial, signal: AbortSignal)
   const response = await fetch(publicAssetUrl(material.image), { signal });
   if (!response.ok) throw new Error('error.network_error');
   const blob = await response.blob();
-  if (!material.image.endsWith('.svg'))
-    return new File([blob], `${material.id}.webp`, { type: blob.type });
+  if (!material.image.endsWith('.svg')) {
+    const extension = material.image.match(/\.(png|jpe?g|webp)$/i)?.[1]?.toLowerCase();
+    const mime =
+      extension === 'png'
+        ? 'image/png'
+        : extension === 'jpg' || extension === 'jpeg'
+          ? 'image/jpeg'
+          : 'image/webp';
+    if (!extension || (blob.type && blob.type !== mime)) throw new Error('error.invalid_image');
+    signal.throwIfAborted();
+    return new File([blob], `${material.id}.${extension}`, { type: mime });
+  }
   const url = URL.createObjectURL(blob);
   try {
     const image = await new Promise<HTMLImageElement>((resolve, reject) => {

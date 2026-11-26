@@ -1,7 +1,9 @@
+import { getPoseRepresentationLabel, parsePoseReference } from './poseReferences.mjs';
+
 /** Shared pose vocabulary for browser prompts, catalog filters and the local MCP. */
 export const POSE_METADATA_FIELDS = Object.freeze({
   posture: Object.freeze(['standing', 'seated']),
-  view: Object.freeze(['front', 'three-quarter', 'profile']),
+  view: Object.freeze(['front', 'three-quarter', 'profile', 'back']),
   cameraHeight: Object.freeze(['eye-level', 'high-angle', 'low-angle', 'unspecified']),
   framing: Object.freeze(['full-body', 'upper-body', 'close-up']),
 });
@@ -10,7 +12,7 @@ export const POSE_METADATA_FIELDS = Object.freeze({
  * @typedef {object} PoseMetadata
  * @property {string} groupId
  * @property {'standing'|'seated'} posture
- * @property {'front'|'three-quarter'|'profile'} view
+ * @property {'front'|'three-quarter'|'profile'|'back'} view
  * @property {'eye-level'|'high-angle'|'low-angle'|'unspecified'} cameraHeight
  * @property {'full-body'|'upper-body'|'close-up'} framing
  */
@@ -20,12 +22,14 @@ const LABELS = {
     'relaxed-standing': ['Relaxed standing', '自然站姿'],
     'hand-on-hip': ['Hand on hip', '單手叉腰'],
     seated: ['Seated', '坐姿'],
+    'standing-study': ['Standing study', '站姿研究'],
   },
   posture: { standing: ['Standing', '站姿'], seated: ['Seated', '坐姿'] },
   view: {
     front: ['Front', '正面'],
     'three-quarter': ['Three-quarter', '四分之三側面'],
     profile: ['Profile', '側面'],
+    back: ['Back', '背面'],
   },
   cameraHeight: {
     'eye-level': ['Eye level', '平視'],
@@ -74,21 +78,30 @@ export function getPoseMetadataLabel(field, value, language = 'en') {
   return LABELS[field]?.[value]?.[language === 'zh-TW' ? 1 : 0] ?? value;
 }
 
-/** @param {{role:string,pose?:unknown}} material */
+/** @param {{role:string,pose?:unknown,poseReference?:unknown}} material */
 export function getPoseSearchText(material) {
   if (material.role !== 'pose') return '';
   const pose = parsePoseMetadata(material.pose);
   if (!pose) return '';
-  return Object.entries(pose)
-    .flatMap(([field, value]) => [
+  const reference = parsePoseReference(material.poseReference);
+  return [
+    ...Object.entries(pose).flatMap(([field, value]) => [
       value,
       getPoseMetadataLabel(field, value, 'en'),
       getPoseMetadataLabel(field, value, 'zh-TW'),
-    ])
-    .join(' ');
+    ]),
+    ...(reference
+      ? [
+          reference.pairId,
+          reference.representation,
+          getPoseRepresentationLabel(reference.representation, 'en'),
+          getPoseRepresentationLabel(reference.representation, 'zh-TW'),
+        ]
+      : []),
+  ].join(' ');
 }
 
-/** @param {{role:string,prompt:string,pose?:unknown}} material @param {string} [language] */
+/** @param {{role:string,prompt:string,pose?:unknown,poseReference?:unknown}} material @param {string} [language] */
 export function getMaterialPrompt(material, language = 'en') {
   const pose = material.role === 'pose' ? parsePoseMetadata(material.pose) : null;
   if (!pose) return material.prompt;
@@ -99,7 +112,14 @@ export function getMaterialPrompt(material, language = 'en') {
     `framing=${pose.framing}`,
   ];
   const heading = language === 'zh-TW' ? '姿勢與機位' : 'Pose and camera';
-  return `${material.prompt}\n${heading}: ${instructions.join('; ')}. Follow the reference perspective and framing; do not invent a different camera angle.`;
+  const perspective = `${material.prompt}\n${heading}: ${instructions.join('; ')}. Follow the reference perspective and framing; do not invent a different camera angle.`;
+  const reference = parsePoseReference(material.poseReference);
+  if (!reference) return perspective;
+  const representation =
+    reference.representation === 'depth'
+      ? 'Use this synthetic normalized depth map only for pose, occlusion and near/far structure: lighter foreground surfaces are nearer, darker foreground surfaces are farther, and black is background. It is not measured human depth, skin color, clothing texture or a lighting reference.'
+      : 'Use this line-art reference only for pose, silhouette and limb structure; do not transfer its mannequin appearance, line style or clothing.';
+  return `${perspective}\nReference representation=${reference.representation}. ${representation} Follow this one camera view; do not create a multi-view sheet or multiple panels.`;
 }
 
 /**

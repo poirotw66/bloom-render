@@ -599,14 +599,15 @@ export function useTryOn() {
         materialRequests.current.has(material.id) ||
         recipeFor(inputs).materialIds.includes(material.id)
       )
-        return;
-      if (material.role === 'clothing' && inputs.clothing.length >= MAX_CLOTHING_IMAGES) return;
+        return false;
+      if (material.role === 'clothing' && inputs.clothing.length >= MAX_CLOTHING_IMAGES)
+        return false;
       revision.current += 1;
       const controller = new AbortController();
       materialRequests.current.set(material.id, controller);
       try {
         const file = await materialFile(material, controller.signal);
-        if (!mounted.current || controller.signal.aborted) return;
+        if (!mounted.current || controller.signal.aborted) return false;
         setInputs((current) => {
           if (recipeFor(current).materialIds.includes(material.id)) return current;
           const ref = { file, materialId: material.id };
@@ -615,9 +616,11 @@ export function useTryOn() {
             : { ...current, references: { ...current.references, [material.role]: ref } };
         });
         setError(null);
+        return true;
       } catch (err) {
         if (mounted.current && !controller.signal.aborted)
           setError(formatApiErrorMessage(err, t, 'tryon'));
+        return false;
       } finally {
         materialRequests.current.delete(material.id);
       }

@@ -53,19 +53,18 @@ describe('read-only material catalog', () => {
       framing: 'full-body',
     });
     expect(seated.items.map((item) => item.id)).toEqual(['pose-seated-profile']);
-    expect(catalog.searchReferences({ posture: 'standing' }).items.map((item) => item.id)).toEqual([
-      'pose-relaxed-front',
-      'pose-hand-on-hip',
-    ]);
+    expect(catalog.searchReferences({ posture: 'standing' }).items.map((item) => item.id)).toEqual(
+      TRYON_MATERIALS.filter((item) => item.pose?.posture === 'standing').map((item) => item.id),
+    );
     expect(
       catalog.searchReferences({ groupId: 'hand-on-hip' }).items.map((item) => item.id),
     ).toEqual(['pose-hand-on-hip']);
     expect(catalog.searchReferences({ groupId: 'unknown-group' }).items).toEqual([]);
     expect(catalog.searchReferences({ role: 'clothing', view: 'front' }).items).toEqual([]);
     expect(catalog.searchReferences({ cameraHeight: 'high-angle' }).items).toEqual([]);
-    expect(catalog.searchReferences({ query: '四分之三' }).items.map((item) => item.id)).toEqual([
-      'pose-hand-on-hip',
-    ]);
+    expect(catalog.searchReferences({ query: '四分之三' }).items.map((item) => item.id)).toEqual(
+      TRYON_MATERIALS.filter((item) => item.pose?.view === 'three-quarter').map((item) => item.id),
+    );
     expect(catalog.searchReferences({ query: 'Not specified' }).items).toHaveLength(3);
     expect(catalog.searchReferences({ query: '未標示' }).items).toHaveLength(3);
     expect(catalog.searchReferences({ posture: 'seated', view: 'front' }).items).toEqual([]);
@@ -80,7 +79,8 @@ describe('read-only material catalog', () => {
       if (material.role === 'pose') {
         expect(reference.pose).toEqual(material.pose);
         expect(reference.prompt).toContain('Pose and camera:');
-        expect(reference.prompt).not.toMatch(/eye.level|high.angle|low.angle/i);
+        if (material.pose?.cameraHeight === 'unspecified')
+          expect(reference.prompt).not.toMatch(/eye.level|high.angle|low.angle/i);
       } else expect(reference).not.toHaveProperty('pose');
     }
   });
@@ -136,12 +136,15 @@ describe('read-only material catalog', () => {
 
   it('paginates without losing or duplicating entries', () => {
     const first = catalog.searchReferences({ limit: 3 });
-    const second = catalog.searchReferences({ offset: first.nextOffset!, limit: 3 });
-    const last = catalog.searchReferences({ offset: second.nextOffset!, limit: 3 });
-    expect([...first.items, ...second.items, ...last.items].map((item) => item.id)).toEqual(
-      TRYON_MATERIALS.map((item) => item.id),
-    );
-    expect(last.nextOffset).toBeNull();
+    const items = [...first.items];
+    let next = first.nextOffset;
+    while (next !== null) {
+      const page = catalog.searchReferences({ offset: next, limit: 3 });
+      items.push(...page.items);
+      next = page.nextOffset;
+    }
+    expect(items.map((item) => item.id)).toEqual(TRYON_MATERIALS.map((item) => item.id));
+    expect(new Set(items.map((item) => item.id)).size).toBe(TRYON_MATERIALS.length);
     expect(catalog.searchReferences({ offset: 500 }).items).toEqual([]);
     expect(outputSchemas.searchReferences.safeParse(first).success).toBe(true);
   });
@@ -291,5 +294,48 @@ describe('deployment base URL', () => {
     } catch (error) {
       expect((error as Error).message).not.toContain('secret');
     }
+  });
+});
+
+describe('paired camera material catalog', () => {
+  it('returns exact representation and camera alternatives with raster URLs', () => {
+    const reference = catalog.getReference({ id: 'standing-study-profile-depth', language: 'en' });
+    expect(reference.pose).toMatchObject({ groupId: 'standing-study', view: 'profile' });
+    expect(reference.poseReference).toEqual({
+      pairId: 'standing-study-profile',
+      representation: 'depth',
+    });
+    expect(reference.pairedReference).toMatchObject({
+      id: 'standing-study-profile-lineart',
+      representation: 'lineart',
+    });
+    expect(reference.poseAlternatives?.map((item) => item.view)).toEqual([
+      'front',
+      'three-quarter',
+      'profile',
+      'back',
+    ]);
+    expect(reference.poseAlternatives?.every((item) => item.representation === 'depth')).toBe(true);
+    expect(reference.requiresRasterization).toBe(false);
+    expect(reference.mimeType).toBe('image/png');
+    expect(outputSchemas.getReference.safeParse(reference).success).toBe(true);
+  });
+  it('filters representation without treating it as a pose-metadata field', () => {
+    const result = catalog.searchReferences({ view: 'back', representation: 'depth' });
+    expect(result.items.map((item) => item.id)).toEqual(['standing-study-back-depth']);
+    expect(catalog.searchReferences({ role: 'clothing', representation: 'depth' }).items).toEqual(
+      [],
+    );
+    expect(() => catalog.searchReferences({ representation: 'photograph' })).toThrow();
+  });
+  it('composes a v1 recipe that retains the exact selected view and representation', () => {
+    const result = catalog.composeBrief({
+      materialIds: ['white-oxford-shirt', 'standing-study-back-depth'],
+      language: 'en',
+    });
+    expect(result.recipe.materialIds).toEqual(['white-oxford-shirt', 'standing-study-back-depth']);
+    expect(result.prompt).toContain('view=back');
+    expect(result.prompt).toMatch(/depth/i);
+    expect(parseTryOnRecipe(result.recipe)).toEqual(result.recipe);
   });
 });

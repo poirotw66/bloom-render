@@ -45,7 +45,7 @@ Start tabs: **Upload** → **Generate** → **Photography Studio** → **ID phot
 - **Multi-style collage** — Pick 4–6 玩法 styles from one photo and download a labeled collage (`/style-collage`).
 - **Multi-person synthesis** — Upload 2–4 portraits into a shared-frame viral style (`/multi-person`).
 - **History · share · compare** — Browse past runs; share cards; before/after slider.
-- **Structured poses and camera views** — Existing pose references carry a stable pose group, standing/seated posture, front/three-quarter/profile view, camera height and framing. Filter poses in the library and picker; inspect available views in material details. Automatic prompts, basket generation and MCP share this data. Current illustrations are full-body with unspecified camera height, without calibrated angles or depth maps; existing material IDs and recipes remain compatible.
+- **Structured poses and camera views** — Pose references carry stable pose groups, posture, camera view, height and framing. The original standing study supplies front/three-quarter/profile/back views with aligned line-art and normalized synthetic depth images. View/representation selections retain exact IDs across generation, recipes, history and MCP; older materials and recipes remain compatible. [Pose reference guide](docs/POSE_VIEWS.md).
 - **Agent material tools (MCP)** — Read-only catalog browsing, bilingual keyword search, reference lookup and prompt/recipe composition over local stdio. See [MCP setup](mcp/README.md); no browser photos, keys or provider calls.
 - **Material basket** — Select built-in references across tool pages and reloads, then use them in try-on or generation. Stores catalog IDs only. Adding to an existing try-on preserves your person photo, clothing, settings and custom prompt; replacing another reference requires confirmation.
 - **Try-on prompt editor** — Open **Prompt** to inspect image order, copy the automatic prompt, switch to Manual, or reset to Automatic. Manual text stays unchanged when references/settings change and survives drafts, history replay and failed-slot retries. Batch automatic preview shows image 1; manual mode uses the same text for every image.
@@ -156,6 +156,7 @@ See [docs/README.md](docs/README.md). Highlights:
 - **[Material MCP server](mcp/README.md)** — Connect Codex or another stdio MCP client
 - **[User manual](docs/BLOOMRENDER_MANUAL.md)** (Traditional Chinese)
 - **[Material sources and CSP checks](docs/MATERIAL_SOURCES_CSP.md)** — automatic catalog, asset, provider-origin and generated HTML validation.
+- **[Pose views and paired references](docs/POSE_VIEWS.md)** — four camera views with aligned line-art/depth inspection and exact material IDs throughout recipes, history and MCP.
 - **[Scene image sources](docs/SCENE_IMAGES_SOURCES.md)** / **[status](docs/SCENE_IMAGES_STATUS.md)**
 - **[Type layout](docs/TYPES.md)**
 

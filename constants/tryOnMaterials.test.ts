@@ -14,6 +14,14 @@ describe('try-on reference library', () => {
       expect(material.prompt).toBeTruthy();
       expect(material.license).toBe('CC0-1.0');
       expect(material.source).toMatch(/^https:\/\/github.com\/poirotw66\/bloom-render\//);
+      if (material.poseReference) {
+        expect(material.image).toBe(`images/tryon-materials/${material.id}.png`);
+        const png = readFileSync(new URL(`../public/${material.image}`, import.meta.url));
+        expect(png.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+        expect(png.readUInt32BE(16)).toBeGreaterThan(0);
+        expect(png.readUInt32BE(20)).toBeGreaterThan(0);
+        continue;
+      }
       expect(material.image).toBe(`images/tryon-materials/${material.id}.svg`);
       const svg = readFileSync(new URL(`../public/${material.image}`, import.meta.url), 'utf8');
       expect(svg).toContain('viewBox="0 0 480 640"');

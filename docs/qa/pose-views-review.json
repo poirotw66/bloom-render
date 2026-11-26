@@ -1,0 +1,90 @@
+{
+  "goal": "Preserve exact pose camera/representation through material workflows and provide aligned line-art/depth pairs.",
+  "date": "2026-11-26",
+  "kind": "software",
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Agree atomic material IDs, strict pair metadata and the generated asset/provenance contract before parallel edits.",
+    "independentWorkstreams": "Root owns reproducible 3D assets and browser QA. Feature owner owns catalog/MCP/validation; workers own viewer/UI and generation/persistence integration.",
+    "sharedMutableState": "One owner per catalog/schema, UI, pipeline and generated asset set. Existing ID-based recipe/history contracts are reused.",
+    "smallestSafeDecomposition": "One feature integration owner with two disjoint workers plus root asset generation and independent verification."
+  },
+  "assetProvenance": {
+    "license": "CC0-1.0",
+    "generator": "scripts/generate-pose-study.py",
+    "manifest": "public/images/tryon-materials/standing-study-manifest.json",
+    "source": "Original analytic 3D ellipsoid mannequin, one fixed pose, four camera rotations.",
+    "views": ["front", "three-quarter", "profile", "back"],
+    "representations": ["lineart", "depth"],
+    "resolution": [512, 640],
+    "depth": "Nearest positive ray/surface intersection; normalized orthographic camera depth, white-near and black background. Synthetic scene units, not measured human or metric depth.",
+    "reproducibility": "python3 scripts/generate-pose-study.py --check passed; all eight PNGs match rerendered output, silhouettes align and foreground depth contains more than 20 levels.",
+    "inspection": "Front lineart/depth, profile lineart and back depth visually inspected.",
+    "rendererDependencies": {
+      "NumPy": "1.26.4",
+      "Pillow": "12.0.0",
+      "requiredForProductionBuild": false
+    }
+  },
+  "excluded": ["Local generation engines", "New cloud providers", "External copyrighted datasets"],
+  "verification": {
+    "unit": {
+      "files": 116,
+      "passed": 747
+    },
+    "browser": {
+      "status": "passed",
+      "cases": 157,
+      "newPoseViewCases": 12,
+      "paidRequests": false,
+      "passed": 157,
+      "failed": 0,
+      "command": "PLAYWRIGHT_PORT=4206 npx playwright test --workers=2",
+      "coverage": [
+        "Six theme/viewport paired-comparison cases with keyboard range and aligned image bounds",
+        "Exact back-depth PNG bytes in the mocked provider request and history replay",
+        "MCP exact material ID, alternatives, representation and v1 recipe link",
+        "Manual prompt preservation while switching selected variants",
+        "Missing paired image error",
+        "Cached primary image representation-switch regression",
+        "All existing application browser regressions"
+      ]
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuild": "passed",
+    "bundleBudget": "passed",
+    "entryGzipBytes": 122372,
+    "sourceValidation": {
+      "assetReferences": 592,
+      "generatedHtmlShells": 37
+    },
+    "assetRegeneration": "python3 scripts/generate-pose-study.py --check passed after final code changes.",
+    "independentReview": "Found and fixed cached-image loading state when switching depth comparison to lineart; unit and production browser regression added. No other confirmed defects.",
+    "visualInspection": [
+      "Front lineart/depth and profile lineart/back depth asset renders",
+      "Bloom paired comparison at390px",
+      "Night paired comparison at1440px"
+    ],
+    "layoutGate": {
+      "result": "PASS",
+      "url": "http://127.0.0.1:4206/try-on?build=745b5d972ab0",
+      "openFailures": 0,
+      "existingWaivers": 2,
+      "evidence": "docs/qa/pose-views-gate-pass.txt"
+    }
+  },
+  "implementation": {
+    "catalog": "16 materials total; original 8 IDs preserved and 8 new IDs encode one of four actual camera views plus lineart/depth.",
+    "persistence": "Existing v1 recipes, baskets, drafts and history store exact atomic material IDs; original PNG bytes retained.",
+    "inspection": "View/representation selectors and aligned keyboard-accessible comparison slider; no controls for missing alternatives.",
+    "prompts": "Single-view structural guidance distinguishes lineart from normalized synthetic depth; manual text preserved.",
+    "mcp": "Strict view/representation filters, exact alternatives and paired links; composed recipe preserves chosen ID."
+  },
+  "limitations": [
+    "The pilot contains one synthetic mannequin pose with four camera views; existing unpaired drawings do not gain invented views or depth.",
+    "Depth values are relative scene depth, not measured human depth or physical distances.",
+    "Comparison is an inspection operation; one selected pose representation is sent to generation.",
+    "Node build checks identities, hashes, image dimensions and camera consistency. Explicit Python rerender proves reproducible geometry/output."
+  ]
+}

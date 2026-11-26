@@ -49,3 +49,21 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.pose-variant-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 0;
+}
+.pose-variant-controls select {
+  width: 100%;
+  min-height: 44px;
+  min-width: 0;
+  color: var(--ink, #faf4f6);
+  background: var(--bg-surface, #241820);
+}
+.pose-variant-controls label {
+  flex: 1 1 180px;
+  min-width: 0;
+}

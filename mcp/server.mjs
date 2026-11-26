@@ -26,7 +26,7 @@ const definitions = [
     'bloomrender_search_references',
     'searchReferences',
     'Search reference materials',
-    'Search built-in materials by English or Traditional Chinese keywords, role, or structured pose fields (posture, view, groupId, cameraHeight, framing). Returns stable pagination, pose metadata, and SVG rasterization requirements.',
+    'Search built-in materials by English or Traditional Chinese keywords, role, or structured pose fields (posture, view, groupId, cameraHeight, framing), or lineart/depth representation. Returns stable pagination, exact camera/material IDs, available view alternatives, paired references, and rasterization requirements.',
   ],
   [
     'bloomrender_get_reference',

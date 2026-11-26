@@ -33,7 +33,9 @@ describe('TryOnMaterialPicker', () => {
   it('filters by role and searches both catalog languages', () => {
     mount();
     fireEvent.click(screen.getByRole('button', { name: 'Pose' }));
-    expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(
+      TRYON_MATERIALS.filter((material) => material.role === 'pose').length,
+    );
     expect(screen.queryByRole('button', { name: 'Select Oxford shirt' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'All' }));
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: '陶土' } });
@@ -77,5 +79,25 @@ describe('TryOnMaterialPicker', () => {
         (screen.getByRole('button', { name: 'Select Oxford shirt' }) as HTMLButtonElement).disabled,
       ).toBe(false),
     );
+  });
+
+  it('keeps the selected pose when a variant fails to apply', async () => {
+    mount({
+      selectedIds: ['standing-study-front-lineart'],
+      onSelect: vi.fn().mockResolvedValue(false),
+    });
+    fireEvent.change(screen.getByTestId('pose-view-select'), { target: { value: 'profile' } });
+    expect(await screen.findByRole('alert')).toBeTruthy();
+    expect((screen.getByTestId('pose-view-select') as HTMLSelectElement).value).toBe('front');
+    expect(
+      screen
+        .getByTestId('tryon-material-standing-study-front-lineart')
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(
+      screen
+        .getByTestId('tryon-material-standing-study-profile-lineart')
+        .getAttribute('aria-pressed'),
+    ).toBe('false');
   });
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { TRYON_MATERIALS, type TryOnMaterial } from '../constants/tryOnMaterials';
 import { getPoseMetadataLabel, POSE_METADATA_FIELDS } from '../constants/poseMetadata.mjs';
+import { getPoseRepresentationLabel } from '../constants/poseReferences.mjs';
 import '../styles/pose-material-fields.css';
 
 export interface PoseFilterValues {
@@ -71,6 +72,12 @@ export function PoseMaterialDetails({ material }: { material: TryOnMaterial }) {
           <dd>{getPoseMetadataLabel(field, material.pose![field], language)}</dd>
         </div>
       ))}
+      {material.poseReference && (
+        <div>
+          <dt>{zh ? '參考圖形式' : 'Reference representation'}</dt>
+          <dd>{getPoseRepresentationLabel(material.poseReference.representation, language)}</dd>
+        </div>
+      )}
       <div>
         <dt>{zh ? '現有視角' : 'Available views'}</dt>
         <dd>

@@ -166,7 +166,7 @@ describe('BloomRender MCP over real stdio', () => {
       offset: first.nextOffset,
       limit: 1,
     });
-    expect(first.total).toBe(3);
+    expect(first.total).toBe(TRYON_MATERIALS.filter((item) => item.role === 'pose').length);
     expect(second.items[0].id).not.toBe(first.items[0].id);
     const none = await call<Search>(client, 'bloomrender_search_references', {
       query: 'does-not-exist',
@@ -189,8 +189,8 @@ describe('BloomRender MCP over real stdio', () => {
         prompt: getMaterialPrompt(material, 'en'),
         license: material.license,
         source: material.source,
-        mimeType: 'image/svg+xml',
-        requiresRasterization: true,
+        mimeType: material.image.endsWith('.svg') ? 'image/svg+xml' : 'image/png',
+        requiresRasterization: material.image.endsWith('.svg'),
       });
       expect(ref.imageUrl).toBe(new URL(material.image, SITE_URL).href);
       expect(ref.pageUrl).toBe(new URL(`materials/${material.id}`, SITE_URL).href);

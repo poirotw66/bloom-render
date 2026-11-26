@@ -1,6 +1,8 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { TryOnMaterial } from '../constants/tryOnMaterials';
+import { TRYON_MATERIALS, type TryOnMaterial } from '../constants/tryOnMaterials';
+import { getPairedPoseReference } from '../constants/poseReferences.mjs';
+import PoseVariantControls from './PoseVariantControls';
 import { useLanguage } from '../contexts/LanguageContext';
 import { publicAssetUrl } from '../utils/publicAsset';
 import '../styles/material-viewer.css';
@@ -8,8 +10,19 @@ import '../styles/material-viewer.css';
 interface MaterialViewerProps {
   material: TryOnMaterial;
   onClose: () => void;
+  onMaterialChange?: (material: TryOnMaterial) => void;
+  disabled?: boolean;
+  selectionError?: string | null;
+  selectionHint?: string;
 }
-export default function MaterialViewer({ material, onClose }: MaterialViewerProps) {
+export default function MaterialViewer({
+  material,
+  onClose,
+  onMaterialChange,
+  disabled = false,
+  selectionError,
+  selectionHint,
+}: MaterialViewerProps) {
   const { language } = useLanguage();
   const zh = language === 'zh-TW';
   const dialog = useRef<HTMLDialogElement>(null);
@@ -17,6 +30,13 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
   const image = useRef<HTMLImageElement>(null);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const titleId = useId();
+  const paired = getPairedPoseReference(material, TRYON_MATERIALS) as TryOnMaterial | null;
+  const [comparing, setComparing] = useState(false);
+  const [split, setSplit] = useState(50);
+  const [pairedState, setPairedState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const lineart = material.poseReference?.representation === 'lineart' ? material : paired;
+  const depth = material.poseReference?.representation === 'depth' ? material : paired;
+  const primary = comparing && lineart ? lineart : material;
   const [zoom, setZoom] = useState(1);
   const [mirror, setMirror] = useState(false);
   const [gray, setGray] = useState(false);
@@ -33,7 +53,9 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
   };
   useEffect(() => {
     reset();
-    setImageState('loading');
+    setComparing(false);
+    setSplit(50);
+    setPairedState('loading');
   }, [material.id]);
   useEffect(() => {
     const element = dialog.current;
@@ -54,6 +76,12 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
       current.width === width && current.height === height ? current : { width, height },
     );
   };
+  useEffect(() => {
+    if (image.current?.complete && image.current.naturalWidth > 0) {
+      measureImage();
+      setImageState('ready');
+    } else setImageState('loading');
+  }, [primary.id, primary.image]);
   useEffect(() => {
     const observer =
       typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measureImage) : null;
@@ -109,6 +137,22 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
           {zh ? '關閉檢視台' : 'Close viewer'}
         </button>
       </header>
+      {onMaterialChange && (
+        <PoseVariantControls material={material} onChange={onMaterialChange} disabled={disabled} />
+      )}
+      {selectionHint && <p className="material-viewer__note">{selectionHint}</p>}
+      {selectionError && (
+        <p role="alert" className="material-viewer__note">
+          {selectionError}
+        </p>
+      )}
+      {material.poseReference && (
+        <p className="material-viewer__note">
+          {zh
+            ? '同一個 3D 模型與機位的合成參考。深度圖以亮色表示較近表面，並非實測人體深度。'
+            : 'Synthetic references from the same 3D model and camera. Brighter depth values indicate nearer surfaces; this is not measured human depth.'}
+        </p>
+      )}
       <div
         ref={stage}
         className="material-viewer__stage"
@@ -147,10 +191,10 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
         }}
       >
         <img
-          key={material.id}
+          key={primary.id}
           ref={image}
-          src={publicAssetUrl(material.image)}
-          alt={zh ? material.titleZh : material.title}
+          src={publicAssetUrl(primary.image)}
+          alt={zh ? primary.titleZh : primary.title}
           draggable={false}
           data-testid="material-viewer-image"
           onLoad={() => {
@@ -163,6 +207,33 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
             filter: gray ? 'grayscale(1)' : undefined,
           }}
         />
+        {comparing && depth && (
+          <div
+            className="material-viewer__comparison"
+            data-testid="pose-comparison"
+            data-pair-id={material.poseReference?.pairId}
+            style={{
+              width: imageSize.width,
+              height: imageSize.height,
+              marginLeft: -imageSize.width / 2,
+              marginTop: -imageSize.height / 2,
+              transform,
+              clipPath: `inset(0 ${100 - split}% 0 0)`,
+              visibility: imageState === 'ready' && pairedState === 'ready' ? 'visible' : 'hidden',
+            }}
+          >
+            <img
+              key={depth.id}
+              src={publicAssetUrl(depth.image)}
+              alt={zh ? depth.titleZh : depth.title}
+              data-testid="pose-comparison-depth-image"
+              onLoad={() => setPairedState('ready')}
+              onError={() => setPairedState('error')}
+              style={{ filter: gray ? 'grayscale(1)' : undefined }}
+            />
+            <span className="material-viewer__comparison-edge" style={{ left: `${split}%` }} />
+          </div>
+        )}
         {grid !== 'off' && (
           <div
             aria-hidden="true"
@@ -178,9 +249,14 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
             }}
           />
         )}
-        {imageState !== 'ready' && (
-          <p className="material-viewer__status" role={imageState === 'error' ? 'alert' : 'status'}>
-            {imageState === 'error'
+        {(imageState !== 'ready' || (comparing && pairedState !== 'ready')) && (
+          <p
+            className="material-viewer__status"
+            role={
+              imageState === 'error' || (comparing && pairedState === 'error') ? 'alert' : 'status'
+            }
+          >
+            {imageState === 'error' || (comparing && pairedState === 'error')
               ? zh
                 ? '圖片無法載入，請關閉後重試。'
                 : 'Could not load this image. Close and try again.'
@@ -190,6 +266,36 @@ export default function MaterialViewer({ material, onClose }: MaterialViewerProp
           </p>
         )}
       </div>
+      {paired && (
+        <div className="material-viewer__pair-controls">
+          <button
+            type="button"
+            className="tool-button tool-button-secondary"
+            data-testid="pose-compare-toggle"
+            aria-pressed={comparing}
+            onClick={() => {
+              setComparing(!comparing);
+              setPairedState('loading');
+            }}
+          >
+            {zh ? '比較線稿與深度圖' : 'Compare line art and depth'}
+          </button>
+          {comparing && (
+            <label className="material-viewer__comparison-control">
+              <span>{zh ? '深度圖／線稿比較位置' : 'Depth / line art comparison position'}</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={split}
+                data-testid="pose-comparison-slider"
+                onChange={(event) => setSplit(Number(event.target.value))}
+              />
+            </label>
+          )}
+        </div>
+      )}
       <div
         className="material-viewer__tools"
         role="group"

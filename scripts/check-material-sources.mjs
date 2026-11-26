@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom';
 import { CONTENT_SECURITY_POLICY } from '../constants/csp.mjs';
 import { NETWORK_SOURCES, validateNetworkSources } from '../constants/networkSources.mjs';
 import { sceneRefPath, sceneThumbPath } from '../utils/imageAssetPaths.mjs';
+import { validatePoseStudy } from './pose-study-validation.mjs';
 import { listSeoRoutes, outputPathForRoute } from './emit-route-html.mjs';
 
 const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -267,7 +268,7 @@ export function checkMaterialSources({
   distDir = path.join(root, 'dist'),
 } = {}) {
   const inventory = collectAssetReferences(root);
-  const errors = [...validateNetworkSources(), ...inventory.errors];
+  const errors = [...validateNetworkSources(), ...inventory.errors, ...validatePoseStudy(root)];
   for (const reference of inventory.references)
     errors.push(
       ...validateAssetReference(reference.value, {
@@ -286,6 +287,7 @@ export function checkMaterialSources({
   }
   let checkedHtml = 0;
   if (built) {
+    errors.push(...validatePoseStudy(root, distDir));
     for (const reference of inventory.references)
       errors.push(
         ...validateAssetReference(reference.value, {

@@ -28,6 +28,26 @@ describe('reference board content', () => {
     expect(materialBoardEntries(selected, 'zh-TW')[1].title).toBe(selected[1].titleZh);
   });
 
+  it('labels the exact view and representation in exported references', () => {
+    const material = {
+      ...TRYON_MATERIALS.find((item) => item.id === 'pose-relaxed-front')!,
+      id: 'standing-study-back-depth',
+      pose: {
+        groupId: 'standing-study',
+        posture: 'standing',
+        view: 'back',
+        cameraHeight: 'eye-level',
+        framing: 'full-body',
+      } as const,
+      poseReference: { pairId: 'standing-study-back', representation: 'depth' as const },
+    };
+    expect(materialBoardEntries([material], 'en')[0].pose).toBe(
+      'Standing · Back · Eye level · Full body · Depth map',
+    );
+    expect(materialBoardEntries([material], 'zh-TW')[0].pose).toContain('背面');
+    expect(materialBoardEntries([material], 'zh-TW')[0].pose).toContain('深度圖');
+  });
+
   it('wraps long attribution URLs and Chinese text without dropping characters', () => {
     const context = { measureText: (text: string) => ({ width: text.length * 10 }) } as Pick<
       CanvasRenderingContext2D,

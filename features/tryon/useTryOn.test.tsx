@@ -603,3 +603,122 @@ describe('basket route consumption', () => {
     }
   });
 });
+
+describe('exact pose view and representation recovery', () => {
+  it('replaces the selected pose atomically and keeps manual wording before saving exact inputs', async () => {
+    const depth = TRYON_MATERIALS.find(
+      (material) => material.id === 'standing-study-profile-depth',
+    )!;
+    const back = TRYON_MATERIALS.find((material) => material.id === 'standing-study-back-lineart')!;
+    const files = vi
+      .spyOn(materialFiles, 'materialFile')
+      .mockImplementation(async (material) => samplePhoto(`${material.id}.png`));
+    generateVirtualTryOn.mockResolvedValue('data:image/png;base64,exact-view');
+    try {
+      const { result } = renderHook(() => useTryOn(), { wrapper });
+      await waitFor(() => expect(result.current.draftStatus).not.toBe('loading'));
+      act(() => {
+        result.current.setPerson(samplePhoto('person.png'));
+        result.current.addClothing([samplePhoto('shirt.png')]);
+      });
+      await act(async () => result.current.addMaterial(depth));
+      expect(result.current.recipe.materialIds).toEqual([depth.id]);
+      expect(result.current.resolvedPrompt).toContain('view=profile; cameraHeight=eye-level');
+      expect(result.current.resolvedPrompt).toContain('Reference representation=depth.');
+      act(() => result.current.setPromptOverride('Keep this exact manual instruction.'));
+      await act(async () => result.current.addMaterial(back));
+      expect(result.current.recipe.materialIds).toEqual([back.id]);
+      expect(result.current.resolvedPrompt).toBe('Keep this exact manual instruction.');
+      expect(result.current.referenceFiles.pose?.name).toBe(`${back.id}.png`);
+      act(() => result.current.setPromptOverride(undefined));
+      expect(result.current.resolvedPrompt).toContain('view=back; cameraHeight=eye-level');
+      expect(result.current.resolvedPrompt).toContain('Reference representation=lineart.');
+      await act(async () => result.current.handleGenerate());
+      expect(generateVirtualTryOn.mock.calls[0][2].referenceFiles.pose.name).toBe(`${back.id}.png`);
+      const saved = addToHistory.mock.calls[0];
+      expect(saved[2].recipe.materialIds).toEqual([back.id]);
+      expect(saved[4]).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ role: 'pose', materialId: back.id, name: `${back.id}.png` }),
+        ]),
+      );
+      await waitFor(() =>
+        expect(saveDraft.mock.lastCall?.[0].recipe.materialIds).toEqual([back.id]),
+      );
+    } finally {
+      files.mockRestore();
+    }
+  });
+
+  it.each(['draft', 'history'] as const)(
+    'restores the precise depth camera reference from %s',
+    async (source) => {
+      const material = TRYON_MATERIALS.find(
+        (item) => item.id === 'standing-study-three-quarter-depth',
+      )!;
+      const recipe: TryOnRecipe = { ...savedRecipe, materialIds: [material.id] };
+      const references = [
+        { role: 'clothing' as const, blob: samplePhoto('shirt.png'), name: 'shirt.png' },
+        {
+          role: 'pose' as const,
+          blob: samplePhoto(`${material.id}.png`),
+          name: `${material.id}.png`,
+          materialId: material.id,
+        },
+      ];
+      if (source === 'draft')
+        loadDraft.mockResolvedValue({
+          person: { blob: samplePhoto('person.png'), name: 'person.png' },
+          references,
+          recipe,
+        } satisfies TryOnDraft);
+      const state =
+        source === 'history'
+          ? buildHistoryReplayState(
+              'tryon',
+              { recipe },
+              undefined,
+              references,
+              samplePhoto('person.png'),
+            )
+          : undefined;
+      const { result } = renderHook(() => useTryOn(), {
+        wrapper: state ? withState(state) : wrapper,
+      });
+      await waitFor(() => expect(result.current.referenceFiles.pose).toBeDefined());
+      expect(result.current.recipe.materialIds).toEqual([material.id]);
+      expect(result.current.referenceFiles.pose?.name).toBe(`${material.id}.png`);
+      expect(result.current.resolvedPrompt).toContain('view=three-quarter; cameraHeight=eye-level');
+      expect(result.current.resolvedPrompt).toContain('Reference representation=depth.');
+      expect(result.current.resolvedPrompt).not.toContain('Reference representation=lineart.');
+    },
+  );
+  it('reports a failed view replacement without erasing the selected pose', async () => {
+    const old = TRYON_MATERIALS.find((material) => material.id === 'standing-study-front-lineart')!;
+    const next = TRYON_MATERIALS.find(
+      (material) => material.id === 'standing-study-profile-depth',
+    )!;
+    const files = vi
+      .spyOn(materialFiles, 'materialFile')
+      .mockResolvedValueOnce(samplePhoto(`${old.id}.png`))
+      .mockRejectedValueOnce(new Error('error.network_error'));
+    try {
+      const { result } = renderHook(() => useTryOn(), { wrapper });
+      await waitFor(() => expect(result.current.draftStatus).not.toBe('loading'));
+      let loaded: boolean | undefined;
+      await act(async () => {
+        loaded = await result.current.addMaterial(old);
+      });
+      expect(loaded).toBe(true);
+      await act(async () => {
+        loaded = await result.current.addMaterial(next);
+      });
+      expect(loaded).toBe(false);
+      expect(result.current.recipe.materialIds).toEqual([old.id]);
+      expect(result.current.referenceFiles.pose?.name).toBe(`${old.id}.png`);
+      expect(result.current.error).toBeTruthy();
+    } finally {
+      files.mockRestore();
+    }
+  });
+});

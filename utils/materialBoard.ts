@@ -1,5 +1,6 @@
 import type { TryOnMaterial } from '../constants/tryOnMaterials';
 import { getPoseMetadataLabel } from '../constants/poseMetadata.mjs';
+import { getPoseRepresentationLabel } from '../constants/poseReferences.mjs';
 import type { Language } from '../contexts/LanguageContext';
 import { publicAssetUrl } from './publicAsset';
 
@@ -43,6 +44,11 @@ export function materialBoardEntries(
       ? (['posture', 'view', 'cameraHeight', 'framing'] as const)
           .filter((field) => material.pose![field] !== 'unspecified')
           .map((field) => getPoseMetadataLabel(field, material.pose![field], language))
+          .concat(
+            material.poseReference
+              ? [getPoseRepresentationLabel(material.poseReference.representation, language)]
+              : [],
+          )
           .join(' · ')
       : '',
     image: material.image,

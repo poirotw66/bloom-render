@@ -2,6 +2,10 @@ import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 
+const MATERIAL_COUNT = JSON.parse(
+  readFileSync(new URL('../constants/tryOnMaterials.json', import.meta.url), 'utf8'),
+).length as number;
+
 async function openTryOn(page: Page, theme = 'bloom') {
   await page.addInitScript((selectedTheme) => {
     localStorage.setItem('bloom_language', 'en');
@@ -215,7 +219,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
 
     await openWorkspace(page, 'Reference library');
     const materialImages = page.getByTestId(/^tryon-material-/).locator('img');
-    await expect(materialImages).toHaveCount(8);
+    await expect(materialImages).toHaveCount(MATERIAL_COUNT);
     await expect
       .poll(() =>
         materialImages.evaluateAll(
@@ -227,7 +231,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
             ).length,
         ),
       )
-      .toBe(8);
+      .toBe(MATERIAL_COUNT);
     await page.keyboard.press('Escape');
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
   });

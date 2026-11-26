@@ -32,6 +32,21 @@ function put(root: string, file: string, value: string) {
   mkdirSync(path.dirname(target), { recursive: true });
   writeFileSync(target, value);
 }
+function copyPoseStudy(assetDir: string) {
+  const manifestPath = 'images/tryon-materials/standing-study-manifest.json';
+  const manifest = JSON.parse(readFileSync(path.resolve('public', manifestPath), 'utf8'));
+  for (const relative of [
+    manifestPath,
+    ...manifest.pairs.flatMap((pair: { lineart: { image: string }; depth: { image: string } }) => [
+      pair.lineart.image,
+      pair.depth.image,
+    ]),
+  ]) {
+    const target = path.join(assetDir, relative);
+    mkdirSync(path.dirname(target), { recursive: true });
+    copyFileSync(path.resolve('public', relative), target);
+  }
+}
 const html = `<html><head><meta http-equiv="Content-Security-Policy" content="${CONTENT_SECURITY_POLICY}"></head><body></body></html>`;
 function fixture() {
   const root = temp();
@@ -52,6 +67,12 @@ function fixture() {
   const inventory = collectAssetReferences(root);
   expect(inventory.errors).toEqual([]);
   for (const reference of inventory.references) put(root, `public/${reference.value}`, 'fixture');
+  copyPoseStudy(path.join(root, 'public'));
+  put(
+    root,
+    'scripts/generate-pose-study.py',
+    readFileSync(path.resolve('scripts/generate-pose-study.py'), 'utf8'),
+  );
   return root;
 }
 function mutateMaterials(root: string, change: (entries: Record<string, unknown>[]) => void) {
@@ -144,6 +165,7 @@ describe('material source and CSP build guard', () => {
     const distDir = path.join(root, 'dist');
     const inventory = collectAssetReferences(root);
     for (const reference of inventory.references) put(distDir, reference.value, 'fixture');
+    copyPoseStudy(distDir);
     for (const file of [
       '404.html',
       ...listSeoRoutes().map(outputPathForRoute),
@@ -236,5 +258,34 @@ describe('effective HTML CSP', () => {
       validateHtmlCsp(`<head><script src="/app.js"></script>${meta}</head>`).join(' '),
     ).toContain('before scripts');
     expect(validateHtmlCsp(`<head></head><body>${meta}</body>`).join(' ')).toContain('in head');
+  });
+});
+
+describe('paired pose provenance guard', () => {
+  it('rejects image bytes that do not match the declared paired render', () => {
+    const root = fixture();
+    put(root, 'public/images/tryon-materials/standing-study-profile-depth.png', 'tampered');
+    expect(checkMaterialSources({ root }).errors.join('\n')).toContain('depth image hash differs');
+  });
+  it('rejects a missing pair member and inconsistent camera metadata', () => {
+    const root = fixture();
+    mutateMaterials(root, (entries) => {
+      const item = entries.find((entry) => entry.id === 'standing-study-front-depth')!;
+      (item.pose as Record<string, unknown>).view = 'back';
+    });
+    expect(checkMaterialSources({ root }).errors.join('\n')).toContain(
+      'identical pose and camera metadata',
+    );
+  });
+  it('rejects a changed camera or generator instead of trusting the manifest name', () => {
+    const root = fixture();
+    const file = path.join(root, 'public/images/tryon-materials/standing-study-manifest.json');
+    const manifest = JSON.parse(readFileSync(file, 'utf8'));
+    manifest.pairs[0].camera.yawDegrees = 90;
+    writeFileSync(file, JSON.stringify(manifest));
+    put(root, 'scripts/generate-pose-study.py', 'changed generator');
+    const errors = checkMaterialSources({ root }).errors.join('\n');
+    expect(errors).toContain('generator hash differs');
+    expect(errors).toContain('inconsistent orthographic camera');
   });
 });
