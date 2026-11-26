@@ -26,13 +26,13 @@ const definitions = [
     'bloomrender_search_references',
     'searchReferences',
     'Search reference materials',
-    'Search built-in materials by keyword in English or Traditional Chinese, optionally filtered by role. Returns stable pagination and SVG rasterization metadata.',
+    'Search built-in materials by English or Traditional Chinese keywords, role, or structured pose fields (posture, view, groupId, cameraHeight, framing). Returns stable pagination, pose metadata, and SVG rasterization requirements.',
   ],
   [
     'bloomrender_get_reference',
     'getReference',
     'Get a reference material',
-    'Get a catalog ID’s reference URL, prompt, license, and detail page. SVG references require rasterization before use by models that accept only PNG/JPEG/WebP.',
+    'Get a catalog ID’s reference URL, enriched prompt, license, detail page, and structured pose/camera metadata when its role is pose. SVG references require rasterization before use by models that accept only PNG/JPEG/WebP.',
   ],
   [
     'bloomrender_compose_brief',

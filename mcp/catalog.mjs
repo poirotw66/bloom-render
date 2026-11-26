@@ -1,5 +1,12 @@
 import { readFileSync } from 'node:fs';
 import * as z from 'zod/v4';
+import {
+  POSE_METADATA_FIELDS,
+  isValidMaterialPose,
+  getPoseSearchText,
+  getMaterialPrompt,
+  matchesPoseFilters,
+} from '../constants/poseMetadata.mjs';
 
 export const DEFAULT_SITE_URL = 'https://www.bloss0m.com/bloom-render/';
 const roles = ['clothing', 'pose', 'expression', 'scene', 'lighting'];
@@ -8,10 +15,26 @@ const id = z
   .string()
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
   .max(64);
-const materialSchema = z
+const poseShape = {
+  groupId: id,
+  ...Object.fromEntries(
+    Object.entries(POSE_METADATA_FIELDS).map(([field, values]) => [field, z.enum(values)]),
+  ),
+};
+const poseSchema = z.object(poseShape).strict();
+function validatePoseRole(material, context) {
+  if (!isValidMaterialPose(material))
+    context.addIssue({
+      code: 'custom',
+      path: ['pose'],
+      message: 'Pose materials require valid pose metadata; other roles must omit it.',
+    });
+}
+export const materialSchema = z
   .object({
     id,
     role: z.enum(roles),
+    pose: poseSchema.optional(),
     title: z.string(),
     titleZh: z.string(),
     description: z.string(),
@@ -21,7 +44,8 @@ const materialSchema = z
     license: z.literal('CC0-1.0'),
     source: z.url(),
   })
-  .strict();
+  .strict()
+  .superRefine(validatePoseRole);
 const materials = z
   .array(materialSchema)
   .parse(
@@ -36,6 +60,13 @@ export const inputSchemas = {
     .object({
       query: z.string().max(200).default(''),
       role: z.enum(roles).optional(),
+      groupId: id.optional(),
+      ...Object.fromEntries(
+        Object.entries(POSE_METADATA_FIELDS).map(([field, values]) => [
+          field,
+          z.enum(values).optional(),
+        ]),
+      ),
       offset: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).default(0),
       limit: z.number().int().min(1).max(50).default(20),
       language,
@@ -59,6 +90,7 @@ const referenceSchema = z
   .object({
     id,
     role: z.enum(roles),
+    pose: poseSchema.optional(),
     title: z.string(),
     description: z.string(),
     prompt: z.string(),
@@ -69,7 +101,8 @@ const referenceSchema = z
     mimeType: z.enum(['image/svg+xml', 'image/png', 'image/jpeg', 'image/webp']),
     requiresRasterization: z.boolean(),
   })
-  .strict();
+  .strict()
+  .superRefine(validatePoseRole);
 const recipeSchema = z
   .object({
     v: z.literal(1),
@@ -113,7 +146,7 @@ export const outputSchemas = {
     .object({
       prompt: z.string(),
       brief: z.string(),
-      references: z.array(referenceSchema.extend({ slot: z.number().int().positive() })),
+      references: z.array(referenceSchema.safeExtend({ slot: z.number().int().positive() })),
       recipe: recipeSchema,
       recipeUrl: z.url(),
       notes: z.array(z.string()),
@@ -166,9 +199,10 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
     return {
       id: material.id,
       role: material.role,
+      ...(material.pose ? { pose: { ...material.pose } } : {}),
       title: english ? material.title : material.titleZh,
       description: english ? material.description : material.descriptionZh,
-      prompt: material.prompt,
+      prompt: getMaterialPrompt(material, language),
       license: material.license,
       source: material.source,
       imageUrl: new URL(material.image, base).href,
@@ -194,10 +228,12 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
       };
     },
     searchReferences(input = {}) {
-      const { query, role, offset, limit, language } = inputSchemas.searchReferences.parse(input);
+      const { query, role, offset, limit, language, ...poseFilters } =
+        inputSchemas.searchReferences.parse(input);
       const terms = normalize(query).trim().split(/\s+/).filter(Boolean);
       const matching = materials.filter((material) => {
         if (role && material.role !== role) return false;
+        if (!matchesPoseFilters(material, poseFilters)) return false;
         const searchable = normalize(
           [
             material.id,
@@ -206,6 +242,7 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
             material.description,
             material.descriptionZh,
             material.prompt,
+            getPoseSearchText(material),
           ].join(' '),
         );
         return terms.every((term) => searchable.includes(term));

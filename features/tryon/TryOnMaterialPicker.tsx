@@ -4,6 +4,8 @@ import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMateri
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnReferenceRole } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
+import { getPoseSearchText, matchesPoseFilters } from '../../constants/poseMetadata.mjs';
+import { PoseMaterialFilters, type PoseFilterValues } from '../../components/PoseMaterialFields';
 
 export const REFERENCE_ROLE_LABELS: Record<TryOnReferenceRole, [string, string]> = {
   clothing: ['Clothing', '服裝'],
@@ -32,15 +34,24 @@ export default function TryOnMaterialPicker({
   const zh = language === 'zh-TW';
   const [role, setRole] = useState<TryOnReferenceRole | 'all'>('all');
   const [search, setSearch] = useState('');
+  const [poseFilters, setPoseFilters] = useState<PoseFilterValues>({ posture: '', view: '' });
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const roles = [...new Set(TRYON_MATERIALS.map((material) => material.role))];
-  const query = search.trim().toLocaleLowerCase();
+  const query = search.normalize('NFKC').trim().toLocaleLowerCase();
   const materials = TRYON_MATERIALS.filter(
     (material) =>
       (role === 'all' || material.role === role) &&
-      [material.title, material.titleZh, material.description, material.descriptionZh]
+      (role !== 'pose' || matchesPoseFilters(material, poseFilters)) &&
+      [
+        material.title,
+        material.titleZh,
+        material.description,
+        material.descriptionZh,
+        getPoseSearchText(material),
+      ]
         .join(' ')
+        .normalize('NFKC')
         .toLocaleLowerCase()
         .includes(query),
   );
@@ -83,13 +94,17 @@ export default function TryOnMaterialPicker({
             key={value}
             type="button"
             aria-pressed={role === value}
-            onClick={() => setRole(value)}
+            onClick={() => {
+              setRole(value);
+              setPoseFilters({ posture: '', view: '' });
+            }}
             className="tool-button tool-button-secondary"
           >
             {value === 'all' ? (zh ? '全部' : 'All') : REFERENCE_ROLE_LABELS[value][zh ? 1 : 0]}
           </button>
         ))}
       </div>
+      {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
       <label className="tryon-field tryon-material-search">
         <span>{zh ? '搜尋參考素材' : 'Search references'}</span>
         <input

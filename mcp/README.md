@@ -42,11 +42,33 @@ codex mcp add bloomrender -- node "$PWD/mcp/server.mjs"
 | 工具                            | 輸入及用途                                                                |
 | ------------------------------- | ------------------------------------------------------------------------- |
 | `bloomrender_list_collections`  | 列出實際有素材的角色分類及數量。                                          |
-| `bloomrender_search_references` | 用 `query`、可選的 `role` 搜尋；`offset` 與 `limit` 提供分頁。            |
-| `bloomrender_get_reference`     | 以 `id` 取得提示詞、圖片連結、詳情頁、授權與圖片格式。                    |
+| `bloomrender_search_references` | 用 `query`、`role` 與姿勢欄位篩選；`offset`、`limit` 提供分頁。           |
+| `bloomrender_get_reference`     | 以 `id` 取得提示詞、圖片連結、詳情頁、授權、格式及姿勢／機位資料。        |
 | `bloomrender_compose_brief`     | 以 `materialIds` 和可選的 `prompt` 組裝有序參考圖、提示詞及試穿配方連結。 |
 
 `language` 可選 `zh-TW`（預設）或 `en`。搜尋涵蓋中英文標題、描述、素材 ID 與提示詞，採關鍵字比對，不是語意搜尋。目錄原始 `prompt` 為英文，語言選項會切換分類、標題、描述及工具組裝的說明。
+
+### 姿勢與機位篩選
+
+姿勢素材會回傳 `pose` 物件；服裝、光線等其他素材不會帶有此欄位。欄位值為語言無關的代碼：
+
+| 欄位           | 意義與允許值                                                          |
+| -------------- | --------------------------------------------------------------------- |
+| `groupId`      | 穩定姿勢群組 ID；目前為 `relaxed-standing`、`hand-on-hip`、`seated`。 |
+| `posture`      | `standing`、`seated`。                                                |
+| `view`         | `front`、`three-quarter`、`profile`。                                 |
+| `cameraHeight` | `eye-level`、`high-angle`、`low-angle`、`unspecified`。               |
+| `framing`      | `full-body`、`upper-body`、`close-up`。                               |
+
+搜尋工具接受上述欄位作為可選篩選，並以交集比對。例如：
+
+```json
+{ "role": "pose", "posture": "seated", "view": "profile", "language": "zh-TW" }
+```
+
+目前三個姿勢群組各只有一張實際參考圖；全部為全身取景，機位高度均未標示。`unspecified` 不會被提示詞組裝器轉成猜測的平視、俯視或仰視指令，也沒有深度圖或精確角度。篩選尚無素材的值會回傳空結果；服裝類別搭配姿勢篩選也回傳空結果，不會忽略條件。文字搜尋同時涵蓋中英文姿勢／機位標籤。
+
+參考圖的 `prompt` 與預設組合提示詞會附加共用的姿勢及機位指令，與網頁自動生成使用相同資料。自訂 `prompt` 仍原樣保留，配方仍只儲存既有素材 ID 與設定。
 
 例如，先用 `role: "pose"`、`query: "seated"` 找坐姿，再將選好的素材交給組裝工具：
 
@@ -94,7 +116,9 @@ Use `npm run --silent mcp` for a quiet manual launch. Plain npm banners must not
 
 The four tools are `bloomrender_list_collections`, `bloomrender_search_references`, `bloomrender_get_reference`, and `bloomrender_compose_brief`. They expose structured input/output schemas. Labels and descriptions support `en` and `zh-TW` (default); source material prompts remain in their catalog language, English. Keyword search covers both languages, IDs and prompts, with offset/limit pagination.
 
-The current catalog contains eight original CC0 references across clothing, pose and lighting. It does not include personal portraits or camera-angle variants. Every current image is SVG and is marked as requiring rasterization. Convert SVG to PNG/JPEG before using an image model that cannot accept SVG; BloomRender performs this conversion when references are used through its web interface.
+The current catalog contains eight original CC0 references across clothing, pose and lighting. Pose references include `pose: {groupId, posture, view, cameraHeight, framing}`; other roles omit `pose`. There are three stable pose groups, each with one actual view. All current poses use `full-body` framing and `unspecified` camera height; no numeric camera angles, depth maps or unprovided view variants are invented. Every current image is SVG and is marked as requiring rasterization. Convert SVG to PNG/JPEG before using an image model that cannot accept SVG; BloomRender performs this conversion when references are used through its web interface.
+
+Search also accepts optional `posture`, `view`, `groupId`, `cameraHeight`, and `framing` filters. Supported values are listed in the table above and advertised in the tool schema. Filters intersect, so a non-pose role combined with a pose filter returns no matches. Keyword search includes the shared English/Traditional Chinese metadata labels. For example, `{"role":"pose","posture":"seated","view":"profile"}` resolves the existing seated-profile reference. Pose metadata values are language-independent codes. The reference prompt and automatic brief use the same structured pose/camera instructions as browser generation; unspecified camera height adds no fabricated height instruction.
 
 `compose_brief` preserves the supplied reference order and custom prompt. It accepts at most nine distinct catalog IDs, with no more than five clothing entries and one per other role. Invalid selections fail instead of dropping inputs. Its recipe link shares only catalog IDs and default settings, not custom prompt text. Add your person photo and paste any custom prompt in the web app. Web try-on puts the person image first and groups references by role, so its image numbers may differ from the agent brief.
 

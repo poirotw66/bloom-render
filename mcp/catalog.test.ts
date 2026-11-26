@@ -5,8 +5,10 @@ import {
   DEFAULT_SITE_URL,
   normalizeSiteUrl,
   outputSchemas,
+  materialSchema,
 } from './catalog.mjs';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { getMaterialPrompt } from '../constants/poseMetadata.mjs';
 import { SITE_URL } from '../constants/site';
 import { parseTryOnRecipe } from '../types/tryOnRecipe';
 import { parseRemixHash } from '../utils/remixLink';
@@ -43,6 +45,95 @@ describe('read-only material catalog', () => {
     expect(catalog.searchReferences({ query: 'oxford', role: 'pose' }).total).toBe(0);
   });
 
+  it('searches structured posture, camera view, framing and group without mixing other roles', () => {
+    const seated = catalog.searchReferences({
+      posture: 'seated',
+      view: 'profile',
+      cameraHeight: 'unspecified',
+      framing: 'full-body',
+    });
+    expect(seated.items.map((item) => item.id)).toEqual(['pose-seated-profile']);
+    expect(catalog.searchReferences({ posture: 'standing' }).items.map((item) => item.id)).toEqual([
+      'pose-relaxed-front',
+      'pose-hand-on-hip',
+    ]);
+    expect(
+      catalog.searchReferences({ groupId: 'hand-on-hip' }).items.map((item) => item.id),
+    ).toEqual(['pose-hand-on-hip']);
+    expect(catalog.searchReferences({ groupId: 'unknown-group' }).items).toEqual([]);
+    expect(catalog.searchReferences({ role: 'clothing', view: 'front' }).items).toEqual([]);
+    expect(catalog.searchReferences({ cameraHeight: 'high-angle' }).items).toEqual([]);
+    expect(catalog.searchReferences({ query: '四分之三' }).items.map((item) => item.id)).toEqual([
+      'pose-hand-on-hip',
+    ]);
+    expect(catalog.searchReferences({ query: 'Not specified' }).items).toHaveLength(3);
+    expect(catalog.searchReferences({ query: '未標示' }).items).toHaveLength(3);
+    expect(catalog.searchReferences({ posture: 'seated', view: 'front' }).items).toEqual([]);
+    expect(outputSchemas.searchReferences.safeParse(seated).success).toBe(true);
+  });
+
+  it('returns actual pose metadata and the same structured hint as browser generation', () => {
+    for (const material of TRYON_MATERIALS) {
+      const reference = catalog.getReference({ id: material.id, language: 'en' });
+      expect(reference.prompt).toBe(getMaterialPrompt(material, 'en'));
+      expect(outputSchemas.getReference.safeParse(reference).success).toBe(true);
+      if (material.role === 'pose') {
+        expect(reference.pose).toEqual(material.pose);
+        expect(reference.prompt).toContain('Pose and camera:');
+        expect(reference.prompt).not.toMatch(/eye.level|high.angle|low.angle/i);
+      } else expect(reference).not.toHaveProperty('pose');
+    }
+  });
+
+  it('keeps nested metadata independent of caller mutation', () => {
+    const first = catalog.getReference({ id: 'pose-relaxed-front' });
+    Object.assign(first.pose!, { view: 'profile' });
+    expect(catalog.getReference({ id: 'pose-relaxed-front' }).pose).toMatchObject({
+      view: 'front',
+    });
+  });
+
+  it('validates required metadata and its role boundary at catalog ingestion and output', () => {
+    const pose = TRYON_MATERIALS.find((item) => item.id === 'pose-relaxed-front')!;
+    const clothing = TRYON_MATERIALS.find((item) => item.role === 'clothing')!;
+    expect(materialSchema.safeParse(pose).success).toBe(true);
+    expect(materialSchema.safeParse({ ...pose, pose: undefined }).success).toBe(false);
+    expect(
+      materialSchema.safeParse({ ...pose, pose: { ...pose.pose, cameraHeight: '45-degrees' } })
+        .success,
+    ).toBe(false);
+    expect(
+      materialSchema.safeParse({ ...pose, pose: { ...pose.pose, extra: 'unknown' } }).success,
+    ).toBe(false);
+    expect(materialSchema.safeParse({ ...clothing, pose: pose.pose }).success).toBe(false);
+    const reference = catalog.getReference({ id: pose.id });
+    expect(outputSchemas.getReference.safeParse({ ...reference, pose: undefined }).success).toBe(
+      false,
+    );
+    expect(outputSchemas.getReference.safeParse({ ...reference, role: 'clothing' }).success).toBe(
+      false,
+    );
+  });
+
+  it('composes enriched pose instructions while preserving custom prompt and ID-only recipes', () => {
+    const automatic = catalog.composeBrief({ materialIds: ['pose-hand-on-hip'], language: 'en' });
+    expect(automatic.prompt).toContain('Pose and camera:');
+    expect(automatic.prompt).toContain('view=three-quarter');
+    expect(automatic.references[0].pose).toMatchObject({
+      groupId: 'hand-on-hip',
+      view: 'three-quarter',
+    });
+    expect(automatic.recipe.materialIds).toEqual(['pose-hand-on-hip']);
+    expect(automatic.recipe).not.toHaveProperty('pose');
+    expect(parseTryOnRecipe(automatic.recipe)).toEqual(automatic.recipe);
+    const custom = catalog.composeBrief({
+      materialIds: ['pose-hand-on-hip'],
+      prompt: 'Keep my exact wording.',
+    });
+    expect(custom.prompt).toBe('Keep my exact wording.');
+    expect(custom.recipe).not.toHaveProperty('promptOverride');
+  });
+
   it('paginates without losing or duplicating entries', () => {
     const first = catalog.searchReferences({ limit: 3 });
     const second = catalog.searchReferences({ offset: first.nextOffset!, limit: 3 });
@@ -62,6 +153,11 @@ describe('read-only material catalog', () => {
     { offset: 0.5 },
     { query: 'x'.repeat(201) },
     { role: 'portrait' },
+    { posture: 'lying' },
+    { view: 'rear' },
+    { cameraHeight: '45-degrees' },
+    { framing: 'mid-shot' },
+    { groupId: '../../private' },
     { language: 'ja' },
     { apiKey: 'secret' },
   ])('rejects invalid search input %j', (input) => {

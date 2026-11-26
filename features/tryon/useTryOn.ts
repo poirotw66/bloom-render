@@ -1,3 +1,4 @@
+import { getMaterialPrompt } from '../../constants/poseMetadata.mjs';
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -140,7 +141,7 @@ function requestOptions(current: TryOnInputs, settings?: ServiceSettings, variat
     referenceHints: Object.fromEntries(
       Object.entries(current.references).flatMap(([role, ref]) => {
         const material = TRYON_MATERIALS.find((item) => item.id === ref.materialId);
-        return material ? [[role, material.prompt]] : [];
+        return material ? [[role, getMaterialPrompt(material)]] : [];
       }),
     ),
   };

@@ -9,6 +9,16 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import {
+  getMaterialPrompt,
+  getPoseSearchText,
+  matchesPoseFilters,
+} from '../../constants/poseMetadata.mjs';
+import {
+  PoseMaterialDetails,
+  PoseMaterialFilters,
+  type PoseFilterValues,
+} from '../../components/PoseMaterialFields';
+import {
   UI_BTN_PRIMARY,
   UI_BTN_SECONDARY,
   UI_INPUT,
@@ -41,14 +51,23 @@ export default function MaterialsPage() {
   const zh = language === 'zh-TW';
   const [query, setQuery] = useState('');
   const [role, setRole] = useState('all');
+  const [poseFilters, setPoseFilters] = useState<PoseFilterValues>({ posture: '', view: '' });
   const selected = id ? TRYON_MATERIALS.find((material) => material.id === id) : undefined;
   const items = TRYON_MATERIALS.filter(
     (material) =>
       (role === 'all' || material.role === role) &&
-      [material.title, material.titleZh, material.description, material.descriptionZh]
+      (role !== 'pose' || matchesPoseFilters(material, poseFilters)) &&
+      [
+        material.title,
+        material.titleZh,
+        material.description,
+        material.descriptionZh,
+        getPoseSearchText(material),
+      ]
         .join(' ')
-        .toLowerCase()
-        .includes(query.trim().toLowerCase()),
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .includes(query.normalize('NFKC').trim().toLocaleLowerCase()),
   );
   const roles = [
     ['all', zh ? '全部素材' : 'All materials'],
@@ -116,7 +135,10 @@ export default function MaterialsPage() {
             <h2 className="text-lg font-semibold theme-ink">
               {zh ? '參考圖提示詞' : 'Reference prompt'}
             </h2>
-            <p className="text-sm theme-ink-muted leading-relaxed">{selected.prompt}</p>
+            <p className="text-sm theme-ink-muted leading-relaxed">
+              {getMaterialPrompt(selected, language)}
+            </p>
+            <PoseMaterialDetails material={selected} />
             <button
               type="button"
               className={UI_BTN_PRIMARY}
@@ -184,7 +206,10 @@ export default function MaterialsPage() {
               <select
                 className={`block mt-1 ${UI_INPUT}`}
                 value={role}
-                onChange={(event) => setRole(event.target.value)}
+                onChange={(event) => {
+                  setRole(event.target.value);
+                  setPoseFilters({ posture: '', view: '' });
+                }}
               >
                 {roles.map(([value, label]) => (
                   <option key={value} value={value}>
@@ -194,6 +219,7 @@ export default function MaterialsPage() {
               </select>
             </label>
           </div>
+          {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((material) => (
               <article

@@ -2,6 +2,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { generateVirtualTryOn, prepareTryOnRequest } from './tryOn';
 import { runImageGeneration } from './runImageGeneration';
+import { TRYON_MATERIALS } from '../../constants/tryOnMaterials';
+import { getMaterialPrompt } from '../../constants/poseMetadata.mjs';
 
 vi.mock('./runImageGeneration', () => ({
   runImageGeneration: vi.fn().mockResolvedValue('data:image/png;base64,result'),
@@ -10,6 +12,30 @@ const photo = (name: string) => new File([name], name, { type: 'image/png' });
 beforeEach(() => vi.mocked(runImageGeneration).mockClear());
 
 describe('try-on reference requests', () => {
+  it('uses the structured built-in perspective while preserving identity and reference order', () => {
+    const material = TRYON_MATERIALS.find((item) => item.id === 'pose-seated-profile')!;
+    const person = photo('person'),
+      shirt = photo('shirt'),
+      pose = photo('pose');
+    const prepared = prepareTryOnRequest(person, [shirt], {
+      referenceFiles: { pose },
+      referenceHints: { pose: getMaterialPrompt(material) },
+      keepPose: true,
+    });
+    expect(prepared.images).toEqual([person, shirt, pose]);
+    expect(prepared.prompt).toContain('Image 3 is the pose reference');
+    expect(prepared.prompt).toContain(
+      'Pose and camera: posture=seated; view=profile; framing=full-body.',
+    );
+    expect(prepared.prompt).not.toContain('cameraHeight=');
+    expect(prepared.prompt).not.toContain('Keep the original body posture');
+    const manual = prepareTryOnRequest(person, [shirt], {
+      promptOverride: 'My unchanged manual text.',
+      referenceFiles: { pose },
+      referenceHints: { pose: getMaterialPrompt(material) },
+    });
+    expect(manual.prompt).toBe('My unchanged manual text.');
+  });
   it('uses a manual prompt exactly while preserving image ordering', () => {
     const person = photo('person'),
       shirt = photo('shirt'),

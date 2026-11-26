@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { Client, ProtocolError, ProtocolErrorCode } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { getMaterialPrompt } from '../constants/poseMetadata.mjs';
 import { SITE_URL } from '../constants/site';
 import { parseTryOnRecipe, type TryOnRecipe } from '../types/tryOnRecipe';
 import { parseRemixHash } from '../utils/remixLink';
@@ -30,6 +31,7 @@ interface Reference {
   license: string;
   source: string;
   slot?: number;
+  pose?: { groupId: string; posture: string; view: string; cameraHeight: string; framing: string };
 }
 interface Composition {
   prompt: string;
@@ -184,7 +186,7 @@ describe('BloomRender MCP over real stdio', () => {
         id: material.id,
         role: material.role,
         title: material.title,
-        prompt: material.prompt,
+        prompt: getMaterialPrompt(material, 'en'),
         license: material.license,
         source: material.source,
         mimeType: 'image/svg+xml',
@@ -194,6 +196,49 @@ describe('BloomRender MCP over real stdio', () => {
       expect(ref.pageUrl).toBe(new URL(`materials/${material.id}`, SITE_URL).href);
       expect(new URL(ref.imageUrl).protocol).toBe('https:');
     }
+  });
+
+  it('filters structured pose and camera fields over stdio without changing reference IDs', async () => {
+    const { client } = await connect();
+    type Search = { items: Reference[]; total: number };
+    const result = await call<Search>(client, 'bloomrender_search_references', {
+      posture: 'seated',
+      view: 'profile',
+      cameraHeight: 'unspecified',
+      framing: 'full-body',
+      language: 'en',
+    });
+    expect(result.items.map((item) => item.id)).toEqual(['pose-seated-profile']);
+    expect(result.items[0].pose).toEqual({
+      groupId: 'seated',
+      posture: 'seated',
+      view: 'profile',
+      cameraHeight: 'unspecified',
+      framing: 'full-body',
+    });
+    expect(result.items[0].prompt).toContain('Pose and camera:');
+    const empty = await call<Search>(client, 'bloomrender_search_references', {
+      role: 'clothing',
+      view: 'front',
+    });
+    expect(empty.total).toBe(0);
+    const standing = await call<Search>(client, 'bloomrender_search_references', {
+      groupId: 'relaxed-standing',
+    });
+    expect(standing.items.map((item) => item.id)).toEqual(['pose-relaxed-front']);
+    expect(standing.items[0].imageUrl).toContain('pose-relaxed-front.svg');
+    await rejectTool(client, 'bloomrender_search_references', { view: 'rear' });
+    await rejectTool(client, 'bloomrender_search_references', { cameraHeight: '45 degrees' });
+    const { tools } = await client.listTools();
+    const inputSchema = tools.find(
+      (tool) => tool.name === 'bloomrender_search_references',
+    )!.inputSchema;
+    expect(inputSchema.properties).toHaveProperty('view');
+    expect(inputSchema.properties).toHaveProperty('cameraHeight');
+    const outputSchema = tools.find(
+      (tool) => tool.name === 'bloomrender_get_reference',
+    )!.outputSchema;
+    expect(outputSchema?.properties).toHaveProperty('pose');
   });
 
   it('composes ordered references and a browser-compatible recipe without leaking custom text into the URL', async () => {

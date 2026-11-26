@@ -45,7 +45,14 @@
     "image": "images/tryon-materials/pose-relaxed-front.svg",
     "prompt": "Full-body front-facing pose, relaxed arms beside the body, weight on the right leg, left foot slightly forward.",
     "license": "CC0-1.0",
-    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "relaxed-standing",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "unspecified",
+      "framing": "full-body"
+    }
   },
   {
     "id": "pose-hand-on-hip",
@@ -57,7 +64,14 @@
     "image": "images/tryon-materials/pose-hand-on-hip.svg",
     "prompt": "Full-body three-quarter standing pose, right hand on hip with elbow out, left arm relaxed, feet apart.",
     "license": "CC0-1.0",
-    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hand-on-hip",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "unspecified",
+      "framing": "full-body"
+    }
   },
   {
     "id": "pose-seated-profile",
@@ -69,7 +83,14 @@
     "image": "images/tryon-materials/pose-seated-profile.svg",
     "prompt": "Full-body seated side profile on a simple stool, torso upright, knees bent, both feet on floor, hands resting on knees.",
     "license": "CC0-1.0",
-    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "seated",
+      "posture": "seated",
+      "view": "profile",
+      "cameraHeight": "unspecified",
+      "framing": "full-body"
+    }
   },
   {
     "id": "lighting-soft-window",

@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-26",
+  "baseCommit": "a584eec",
+  "goal": "Add structured pose and camera data to the existing reference materials and connect it to browser selection, prompt assembly and MCP.",
+  "outcome": "Implemented and verified locally; GATE: PASS.",
+  "model": {
+    "fields": ["groupId", "posture", "view", "cameraHeight", "framing"],
+    "existingPoseIds": ["pose-relaxed-front", "pose-hand-on-hip", "pose-seated-profile"],
+    "postures": ["standing", "seated"],
+    "views": ["front", "three-quarter", "profile"],
+    "currentCameraHeight": "unspecified",
+    "currentFraming": "full-body",
+    "catalogTotal": 8,
+    "limits": "Each current pose group has one actual view. Metadata describes the intended reference posture/perspective; no calibrated degrees, new view images or depth maps were added."
+  },
+  "implementation": {
+    "sharedModule": "constants/poseMetadata.mjs provides vocabulary, validation, labels, search text, filtering and material prompt formatting for browser and Node.",
+    "browser": "Materials page and native reference picker share Posture/View filters. Pose details show the group, posture, view, camera height, framing and actual available views. Other roles omit pose metadata.",
+    "prompts": "Automatic try-on and basket generation use metadata-derived pose hints. Unknown camera height is omitted from instructions. Manual prompt overrides remain exact.",
+    "mcp": "Existing four tools remain compatible. Reference outputs include pose data only on pose materials; search adds groupId/posture/view/cameraHeight/framing filters.",
+    "compatibility": "Material IDs, images, basket/draft/history and v1 recipes remain unchanged in identity/format; recipes still share IDs/settings rather than duplicating metadata."
+  },
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Inspected catalog, prompt, selection and MCP boundaries; fixed a five-field metadata contract before delegation.",
+    "independentWorkstreams": "One integration owner handled shared model/catalog/prompt changes, with disjoint UI and MCP workers. Root authored independent browser tests.",
+    "sharedMutableState": "Shared vocabulary and hint formatter have one owner; browser and MCP consume the same plain ES module without importing Zod into the browser.",
+    "smallestSafeDecomposition": "Existing three references were annotated without asset replacement or schema-version migration; an independent read-only reviewer checked the final change."
+  },
+  "verification": {
+    "unitTests": {
+      "files": 109,
+      "passed": 659
+    },
+    "mcpTests": {
+      "catalogAndRealStdioPassed": 58
+    },
+    "browserTests": {
+      "newPoseWorkflowPassed": 9,
+      "existingRegressionPassed": 68,
+      "totalPassed": 77
+    },
+    "themes": ["bloom", "night", "newyear"],
+    "newPoseAccessibilityWidths": [390, 1440],
+    "includes": [
+      "Posture/view filters and metadata keyword discovery",
+      "Pose camera details and accurate unspecified height",
+      "Actual provider request contains automatic structured hints",
+      "Manual text survives reference changes and history replay",
+      "Basket generation preserves ordered pose hints",
+      "Real MCP structured filtering and recipe-to-browser flow",
+      "Existing draft, recipe, provider, upload, history and viewport behavior"
+    ],
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuildAndBundleBudget": "passed",
+    "diffWhitespace": "passed",
+    "layoutGate": "GATE: PASS",
+    "gateRoute": "http://127.0.0.1:4200/try-on",
+    "gateEvidence": "pose-camera-gate-pass.txt",
+    "gateWaivers": ["Existing focus utility override", "Existing React mount container"],
+    "gateWarnings": ["copy-buttons", "skip-link", "lang"],
+    "review": "Independent read-only review found no actionable new defect.",
+    "screenshots": [
+      ".taste-skill/shots/pose-filters-1440.png",
+      ".taste-skill/shots/pose-filters-390.png",
+      ".taste-skill/shots/pose-details-1440.png",
+      ".taste-skill/shots/pose-details-390.png",
+      ".taste-skill/shots/pose-picker-1440.png",
+      ".taste-skill/shots/pose-picker-390.png"
+    ],
+    "paidAPIRequests": 0,
+    "scope": "Provider requests were intercepted and mocked. Live image quality and physical pose accuracy were not evaluated."
+  },
+  "deliveryAtVerification": "Local working tree only; not committed, pushed or deployed."
+}

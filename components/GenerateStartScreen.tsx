@@ -9,6 +9,7 @@ import { UploadIcon, MagicWandIcon, DownloadIcon, EditIcon } from './icons';
 import { generateImageFromText } from '../services/geminiService';
 import { buildGeneratePrompt } from '../services/gemini/generate';
 import { TRYON_MATERIALS, type TryOnMaterial } from '../constants/tryOnMaterials';
+import { getMaterialPrompt } from '../constants/poseMetadata.mjs';
 import { materialFile } from '../utils/materialFile';
 import { parseMaterialBasketTransfer, validateMaterialBasketIds } from '../utils/materialBasket';
 import { publicAssetUrl } from '../utils/publicAsset';
@@ -215,7 +216,9 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
         setMaterialReferences(references);
         setBasketReady(true);
         setGenerationPrompt((current) =>
-          current.trim() ? current : references.map(({ material }) => material.prompt).join('\n'),
+          current.trim()
+            ? current
+            : references.map(({ material }) => getMaterialPrompt(material)).join('\n'),
         );
         setReferencesLoading(false);
         const nextState = { ...location.state };
@@ -321,7 +324,9 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
                 'Uploaded reference: visual inspiration for style, lighting, composition and atmosphere.',
               ]
             : []),
-          ...capturedMaterials.map(({ material }) => `${material.role}: ${material.prompt}`),
+          ...capturedMaterials.map(
+            ({ material }) => `${material.role}: ${getMaterialPrompt(material)}`,
+          ),
         ]
       : undefined;
     const references: HistoryReference[] = capturedMaterials.map(({ material, file }) => ({
@@ -436,7 +441,9 @@ const GenerateStartScreen: React.FC<Omit<StartScreenProps, 'tab'> & { active?: b
                 'Uploaded reference: visual inspiration for style, lighting, composition and atmosphere.',
               ]
             : []),
-          ...capturedMaterials.map(({ material }) => `${material.role}: ${material.prompt}`),
+          ...capturedMaterials.map(
+            ({ material }) => `${material.role}: ${getMaterialPrompt(material)}`,
+          ),
         ]
       : undefined;
     const references: HistoryReference[] = capturedMaterials.map(({ material, file }) => ({
