@@ -124,6 +124,7 @@ export default defineConfig(({ mode }) => {
             'icons/*.png',
             'logo/*.png',
             'examples/*.webp',
+            'licenses/*.txt',
             'og.png',
           ],
           globIgnores: [

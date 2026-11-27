@@ -4,8 +4,11 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
 import MaterialViewer from './MaterialViewer';
+import { extractMaterialPalette } from '../utils/posewearPalette';
 vi.mock('../contexts/LanguageContext', () => ({ useLanguage: () => ({ language: 'en' }) }));
+vi.mock('../utils/posewearPalette', () => ({ extractMaterialPalette: vi.fn(() => []) }));
 beforeEach(() => {
+  vi.mocked(extractMaterialPalette).mockReset().mockReturnValue([]);
   Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
     configurable: true,
     value: vi.fn(function (this: HTMLDialogElement) {
@@ -22,6 +25,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe('MaterialViewer', () => {
@@ -165,5 +169,94 @@ describe('MaterialViewer', () => {
     expect(screen.queryByTestId('pose-compare-toggle')).toBeNull();
     expect(screen.queryByTestId('pose-view-select')).toBeNull();
     expect(screen.queryByTestId('pose-representation-select')).toBeNull();
+  });
+
+  it('copies colors from the original image while view filters remain independent', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#1A3050', '#A06040']);
+    render(<MaterialViewer material={TRYON_MATERIALS[1]} onClose={vi.fn()} />);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    const color = screen.getByRole('button', { name: 'Copy color #1A3050' });
+    expect(color.textContent).toBe('#1A3050');
+    fireEvent.click(screen.getByRole('button', { name: 'Grayscale image' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mirror image' }));
+    expect(screen.getByRole('button', { name: 'Copy color #1A3050' })).toBe(color);
+    expect(extractMaterialPalette).toHaveBeenCalledTimes(1);
+    fireEvent.click(color);
+    await waitFor(() => expect(screen.getByText('#1A3050 copied.')).toBeTruthy());
+    expect(writeText).toHaveBeenCalledWith('#1A3050');
+  });
+
+  it('retains a selectable color code when the clipboard is denied and clears it on material change', async () => {
+    vi.stubGlobal('navigator', {
+      clipboard: {
+        writeText: vi.fn().mockRejectedValue(new DOMException('Denied', 'NotAllowedError')),
+      },
+    });
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#1A3050', '#A06040']);
+    const { rerender } = render(<MaterialViewer material={TRYON_MATERIALS[1]} onClose={vi.fn()} />);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy color #1A3050' }));
+    const code = await screen.findByRole('textbox', { name: 'Color code' });
+    expect((code as HTMLInputElement).value).toBe('#1A3050');
+    expect(code.hasAttribute('readonly')).toBe(true);
+    expect(screen.getByRole('button', { name: 'Copy color #1A3050' })).toBeTruthy();
+    rerender(<MaterialViewer material={TRYON_MATERIALS[2]} onClose={vi.fn()} />);
+    expect(screen.queryByRole('region', { name: 'Extracted colors' })).toBeNull();
+    expect(screen.queryByRole('textbox', { name: 'Color code' })).toBeNull();
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#C05040', '#303020']);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    expect(screen.getByRole('button', { name: 'Copy color #C05040' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Copy color #1A3050' })).toBeNull();
+  });
+
+  it('does not show color tools for pose references, failed images or monochrome samples', () => {
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#000000']);
+    const { rerender } = render(<MaterialViewer material={TRYON_MATERIALS[0]} onClose={vi.fn()} />);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    expect(screen.queryByRole('region', { name: 'Extracted colors' })).toBeNull();
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#1A3050', '#A06040']);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    expect(screen.getByRole('region', { name: 'Extracted colors' })).toBeTruthy();
+    fireEvent.error(screen.getByTestId('material-viewer-image'));
+    expect(screen.queryByRole('region', { name: 'Extracted colors' })).toBeNull();
+    rerender(
+      <MaterialViewer
+        material={TRYON_MATERIALS.find((item) => item.role === 'pose')!}
+        onClose={vi.fn()}
+      />,
+    );
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    expect(screen.queryByRole('region', { name: 'Extracted colors' })).toBeNull();
+  });
+
+  it('extracts an already-cached material image without waiting for another load event', () => {
+    vi.spyOn(HTMLImageElement.prototype, 'complete', 'get').mockReturnValue(true);
+    vi.spyOn(HTMLImageElement.prototype, 'naturalWidth', 'get').mockReturnValue(100);
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#1A3050', '#A06040']);
+    render(<MaterialViewer material={TRYON_MATERIALS[1]} onClose={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Copy color #1A3050' })).toBeTruthy();
+    expect(screen.queryByText('Loading image')).toBeNull();
+  });
+
+  it('ignores a clipboard result from a material that is no longer displayed', async () => {
+    let finishCopy!: () => void;
+    const copying = new Promise<void>((resolve) => {
+      finishCopy = resolve;
+    });
+    vi.stubGlobal('navigator', { clipboard: { writeText: () => copying } });
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#1A3050', '#A06040']);
+    const { rerender } = render(<MaterialViewer material={TRYON_MATERIALS[1]} onClose={vi.fn()} />);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy color #1A3050' }));
+    rerender(<MaterialViewer material={TRYON_MATERIALS[2]} onClose={vi.fn()} />);
+    vi.mocked(extractMaterialPalette).mockReturnValue(['#C05040', '#303020']);
+    fireEvent.load(screen.getByTestId('material-viewer-image'));
+    finishCopy();
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Copy color #C05040' })).toBeTruthy(),
+    );
+    expect(screen.queryByText('#1A3050 copied.')).toBeNull();
   });
 });

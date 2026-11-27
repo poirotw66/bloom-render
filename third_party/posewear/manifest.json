@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "project": "PoseWear",
+  "repository": "https://github.com/atuizz/posewear",
+  "commit": "f9f55db356464af87f97b39f5bb57930ed0cd6df",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2026 PoseWear contributors",
+  "licenseSource": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/LICENSE",
+  "licenseSha256": "e51839a61736e058feea7e959cdba9caf7682f503c31f47364e90aac53ef3c47",
+  "distributedNotice": "public/licenses/posewear-MIT.txt",
+  "publicNoticePath": "licenses/posewear-MIT.txt",
+  "modules": [
+    {
+      "upstreamPath": "src/palette.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/palette.js",
+      "sourceSha256": "2de726ff47a5a4e4f6f19b7d4c94a2e4ffa6e1bb0ba7d46331d85ab947401603",
+      "localPath": "utils/posewearPalette.ts",
+      "consumers": ["components/MaterialViewer.tsx"],
+      "adaptations": [
+        "Typed ES-module exports instead of a browser global.",
+        "Pure pixel quantization and safe local Canvas boundary.",
+        "React color controls and clipboard fallback replace upstream HTML rendering."
+      ]
+    },
+    {
+      "upstreamPath": "src/references.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/references.js",
+      "sourceSha256": "4a792ebf6f943ad7177f0650f6fe0a64534cb0d3be592093ee475009bee721d3",
+      "localPath": "utils/posewearReferences.ts",
+      "consumers": ["features/tryon/TryOnPromptEditor.tsx"],
+      "scope": "formatBrief only; library names and item normalization are not imported.",
+      "adaptations": [
+        "Typed ordered nullable references and Traditional Chinese labels.",
+        "Built-in references resolve through BloomRender's own catalog and canonical public site.",
+        "Private upload slots use generic attachment placeholders; a separate action preserves existing prompt copying."
+      ]
+    }
+  ],
+  "excluded": [
+    "Upstream photographs and reference images",
+    "Upstream material catalogs and translated descriptions",
+    "Character assets and third-party datasets",
+    "Fonts, icons and brand assets",
+    "Upstream local generation engines and provider integrations"
+  ]
+}

@@ -53,4 +53,7 @@ it('edits the direct OpenAI key and image model without changing another provide
   );
   fireEvent.click(screen.getByTestId('remember-api-key'));
   expect(localStorage.getItem('bloom_openai_api_key')).toBe('openai-private');
+  const license = screen.getByRole('link', { name: 'Open-source module license' });
+  expect(license.getAttribute('href')).toBe('/licenses/posewear-MIT.txt');
+  expect(license.getAttribute('rel')).toBe('noopener noreferrer');
 });

@@ -5,6 +5,7 @@ import { getPairedPoseReference } from '../constants/poseReferences.mjs';
 import PoseVariantControls from './PoseVariantControls';
 import { useLanguage } from '../contexts/LanguageContext';
 import { publicAssetUrl } from '../utils/publicAsset';
+import { extractMaterialPalette } from '../utils/posewearPalette';
 import '../styles/material-viewer.css';
 
 interface MaterialViewerProps {
@@ -43,6 +44,12 @@ export default function MaterialViewer({
   const [grid, setGrid] = useState<'off' | 'thirds' | 'center'>('off');
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [imageState, setImageState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [palette, setPalette] = useState({
+    materialId: primary.id,
+    colors: [] as string[],
+    message: '',
+    fallback: '',
+  });
   const drag = useRef<{ x: number; y: number; startX: number; startY: number } | null>(null);
   const reset = () => {
     setZoom(1);
@@ -77,11 +84,20 @@ export default function MaterialViewer({
     );
   };
   useEffect(() => {
+    setPalette({ materialId: primary.id, colors: [], message: '', fallback: '' });
     if (image.current?.complete && image.current.naturalWidth > 0) {
       measureImage();
       setImageState('ready');
+      if (primary.role !== 'pose') {
+        setPalette({
+          materialId: primary.id,
+          colors: extractMaterialPalette(image.current),
+          message: '',
+          fallback: '',
+        });
+      }
     } else setImageState('loading');
-  }, [primary.id, primary.image]);
+  }, [primary.id, primary.image, primary.role]);
   useEffect(() => {
     const observer =
       typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measureImage) : null;
@@ -100,6 +116,31 @@ export default function MaterialViewer({
   };
   const cycleGrid = () =>
     setGrid((current) => (current === 'off' ? 'thirds' : current === 'thirds' ? 'center' : 'off'));
+  async function copyColor(hex: string) {
+    const materialId = primary.id;
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(hex);
+      copied = true;
+    } catch {
+      // A visible color code remains available when the browser denies clipboard access.
+    }
+    setPalette((current) =>
+      current.materialId === materialId
+        ? {
+            ...current,
+            fallback: copied ? '' : hex,
+            message: copied
+              ? zh
+                ? `${hex} 已複製。`
+                : `${hex} copied.`
+              : zh
+                ? '請選取色碼並手動複製。'
+                : 'Select the color code to copy it manually.',
+          }
+        : current,
+    );
+  }
   return createPortal(
     <dialog
       ref={dialog}
@@ -197,11 +238,24 @@ export default function MaterialViewer({
           alt={zh ? primary.titleZh : primary.title}
           draggable={false}
           data-testid="material-viewer-image"
-          onLoad={() => {
+          onLoad={(event) => {
+            if (event.currentTarget !== image.current) return;
             measureImage();
             setImageState('ready');
+            if (primary.role !== 'pose') {
+              setPalette({
+                materialId: primary.id,
+                colors: extractMaterialPalette(image.current),
+                message: '',
+                fallback: '',
+              });
+            }
           }}
-          onError={() => setImageState('error')}
+          onError={(event) => {
+            if (event.currentTarget !== image.current) return;
+            setImageState('error');
+            setPalette({ materialId: primary.id, colors: [], message: '', fallback: '' });
+          }}
           style={{
             transform,
             filter: gray ? 'grayscale(1)' : undefined,
@@ -266,6 +320,50 @@ export default function MaterialViewer({
           </p>
         )}
       </div>
+      {primary.role !== 'pose' &&
+        palette.materialId === primary.id &&
+        palette.colors.length >= 2 && (
+          <section
+            className="material-viewer__palette"
+            aria-label={zh ? '擷取配色' : 'Extracted colors'}
+          >
+            <h3>{zh ? '擷取配色' : 'Extracted colors'}</h3>
+            <div className="material-viewer__swatches">
+              {palette.colors.map((hex) => (
+                <button
+                  key={hex}
+                  type="button"
+                  className="tool-button tool-button-secondary material-viewer__color"
+                  aria-label={zh ? `複製色碼 ${hex}` : `Copy color ${hex}`}
+                  onClick={() => void copyColor(hex)}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="material-viewer__swatch"
+                    style={{ backgroundColor: hex }}
+                  />
+                  <span>{hex}</span>
+                </button>
+              ))}
+            </div>
+            {palette.fallback && (
+              <label className="material-viewer__color-fallback">
+                {zh ? '色碼' : 'Color code'}
+                <input
+                  className="tool-control"
+                  readOnly
+                  value={palette.fallback}
+                  onFocus={(event) => event.target.select()}
+                />
+              </label>
+            )}
+            {palette.message && (
+              <p role="status" className="material-viewer__note">
+                {palette.message}
+              </p>
+            )}
+          </section>
+        )}
       {paired && (
         <div className="material-viewer__pair-controls">
           <button

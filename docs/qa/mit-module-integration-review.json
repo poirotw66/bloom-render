@@ -1,0 +1,142 @@
+{
+  "goal": "Integrate reusable MIT implementation modules with full attribution; import no unauthorized upstream material images.",
+  "date": "2026-11-27",
+  "baseCommit": "408819a",
+  "upstream": {
+    "repository": "https://github.com/atuizz/posewear",
+    "commit": "f9f55db356464af87f97b39f5bb57930ed0cd6df",
+    "modules": [
+      {
+        "upstreamPath": "src/palette.js",
+        "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/palette.js",
+        "sourceSha256": "2de726ff47a5a4e4f6f19b7d4c94a2e4ffa6e1bb0ba7d46331d85ab947401603",
+        "localPath": "utils/posewearPalette.ts",
+        "consumers": ["components/MaterialViewer.tsx"],
+        "adaptations": [
+          "Typed ES-module exports instead of a browser global.",
+          "Pure pixel quantization and safe local Canvas boundary.",
+          "React color controls and clipboard fallback replace upstream HTML rendering."
+        ]
+      },
+      {
+        "upstreamPath": "src/references.js",
+        "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/references.js",
+        "sourceSha256": "4a792ebf6f943ad7177f0650f6fe0a64534cb0d3be592093ee475009bee721d3",
+        "localPath": "utils/posewearReferences.ts",
+        "consumers": ["features/tryon/TryOnPromptEditor.tsx"],
+        "scope": "formatBrief only; library names and item normalization are not imported.",
+        "adaptations": [
+          "Typed ordered nullable references and Traditional Chinese labels.",
+          "Built-in references resolve through BloomRender's own catalog and canonical public site.",
+          "Private upload slots use generic attachment placeholders; a separate action preserves existing prompt copying."
+        ]
+      }
+    ],
+    "licenseSha256": "e51839a61736e058feea7e959cdba9caf7682f503c31f47364e90aac53ef3c47"
+  },
+  "throughputCheckpoint": {
+    "blockingFirstSteps": "Read pinned upstream implementations and license, compare existing features, agree typed palette/reference-brief contracts before feature writes.",
+    "independentWorkstreams": "One integration owner, disjoint palette and brief writers. Owner owns notices, provenance and Settings/PWA integration. Root owns browser coverage and independent review.",
+    "sharedMutableState": "Separate feature components/styles/tests; no concurrent central locale or catalog edits. One pinned notice serves source, production and offline distribution.",
+    "smallestSafeDecomposition": "Two small derived implementation modules with actual existing UI consumers; no whole upstream application, catalog, provider or generation engine."
+  },
+  "verification": {
+    "unit": {
+      "files": 122,
+      "passed": 803,
+      "command": "npm test"
+    },
+    "browser": {
+      "passed": 174,
+      "failed": 0,
+      "newCases": 9,
+      "command": "PLAYWRIGHT_PORT=4214 npx playwright test --workers=4",
+      "paidRequests": false
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuild": "passed",
+    "bundleBudget": {
+      "entryGzipBytes": 123480,
+      "homeGzipBytesByLanguage": {
+        "en": 162073,
+        "zh-TW": 165765
+      },
+      "budgetBytes": 179200
+    },
+    "bundleSize": "passed",
+    "sourceCsp": "608 catalog asset references passed",
+    "builtCsp": "53 HTML shells passed",
+    "license": {
+      "originalNoticeBytes": 1078,
+      "sourceAndBuiltNoticeByteIdentical": true,
+      "publicNoticeHttp200": true,
+      "offlinePrecache": true,
+      "minifiedRuntimeCopyrightRetained": true,
+      "pinnedSourceHashesIndependentlyVerified": true,
+      "publicNotice": "licenses/posewear-MIT.txt"
+    },
+    "layoutGate": {
+      "result": "PASS",
+      "openFailures": 0,
+      "waivers": "Existing application-form and shared utility waivers unchanged. See evidence for each exact finding and reason.",
+      "evidence": "docs/qa/mit-module-gate-pass.txt"
+    },
+    "visualChecks": {
+      "widths": [390, 768, 1024, 1440],
+      "themes": ["bloom", "night", "newyear"],
+      "screenshots": "Local .taste-skill/shots/mit-* files; existing BloomRender CC0 materials and synthetic test fixtures only.",
+      "intermediateWidths": [
+        {
+          "width": 1024,
+          "view": "palette",
+          "overflow": false
+        },
+        {
+          "width": 1024,
+          "view": "brief",
+          "overflow": false,
+          "privateFilenameExcluded": true
+        },
+        {
+          "width": 768,
+          "view": "palette",
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "view": "brief",
+          "overflow": false,
+          "privateFilenameExcluded": true
+        }
+      ]
+    },
+    "privacy": "Brief tests retain person/clothing/pose/lighting order, resolve built-in public URLs only, exclude local upload filenames/data/blob/session keys, and preserve exact manual prompt copying.",
+    "clipboard": "HEX and reference brief keep selectable text after permission denial; successful keyboard copying tested.",
+    "palette": "Real browser original-image extraction stays unchanged under CSS grayscale; pose/depth references hide the color palette. Unit tests cover transparent/white filtering, weighting, clustering, empty/canvas failure and stale material changes."
+  },
+  "excluded": [
+    "Upstream photographs and reference images",
+    "Upstream material catalogs and translated descriptions",
+    "Character assets and third-party datasets",
+    "Fonts, icons and brand assets",
+    "Upstream local generation engines and provider integrations"
+  ],
+  "assetChanges": {
+    "upstreamImageImports": 0,
+    "existingMaterialCatalogChanged": false,
+    "newExternalOrigins": 0,
+    "privateUserPhotosUsed": false,
+    "newGenerationRequests": 0
+  },
+  "sourceDocumentation": [
+    "THIRD_PARTY_NOTICES.md",
+    "third_party/posewear/manifest.json",
+    "public/licenses/posewear-MIT.txt"
+  ],
+  "gitStateAtVerification": {
+    "committed": false,
+    "pushed": false
+  }
+}

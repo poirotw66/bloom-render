@@ -1,0 +1,23 @@
+# Adapted third-party modules
+
+BloomRender includes code adapted from [PoseWear](https://github.com/atuizz/posewear),
+Copyright (c) 2026 PoseWear contributors, under the MIT License.
+
+The imported source is pinned to commit
+`f9f55db356464af87f97b39f5bb57930ed0cd6df`:
+
+| Original module                         | BloomRender adaptation        | Use                                                                                  |
+| --------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------ |
+| `src/palette.js`                        | `utils/posewearPalette.ts`    | Extract material-image colors in the viewer.                                         |
+| `src/references.js`, `formatBrief` only | `utils/posewearReferences.ts` | Copy prompts with ordered public references and local-image attachment placeholders. |
+
+The adaptations use typed ES modules and React consumers instead of the original
+browser-global APIs. BloomRender supplies its own material catalog, localized labels,
+public URLs and clipboard fallback. No upstream images, catalogs, translated material
+descriptions, character assets, fonts or third-party datasets are included by these ports.
+
+The complete, unmodified [MIT copyright and permission notice](public/licenses/posewear-MIT.txt)
+ships with the site at `licenses/posewear-MIT.txt` and is linked from Settings.
+[The provenance manifest](third_party/posewear/manifest.json) records source URLs,
+revision and SHA-256 checksums. The project's own [license](LICENSE), existing vendored
+notices and installed dependencies' licenses remain separate.

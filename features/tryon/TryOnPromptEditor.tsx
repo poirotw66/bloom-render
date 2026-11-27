@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { MAX_TRYON_PROMPT_LENGTH } from '../../types/tryOnRecipe';
+import { TRYON_MATERIALS } from '../../constants/tryOnMaterials';
+import { SITE_URL } from '../../constants/site';
+import { formatReferenceBrief } from '../../utils/posewearReferences';
 import './tryon-prompt-editor.css';
 
 interface Props {
   automaticPrompt: string;
   quantity: number;
   promptOverride?: string;
-  referenceMap: { role: string; name: string }[];
+  referenceMap: { role: string; name: string; materialId?: string }[];
   onChange: (value: string | undefined) => void;
   disabled?: boolean;
 }
@@ -23,6 +26,7 @@ export default function TryOnPromptEditor({
   const { language } = useLanguage();
   const zh = language === 'zh-TW';
   const [message, setMessage] = useState('');
+  const [showBrief, setShowBrief] = useState(false);
   const manual = promptOverride !== undefined;
   const prompt = promptOverride ?? automaticPrompt;
   const roleLabels: Record<string, string> = zh
@@ -42,12 +46,39 @@ export default function TryOnPromptEditor({
         scene: 'Scene',
         lighting: 'Lighting',
       };
+  const publicReferences = referenceMap.map((ref) => {
+    if (ref.role === 'person') return null;
+    const material = TRYON_MATERIALS.find(
+      (item) => item.id === ref.materialId && item.role === ref.role,
+    );
+    return material
+      ? {
+          label: `${roleLabels[material.role]} · ${zh ? material.titleZh : material.title}`,
+          url: new URL(material.image, SITE_URL).href,
+        }
+      : null;
+  });
+  const hasSvgReferences = publicReferences.some((ref) => ref?.url.endsWith('.svg'));
+  const brief = formatReferenceBrief(prompt, publicReferences, language);
   async function copy() {
+    setShowBrief(false);
     try {
       await navigator.clipboard.writeText(prompt);
       setMessage(zh ? '提示詞已複製。' : 'Prompt copied.');
     } catch {
       setMessage(zh ? '請選取下方文字並複製。' : 'Select the prompt below to copy it.');
+    }
+  }
+  async function copyBrief() {
+    try {
+      await navigator.clipboard.writeText(brief);
+      setShowBrief(false);
+      setMessage(zh ? '參考摘要已複製。' : 'Reference brief copied.');
+    } catch {
+      setShowBrief(true);
+      setMessage(
+        zh ? '請選取下方參考摘要並複製。' : 'Select the reference brief below to copy it.',
+      );
     }
   }
   return (
@@ -134,6 +165,14 @@ export default function TryOnPromptEditor({
         >
           {zh ? '複製提示詞' : 'Copy prompt'}
         </button>
+        <button
+          type="button"
+          className="tool-button tool-button-secondary"
+          data-testid="tryon-copy-reference-brief"
+          onClick={() => void copyBrief()}
+        >
+          {zh ? '複製參考摘要' : 'Copy reference brief'}
+        </button>
         {manual && (
           <button
             type="button"
@@ -148,6 +187,31 @@ export default function TryOnPromptEditor({
           </button>
         )}
       </div>
+      <p className="tryon-hint">
+        {zh
+          ? '參考摘要會附上內建素材的公開連結；你上傳的圖片需另外附上。'
+          : 'Reference briefs include public links to built-in materials. Attach your uploaded images separately.'}
+      </p>
+      {hasSvgReferences && (
+        <p className="tryon-hint">
+          {zh
+            ? 'SVG 參考圖需先轉成 PNG，再附加到生圖模型。'
+            : 'Convert SVG references to PNG before attaching them to an image model.'}
+        </p>
+      )}
+      {showBrief && (
+        <label className="tryon-field">
+          {zh ? '參考摘要' : 'Reference brief'}
+          <textarea
+            className="tool-control tryon-prompt-text"
+            data-testid="tryon-reference-brief"
+            rows={8}
+            value={brief}
+            readOnly
+            onFocus={(event) => event.target.select()}
+          />
+        </label>
+      )}
       {message && (
         <p role="status" className="tryon-hint">
           {message}

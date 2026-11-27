@@ -494,6 +494,9 @@ describe('try-on editable prompt', () => {
     act(() => result.current.setKeepPose(false));
     expect(result.current.resolvedPrompt).toBe('My captured prompt.');
     expect(result.current.referenceMap.map((ref) => ref.role)).toEqual(['person', 'clothing']);
+    expect(
+      result.current.referenceMap.map((ref) => ('materialId' in ref ? ref.materialId : undefined)),
+    ).toEqual([undefined, undefined]);
     await act(async () => result.current.handleGenerate());
     expect(addToHistory.mock.calls[0][2].prompt).toBe('My captured prompt.');
     act(() => result.current.setPromptOverride('A later edit.'));
@@ -584,6 +587,11 @@ describe('basket route consumption', () => {
         'pose',
         'lighting',
       ]);
+      expect(
+        result.current.tryOn.referenceMap.map((reference) =>
+          'materialId' in reference ? reference.materialId : undefined,
+        ),
+      ).toEqual([undefined, ...ids]);
       expect(result.current.tryOn.canGenerate).toBe(true);
       expect(result.current.location.state).toEqual({ retained: 'other-state' });
     } finally {

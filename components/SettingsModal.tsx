@@ -32,6 +32,7 @@ import {
 } from '../utils/sessionSpend';
 import { ChevronDownIcon, XMarkIcon } from './icons';
 import OpenRouterSignInButton from './OpenRouterSignInButton';
+import { publicAssetUrl } from '../utils/publicAsset';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -627,6 +628,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             </div>,
           )}
         </div>
+
+        <a
+          href={publicAssetUrl('licenses/posewear-MIT.txt')}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mt-6 inline-flex min-h-11 items-center text-sm underline underline-offset-4 ${s.hint}`}
+        >
+          {language === 'zh-TW' ? '開源模組授權' : 'Open-source module license'}
+        </a>
 
         {/* Settings persist as soon as they change, so a single dismiss action is
             honest here — a "Cancel" button that discarded nothing was misleading. */}

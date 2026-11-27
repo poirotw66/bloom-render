@@ -925,9 +925,21 @@ export function useTryOn() {
   const resolvedPrompt = inputs.promptOverride ?? automaticPrompt;
   const referenceMap = [
     { role: 'person', name: inputs.person?.name ?? '' },
-    ...inputs.clothing.map((ref) => ({ role: 'clothing', name: ref.file.name })),
+    ...inputs.clothing.map((ref) => ({
+      role: 'clothing',
+      name: ref.file.name,
+      materialId: ref.materialId,
+    })),
     ...TRYON_OPTIONAL_REFERENCE_ROLES.flatMap((role) =>
-      inputs.references[role] ? [{ role, name: inputs.references[role]!.file.name }] : [],
+      inputs.references[role]
+        ? [
+            {
+              role,
+              name: inputs.references[role]!.file.name,
+              materialId: inputs.references[role]!.materialId,
+            },
+          ]
+        : [],
     ),
   ];
   return {
