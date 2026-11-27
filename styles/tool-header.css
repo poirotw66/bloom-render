@@ -311,9 +311,29 @@
     width: 28px;
     height: 28px;
   }
-  .tool-header .tool-header__basket,
   .tool-header .tool-header__history {
     display: none;
+  }
+  .tool-header .tool-header__basket {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex: none;
+  }
+  .tool-header__basket span {
+    position: absolute;
+    top: 2px;
+    right: 1px;
+    min-width: 14px;
+    padding-inline: 2px;
+    border-radius: 4px;
+    background: var(--bg-main);
+    font-size: 10px;
+    line-height: 14px;
+    text-align: center;
+  }
+  .tool-header .tool-header__menu-trigger {
+    margin-left: 0;
   }
   .tool-header__actions {
     gap: 2px;
@@ -344,6 +364,9 @@
   }
 }
 @media (max-width: 360px) {
+  .tool-header__bar {
+    gap: 4px;
+  }
   .tool-header__brand {
     font-size: 15px;
     gap: 6px;

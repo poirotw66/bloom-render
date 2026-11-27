@@ -54,8 +54,13 @@ export default function ToolHeader({
   const menuId = useId();
   const closeMenu = () => setMenuOpen(false);
   const dialog = useDialog<HTMLDivElement>(menuOpen, closeMenu);
+  const currentPath = location.pathname.startsWith(`${ROUTES.MATERIALS}/`)
+    ? ROUTES.MATERIALS
+    : location.pathname === ROUTES.EDIT
+      ? ROUTES.HOME
+      : location.pathname;
   const current = TOOL_NAVIGATION.flatMap((group) => group.items).find(
-    (item) => item.path === location.pathname,
+    (item) => item.path === currentPath,
   );
   const label = (item: ToolNavigationItem) =>
     item.labelKey === 'materials.title'
@@ -119,7 +124,7 @@ export default function ToolHeader({
           <Link
             to={ROUTES.MATERIALS}
             onClick={navigate}
-            aria-current={location.pathname === ROUTES.MATERIALS ? 'page' : undefined}
+            aria-current={currentPath === ROUTES.MATERIALS ? 'page' : undefined}
           >
             {language === 'zh-TW' ? '參考素材' : 'Reference materials'}
           </Link>
@@ -152,6 +157,7 @@ export default function ToolHeader({
           <button
             type="button"
             className="tool-control tool-button tool-button-secondary tool-header__basket"
+            title={basketLabel}
             aria-label={basketLabel}
             onClick={basket.openBasket}
           >

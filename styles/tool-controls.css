@@ -1,0 +1,169 @@
+.tool-upload-section {
+  display: grid;
+  gap: 16px;
+}
+.tool-upload-zone {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 1px dashed var(--tool-line, var(--border));
+  border-radius: 12px;
+  text-align: center;
+}
+.tool-upload-zone--dragging {
+  border-color: var(--tool-focus, var(--brand-primary));
+  background: var(--bg-surface);
+}
+.tool-upload-zone > p {
+  max-width: 48ch;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.tool-upload-preview {
+  position: relative;
+  width: 100%;
+}
+.tool-upload-preview > img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.tool-upload-demo {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.tool-upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+.tool-upload-actions > button,
+.tool-upload-generate > button {
+  min-height: 44px;
+}
+.tool-upload-generate {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+.result-actions {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+.result-export-options,
+.result-primary-actions,
+.result-more-tools > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.result-export-options {
+  font-size: 14px;
+}
+.result-export-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.result-export-options select {
+  min-height: 44px;
+  border: 1px solid var(--tool-line, var(--border));
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--tool-ink, var(--ink));
+  background: var(--tool-raised, var(--bg-raised));
+}
+.result-export-options input[type='range'] {
+  max-width: 120px;
+  min-height: 44px;
+}
+.result-more-tools {
+  width: 100%;
+  border-top: 1px solid var(--tool-line, var(--border));
+  padding-top: 4px;
+}
+.result-more-tools > summary {
+  min-height: 44px;
+  padding-block: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  color: var(--tool-muted, var(--ink-soft));
+}
+.result-more-tools > div {
+  padding-block: 8px;
+}
+@media (max-width: 600px) {
+  .tool-upload-zone {
+    padding: 16px;
+  }
+  .tool-upload-preview > img {
+    max-height: 240px;
+  }
+  .tool-upload-actions > button,
+  .tool-upload-generate,
+  .tool-upload-generate > button {
+    width: 100%;
+  }
+  .result-primary-actions > button,
+  .result-more-tools > div > button {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+}
+.tool-upload-settings {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+}
+.tool-upload-settings > * {
+  min-width: 0;
+}
+.tool-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(255 255 255 / 50%);
+  border-radius: 8px;
+  background: rgb(15 10 15 / 85%);
+  color: #fff;
+  cursor: pointer;
+}
+.tool-photo-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.multi-person-photo-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 6px;
+}
+.multi-person-photo-actions button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+}
+.multi-person-photo-actions .multi-person-photo-remove {
+  grid-row: 2;
+  grid-column: 1 / -1;
+}

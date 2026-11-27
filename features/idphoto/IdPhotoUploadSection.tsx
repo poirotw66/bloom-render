@@ -18,6 +18,7 @@ interface IdPhotoUploadSectionProps {
   onDrop: (e: React.DragEvent) => void;
   quantity?: number;
   imageSize?: string | null;
+  children?: React.ReactNode;
 }
 
 const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
@@ -32,6 +33,7 @@ const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
   onDrop,
   quantity,
   imageSize,
+  children,
 }) => (
   <SingleImageUploadPanel
     previewUrl={idPhotoPreviewUrl}
@@ -49,7 +51,9 @@ const IdPhotoUploadSection: React.FC<IdPhotoUploadSectionProps> = ({
     accent="emerald"
     quantity={quantity}
     imageSize={imageSize}
-  />
+  >
+    {children}
+  </SingleImageUploadPanel>
 );
 
 export default IdPhotoUploadSection;

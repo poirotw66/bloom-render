@@ -13,6 +13,7 @@ interface PortraitResultProps {
   portraitType: string;
   portraitOutputSpec: string;
   onAgain: () => void;
+  hideAgain?: boolean;
   onEditInEditor: () => void;
 }
 
@@ -22,6 +23,7 @@ const PortraitResult: React.FC<PortraitResultProps> = ({
   portraitType,
   portraitOutputSpec,
   onAgain,
+  hideAgain = false,
   onEditInEditor,
 }) => {
   const { t } = useLanguage();
@@ -31,6 +33,7 @@ const PortraitResult: React.FC<PortraitResultProps> = ({
       result={portraitResult}
       originalUrl={originalUrl}
       onAgain={onAgain}
+      hideAgain={hideAgain}
       onEditInEditor={onEditInEditor}
       fileBaseName="portrait"
       paramsTitleKey="idphoto.result.params_title"

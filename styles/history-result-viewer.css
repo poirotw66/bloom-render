@@ -38,6 +38,22 @@
   gap: 24px;
   padding: 20px;
 }
+.history-viewer-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 14px;
+}
+.history-viewer-navigation button {
+  border: 1px solid var(--tool-line, #8d6d7b);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.history-viewer-navigation button:disabled {
+  opacity: 0.45;
+}
 .history-viewer-result-image {
   width: 100%;
   max-height: 55dvh;

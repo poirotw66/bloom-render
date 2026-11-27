@@ -20,6 +20,7 @@ import { applyValidatedImageFile } from './utils/applyValidatedImageFile';
 import { consumePendingRemix } from './utils/pendingRemix';
 import './styles/tool-shell.css';
 import './styles/studio-shell.css';
+import './styles/tool-pages.css';
 import MaterialBasket from './components/MaterialBasket';
 import { MaterialBasketProvider } from './contexts/MaterialBasketContext';
 import { ToolCommandsProvider } from './contexts/ToolCommandsContext';

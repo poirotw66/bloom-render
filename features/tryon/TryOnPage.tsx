@@ -183,6 +183,48 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
               <legend id="tryon-setup-title">{zh ? '準備試穿' : 'Prepare your try-on'}</legend>
               <div className="tryon-pane-scroll" role="region" aria-labelledby="tryon-setup-title">
                 <HistoryStorageNotice />
+                <TryOnUploadSection
+                  personPreviewUrl={tryOn.personPreviewUrl}
+                  clothingPreviewUrls={tryOn.clothingPreviewUrls}
+                  error={tryOn.error}
+                  loading={tryOn.loading}
+                  disabled={formDisabled}
+                  isDraggingOver={tryOn.isDraggingOver}
+                  canGenerate={tryOn.canGenerate && !formDisabled}
+                  minClothing={tryOn.minClothing}
+                  maxClothing={tryOn.maxClothing}
+                  quantity={tryOn.quantity}
+                  onQuantityChange={tryOn.setQuantity}
+                  onPersonFileChange={tryOn.handlePersonFileChange}
+                  onClothingFileChange={tryOn.handleClothingFileChange}
+                  onRemoveClothing={tryOn.removeClothing}
+                  onGenerate={generate}
+                  onChooseClothing={() => openMaterials('clothing')}
+                  poseControls={references('pose')}
+                  outputControls={
+                    <TryOnOutputOptions
+                      outputSize={tryOn.outputSize}
+                      aspectRatio={tryOn.aspectRatio}
+                      onOutputSizeChange={tryOn.setOutputSize}
+                      onAspectRatioChange={tryOn.setAspectRatio}
+                      disabled={formDisabled}
+                    />
+                  }
+                  onDragOver={tryOn.handleDragOver}
+                  onDragLeave={tryOn.handleDragLeave}
+                  onDropPerson={tryOn.handleDropPerson}
+                  onDropClothing={tryOn.handleDropClothing}
+                >
+                  <TryOnOptionSelectors
+                    background={tryOn.background}
+                    style={tryOn.style}
+                    onBackgroundChange={tryOn.setBackground}
+                    onStyleChange={tryOn.setStyle}
+                    disabled={formDisabled}
+                    backgroundDisabled={tryOn.keepBackground || backgroundOverride}
+                  />
+                  {references('extra')}
+                </TryOnUploadSection>
                 <div className="tryon-action-row">
                   <button
                     type="button"
@@ -203,46 +245,6 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
                     </button>
                   )}
                 </div>
-                <TryOnUploadSection
-                  personPreviewUrl={tryOn.personPreviewUrl}
-                  clothingPreviewUrls={tryOn.clothingPreviewUrls}
-                  error={tryOn.error}
-                  loading={tryOn.loading}
-                  disabled={formDisabled}
-                  isDraggingOver={tryOn.isDraggingOver}
-                  canGenerate={tryOn.canGenerate && !formDisabled}
-                  minClothing={tryOn.minClothing}
-                  maxClothing={tryOn.maxClothing}
-                  quantity={tryOn.quantity}
-                  onQuantityChange={tryOn.setQuantity}
-                  onPersonFileChange={tryOn.handlePersonFileChange}
-                  onClothingFileChange={tryOn.handleClothingFileChange}
-                  onRemoveClothing={tryOn.removeClothing}
-                  onGenerate={generate}
-                  onChooseClothing={() => openMaterials('clothing')}
-                  poseControls={references('pose')}
-                  onDragOver={tryOn.handleDragOver}
-                  onDragLeave={tryOn.handleDragLeave}
-                  onDropPerson={tryOn.handleDropPerson}
-                  onDropClothing={tryOn.handleDropClothing}
-                >
-                  <TryOnOptionSelectors
-                    background={tryOn.background}
-                    style={tryOn.style}
-                    onBackgroundChange={tryOn.setBackground}
-                    onStyleChange={tryOn.setStyle}
-                    disabled={formDisabled}
-                    backgroundDisabled={tryOn.keepBackground || backgroundOverride}
-                  />
-                  <TryOnOutputOptions
-                    outputSize={tryOn.outputSize}
-                    aspectRatio={tryOn.aspectRatio}
-                    onOutputSizeChange={tryOn.setOutputSize}
-                    onAspectRatioChange={tryOn.setAspectRatio}
-                    disabled={formDisabled}
-                  />
-                  {references('extra')}
-                </TryOnUploadSection>
               </div>
             </fieldset>
             <fieldset className="tryon-panel tryon-preview">
@@ -392,6 +394,23 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
           onClose={() => setActiveDialog(null)}
           title={zh ? '參考素材庫' : 'Reference library'}
           id="tryon-materials-dialog"
+          footer={
+            <div className="tryon-materials-footer" data-testid="tryon-materials-footer">
+              <span role="status">
+                {zh
+                  ? `已選 ${tryOn.materialIds.length} 項內建素材`
+                  : `${tryOn.materialIds.length} ${tryOn.materialIds.length === 1 ? 'reference' : 'references'} selected`}
+              </span>
+              <button
+                type="button"
+                className="tool-button tool-button-primary"
+                disabled={formDisabled}
+                onClick={() => setActiveDialog(null)}
+              >
+                {zh ? '完成選材' : 'Done selecting references'}
+              </button>
+            </div>
+          }
         >
           <TryOnMaterialPicker
             key={`${activeDialog}:${materialRole}`}

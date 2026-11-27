@@ -129,32 +129,22 @@ export function useCoupleGroup() {
   // Handle file change
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const selectedFiles = Array.from(e.target.files || []);
-
-      if (mode === 'couple') {
-        if (selectedFiles.length > 2) {
-          setError(t('couple_group.error_too_many_couple'));
-          e.target.value = '';
-          return;
-        }
-        // For couple mode, replace all files with the selected ones (up to 2)
-        setFiles(selectedFiles.slice(0, 2));
-      } else if (mode === 'group') {
-        if (selectedFiles.length > 6) {
-          setError(t('couple_group.error_too_many_group'));
-          e.target.value = '';
-          return;
-        }
-        // For group mode, append new files to existing ones (up to 6 total)
-        setFiles((prev) => [...prev, ...selectedFiles].slice(0, 6));
+      const selectedFiles = Array.from(e.target.files || []).filter((file) =>
+        file.type.startsWith('image/'),
+      );
+      e.target.value = '';
+      const limit = mode === 'couple' ? 2 : 6;
+      if (loading || run.isRunning || !selectedFiles.length || files.length >= limit) return;
+      if (selectedFiles.length > limit) {
+        setError(t(`couple_group.error_too_many_${mode}`));
+        return;
       }
-
+      setFiles((previous) => [...previous, ...selectedFiles].slice(0, limit));
       setError(null);
       setResult(null);
       setResults([]);
-      e.target.value = '';
     },
-    [mode, t],
+    [mode, files.length, loading, run.isRunning, t],
   );
 
   // Remove file
@@ -199,23 +189,16 @@ export function useCoupleGroup() {
         file.type.startsWith('image/'),
       );
 
-      if (mode === 'couple') {
-        if (droppedFiles.length > 2) {
-          setError(t('couple_group.error_too_many_couple'));
-          return;
-        }
-        setFiles(droppedFiles.slice(0, 2));
-      } else if (mode === 'group') {
-        if (droppedFiles.length > 6) {
-          setError(t('couple_group.error_too_many_group'));
-          return;
-        }
-        setFiles((prev) => [...prev, ...droppedFiles].slice(0, 6));
+      const limit = mode === 'couple' ? 2 : 6;
+      if (loading || run.isRunning || !droppedFiles.length || files.length >= limit) return;
+      if (droppedFiles.length > limit) {
+        setError(t(`couple_group.error_too_many_${mode}`));
+        return;
       }
-
+      setFiles((previous) => [...previous, ...droppedFiles].slice(0, limit));
       setError(null);
     },
-    [mode, t],
+    [mode, files.length, loading, run.isRunning, t],
   );
 
   // Generate handler

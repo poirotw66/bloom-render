@@ -1,0 +1,150 @@
+{
+  "date": "2026-11-27",
+  "goal": "Improve every primary application page, prioritizing material selection through completed virtual try-on.",
+  "scope": {
+    "routes": [
+      "/",
+      "/generate",
+      "/edit",
+      "/try-on",
+      "/materials",
+      "/materials/seated-study-back-depth",
+      "/history",
+      "/idphoto",
+      "/idphoto/batch",
+      "/portrait",
+      "/travel",
+      "/themed",
+      "/couple-group",
+      "/multi-person",
+      "/style-collage",
+      "/enhance",
+      "/restore",
+      "/prompt-gallery",
+      "/photography-service"
+    ],
+    "themes": ["bloom", "night", "newyear"],
+    "auditWidths": [390, 1440],
+    "pageThemeViewportCases": 114,
+    "additionalNarrowNavigationWidth": 320,
+    "priorUncommittedFeatures": "Preserved material ZIP/brief, selected history export, history navigation, recent searches and similar references."
+  },
+  "workflowChanges": [
+    "Catalog selection has a visible review action and direct exact-ID continuation to try-on; basket and catalog share the same recipe builder with original background preserved by default.",
+    "Reference picker has a persistent selected-count/Done footer. Output size and ratio are visible near Generate. Missing person/clothing brings keyboard focus to the required action.",
+    "Tool pages use compact left-aligned titles and provider help. Generate has a task-specific heading; editor has an explicit heading; mobile basket is directly reachable.",
+    "ID photo, portrait, themed and couple tools put upload before configuration and generation. Travel has a photo-upload shortcut before the map; Enhance model/license information is expandable.",
+    "Shared upload/replacement uses native keyboard-operable buttons and stable input IDs; generation blocks image changes. Photo removal remains visible with 44px targets in batch, travel and couple tools; multiplayer actions use roomier rows.",
+    "Couple chooser and drop support adding people individually without replacing earlier inputs; order/capacity/cancelled input and inflight behavior are tested.",
+    "Result download/share/edit actions precede parameters; secondary image tools are explicit disclosures. Format labels have unique IDs. Batch cards no longer offer a misleading clear-all action per image.",
+    "Travel selection colors reuse readable shared brand states; faint nested labels and low-contrast success buttons/model links are corrected.",
+    "Multi-person template centering adjusts only its horizontal list; arriving at the page no longer scrolls past the heading/upload."
+  ],
+  "verification": {
+    "unit": {
+      "files": 141,
+      "passed": 876
+    },
+    "browser": {
+      "status": "passed",
+      "passed": 329,
+      "skipped": 0,
+      "flaky": 0,
+      "durationSeconds": 161.0,
+      "cases": "All page identities, WCAG2A/AA serious/critical checks and overflow; exact-ID catalog-to-tryon mocked generation; keyboard native upload/replacement; visible touch removal; incremental couple selection; independent multi-result format labels; preexisting full regression.",
+      "uniqueCasesVerified": 331
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "productionBuild": "passed",
+    "csp": {
+      "catalogAssetReferences": 608,
+      "htmlShells": 53
+    },
+    "bundle": {
+      "entryGzipBytes": 123891,
+      "homeGzipBytesByLanguage": {
+        "en": 162483,
+        "zh-TW": 166175
+      },
+      "budgetBytes": 179200
+    },
+    "layoutGates": {
+      "tryon": {
+        "result": "GATE: PASS",
+        "warnings": 15,
+        "waivers": [
+          {
+            "check": "focus-ring",
+            "target": ".focus\\:outline-none:focus",
+            "reason": "Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads."
+          },
+          {
+            "check": "container-edges",
+            "target": "div#root \"",
+            "reason": "This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout."
+          },
+          {
+            "check": "copy-actions",
+            "target": "div.tryon-upload-grid > div.tryon-upload.tryon-workflow-step:nth-of-type(2) > div.tryon-role-actions",
+            "reason": "This is the interactive try-on form, not a marketing hero. Uploading person/clothing/pose inputs, opening optional workspace tools and generating are distinct required task actions. Advanced actions are collapsed; real keyboard and pointer tests cover the visible controls."
+          },
+          {
+            "check": "hero-screen",
+            "target": "main#main-content > section.tryon-workspace.hero \"",
+            "reason": "The try-on route is an application form with selected references and retained generation results. Natural document scrolling keeps the complete workflow reachable on small screens and with expanded settings. A fixed marketing-screen height previously caused nested-scroll and hidden-action problems."
+          },
+          {
+            "check": "hero-fold",
+            "target": "section.tryon-workspace.hero section.tryon-workspace.hero \"",
+            "reason": "This application workspace deliberately scrolls as one document. Its form, reference board, optional settings and retained results must remain reachable at zoom and mobile widths; restricting it to a single marketing fold would recreate the usability issue the user asked to fix."
+          }
+        ]
+      },
+      "home": {
+        "result": "GATE: PASS",
+        "warnings": 7,
+        "waivers": [
+          {
+            "check": "focus-ring",
+            "target": ".focus\\:outline-none:focus",
+            "reason": "Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads."
+          },
+          {
+            "check": "container-edges",
+            "target": "div#root \"",
+            "reason": "This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout."
+          },
+          {
+            "check": "card-layout",
+            "target": "section#styles > div.wrap.home-wrap > ul.home-style-grid \"♡ 公仔盒玩 試試這個 ↗\"",
+            "reason": "This is the existing interactive style catalog. Consistent photographic cards let users compare, favorite and apply styles. It is not repeated marketing feature content; the photographs and actual actions differ for each style."
+          },
+          {
+            "check": "copy-headline",
+            "target": "h1#home-title \"人物照片的 AI 創作工作台\"",
+            "reason": "The Traditional Chinese headline explicitly identifies a creative AI studio for portrait photographs. The checker matches English category tokens; the English locale says AI photo studio for your portraits. Both localized headings name the product and subject accurately."
+          }
+        ]
+      },
+      "newWaivers": 0,
+      "scope": "Taste gates cover homepage and try-on application. Remaining published tool screens have real-browser responsive, keyboard, workflow and accessibility coverage rather than marketing hero-height requirements."
+    },
+    "postReviewMultiPerson": {
+      "passed": 12,
+      "addedCases": 2,
+      "scope": "Six theme/width page audits, two initial-scroll cases and preexisting template selection/demo generation flows after the final single-file correction."
+    },
+    "visualInspection": "All19 desktop route first screens inspected together; representative mobile forms, native viewers, selected-material workflow and final multi-person arrival checked separately."
+  },
+  "testReadiness": "Homepage audits wait for the existing is-entered/viral content readiness before final finite animations. Native keyboard file-picker interactions run in one serial group to avoid competing browser file dialogs.",
+  "privacyAndLicensing": {
+    "assets": "Existing own catalog and synthetic sample fixture only. No private portrait files read or copied and no paid generation calls.",
+    "posewearNoticeSha256": "e51839a61736e058feea7e959cdba9caf7682f503c31f47364e90aac53ef3c47",
+    "builtNoticeIdentical": true,
+    "newUpstreamAssets": false,
+    "newDependencies": false
+  },
+  "deployment": "Local workspace changes only; not committed, pushed or deployed."
+}

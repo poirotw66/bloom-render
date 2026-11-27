@@ -11,6 +11,7 @@ import { useDialog } from '../hooks/useDialog';
 import { useHistory, type HistoryItem } from '../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../utils/downloadHelpers';
 import HistoryResultCard from './HistoryResultCard';
+import HistoryResultBrowser from './HistoryResultBrowser';
 import HistoryStorageNotice from './HistoryStorageNotice';
 import { XMarkIcon } from './icons';
 import { ROUTES } from '../constants/routes';
@@ -54,12 +55,14 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
   const panelRef = useDialog<HTMLElement>(isOpen, onClose);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewerId, setViewerId] = useState<string | null>(null);
   const [activeType, setActiveType] = useState<HistoryFilterType>('all');
 
   useEffect(() => {
     if (!isOpen) return;
 
     // Keep the panel focused on the latest user intent.
+    setViewerId(null);
     setSearchQuery('');
     setActiveType('all');
   }, [isOpen]);
@@ -223,12 +226,21 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ isOpen, onClose, onImageSel
                   onEdit={onImageSelected ? handleEdit : undefined}
                   onRemove={handleRemove}
                   onAfterNavigate={onClose}
+                  onView={setViewerId}
                 />
               ))}
             </div>
           )}
         </div>
       </aside>
+      {viewerId && (
+        <HistoryResultBrowser
+          items={filteredHistory}
+          initialId={viewerId}
+          onClose={() => setViewerId(null)}
+          onAfterNavigate={onClose}
+        />
+      )}
     </div>
   );
 };

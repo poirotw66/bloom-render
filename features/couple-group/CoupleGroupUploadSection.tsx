@@ -30,6 +30,7 @@ interface CoupleGroupUploadSectionProps {
   onDrop: (e: React.DragEvent) => void;
   quantity?: number;
   imageSize?: string | null;
+  children?: React.ReactNode;
 }
 
 const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
@@ -47,14 +48,17 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
   onDrop,
   quantity = 1,
   imageSize,
+  children,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
   const zoneRef = useRef<HTMLDivElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const maxFiles = mode === 'couple' ? 2 : 6;
   const minFiles = mode === 'couple' ? 2 : 3;
-  const canAddMore = !isDemoMode && (mode === 'couple' ? files.length < 2 : files.length < 6);
+  const canAddMore =
+    !isDemoMode && !loading && (mode === 'couple' ? files.length < 2 : files.length < 6);
 
   const emitFile = useCallback(
     (file: File) => {
@@ -67,10 +71,21 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
     },
     [canAddMore, onFileChange],
   );
-  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode });
+  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode && !loading });
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
+      <input
+        ref={fileInput}
+        id="image-upload-couple-group"
+        type="file"
+        hidden
+        accept="image/*"
+        multiple
+        disabled={isDemoMode || loading}
+        onChange={onFileChange}
+        aria-label={t('start.upload_button')}
+      />
       {isDemoMode && (
         <p className="text-xs text-sky-200/80 text-center">{t('demo.sample_only_hint')}</p>
       )}
@@ -88,7 +103,7 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
         }`}
         onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
         onDragLeave={isDemoMode ? undefined : onDragLeave}
-        onDrop={isDemoMode ? (e) => e.preventDefault() : onDrop}
+        onDrop={isDemoMode || loading ? (e) => e.preventDefault() : onDrop}
       >
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
@@ -105,8 +120,10 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
                   <img src={url} alt={`Person ${idx + 1}`} className="w-full h-full object-cover" />
                   {!isDemoMode && (
                     <button
+                      type="button"
+                      disabled={loading}
                       onClick={() => onRemoveFile(idx)}
-                      className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                      className="absolute top-1 right-1 w-11 h-11 bg-red-800 text-white rounded-full flex items-center justify-center hover:bg-red-900 focus-visible:ring-2 focus-visible:ring-white"
                       aria-label={t('couple_group.remove_photo')}
                     >
                       <XMarkIcon className="w-3.5 h-3.5" />
@@ -119,41 +136,37 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
               ))}
 
               {canAddMore && (
-                <label className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-pink-500 hover:bg-pink-500/5 transition-colors text-gray-500 hover:text-pink-400 group">
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    multiple
-                    onChange={onFileChange}
-                  />
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => fileInput.current?.click()}
+                  className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-pink-500 hover:bg-pink-500/5 transition-colors theme-ink-muted hover:text-pink-400 group"
+                >
                   <span className="text-2xl group-hover:scale-125 transition-transform">+</span>
                   <span className="text-[10px] uppercase font-bold tracking-tighter">
                     {t('couple_group.add_photo')}
                   </span>
-                </label>
+                </button>
               )}
             </div>
 
-            <p className="text-xs text-gray-500 italic max-w-sm text-center">
+            <p className="text-xs theme-ink-muted italic max-w-sm text-center">
               {mode === 'couple' ? t('couple_group.hint_couple') : t('couple_group.hint_group')}
             </p>
 
             {error && <ErrorDisplay message={error} />}
 
-            <div className="flex items-center gap-4">
+            {children && <div className="tool-photo-settings w-full">{children}</div>}
+            <div className="flex flex-wrap items-center justify-center gap-4">
               {!isDemoMode && (
-                <label className={UI_FILE_PICKER}>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    multiple
-                    onChange={onFileChange}
-                    aria-label={t('couple_group.change_photo')}
-                  />
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => fileInput.current?.click()}
+                  className={UI_FILE_PICKER}
+                >
                   {t('couple_group.change_photo')}
-                </label>
+                </button>
               )}
 
               <div className="flex flex-col items-center gap-1.5">
@@ -211,8 +224,10 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
               </p>
             </div>
 
-            <label
-              htmlFor="image-upload-couple-group"
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => fileInput.current?.click()}
               className={`relative inline-flex items-center justify-center px-10 py-5 text-xl font-black text-white rounded-2xl cursor-pointer transition-colors duration-300 hover:-translate-y-1 active:scale-95 ${
                 mode === 'couple'
                   ? 'bg-pink-600 hover:bg-pink-500 '
@@ -220,16 +235,8 @@ const CoupleGroupUploadSection: React.FC<CoupleGroupUploadSectionProps> = ({
               }`}
             >
               {t('start.upload_button')}
-            </label>
-            <input
-              id="image-upload-couple-group"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              multiple
-              onChange={onFileChange}
-              aria-label={t('start.upload_button')}
-            />
+            </button>
+            {children && <div className="tool-photo-settings w-full">{children}</div>}
           </div>
         )}
       </div>

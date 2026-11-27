@@ -61,7 +61,7 @@ const btnGetKey: Record<ThemeType, string> = {
     'text-yellow-100 border border-yellow-400/50 hover:bg-red-800/50 focus-visible:ring-yellow-400',
 };
 
-const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = false }) => {
+const ApiKeyNotice: React.FC<ApiKeyNoticeProps> = ({ className = '', compact = true }) => {
   const { t } = useLanguage();
   const settings = useSettings();
   const { theme } = useTheme();

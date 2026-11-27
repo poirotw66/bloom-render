@@ -11,7 +11,8 @@ import { useSettings } from '../contexts/SettingsContext';
 import { usePasteImage } from '../hooks/usePasteImage';
 import CostEstimateBadge from './CostEstimateBadge';
 import { ErrorDisplay } from './ErrorDisplay';
-import { UI_BTN_GENERATE, UI_BTN_UPLOAD, UI_FILE_PICKER } from '../utils/uiClasses';
+import { UI_BTN_GENERATE, UI_BTN_SECONDARY } from '../utils/uiClasses';
+import '../styles/tool-controls.css';
 
 interface GenericUploadSectionProps {
   previewUrl: string | null;
@@ -34,6 +35,7 @@ interface GenericUploadSectionProps {
   quantity?: number;
   imageSize?: string | null;
   showCostEstimate?: boolean;
+  children?: React.ReactNode;
 }
 
 const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
@@ -56,10 +58,13 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
   quantity = 1,
   imageSize,
   showCostEstimate = true,
+  children,
 }) => {
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
   const zoneRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const canUpload = !isDemoMode && !loading;
 
   const emitFile = useCallback(
     (file: File) => {
@@ -73,10 +78,10 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
     [onFileChange],
   );
 
-  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode });
+  usePasteImage(zoneRef, emitFile, { enabled: canUpload });
 
   const handleDragOver = (e: React.DragEvent) => {
-    if (isDemoMode) {
+    if (!canUpload) {
       e.preventDefault();
       return;
     }
@@ -84,7 +89,7 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    if (isDemoMode) {
+    if (!canUpload) {
       e.preventDefault();
       return;
     }
@@ -92,116 +97,85 @@ const GenericUploadSection: React.FC<GenericUploadSectionProps> = ({
   };
 
   return (
-    <div className={`flex flex-col gap-4 w-full max-w-2xl mx-auto ${className}`}>
+    <div className={`tool-upload-section w-full max-w-2xl mx-auto ${className}`}>
       <div
         ref={zoneRef}
-        tabIndex={isDemoMode ? undefined : 0}
+        tabIndex={canUpload ? 0 : undefined}
         role="group"
         aria-label={t(uploadHintKey)}
-        className={`relative p-8 border-2 border-dashed rounded-2xl transition-colors duration-300 flex flex-col items-center justify-center gap-6 focus:outline-none focus-visible:ring-2 focus-visible:brand-ring ${
-          isDraggingOver && !isDemoMode
-            ? 'theme-border-strong brand-bg-tint scale-[1.02]'
-            : previewUrl
-              ? 'theme-border theme-raised'
-              : 'theme-border hover:theme-border-strong theme-raised'
+        aria-busy={loading}
+        className={`tool-upload-zone theme-border theme-raised ${
+          isDraggingOver && canUpload ? 'tool-upload-zone--dragging' : ''
         }`}
         onDragOver={handleDragOver}
-        onDragLeave={isDemoMode ? undefined : onDragLeave}
+        onDragLeave={canUpload ? onDragLeave : undefined}
         onDrop={handleDrop}
       >
         {previewUrl ? (
-          <div className="w-full flex flex-col items-center gap-6">
-            <div className="relative w-full max-w-md">
-              <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-xl" />
-              {isDemoMode && (
-                <span className="absolute top-2 left-2 inline-flex items-center rounded-md brand-bg px-2 py-0.5 text-sm font-semibold tracking-wide text-white">
-                  {t('demo.sample_input')}
-                </span>
-              )}
-            </div>
-
-            {error && <ErrorDisplay message={error} />}
-
-            <div className="flex items-center gap-4">
-              {!isDemoMode && (
-                <label className={UI_FILE_PICKER}>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={onFileChange}
-                    aria-label={t(changePhotoKey)}
-                  />
-                  {t(changePhotoKey)}
-                </label>
-              )}
-
-              <div className="flex flex-col items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={onGenerate}
-                  disabled={loading || !canGenerate}
-                  className={UI_BTN_GENERATE}
-                >
-                  {loading ? (
-                    <>
-                      <span className="animate-spin">⏳</span>
-                      {t('start.idphoto_generating')}
-                    </>
-                  ) : (
-                    <>
-                      {icon ? <span>{icon}</span> : null}
-                      {t(generateButtonKey)}
-                    </>
-                  )}
-                </button>
-                {showCostEstimate && (
-                  <CostEstimateBadge quantity={quantity} imageSize={imageSize} />
-                )}
-              </div>
-            </div>
+          <div className="tool-upload-preview">
+            <img src={previewUrl} alt="Preview" />
             {isDemoMode && (
-              <p className="text-sm brand-text-soft text-center max-w-sm">
-                {t('demo.sample_only_hint')}
-              </p>
+              <span className="tool-upload-demo brand-bg text-white">{t('demo.sample_input')}</span>
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-6 py-4">
-            {icon ? (
-              <div className="w-20 h-20 rounded-3xl flex items-center justify-center brand-bg-tint brand-text border theme-border">
-                <span className="text-sm font-bold uppercase tracking-wide">{icon}</span>
-              </div>
-            ) : (
-              <div className="w-20 h-20 rounded-3xl flex items-center justify-center brand-bg-tint brand-text border theme-border">
-                <span className="text-sm font-bold uppercase tracking-wide">img</span>
-              </div>
-            )}
-
-            <div className="text-center">
-              <p className="text-sm theme-ink-muted max-w-xs">
-                {isDemoMode ? t('demo.loading_sample') : t(uploadHintKey)}
-              </p>
+          <p className="theme-ink-muted">
+            {isDemoMode ? t('demo.loading_sample') : t(uploadHintKey)}
+          </p>
+        )}
+        {error && <ErrorDisplay message={error} />}
+        {!isDemoMode && (
+          <button
+            type="button"
+            disabled={loading}
+            className={UI_BTN_SECONDARY}
+            onClick={() => inputRef.current?.click()}
+          >
+            {t(previewUrl ? changePhotoKey : 'start.upload_button')}
+          </button>
+        )}
+        {children && <div className="tool-upload-settings">{children}</div>}
+        {previewUrl && (
+          <div className="tool-upload-actions">
+            <div className="tool-upload-generate">
+              <button
+                type="button"
+                onClick={onGenerate}
+                disabled={loading || !canGenerate}
+                className={UI_BTN_GENERATE}
+              >
+                {loading ? (
+                  <>
+                    <span className="animate-spin" aria-hidden="true">
+                      ⏳
+                    </span>
+                    {t('start.idphoto_generating')}
+                  </>
+                ) : (
+                  <>
+                    {icon ? <span aria-hidden="true">{icon}</span> : null}
+                    {t(generateButtonKey)}
+                  </>
+                )}
+              </button>
+              {showCostEstimate && <CostEstimateBadge quantity={quantity} imageSize={imageSize} />}
             </div>
-
-            {error && <ErrorDisplay message={error} />}
-
-            {!isDemoMode && (
-              <>
-                <label htmlFor={uploadInputId} className={UI_BTN_UPLOAD}>
-                  {t('start.upload_button')}
-                </label>
-                <input
-                  id={uploadInputId}
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={onFileChange}
-                  aria-label={t('start.upload_button')}
-                />
-              </>
-            )}
           </div>
+        )}
+        {!isDemoMode && (
+          <input
+            ref={inputRef}
+            id={uploadInputId}
+            type="file"
+            hidden
+            accept="image/*"
+            disabled={loading}
+            onChange={onFileChange}
+            aria-label={t(previewUrl ? changePhotoKey : 'start.upload_button')}
+          />
+        )}
+        {isDemoMode && previewUrl && (
+          <p className="text-sm brand-text-soft">{t('demo.sample_only_hint')}</p>
         )}
       </div>
     </div>

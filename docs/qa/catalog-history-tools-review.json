@@ -1,0 +1,71 @@
+{
+  "date": "2026-11-27",
+  "goal": "Material batch ZIP/brief, selected history export, continuous history viewing, local searches and structured similar material recommendations.",
+  "features": {
+    "materialBatch": "Exact atomic IDs, original PNG/SVG bytes and ordered reference briefs. ZIP failures retain selection; denied clipboard reveals readonly text.",
+    "historySelection": "Visible record IDs are pruned on filtering/deletion. Selected image and full recipe archives snapshot records before async export.",
+    "historyNavigation": "Page and panel share the filtered sequence, bounded previous/next buttons and arrow keys. Input/slider keys remain owned by their control.",
+    "search": "Only explicitly committed normalized queries are saved, case-insensitive dedup, max8 entries/max120 characters. Recent history can be cleared, suggestions use own catalog titles for current role.",
+    "similarMaterials": "Deterministic same-role max4, structured pose group/view/posture/camera/framing scores. Clothing lacks detailed structured matching metadata, so alternatives use stable catalog order. Recommendation preview never changes selected try-on refs and focuses new title."
+  },
+  "verification": {
+    "unit": {
+      "files": 135,
+      "passed": 854
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "csp": {
+      "catalogAssetReferences": 608,
+      "htmlShells": 53
+    },
+    "bundle": {
+      "entryGzipBytes": 123969,
+      "homeGzipBytes": {
+        "en": 162561,
+        "zh-TW": 166253
+      },
+      "budgetBytes": 179200
+    },
+    "browser": {
+      "initialFullRunPassed": 199,
+      "finalFullRun": {
+        "status": "passed",
+        "count": 202
+      },
+      "newFeatureCases": 17,
+      "themes": ["bloom", "night", "newyear"],
+      "widths": [320, 390, 768, 1024, 1440],
+      "accessibility": "New surfaces and active native dialogs have no serious/critical WCAG2A/AA violations. Existing background history card issues are outside this change.",
+      "regression": "Screenshot review found inherited horizontal search wrapper; fixed vertical stacking and added panel/input geometry assertions."
+    },
+    "layoutGate": {
+      "route": "/try-on",
+      "initial": "GATE: PASS",
+      "existingWaivers": 5,
+      "newWaivers": 0,
+      "warnings": 9,
+      "repeat": "GATE: OFF (no build active)",
+      "explanation": "Successful gate consumed its active marker. Later CSS-only adjustment applies to catalog search; actual new catalog/history surfaces verified through browser screenshots, geometry, keyboard and accessibility checks."
+    }
+  },
+  "licensing": {
+    "sourceRevision": "f9f55db356464af87f97b39f5bb57930ed0cd6df",
+    "helpers": [
+      "utils/posewearMaterialBatch.ts",
+      "utils/posewearSearchSuggestions.ts",
+      "utils/posewearSimilarMaterials.ts",
+      "utils/posewearHistorySelection.ts"
+    ],
+    "noticeSha256": "e51839a61736e058feea7e959cdba9caf7682f503c31f47364e90aac53ef3c47",
+    "builtNoticeIdentical": true,
+    "copyrightPreservedInBuiltChunks": true,
+    "serviceWorkerPrecachesNotice": true,
+    "newUpstreamImages": false,
+    "newDependencies": false
+  },
+  "privacy": "Synthetic fixture and existing own catalog images only. No private photos accessed and no paid generation requests.",
+  "deployment": "Local changes only, not committed or pushed."
+}

@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHistory, type HistoryItem } from '../../hooks/useHistory';
 import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 import HistoryResultCard from '../../components/HistoryResultCard';
+import HistoryResultBrowser from '../../components/HistoryResultBrowser';
+import { visibleHistorySelection } from '../../utils/posewearHistorySelection';
 import {
   UI_BTN_SECONDARY,
   UI_BTN_SUCCESS,
@@ -52,18 +54,29 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeType, setActiveType] = useState<HistoryFilterType>('all');
   const [exporting, setExporting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [viewerId, setViewerId] = useState<string | null>(null);
   const [exportError, setExportError] = useState(false);
   const exportLock = useRef(false);
   const chinese = language === 'zh-TW';
 
-  const handleExport = async (): Promise<void> => {
-    if (exportLock.current || !filteredHistory.length) return;
+  const handleExport = async (items = filteredHistory, imagesOnly = false): Promise<void> => {
+    if (exportLock.current || !items.length) return;
+    const snapshot = [...items];
     exportLock.current = true;
     setExporting(true);
     setExportError(false);
     try {
-      const { downloadHistoryArchive } = await import('../../utils/historyArchive');
-      await downloadHistoryArchive(filteredHistory);
+      if (imagesOnly) {
+        await downloadBatchWithZipFallback({
+          sources: snapshot.map((item) => item.blob),
+          itemFileName: (index) => `${snapshot[index].type}-${index + 1}.png`,
+          zipFileName: `history-selected-${Date.now()}.zip`,
+        });
+      } else {
+        const { downloadHistoryArchive } = await import('../../utils/historyArchive');
+        await downloadHistoryArchive(snapshot);
+      }
     } catch {
       setExportError(true);
     } finally {
@@ -84,12 +97,20 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
     });
   }, [activeType, history, searchQuery]);
 
-  const handleDownloadFiltered = async (): Promise<void> => {
-    await downloadBatchWithZipFallback({
-      sources: filteredHistory.map((item) => item.blob),
-      itemFileName: (index) => `${filteredHistory[index].type}-${index + 1}.png`,
-      zipFileName: `history-${Date.now()}.zip`,
+  const visibleIds = filteredHistory.map((item) => item.id);
+  const selectedVisibleIds = visibleHistorySelection(selectedIds, visibleIds);
+  const selectedHistory = filteredHistory.filter((item) => selectedVisibleIds.includes(item.id));
+  const selectionKey = JSON.stringify(visibleIds);
+  useEffect(() => {
+    const visible: string[] = JSON.parse(selectionKey);
+    setSelectedIds((current) => {
+      const next = visibleHistorySelection(current, visible);
+      return next.length === current.length ? current : next;
     });
+  }, [selectionKey]);
+
+  const handleDownloadFiltered = async (): Promise<void> => {
+    await handleExport(filteredHistory, true);
   };
 
   const handleEdit = (item: HistoryItem, index: number): void => {
@@ -131,14 +152,19 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             {filteredHistory.length > 1 && (
-              <button type="button" onClick={handleDownloadFiltered} className={UI_BTN_SUCCESS}>
+              <button
+                type="button"
+                onClick={handleDownloadFiltered}
+                disabled={exporting}
+                className={UI_BTN_SUCCESS}
+              >
                 {t('history.batch_download')}
               </button>
             )}
             {filteredHistory.length > 0 && (
               <button
                 type="button"
-                onClick={handleExport}
+                onClick={() => void handleExport()}
                 disabled={exporting}
                 className={`${UI_BTN_SECONDARY} disabled:opacity-50`}
               >
@@ -159,6 +185,47 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
           </div>
         </div>
 
+        {filteredHistory.length > 0 && (
+          <div
+            className="flex flex-wrap items-center gap-3"
+            data-testid="history-selection-toolbar"
+          >
+            <button
+              type="button"
+              className={UI_BTN_SECONDARY}
+              onClick={() => setSelectedIds(visibleIds)}
+            >
+              {chinese ? '全選目前結果' : 'Select visible'}
+            </button>
+            <button
+              type="button"
+              className={UI_BTN_SECONDARY}
+              disabled={!selectedHistory.length}
+              onClick={() => setSelectedIds([])}
+            >
+              {chinese ? '取消全選' : 'Deselect all'}
+            </button>
+            <span role="status" className="text-sm theme-ink-muted">
+              {chinese ? `已選 ${selectedHistory.length} 項` : `${selectedHistory.length} selected`}
+            </span>
+            <button
+              type="button"
+              className={UI_BTN_SECONDARY}
+              disabled={exporting || !selectedHistory.length}
+              onClick={() => void handleExport(selectedHistory, true)}
+            >
+              {chinese ? '下載勾選圖片' : 'Download selected images'}
+            </button>
+            <button
+              type="button"
+              className={UI_BTN_SECONDARY}
+              disabled={exporting || !selectedHistory.length}
+              onClick={() => void handleExport(selectedHistory)}
+            >
+              {chinese ? '匯出勾選圖片與配方' : 'Export selected images and recipes'}
+            </button>
+          </div>
+        )}
         {filteredHistory.length > 0 && (
           <p className="text-sm theme-ink-muted">
             {chinese
@@ -205,17 +272,41 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ onImageSelected }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
             {filteredHistory.map((item, index) => (
-              <HistoryResultCard
-                key={item.id}
-                item={item}
-                index={index}
-                onEdit={handleEdit}
-                onRemove={handleRemove}
-              />
+              <div key={item.id} className="min-w-0">
+                <label className="flex min-h-11 items-center gap-2 px-2 text-sm theme-ink-muted">
+                  <input
+                    type="checkbox"
+                    data-testid={`history-select-${item.id}`}
+                    checked={selectedVisibleIds.includes(item.id)}
+                    onChange={(event) =>
+                      setSelectedIds((current) =>
+                        event.target.checked
+                          ? [...current, item.id]
+                          : current.filter((id) => id !== item.id),
+                      )
+                    }
+                  />
+                  {chinese ? `選取結果 ${index + 1}` : `Select result ${index + 1}`}
+                </label>
+                <HistoryResultCard
+                  item={item}
+                  index={index}
+                  onEdit={handleEdit}
+                  onRemove={handleRemove}
+                  onView={setViewerId}
+                />
+              </div>
             ))}
           </div>
         )}
       </div>
+      {viewerId && (
+        <HistoryResultBrowser
+          items={filteredHistory}
+          initialId={viewerId}
+          onClose={() => setViewerId(null)}
+        />
+      )}
     </div>
   );
 };

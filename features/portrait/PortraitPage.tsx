@@ -94,6 +94,7 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
                   portraitType={portrait.portraitType}
                   portraitOutputSpec={portrait.portraitOutputSpec}
                   onAgain={portrait.clearPortraitResult}
+                  hideAgain
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
               ))}
@@ -116,22 +117,6 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
           />
         ) : (
           <>
-            <PortraitForm
-              portraitType={portrait.portraitType}
-              setPortraitType={portrait.setPortraitType}
-              portraitOutputSpec={portrait.portraitOutputSpec}
-              setPortraitOutputSpec={portrait.setPortraitOutputSpec}
-              imageSize={portrait.imageSize}
-              setImageSize={portrait.setImageSize}
-              disabled={portrait.portraitLoading}
-            />
-            <div className="w-full max-w-md mx-auto">
-              <QuantitySelector
-                quantity={portrait.quantity}
-                onChange={portrait.setQuantity}
-                disabled={portrait.portraitLoading}
-              />
-            </div>
             <PortraitUploadSection
               portraitPreviewUrl={portrait.portraitPreviewUrl}
               portraitError={portrait.portraitError}
@@ -144,7 +129,27 @@ const PortraitPage: React.FC<PortraitPageProps> = ({ onImageSelected }) => {
               onDrop={portrait.handleDrop}
               quantity={portrait.quantity}
               imageSize={portrait.imageSize}
-            />
+            >
+              <div className="tool-photo-settings">
+                <h2 className="tool-photo-section-title">{t('settings.title')}</h2>
+                <PortraitForm
+                  portraitType={portrait.portraitType}
+                  setPortraitType={portrait.setPortraitType}
+                  portraitOutputSpec={portrait.portraitOutputSpec}
+                  setPortraitOutputSpec={portrait.setPortraitOutputSpec}
+                  imageSize={portrait.imageSize}
+                  setImageSize={portrait.setImageSize}
+                  disabled={portrait.portraitLoading}
+                />
+                <div className="w-full max-w-md mx-auto">
+                  <QuantitySelector
+                    quantity={portrait.quantity}
+                    onChange={portrait.setQuantity}
+                    disabled={portrait.portraitLoading}
+                  />
+                </div>
+              </div>
+            </PortraitUploadSection>
           </>
         )}
 

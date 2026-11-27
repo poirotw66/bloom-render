@@ -32,9 +32,15 @@ interface Props {
   item: HistoryItem;
   onClose: () => void;
   onReferenceNavigate: () => void;
+  navigation?: { index: number; total: number; onPrevious: () => void; onNext: () => void };
 }
 
-export default function HistoryResultViewer({ item, onClose, onReferenceNavigate }: Props) {
+export default function HistoryResultViewer({
+  item,
+  onClose,
+  onReferenceNavigate,
+  navigation,
+}: Props) {
   const { language, t } = useLanguage();
   const zh = language === 'zh-TW';
   const titleId = useId();
@@ -87,6 +93,25 @@ export default function HistoryResultViewer({ item, onClose, onReferenceNavigate
         event.preventDefault();
         onClose();
       }}
+      onKeyDown={(event) => {
+        if (
+          !navigation ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.altKey ||
+          (event.target as HTMLElement).closest(
+            'input,textarea,select,[role="slider"],[contenteditable="true"]',
+          )
+        )
+          return;
+        if (event.key === 'ArrowLeft' && navigation.index > 0) {
+          event.preventDefault();
+          navigation.onPrevious();
+        } else if (event.key === 'ArrowRight' && navigation.index < navigation.total - 1) {
+          event.preventDefault();
+          navigation.onNext();
+        }
+      }}
     >
       <header className="history-viewer-header">
         <h2 id={titleId}>{zh ? '結果與參考圖' : 'Result and references'}</h2>
@@ -95,7 +120,30 @@ export default function HistoryResultViewer({ item, onClose, onReferenceNavigate
         </button>
       </header>
       <div className="history-viewer-content">
+        {navigation && (
+          <nav
+            className="history-viewer-navigation"
+            aria-label={zh ? '歷史結果導覽' : 'History result navigation'}
+          >
+            <button type="button" disabled={navigation.index === 0} onClick={navigation.onPrevious}>
+              {zh ? '上一張結果' : 'Previous result'}
+            </button>
+            <span role="status">
+              {zh
+                ? `第 ${navigation.index + 1} / ${navigation.total} 張結果`
+                : `Result ${navigation.index + 1} of ${navigation.total}`}
+            </span>
+            <button
+              type="button"
+              disabled={navigation.index === navigation.total - 1}
+              onClick={navigation.onNext}
+            >
+              {zh ? '下一張結果' : 'Next result'}
+            </button>
+          </nav>
+        )}
         <ResultImage
+          key={item.id}
           resultUrl={item.url}
           originalUrl={item.sourceUrl}
           alt={zh ? '生成結果' : 'Generated result'}
@@ -115,7 +163,7 @@ export default function HistoryResultViewer({ item, onClose, onReferenceNavigate
           ) : null}
           <ol className="history-reference-list" data-testid="history-reference-list">
             {references.map((reference) => (
-              <li key={reference.slot} data-source={reference.source}>
+              <li key={`${item.id}-${reference.slot}`} data-source={reference.source}>
                 <ReferenceImage
                   reference={reference}
                   alt={`${roleLabels[reference.role]} ${reference.slot}`}

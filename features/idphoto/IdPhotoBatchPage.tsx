@@ -203,17 +203,19 @@ const IdPhotoBatchPage: React.FC<IdPhotoBatchPageProps> = ({ onImageSelected }) 
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {batch.results.map((item, idx) => (
-                <div key={idx} className="relative group">
+                <div key={idx} className="flex min-w-0 flex-col gap-2">
                   <img
                     src={item.result}
                     alt={`Result ${idx + 1}`}
                     className="w-full rounded-lg border-2 border-gray-700"
                   />
                   <button
+                    type="button"
+                    disabled={batch.isProcessing}
                     onClick={() =>
                       onImageSelected(dataURLtoFile(item.result, `id-photo-${idx + 1}.png`))
                     }
-                    className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    className={`${UI_BTN_SECONDARY} w-full min-h-11`}
                   >
                     <span className="text-white font-bold">{t('history.edit')}</span>
                   </button>

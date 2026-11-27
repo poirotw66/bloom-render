@@ -7,9 +7,17 @@ interface Props {
   title: string;
   id: string;
   children: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-export default function TryOnWorkspaceDialog({ open, onClose, title, id, children }: Props) {
+export default function TryOnWorkspaceDialog({
+  open,
+  onClose,
+  title,
+  id,
+  children,
+  footer,
+}: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { language } = useLanguage();
 
@@ -49,6 +57,7 @@ export default function TryOnWorkspaceDialog({ open, onClose, title, id, childre
         </button>
       </header>
       <div className="tryon-dialog-content">{children}</div>
+      {footer && <footer className="tryon-dialog-footer">{footer}</footer>}
     </dialog>
   );
 }

@@ -90,6 +90,7 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
                   originalUrl={themed.themedPreviewUrl}
                   themeType={themed.themeType}
                   onAgain={themed.clearThemedResult}
+                  hideAgain
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
               ))}
@@ -111,23 +112,6 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
           />
         ) : (
           <div className="w-full max-w-2xl mx-auto bg-gray-800/30 border border-gray-700/50 rounded-2xl p-6 md:p-8 flex flex-col gap-6">
-            <ThemedForm
-              themeType={themed.themeType}
-              setThemeType={themed.setThemeType}
-              disabled={themed.themedLoading}
-            />
-            <QuantitySelector
-              quantity={themed.quantity}
-              onChange={themed.setQuantity}
-              disabled={themed.themedLoading}
-            />
-            <OutputSizeRatioSelector
-              outputSize={themed.outputSize}
-              aspectRatio={themed.aspectRatio}
-              onOutputSizeChange={themed.setOutputSize}
-              onAspectRatioChange={themed.setAspectRatio}
-              disabled={themed.themedLoading}
-            />
             <ThemedUploadSection
               themedPreviewUrl={themed.themedPreviewUrl}
               themedError={themed.themedError}
@@ -140,7 +124,28 @@ const ThemedPage: React.FC<ThemedPageProps> = ({ onImageSelected }) => {
               onDrop={themed.handleDrop}
               quantity={themed.quantity}
               imageSize={themed.outputSize}
-            />
+            >
+              <div className="tool-photo-settings">
+                <h2 className="tool-photo-section-title">{t('settings.title')}</h2>
+                <ThemedForm
+                  themeType={themed.themeType}
+                  setThemeType={themed.setThemeType}
+                  disabled={themed.themedLoading}
+                />
+                <QuantitySelector
+                  quantity={themed.quantity}
+                  onChange={themed.setQuantity}
+                  disabled={themed.themedLoading}
+                />
+                <OutputSizeRatioSelector
+                  outputSize={themed.outputSize}
+                  aspectRatio={themed.aspectRatio}
+                  onOutputSizeChange={themed.setOutputSize}
+                  onAspectRatioChange={themed.setAspectRatio}
+                  disabled={themed.themedLoading}
+                />
+              </div>
+            </ThemedUploadSection>
           </div>
         )}
       </div>

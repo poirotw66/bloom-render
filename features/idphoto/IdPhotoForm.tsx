@@ -207,7 +207,7 @@ const IdPhotoForm: React.FC<IdPhotoFormProps> = ({
           </div>
         )}
       </div>
-      <p className="text-xs text-gray-500 mt-2">{t('idphoto.model_recommendation')}</p>
+      <p className="text-xs theme-ink-muted mt-2">{t('idphoto.model_recommendation')}</p>
     </div>
   );
 };

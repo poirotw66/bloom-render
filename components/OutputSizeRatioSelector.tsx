@@ -58,7 +58,7 @@ const OutputSizeRatioSelector: React.FC<OutputSizeRatioSelectorProps> = ({
           <label className={UI_LABEL}>
             {t('common.output_size')}
             {!supportsMultiRes && (
-              <span className="ml-2 text-xs font-normal text-gray-500">
+              <span className="ml-2 text-xs font-normal theme-ink-muted">
                 ({t('common.gemini2_only_1k')})
               </span>
             )}

@@ -126,3 +126,107 @@ describe('useCoupleGroup handleGenerate', () => {
     expect(addToHistory).not.toHaveBeenCalled();
   });
 });
+
+function fileSelection(files: File[]): React.ChangeEvent<HTMLInputElement> {
+  return { target: { files, value: 'selected' } } as unknown as React.ChangeEvent<HTMLInputElement>;
+}
+function fileDrop(files: File[]): React.DragEvent {
+  return { preventDefault() {}, dataTransfer: { files } } as unknown as React.DragEvent;
+}
+
+describe('incremental couple and group uploads', () => {
+  it.each(['couple', 'group'] as const)(
+    'appends chooser and dropped photos in %s mode without replacing earlier photos',
+    (mode) => {
+      const { result } = renderHook(useCoupleGroup, { wrapper });
+      if (mode === 'group') act(() => result.current.setMode('group'));
+      const first = samplePhoto('first.png');
+      const second = samplePhoto('second.png');
+      const third = samplePhoto('third.png');
+      act(() => result.current.handleFileChange(fileSelection([first])));
+      act(() => result.current.handleFileChange(fileSelection([second])));
+      expect(result.current.files).toEqual([first, second]);
+      if (mode === 'group') {
+        act(() => result.current.handleDrop(fileDrop([third])));
+        expect(result.current.files).toEqual([first, second, third]);
+      }
+    },
+  );
+
+  it.each(['couple', 'group'] as const)(
+    'keeps the first photos and caps additions at the %s capacity',
+    (mode) => {
+      const { result } = renderHook(useCoupleGroup, { wrapper });
+      if (mode === 'group') act(() => result.current.setMode('group'));
+      const limit = mode === 'couple' ? 2 : 6;
+      const initial = Array.from({ length: limit - 1 }, (_, index) => samplePhoto(`${index}.png`));
+      const additions = [samplePhoto('next.png'), samplePhoto('excess.png')];
+      act(() => result.current.handleDrop(fileDrop(initial)));
+      act(() => result.current.handleFileChange(fileSelection(additions)));
+      expect(result.current.files).toEqual([...initial, additions[0]]);
+      act(() => result.current.handleDrop(fileDrop([samplePhoto('ignored.png')])));
+      expect(result.current.files).toEqual([...initial, additions[0]]);
+      act(() => result.current.handleFileChange(fileSelection([])));
+      expect(result.current.files).toEqual([...initial, additions[0]]);
+    },
+  );
+
+  it('appends a second dropped couple photo instead of replacing the first', () => {
+    const { result } = renderHook(useCoupleGroup, { wrapper });
+    const first = samplePhoto('first.png');
+    const second = samplePhoto('second.png');
+    act(() => result.current.handleDrop(fileDrop([first])));
+    act(() => result.current.handleDrop(fileDrop([second])));
+    expect(result.current.files).toEqual([first, second]);
+  });
+
+  it('retains the current selection for cancelled, invalid or excessive additions', () => {
+    const { result } = renderHook(useCoupleGroup, { wrapper });
+    const first = samplePhoto('first.png');
+    act(() => result.current.handleFileChange(fileSelection([first])));
+    act(() => result.current.handleFileChange(fileSelection([])));
+    act(() =>
+      result.current.handleFileChange(
+        fileSelection([new File(['text'], 'note.txt', { type: 'text/plain' })]),
+      ),
+    );
+    expect(result.current.files).toEqual([first]);
+    act(() =>
+      result.current.handleFileChange(
+        fileSelection([samplePhoto('a.png'), samplePhoto('b.png'), samplePhoto('c.png')]),
+      ),
+    );
+    expect(result.current.files).toEqual([first]);
+    expect(result.current.error).toBeTruthy();
+  });
+
+  it('ignores chooser and drop changes while generation is in flight', async () => {
+    let finish!: (url: string) => void;
+    runImageGeneration.mockImplementation(
+      () =>
+        new Promise<string>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const { result } = renderHook(useCoupleGroup, { wrapper });
+    act(() => result.current.setMode('group'));
+    const initial = [samplePhoto('a.png'), samplePhoto('b.png'), samplePhoto('c.png')];
+    act(() => result.current.handleFileChange(fileSelection(initial)));
+    let pending!: Promise<void>;
+    await act(async () => {
+      pending = result.current.handleGenerate();
+      await Promise.resolve();
+    });
+    expect(result.current.loading).toBe(true);
+    act(() => result.current.handleFileChange(fileSelection([samplePhoto('replacement.png')])));
+    act(() => result.current.handleDrop(fileDrop([samplePhoto('drop.png')])));
+    expect(result.current.files).toEqual(initial);
+    await act(async () => {
+      finish('data:image/png;base64,result');
+      await pending;
+    });
+    expect(result.current.result).toBe('data:image/png;base64,result');
+    act(() => result.current.handleFileChange(fileSelection([])));
+    expect(result.current.result).toBe('data:image/png;base64,result');
+  });
+});

@@ -10,20 +10,20 @@ import type { ThemeType } from '../contexts/ThemeContext';
 
 /** Standard feature page shell (padding + radius + border). Append theme surface. */
 export const UI_PAGE =
-  'w-full max-w-5xl mx-auto text-center px-4 py-6 sm:px-8 sm:py-8 transition-colors duration-300 rounded-2xl border';
+  'tool-page w-full max-w-5xl mx-auto text-left px-4 py-6 sm:px-8 sm:py-8 transition-colors duration-300 rounded-2xl border';
 
 /** Wider page shell (history / photography service). */
 export const UI_PAGE_WIDE =
-  'w-full max-w-6xl mx-auto text-center px-4 py-6 sm:px-8 sm:py-8 transition-colors duration-300 rounded-2xl border';
+  'tool-page w-full max-w-6xl mx-auto text-left px-4 py-6 sm:px-8 sm:py-8 transition-colors duration-300 rounded-2xl border';
 
 /** Vertical rhythm between major landing sections. */
 export const UI_SECTION_STACK = 'flex flex-col gap-8 sm:gap-10';
 
 export const UI_TITLE =
-  'text-4xl font-semibold tracking-tight text-gray-100 sm:text-5xl md:text-6xl';
+  'tool-page-title text-2xl font-semibold tracking-tight theme-ink sm:text-3xl';
 
 export const UI_SUBTITLE =
-  'mx-auto max-w-[60ch] text-base md:text-lg text-gray-200 leading-relaxed';
+  'tool-page-subtitle max-w-[60ch] text-sm sm:text-base theme-ink-muted leading-relaxed';
 
 export const UI_CARD = 'theme-raised border theme-border rounded-2xl';
 
@@ -56,7 +56,7 @@ export const UI_BTN = `inline-flex items-center justify-center gap-2 px-5 py-2.5
 
 export const UI_BTN_PRIMARY = `${UI_BTN} brand-bg text-white hover:opacity-95 focus-visible:brand-ring`;
 
-export const UI_BTN_SUCCESS = `${UI_BTN} bg-green-600 text-white hover:bg-green-500 focus-visible:ring-green-500`;
+export const UI_BTN_SUCCESS = `${UI_BTN} bg-green-700 text-white hover:bg-green-800 focus-visible:ring-green-500`;
 
 export const UI_BTN_SECONDARY = `${UI_BTN} theme-raised theme-ink border theme-border hover:opacity-90 focus-visible:brand-ring`;
 

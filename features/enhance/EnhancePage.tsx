@@ -43,29 +43,33 @@ const EnhancePage: React.FC<EnhancePageProps> = ({ onImageSelected }) => {
           {t('enhance.no_api_key_banner')}
         </p>
 
-        <div className="w-full max-w-xl rounded-xl border theme-border theme-raised p-4 text-left text-sm theme-ink-muted space-y-2">
-          <p className="font-semibold theme-ink-soft">{t('enhance.models_heading')}</p>
-          <ul className="list-disc pl-5 space-y-1">
-            {LOCAL_ENHANCE_MODELS.map((m) => (
-              <li key={m.modelId}>
-                <a
-                  href={m.modelCardUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="brand-text hover:underline"
-                >
-                  {m.label}
-                </a>
-                {', '}
-                {t('enhance.model_meta', {
-                  size: String(m.approxSizeMb),
-                  license: m.license,
-                })}
-              </li>
-            ))}
-          </ul>
-          <p>{t('enhance.models_cache_note')}</p>
-        </div>
+        <details className="w-full max-w-xl rounded-xl border theme-border theme-raised px-4 text-left text-sm theme-ink-muted">
+          <summary className="min-h-11 cursor-pointer py-3 font-semibold theme-ink-soft">
+            {t('enhance.models_heading')}
+          </summary>
+          <div className="space-y-2 pb-4">
+            <ul className="list-disc pl-5 space-y-1">
+              {LOCAL_ENHANCE_MODELS.map((m) => (
+                <li key={m.modelId}>
+                  <a
+                    href={m.modelCardUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="brand-text underline underline-offset-4"
+                  >
+                    {m.label}
+                  </a>
+                  {', '}
+                  {t('enhance.model_meta', {
+                    size: String(m.approxSizeMb),
+                    license: m.license,
+                  })}
+                </li>
+              ))}
+            </ul>
+            <p>{t('enhance.models_cache_note')}</p>
+          </div>
+        </details>
 
         {enhance.result ? (
           <GenericResult

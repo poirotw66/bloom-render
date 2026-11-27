@@ -28,6 +28,7 @@ interface TryOnUploadSectionProps {
   onDropPerson: (e: React.DragEvent) => void;
   onDropClothing: (e: React.DragEvent) => void;
   poseControls?: React.ReactNode;
+  outputControls?: React.ReactNode;
   children?: React.ReactNode;
 }
 
@@ -52,6 +53,7 @@ export default function TryOnUploadSection({
   onDropPerson,
   onDropClothing,
   poseControls,
+  outputControls,
   children,
 }: TryOnUploadSectionProps) {
   const { t, language } = useLanguage();
@@ -61,6 +63,8 @@ export default function TryOnUploadSection({
   const canAddClothing = !isDemoMode && !isDisabled && clothingPreviewUrls.length < maxClothing;
   const personZoneRef = useRef<HTMLDivElement>(null);
   const clothingZoneRef = useRef<HTMLDivElement>(null);
+  const personButtonRef = useRef<HTMLButtonElement>(null);
+  const clothingButtonRef = useRef<HTMLButtonElement>(null);
   const personInputRef = useRef<HTMLInputElement>(null);
   const clothingInputRef = useRef<HTMLInputElement>(null);
   const clothingHintId = useId();
@@ -122,6 +126,7 @@ export default function TryOnUploadSection({
             <>
               <button
                 type="button"
+                ref={personButtonRef}
                 className={`tryon-person-drop ${personPreviewUrl ? 'has-photo' : ''}`}
                 disabled={isDisabled}
                 onClick={() => personInputRef.current?.click()}
@@ -211,6 +216,7 @@ export default function TryOnUploadSection({
                 type="button"
                 className="tool-button tool-button-secondary"
                 disabled={!canAddClothing}
+                ref={onChooseClothing ? undefined : clothingButtonRef}
                 onClick={() => clothingInputRef.current?.click()}
               >
                 {t('tryon.add_clothing')}
@@ -220,6 +226,7 @@ export default function TryOnUploadSection({
                   type="button"
                   className="tool-button tool-button-secondary"
                   disabled={!canAddClothing}
+                  ref={clothingButtonRef}
                   onClick={onChooseClothing}
                 >
                   {zh ? '挑選服裝' : 'Choose clothing'}
@@ -254,6 +261,7 @@ export default function TryOnUploadSection({
         </details>
       )}
       <div className="tryon-generation-controls">
+        {outputControls}
         <div className="tryon-generate-row">
           <label className="tryon-field tryon-quantity">
             <span>{zh ? '張數' : 'Images'}</span>
@@ -272,26 +280,35 @@ export default function TryOnUploadSection({
           </label>
           <button
             type="button"
-            onClick={onGenerate}
+            onClick={() => {
+              onGenerate();
+              if (isDemoMode) return;
+              if (!personPreviewUrl) personButtonRef.current?.focus();
+              else if (!clothingPreviewUrls.length) clothingButtonRef.current?.focus();
+            }}
             disabled={isDisabled}
             className="tool-button tool-button-primary tryon-generate"
           >
             {loading ? t('tryon.generating') : t('tryon.generate_btn')}
           </button>
         </div>
-        {!canGenerate && !loading && (
-          <p className="tryon-hint">
-            {!personPreviewUrl
+        {!loading && (
+          <p className="tryon-hint" data-testid="tryon-readiness" role="status">
+            {canGenerate
               ? zh
-                ? '先加入人物照片，再選擇服裝。'
-                : 'Add a person photo, then choose clothing.'
-              : clothingPreviewUrls.length === 0
+                ? '人物與服裝已就緒，可以生成試穿。'
+                : 'Person and clothing ready. Generate your try-on.'
+              : !personPreviewUrl
                 ? zh
-                  ? '加入至少一件服裝，即可生成。'
-                  : 'Add at least one garment to generate.'
-                : zh
-                  ? '確認照片與提示詞後即可生成。'
-                  : 'Review your photos and prompt before generating.'}
+                  ? '先加入人物照片，再選擇服裝。'
+                  : 'Add a person photo, then choose clothing.'
+                : clothingPreviewUrls.length === 0
+                  ? zh
+                    ? '加入至少一件服裝，即可生成。'
+                    : 'Add at least one garment to generate.'
+                  : zh
+                    ? '確認照片與提示詞後即可生成。'
+                    : 'Review your photos and prompt before generating.'}
           </p>
         )}
         <CostEstimateBadge quantity={quantity} />

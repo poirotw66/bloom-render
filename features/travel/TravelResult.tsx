@@ -48,6 +48,7 @@ interface TravelResultProps {
     clearBackground: boolean;
   } | null;
   onAgain: () => void;
+  hideAgain?: boolean;
   onEditInEditor: (result: string, index?: number) => void;
 }
 
@@ -58,6 +59,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
   resultSceneCustomLabel,
   resultMetadata,
   onAgain,
+  hideAgain = false,
   onEditInEditor,
 }) => {
   const { t } = useLanguage();
@@ -92,7 +94,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
               <TravelIcon className="w-5 h-5 text-sky-300" />
             </div>
             <div className="space-y-0.5">
-              <h4 className="text-sm font-black text-gray-500 tracking-normal">
+              <h4 className="text-sm font-black theme-ink-muted tracking-normal">
                 {t('travel.label.scene')}
               </h4>
               <div className="text-base font-bold text-amber-400 tracking-tight leading-tight">
@@ -115,7 +117,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-sm font-bold text-gray-400 group-hover:bg-white/10 transition-colors">
                     out
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">
+                  <span className="theme-ink-muted text-xs min-w-[60px]">
                     {t('travel.label.outfit')}
                   </span>
                   <span className="font-medium">
@@ -132,7 +134,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-sm font-bold text-gray-400 group-hover:bg-white/10 transition-colors">
                     pose
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">
+                  <span className="theme-ink-muted text-xs min-w-[60px]">
                     {t('travel.label.pose')}
                   </span>
                   <span className="font-medium">
@@ -145,7 +147,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                     <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-xs group-hover:bg-white/10 transition-colors">
                       <UsersIcon className="w-4 h-4" />
                     </span>
-                    <span className="text-gray-500 text-xs min-w-[60px]">
+                    <span className="theme-ink-muted text-xs min-w-[60px]">
                       {t('travel.label.relationship')}
                     </span>
                     <span className="font-medium">
@@ -172,7 +174,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-sm font-bold text-gray-400 group-hover:bg-white/10 transition-colors">
                     {TRAVEL_WEATHER_OPTIONS.find((w) => w.id === m.weather)?.icon || 'cld'}
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">
+                  <span className="theme-ink-muted text-xs min-w-[60px]">
                     {t('travel.label.weather')}
                   </span>
                   <span className="font-medium">
@@ -183,7 +185,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-sm font-bold text-gray-400 group-hover:bg-white/10 transition-colors">
                     {TRAVEL_TIME_OPTIONS.find((t_) => t_.id === m.time)?.icon || 'time'}
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">
+                  <span className="theme-ink-muted text-xs min-w-[60px]">
                     {t('travel.label.time')}
                   </span>
                   <span className="font-medium">
@@ -194,7 +196,7 @@ const TravelResult: React.FC<TravelResultProps> = ({
                   <span className="w-5 h-5 flex items-center justify-center bg-white/5 rounded text-sm font-bold text-gray-400 group-hover:bg-white/10 transition-colors">
                     sty
                   </span>
-                  <span className="text-gray-500 text-xs min-w-[60px]">
+                  <span className="theme-ink-muted text-xs min-w-[60px]">
                     {t('travel.label.style')}
                   </span>
                   <span className="font-medium">
@@ -223,14 +225,16 @@ const TravelResult: React.FC<TravelResultProps> = ({
           onEnhanced={onEnhanced}
         />
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={onAgain}
-            className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-          >
-            <RefreshIcon className="w-5 h-5" />
-            {t('travel.again')}
-          </button>
+          {!hideAgain && (
+            <button
+              type="button"
+              onClick={onAgain}
+              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-slate-200 font-semibold py-3 px-5 rounded-xl transition-colors duration-200 hover:bg-white/15 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            >
+              <RefreshIcon className="w-5 h-5" />
+              {t('travel.again')}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => onEditInEditor(displayResult)}

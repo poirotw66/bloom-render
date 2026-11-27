@@ -1,4 +1,6 @@
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { DEFAULT_TRYON_BACKGROUND, DEFAULT_TRYON_STYLE } from '../constants/tryOn';
+import type { TryOnRecipe } from '../types/tryOnRecipe';
 
 export const MATERIAL_BASKET_STORAGE_KEY = 'bloom_material_basket';
 export type MaterialBasketMessage =
@@ -48,6 +50,25 @@ export function createMaterialBasketTransfer(materialIds: string[]): MaterialBas
   const valid = validateMaterialBasketIds(materialIds);
   if (!valid) throw new Error('Invalid material selection');
   return { materialBasket: { v: 1, materialIds: valid } };
+}
+
+export function createMaterialBasketTryOnRecipe(materialIds: string[]): TryOnRecipe {
+  const valid = validateMaterialBasketIds(materialIds);
+  if (!valid?.length) throw new Error('Choose at least one valid material');
+  return {
+    v: 1,
+    kind: 'tryon',
+    materialIds: valid,
+    settings: {
+      background: DEFAULT_TRYON_BACKGROUND,
+      style: DEFAULT_TRYON_STYLE,
+      outputSize: '1K',
+      aspectRatio: '9:16',
+      quantity: 1,
+      keepBackground: true,
+      keepPose: true,
+    },
+  };
 }
 
 export function addMaterialToBasket(materialIds: string[], id: string) {

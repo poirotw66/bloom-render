@@ -36,6 +36,7 @@ interface HistoryResultCardProps {
   onEdit?: (item: HistoryItem, index: number) => void;
   onRemove: (id: string) => void;
   onAfterNavigate?: () => void;
+  onView?: (id: string) => void;
 }
 
 const HistoryResultCard: React.FC<HistoryResultCardProps> = ({
@@ -45,6 +46,7 @@ const HistoryResultCard: React.FC<HistoryResultCardProps> = ({
   onEdit,
   onRemove,
   onAfterNavigate,
+  onView,
 }) => {
   const { t, language } = useLanguage();
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -123,7 +125,7 @@ const HistoryResultCard: React.FC<HistoryResultCardProps> = ({
           <button
             type="button"
             className={`w-full min-h-11 text-xs ${UI_BTN_SECONDARY}`}
-            onClick={() => setViewerOpen(true)}
+            onClick={() => (onView ? onView(item.id) : setViewerOpen(true))}
           >
             {language === 'zh-TW' ? '檢視結果與參考圖' : 'View result and references'}
           </button>

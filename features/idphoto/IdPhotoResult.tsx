@@ -33,6 +33,7 @@ interface IdPhotoResultProps {
   idPhotoSizeId: IdPhotoSizeId;
   idPhotoClothingOption: ClothingOption;
   onAgain: () => void;
+  hideAgain?: boolean;
   onEditInEditor: () => void;
   onDownloadPrintSheetJpg: (source?: string | null) => Promise<void>;
   onDownloadPrintSheetPdf: (source?: string | null) => Promise<void>;
@@ -47,6 +48,7 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
   idPhotoSizeId,
   idPhotoClothingOption,
   onAgain,
+  hideAgain = false,
   onEditInEditor,
   onDownloadPrintSheetJpg,
   onDownloadPrintSheetPdf,
@@ -74,6 +76,7 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
         result={idPhotoResult}
         originalUrl={originalUrl}
         onAgain={onAgain}
+        hideAgain={hideAgain}
         onEditInEditor={onEditInEditor}
         fileBaseName="id-photo"
         paramsTitleKey="idphoto.result.params_title"
@@ -130,7 +133,9 @@ const IdPhotoResult: React.FC<IdPhotoResultProps> = ({
             : t('idphoto.print_sheet.download_pdf')}
         </button>
       </div>
-      <p className="text-xs text-gray-500 text-center max-w-md">{t('idphoto.print_sheet.hint')}</p>
+      <p className="text-xs theme-ink-muted text-center max-w-md">
+        {t('idphoto.print_sheet.hint')}
+      </p>
     </div>
   );
 };

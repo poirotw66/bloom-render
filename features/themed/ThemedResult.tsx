@@ -12,6 +12,7 @@ interface ThemedResultProps {
   originalUrl?: string | null;
   themeType: string;
   onAgain: () => void;
+  hideAgain?: boolean;
   onEditInEditor: () => void;
 }
 
@@ -20,6 +21,7 @@ const ThemedResult: React.FC<ThemedResultProps> = ({
   originalUrl,
   themeType,
   onAgain,
+  hideAgain = false,
   onEditInEditor,
 }) => {
   const { t } = useLanguage();
@@ -31,6 +33,7 @@ const ThemedResult: React.FC<ThemedResultProps> = ({
       result={themedResult}
       originalUrl={originalUrl}
       onAgain={onAgain}
+      hideAgain={hideAgain}
       onEditInEditor={onEditInEditor}
       fileBaseName="themed"
       paramsTitleKey="idphoto.result.params_title"

@@ -4,9 +4,11 @@
  */
 
 import React from 'react';
+import { UI_TITLE, UI_SUBTITLE, UI_BTN_SECONDARY } from '../../utils/uiClasses';
 import { useNavigate } from 'react-router-dom';
 import { dataURLtoFile } from '../../utils/fileUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import ApiKeyNotice from '../../components/ApiKeyNotice';
 import DemoModeBanner from '../../components/DemoModeBanner';
 import ExampleShowcase from '../../components/ExampleShowcase';
@@ -28,6 +30,7 @@ interface TravelPageProps {
 
 const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
   const { t } = useLanguage();
+  const { isDemoMode } = useSettings();
   const _navigate = useNavigate();
   const tr = useTravel();
   const [viewMode, setViewMode] = React.useState<'list' | 'map'>('map');
@@ -61,16 +64,14 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
 
   return (
     <div
-      className={`w-full max-w-7xl mx-auto text-center p-4 md:p-6 transition-colors duration-300 ${TRAVEL_PANEL}`}
+      className={`tool-page w-full max-w-7xl mx-auto text-left p-4 md:p-6 transition-colors duration-300 ${TRAVEL_PANEL}`}
     >
       <div className="flex flex-col items-center gap-6 motion-safe:animate-fade-in text-left">
         <header className="text-center w-full space-y-3">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          <h1 className={UI_TITLE}>
             <span className="brand-bg brand-text">{t('travel.title')}</span>
           </h1>
-          <p className="max-w-3xl text-lg text-slate-300 md:text-xl leading-relaxed mx-auto">
-            {t('travel.subtitle')}
-          </p>
+          <p className={UI_SUBTITLE}>{t('travel.subtitle')}</p>
         </header>
 
         <ApiKeyNotice />
@@ -113,6 +114,7 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
                   resultSceneCustomLabel={tr.resultSceneCustomLabel}
                   resultMetadata={tr.resultMetadata}
                   onAgain={tr.clearResult}
+                  hideAgain
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                 />
               ))}
@@ -136,6 +138,23 @@ const TravelPage: React.FC<TravelPageProps> = ({ onImageSelected }) => {
           />
         ) : (
           <div className="w-full flex flex-col gap-6">
+            {!isDemoMode && (
+              <button
+                type="button"
+                className={`${UI_BTN_SECONDARY} self-start`}
+                data-testid="travel-quick-upload"
+                onClick={() => {
+                  const section = document.getElementById('travel-photo-section');
+                  section?.scrollIntoView({ block: 'start' });
+                  section
+                    ?.querySelector<HTMLButtonElement>('button[data-upload]')
+                    ?.focus({ preventScroll: true });
+                  document.getElementById('image-upload-travel')?.click();
+                }}
+              >
+                {t('start.upload_button')}
+              </button>
+            )}
             <TravelToolbar
               sceneLabel={sceneLabel}
               instruction={instruction}

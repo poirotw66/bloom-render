@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   addMaterialToBasket,
   createMaterialBasketTransfer,
+  createMaterialBasketTryOnRecipe,
   parseMaterialBasketTransfer,
   validateMaterialBasketIds,
 } from './materialBasket';
@@ -19,6 +20,16 @@ vi.mock('../constants/tryOnMaterials', async (importOriginal) => {
 });
 
 describe('material basket transfers', () => {
+  it('transfers exact variants with original background preserved by default', () => {
+    const ids = ['navy-tailored-jacket', 'seated-study-back-depth'];
+    const recipe = createMaterialBasketTryOnRecipe(ids);
+    ids.pop();
+    expect(recipe.materialIds).toEqual(['navy-tailored-jacket', 'seated-study-back-depth']);
+    expect(recipe.settings).toMatchObject({ keepBackground: true, keepPose: true });
+    expect(() => createMaterialBasketTryOnRecipe(['missing'])).toThrow();
+    expect(() => createMaterialBasketTryOnRecipe([])).toThrow();
+  });
+
   it('round-trips ordered catalog identifiers without including other route state', () => {
     const ids = ['pose-seated-profile', 'white-oxford-shirt', 'lighting-soft-window'];
     const transfer = createMaterialBasketTransfer(ids);

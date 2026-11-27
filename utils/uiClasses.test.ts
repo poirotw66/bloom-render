@@ -27,8 +27,8 @@ describe('uiClasses', () => {
   });
 
   it('keeps shared success button focus and hover classes', () => {
-    expect(UI_BTN_SUCCESS).toContain('bg-green-600');
-    expect(UI_BTN_SUCCESS).toContain('hover:bg-green-500');
+    expect(UI_BTN_SUCCESS).toContain('bg-green-700');
+    expect(UI_BTN_SUCCESS).toContain('hover:bg-green-800');
     expect(UI_BTN_SUCCESS).toContain('focus-visible:ring-green-500');
   });
 

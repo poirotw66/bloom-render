@@ -37,7 +37,7 @@ import { logger } from '../../utils/logger';
 import { consumePendingRemix } from '../../utils/pendingRemix';
 import { remixToEditorPreset } from '../../utils/applyViralTemplate';
 import { getEditorThemeClasses } from '../../utils/themeUtils';
-import { UI_BTN_PRIMARY, UI_PAGE, getPageSurface } from '../../utils/uiClasses';
+import { UI_BTN_PRIMARY, UI_PAGE, UI_TITLE, getPageSurface } from '../../utils/uiClasses';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -541,6 +541,7 @@ const EditorPage: React.FC = () => {
 
     return (
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-6 animate-fade-in">
+        <h1 className={UI_TITLE}>{t('service.action.edit')}</h1>
         {settings.isDemoMode && <DemoModeBanner />}
         {viralTemplateId && (
           <ViralTemplateBanner
@@ -805,6 +806,7 @@ const EditorPage: React.FC = () => {
         className={`${UI_PAGE} ${getPageSurface(theme)} w-full max-w-2xl mx-auto flex flex-col items-center gap-5 animate-fade-in`}
         data-testid="viral-editor-upload"
       >
+        <h1 className={UI_TITLE}>{t('service.action.edit')}</h1>
         {viralTemplateId && (
           <ViralTemplateBanner
             templateId={viralTemplateId}

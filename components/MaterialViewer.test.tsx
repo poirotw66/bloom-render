@@ -259,4 +259,28 @@ describe('MaterialViewer', () => {
     );
     expect(screen.queryByText('#1A3050 copied.')).toBeNull();
   });
+  it('previews exact recommendations without invoking selection changes, then resets viewer tools', () => {
+    const selected = vi.fn();
+    const preview = vi.fn();
+    const material = TRYON_MATERIALS.find((entry) => entry.id === 'seated-study-back-depth')!;
+    const props = {
+      onClose: vi.fn(),
+      onMaterialChange: selected,
+      onRecommendationPreview: preview,
+    };
+    const view = render(<MaterialViewer material={material} {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mirror image' }));
+    fireEvent.click(screen.getByTestId('similar-material-seated-study-back-lineart'));
+    expect(preview).toHaveBeenCalledWith(
+      TRYON_MATERIALS.find((entry) => entry.id === 'seated-study-back-lineart'),
+    );
+    expect(selected).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(screen.getByRole('heading', { level: 2 }));
+    view.rerender(<MaterialViewer material={preview.mock.calls[0][0]} {...props} />);
+    expect(screen.getByRole('button', { name: 'Mirror image' }).getAttribute('aria-pressed')).toBe(
+      'false',
+    );
+    expect(screen.queryByTestId('similar-material-seated-study-back-lineart')).toBeNull();
+    expect(screen.getByTestId('similar-material-seated-study-back-depth')).toBeTruthy();
+  });
 });

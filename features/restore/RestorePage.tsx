@@ -18,7 +18,6 @@ import GenericResult from '../../components/GenericResult';
 import ProgressIndicator from '../../components/ProgressIndicator';
 import { useRestore } from './useRestore';
 import {
-  UI_BTN_SECONDARY,
   UI_OPTION_ACTIVE,
   UI_OPTION_INACTIVE,
   UI_PAGE,
@@ -65,11 +64,6 @@ const RestorePage: React.FC<RestorePageProps> = ({ onImageSelected }) => {
 
         {restore.result ? (
           <div className="w-full flex flex-col gap-6">
-            <div className="flex items-center justify-center gap-4">
-              <button type="button" onClick={restore.clearResult} className={UI_BTN_SECONDARY}>
-                {t('restore.generate_again')}
-              </button>
-            </div>
             <GenericResult
               result={restore.result}
               originalUrl={restore.previewUrl}

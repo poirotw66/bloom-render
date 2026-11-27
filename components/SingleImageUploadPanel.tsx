@@ -27,6 +27,7 @@ interface SingleImageUploadPanelProps {
   accent: Accent;
   quantity?: number;
   imageSize?: string | null;
+  children?: React.ReactNode;
 }
 
 const accentIcon: Record<Accent, string> = {
@@ -51,11 +52,12 @@ export function SingleImageUploadPanel({
   accent,
   quantity = 1,
   imageSize,
+  children,
 }: SingleImageUploadPanelProps): React.ReactElement {
   const { t } = useLanguage();
   return (
     <div className="w-full max-w-2xl flex flex-col items-center gap-3">
-      <h3 className="text-lg font-bold text-white">{t(titleKey)}</h3>
+      <h3 className="text-sm font-semibold theme-ink">{t(titleKey)}</h3>
       <GenericUploadSection
         previewUrl={previewUrl}
         error={error}
@@ -73,7 +75,9 @@ export function SingleImageUploadPanel({
         uploadInputId={uploadInputId}
         quantity={quantity}
         imageSize={imageSize}
-      />
+      >
+        {children}
+      </GenericUploadSection>
     </div>
   );
 }

@@ -54,13 +54,13 @@ const CoupleGroupResult: React.FC<CoupleGroupResultProps> = ({
         </h3>
         <div className="space-y-2 text-sm">
           <div>
-            <span className="block text-xs font-medium text-gray-500 tracking-normal">
+            <span className="block text-xs font-medium theme-ink-muted tracking-normal">
               {t('couple_group.result.mode')}
             </span>
             <span className="text-gray-200">{t(`couple_group.mode.${mode}`)}</span>
           </div>
           <div>
-            <span className="block text-xs font-medium text-gray-500 tracking-normal">
+            <span className="block text-xs font-medium theme-ink-muted tracking-normal">
               {t('couple_group.result.style')}
             </span>
             <span className="text-gray-200">{styleConfig ? t(styleConfig.nameKey) : style}</span>

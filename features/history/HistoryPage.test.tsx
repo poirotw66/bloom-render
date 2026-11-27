@@ -4,9 +4,11 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import HistoryPage from './HistoryPage';
 import { downloadHistoryArchive } from '../../utils/historyArchive';
+import { downloadBatchWithZipFallback } from '../../utils/downloadHelpers';
 
 const state = vi.hoisted(() => ({ history: [] as Array<Record<string, unknown>> }));
 vi.mock('../../utils/historyArchive', () => ({ downloadHistoryArchive: vi.fn() }));
+vi.mock('../../utils/downloadHelpers', () => ({ downloadBatchWithZipFallback: vi.fn() }));
 vi.mock('../../hooks/useHistory', () => ({
   useHistory: () => ({ history: state.history, removeFromHistory: vi.fn(), clearHistory: vi.fn() }),
 }));
@@ -34,10 +36,58 @@ beforeEach(() => {
     },
   ];
   vi.mocked(downloadHistoryArchive).mockReset().mockResolvedValue(undefined);
+  vi.mocked(downloadBatchWithZipFallback).mockReset().mockResolvedValue(undefined);
 });
 afterEach(cleanup);
 
 describe('history recipe export', () => {
+  it('exports and downloads only selected visible records, pruning hidden selections', async () => {
+    render(<HistoryPage onImageSelected={vi.fn()} />);
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Select result 2' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Export selected images and recipes' }));
+    await waitFor(() => expect(downloadHistoryArchive).toHaveBeenCalledWith([state.history[1]]));
+    fireEvent.click(screen.getByRole('button', { name: 'Download selected images' }));
+    await waitFor(() =>
+      expect(downloadBatchWithZipFallback).toHaveBeenCalledWith(
+        expect.objectContaining({ sources: [state.history[1].blob] }),
+      ),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'history.type.tryon' }));
+    expect(screen.getByText('0 selected')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'history.filter_all' }));
+    expect(screen.getByRole('checkbox', { name: 'Select result 2' })).toHaveProperty(
+      'checked',
+      false,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Select visible' }));
+    expect(screen.getByText('2 selected')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Deselect all' }));
+    expect(screen.getByText('0 selected')).toBeTruthy();
+  });
+
+  it('snapshots selected records and retains selection when an archive export fails', async () => {
+    let reject!: (error: Error) => void;
+    vi.mocked(downloadHistoryArchive).mockImplementationOnce(
+      () =>
+        new Promise((_resolve, fail) => {
+          reject = fail;
+        }),
+    );
+    render(<HistoryPage onImageSelected={vi.fn()} />);
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Select result 1' }));
+    const selectedExport = screen.getByRole('button', {
+      name: 'Export selected images and recipes',
+    });
+    fireEvent.click(selectedExport);
+    fireEvent.click(selectedExport);
+    await waitFor(() => expect(downloadHistoryArchive).toHaveBeenCalledTimes(1));
+    expect(downloadHistoryArchive).toHaveBeenCalledWith([state.history[0]]);
+    await act(async () => reject(new Error('Unavailable')));
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(screen.getByText('1 selected')).toBeTruthy();
+    fireEvent.click(selectedExport);
+    await waitFor(() => expect(downloadHistoryArchive).toHaveBeenCalledTimes(2));
+  });
   it('exports only the current filter and makes private inputs explicit', async () => {
     render(<HistoryPage onImageSelected={vi.fn()} />);
     fireEvent.click(screen.getByRole('button', { name: 'history.type.tryon' }));

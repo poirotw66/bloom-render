@@ -1,0 +1,51 @@
+.material-browser-search.material-search {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  white-space: normal;
+}
+.material-search > label {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+.material-search > label > input {
+  width: 100%;
+}
+.material-search-suggestions {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--tool-line, var(--border));
+  border-radius: 0.75rem;
+  background: var(--tool-surface, var(--surface));
+}
+.material-search-suggestions section + section {
+  margin-top: 1rem;
+}
+.material-search-suggestions h2 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.material-search-suggestions section > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.material-search-suggestions button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.material-batch-brief {
+  display: grid;
+  gap: 0.5rem;
+  margin-block: 1rem;
+}
+.material-batch-brief textarea {
+  width: 100%;
+  min-height: 12rem;
+}

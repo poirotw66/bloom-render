@@ -114,24 +114,6 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
           />
         ) : (
           <div className="w-full max-w-2xl mx-auto bg-gray-800/30 border border-gray-700/50 rounded-2xl p-6 md:p-8 flex flex-col gap-6">
-            <CoupleGroupStyleSelector
-              mode={coupleGroup.mode}
-              style={coupleGroup.style}
-              onChange={coupleGroup.setStyle}
-              disabled={coupleGroup.loading}
-            />
-            <QuantitySelector
-              quantity={coupleGroup.quantity}
-              onChange={coupleGroup.setQuantity}
-              disabled={coupleGroup.loading}
-            />
-            <OutputSizeRatioSelector
-              outputSize={coupleGroup.outputSize}
-              aspectRatio={coupleGroup.aspectRatio}
-              onOutputSizeChange={coupleGroup.setOutputSize}
-              onAspectRatioChange={coupleGroup.setAspectRatio}
-              disabled={coupleGroup.loading}
-            />
             <CoupleGroupUploadSection
               mode={coupleGroup.mode}
               files={coupleGroup.files}
@@ -147,7 +129,29 @@ const CoupleGroupPage: React.FC<CoupleGroupPageProps> = ({ onImageSelected }) =>
               onDrop={coupleGroup.handleDrop}
               quantity={coupleGroup.quantity}
               imageSize={coupleGroup.outputSize}
-            />
+            >
+              <div className="tool-photo-settings">
+                <h2 className="tool-photo-section-title">{t('settings.title')}</h2>
+                <CoupleGroupStyleSelector
+                  mode={coupleGroup.mode}
+                  style={coupleGroup.style}
+                  onChange={coupleGroup.setStyle}
+                  disabled={coupleGroup.loading}
+                />
+                <QuantitySelector
+                  quantity={coupleGroup.quantity}
+                  onChange={coupleGroup.setQuantity}
+                  disabled={coupleGroup.loading}
+                />
+                <OutputSizeRatioSelector
+                  outputSize={coupleGroup.outputSize}
+                  aspectRatio={coupleGroup.aspectRatio}
+                  onOutputSizeChange={coupleGroup.setOutputSize}
+                  onAspectRatioChange={coupleGroup.setAspectRatio}
+                  disabled={coupleGroup.loading}
+                />
+              </div>
+            </CoupleGroupUploadSection>
           </div>
         )}
       </div>

@@ -12,13 +12,14 @@ import { useDisplayResult } from '../hooks/useDisplayResult';
 import DemoModeBanner from './DemoModeBanner';
 import ResultActions from './ResultActions';
 import ResultImage from './ResultImage';
-import { UI_BTN_PRIMARY, UI_BTN_SECONDARY, UI_CARD } from '../utils/uiClasses';
+import { UI_BTN_SECONDARY, UI_CARD } from '../utils/uiClasses';
 
 interface GenericResultProps {
   result: string;
   /** Input / before image URL for compare + branded cards. */
   originalUrl?: string | null;
   onAgain: () => void;
+  hideAgain?: boolean;
   onEditInEditor?: () => void;
   paramsTitleKey?: string;
   params?: Array<{ labelKey: string; value: string | React.ReactNode }>;
@@ -34,6 +35,7 @@ const GenericResult: React.FC<GenericResultProps> = ({
   result,
   originalUrl,
   onAgain,
+  hideAgain = false,
   onEditInEditor,
   paramsTitleKey,
   params = [],
@@ -55,6 +57,28 @@ const GenericResult: React.FC<GenericResultProps> = ({
         <ResultImage resultUrl={displayResult} originalUrl={originalUrl} />
       </div>
 
+      <ResultActions
+        result={displayResult}
+        originalUrl={originalUrl}
+        fileBaseName={fileBaseName}
+        onEnhanced={onEnhanced}
+        remixUrl={remixUrl}
+        extraActions={
+          <>
+            {onEditInEditor && (
+              <button type="button" onClick={onEditInEditor} className={UI_BTN_SECONDARY}>
+                {t(editKey)}
+              </button>
+            )}
+            {!hideAgain && (
+              <button type="button" onClick={onAgain} className={UI_BTN_SECONDARY}>
+                {t(againKey)}
+              </button>
+            )}
+          </>
+        }
+      />
+
       {params.length > 0 && paramsTitleKey && (
         <div className={`w-full p-6 ${UI_CARD}`}>
           <h3 className="text-xl font-semibold theme-ink mb-4">{t(paramsTitleKey)}</h3>
@@ -72,26 +96,6 @@ const GenericResult: React.FC<GenericResultProps> = ({
           </div>
         </div>
       )}
-
-      <ResultActions
-        result={displayResult}
-        originalUrl={originalUrl}
-        fileBaseName={fileBaseName}
-        onEnhanced={onEnhanced}
-        remixUrl={remixUrl}
-      />
-
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {onEditInEditor && (
-          <button type="button" onClick={onEditInEditor} className={UI_BTN_PRIMARY}>
-            {t(editKey)}
-          </button>
-        )}
-
-        <button type="button" onClick={onAgain} className={UI_BTN_SECONDARY}>
-          {t(againKey)}
-        </button>
-      </div>
     </div>
   );
 };

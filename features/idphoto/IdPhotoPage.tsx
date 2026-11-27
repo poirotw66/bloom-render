@@ -109,6 +109,7 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
                   idPhotoSizeId={id.idPhotoSizeId}
                   idPhotoClothingOption={id.idPhotoClothingOption}
                   onAgain={id.clearIdPhotoResult}
+                  hideAgain
                   onEditInEditor={() => handleEditInEditor(result, idx)}
                   onDownloadPrintSheetJpg={id.handleDownloadPrintSheetJpg}
                   onDownloadPrintSheetPdf={id.handleDownloadPrintSheetPdf}
@@ -138,31 +139,6 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
           />
         ) : (
           <>
-            <IdPhotoForm
-              idPhotoType={id.idPhotoType}
-              setIdPhotoType={id.setIdPhotoType}
-              idPhotoRetouchLevel={id.idPhotoRetouchLevel}
-              setIdPhotoRetouchLevel={id.setIdPhotoRetouchLevel}
-              idPhotoOutputSpec={id.idPhotoOutputSpec}
-              setIdPhotoOutputSpec={id.setIdPhotoOutputSpec}
-              idPhotoSizeId={id.idPhotoSizeId}
-              setIdPhotoSizeId={id.setIdPhotoSizeId}
-              idPhotoClothingOption={id.idPhotoClothingOption}
-              setIdPhotoClothingOption={id.setIdPhotoClothingOption}
-              idPhotoClothingCustomText={id.idPhotoClothingCustomText}
-              setIdPhotoClothingCustomText={id.setIdPhotoClothingCustomText}
-              idPhotoClothingReferenceFile={id.idPhotoClothingReferenceFile}
-              setIdPhotoClothingReferenceFile={id.setIdPhotoClothingReferenceFile}
-              idPhotoClothingReferenceUrl={id.idPhotoClothingReferenceUrl}
-              disabled={id.idPhotoLoading}
-            />
-            <div className="w-full max-w-md mx-auto">
-              <QuantitySelector
-                quantity={id.quantity}
-                onChange={id.setQuantity}
-                disabled={id.idPhotoLoading}
-              />
-            </div>
             <IdPhotoUploadSection
               idPhotoPreviewUrl={id.idPhotoPreviewUrl}
               idPhotoError={id.idPhotoError}
@@ -174,7 +150,36 @@ const IdPhotoPage: React.FC<IdPhotoPageProps> = ({ onImageSelected }) => {
               onDragLeave={id.handleDragLeave}
               onDrop={id.handleDrop}
               quantity={id.quantity}
-            />
+            >
+              <div className="tool-photo-settings">
+                <h2 className="tool-photo-section-title">{t('settings.title')}</h2>
+                <IdPhotoForm
+                  idPhotoType={id.idPhotoType}
+                  setIdPhotoType={id.setIdPhotoType}
+                  idPhotoRetouchLevel={id.idPhotoRetouchLevel}
+                  setIdPhotoRetouchLevel={id.setIdPhotoRetouchLevel}
+                  idPhotoOutputSpec={id.idPhotoOutputSpec}
+                  setIdPhotoOutputSpec={id.setIdPhotoOutputSpec}
+                  idPhotoSizeId={id.idPhotoSizeId}
+                  setIdPhotoSizeId={id.setIdPhotoSizeId}
+                  idPhotoClothingOption={id.idPhotoClothingOption}
+                  setIdPhotoClothingOption={id.setIdPhotoClothingOption}
+                  idPhotoClothingCustomText={id.idPhotoClothingCustomText}
+                  setIdPhotoClothingCustomText={id.setIdPhotoClothingCustomText}
+                  idPhotoClothingReferenceFile={id.idPhotoClothingReferenceFile}
+                  setIdPhotoClothingReferenceFile={id.setIdPhotoClothingReferenceFile}
+                  idPhotoClothingReferenceUrl={id.idPhotoClothingReferenceUrl}
+                  disabled={id.idPhotoLoading}
+                />
+                <div className="w-full max-w-md mx-auto">
+                  <QuantitySelector
+                    quantity={id.quantity}
+                    onChange={id.setQuantity}
+                    disabled={id.idPhotoLoading}
+                  />
+                </div>
+              </div>
+            </IdPhotoUploadSection>
           </>
         )}
 

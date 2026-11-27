@@ -31,6 +31,7 @@ import {
   getTitleAccent,
 } from '../../utils/uiClasses';
 import { useMultiPerson } from './useMultiPerson';
+import '../../styles/tool-controls.css';
 
 const MultiPersonPage: React.FC = () => {
   const { t } = useLanguage();
@@ -38,10 +39,16 @@ const MultiPersonPage: React.FC = () => {
   const { isDemoMode } = useSettings();
   const mp = useMultiPerson();
   const inputRef = useRef<HTMLInputElement>(null);
+  const templateListRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    const el = document.querySelector(`[data-testid="multi-person-template-${mp.templateId}"]`);
-    el?.scrollIntoView({ block: 'nearest', inline: 'center' });
+    const list = templateListRef.current;
+    if (!list || list.scrollWidth <= list.clientWidth) return;
+    const selected = list.querySelector('button[aria-pressed="true"]')?.closest('li');
+    if (!selected) return;
+    const bounds = list.getBoundingClientRect();
+    const itemBounds = selected.getBoundingClientRect();
+    list.scrollLeft += itemBounds.left - bounds.left - (list.clientWidth - itemBounds.width) / 2;
   }, [mp.templateId]);
 
   return (
@@ -109,10 +116,10 @@ const MultiPersonPage: React.FC = () => {
                         alt={t('multi_person.slot_alt', { n: String(index + 1) })}
                         className="w-full flex-1 object-cover min-h-0"
                       />
-                      <div className="flex gap-1 p-1.5">
+                      <div className="multi-person-photo-actions">
                         <button
                           type="button"
-                          className={`${UI_BTN_SECONDARY} flex-1 text-xs py-1`}
+                          className={`${UI_BTN_SECONDARY} text-sm`}
                           disabled={index === 0 || isDemoMode || mp.loading}
                           onClick={() => mp.move(index, -1)}
                           aria-label={t('multi_person.move_left')}
@@ -121,7 +128,7 @@ const MultiPersonPage: React.FC = () => {
                         </button>
                         <button
                           type="button"
-                          className={`${UI_BTN_SECONDARY} flex-1 text-xs py-1`}
+                          className={`${UI_BTN_SECONDARY} multi-person-photo-remove text-sm`}
                           disabled={isDemoMode || mp.loading}
                           onClick={() => mp.removeAt(index)}
                           aria-label={t('multi_person.remove')}
@@ -130,7 +137,7 @@ const MultiPersonPage: React.FC = () => {
                         </button>
                         <button
                           type="button"
-                          className={`${UI_BTN_SECONDARY} flex-1 text-xs py-1`}
+                          className={`${UI_BTN_SECONDARY} text-sm`}
                           disabled={index >= mp.files.length - 1 || isDemoMode || mp.loading}
                           onClick={() => mp.move(index, 1)}
                           aria-label={t('multi_person.move_right')}
@@ -185,7 +192,10 @@ const MultiPersonPage: React.FC = () => {
           <h2 className="text-base font-semibold theme-ink text-center">
             {t('multi_person.template_title')}
           </h2>
-          <ul className="flex gap-3 overflow-x-auto snap-x pb-2 sm:grid sm:grid-cols-3 list-none p-0 m-0">
+          <ul
+            ref={templateListRef}
+            className="flex gap-3 overflow-x-auto snap-x pb-2 sm:grid sm:grid-cols-3 list-none p-0 m-0"
+          >
             {mp.templates.map((entry) => {
               const active = entry.id === mp.templateId;
               return (

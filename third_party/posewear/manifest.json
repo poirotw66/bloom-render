@@ -64,6 +64,46 @@
       "adaptations": [
         "Ordered typed reference descriptors replace lightbox HTML; private stored blobs take priority and only trusted local catalog IDs resolve."
       ]
+    },
+    {
+      "upstreamPath": "src/extras.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/extras.js",
+      "sourceSha256": "1061052b2f696f5b1c57bc8739838d823c1cc7155f93748c9afa1e4d3e7685d9",
+      "localPath": "utils/posewearMaterialBatch.ts",
+      "consumers": ["features/materials/MaterialsPage.tsx"],
+      "adaptations": [
+        "Batch ZIP/copy actions use a validated snapshot of atomic IDs, original MIME formats, existing JSZip and public reference-brief links."
+      ]
+    },
+    {
+      "upstreamPath": "src/extras.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/extras.js",
+      "sourceSha256": "1061052b2f696f5b1c57bc8739838d823c1cc7155f93748c9afa1e4d3e7685d9",
+      "localPath": "utils/posewearSearchSuggestions.ts",
+      "consumers": ["components/MaterialSearch.tsx"],
+      "adaptations": [
+        "Bounded local search history and contextual suggestions use own catalog metadata, explicit query submission and keyboard-accessible React controls."
+      ]
+    },
+    {
+      "upstreamPath": "src/extras.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/extras.js",
+      "sourceSha256": "1061052b2f696f5b1c57bc8739838d823c1cc7155f93748c9afa1e4d3e7685d9",
+      "localPath": "utils/posewearSimilarMaterials.ts",
+      "consumers": ["components/MaterialViewer.tsx"],
+      "adaptations": [
+        "Deterministic same-role recommendations rank structured pose metadata; no description scraping, random tie-breaks or upstream material data."
+      ]
+    },
+    {
+      "upstreamPath": "src/history.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/history.js",
+      "sourceSha256": "5cf48b776309a49788097a644792c09b31f19e92e581b0ab1ae4adaed0597cd0",
+      "localPath": "utils/posewearHistorySelection.ts",
+      "consumers": ["features/history/HistoryPage.tsx", "components/HistoryResultBrowser.tsx"],
+      "adaptations": [
+        "Visible ID selection and bounded filtered-sequence navigation replace browser-global state; existing archive exports and stored reference ownership remain intact."
+      ]
     }
   ],
   "excluded": [

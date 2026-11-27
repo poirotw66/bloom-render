@@ -127,6 +127,11 @@ export default function TryOnMaterialPicker({
               setViewer(next);
             }
           }}
+          onRecommendationPreview={(next) => {
+            setViewerTracksSelection(false);
+            recordMaterialUse(next.id);
+            setViewer(next);
+          }}
           disabled={disabled || pendingId !== null}
           selectionError={error}
           selectionHint={

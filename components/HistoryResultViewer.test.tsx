@@ -66,6 +66,52 @@ afterEach(() => {
   document.body.style.overflow = '';
 });
 describe('HistoryResultViewer', () => {
+  it('navigates with buttons and arrow keys without consuming input or slider keys', () => {
+    const previous = vi.fn();
+    const next = vi.fn();
+    render(
+      <MemoryRouter>
+        <HistoryResultViewer
+          item={item}
+          onClose={vi.fn()}
+          onReferenceNavigate={vi.fn()}
+          navigation={{ index: 1, total: 3, onPrevious: previous, onNext: next }}
+        />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('Result 2 of 3')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Previous result' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next result' }));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.keyDown(dialog, { key: 'ArrowRight' });
+    fireEvent.keyDown(dialog, { key: 'ArrowLeft', ctrlKey: true });
+    const slider = document.createElement('div');
+    slider.setAttribute('role', 'slider');
+    dialog.append(slider);
+    fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+    const input = document.createElement('input');
+    dialog.append(input);
+    fireEvent.keyDown(input, { key: 'ArrowRight' });
+    expect(previous).toHaveBeenCalledTimes(1);
+    expect(next).toHaveBeenCalledTimes(2);
+  });
+  it('disables previous and next at the start and end of a single-record sequence', () => {
+    render(
+      <MemoryRouter>
+        <HistoryResultViewer
+          item={item}
+          onClose={vi.fn()}
+          onReferenceNavigate={vi.fn()}
+          navigation={{ index: 0, total: 1, onPrevious: vi.fn(), onNext: vi.fn() }}
+        />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole('button', { name: 'Previous result' })).toHaveProperty(
+      'disabled',
+      true,
+    );
+    expect(screen.getByRole('button', { name: 'Next result' })).toHaveProperty('disabled', true);
+  });
   it('shows ordered local inputs, exact material links, and allowlisted context', async () => {
     render(
       <MemoryRouter>

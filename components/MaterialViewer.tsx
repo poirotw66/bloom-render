@@ -7,11 +7,13 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { publicAssetUrl } from '../utils/publicAsset';
 import { extractMaterialPalette } from '../utils/posewearPalette';
 import '../styles/material-viewer.css';
+import { similarMaterials } from '../utils/posewearSimilarMaterials';
 
 interface MaterialViewerProps {
   material: TryOnMaterial;
   onClose: () => void;
   onMaterialChange?: (material: TryOnMaterial) => void;
+  onRecommendationPreview?: (material: TryOnMaterial) => void;
   disabled?: boolean;
   selectionError?: string | null;
   selectionHint?: string;
@@ -20,6 +22,7 @@ export default function MaterialViewer({
   material,
   onClose,
   onMaterialChange,
+  onRecommendationPreview,
   disabled = false,
   selectionError,
   selectionHint,
@@ -28,9 +31,11 @@ export default function MaterialViewer({
   const zh = language === 'zh-TW';
   const dialog = useRef<HTMLDialogElement>(null);
   const stage = useRef<HTMLDivElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
   const image = useRef<HTMLImageElement>(null);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const titleId = useId();
+  const recommendations = similarMaterials(material, TRYON_MATERIALS);
   const paired = getPairedPoseReference(material, TRYON_MATERIALS) as TryOnMaterial | null;
   const [comparing, setComparing] = useState(false);
   const [split, setSplit] = useState(50);
@@ -173,7 +178,9 @@ export default function MaterialViewer({
       }}
     >
       <header className="material-viewer__heading">
-        <h2 id={titleId}>{zh ? material.titleZh : material.title}</h2>
+        <h2 id={titleId} ref={heading} tabIndex={-1}>
+          {zh ? material.titleZh : material.title}
+        </h2>
         <button type="button" className="tool-button tool-button-secondary" onClick={onClose}>
           {zh ? '關閉檢視台' : 'Close viewer'}
         </button>
@@ -459,6 +466,37 @@ export default function MaterialViewer({
           {zh ? '重設檢視' : 'Reset view'}
         </button>
       </div>
+      {onRecommendationPreview && recommendations.length > 0 && (
+        <section
+          className="material-viewer__similar"
+          aria-label={zh ? '相似素材' : 'Similar materials'}
+        >
+          <h3>{zh ? '相似素材' : 'Similar materials'}</h3>
+          <p>
+            {zh
+              ? '僅預覽，不會更動目前選取的參考素材。'
+              : 'Preview only. Your selected references stay the same.'}
+          </p>
+          <div>
+            {recommendations.map((recommendation) => (
+              <button
+                type="button"
+                key={recommendation.id}
+                data-testid={`similar-material-${recommendation.id}`}
+                aria-label={`${zh ? '預覽' : 'Preview'} ${zh ? recommendation.titleZh : recommendation.title}`}
+                disabled={disabled}
+                onClick={() => {
+                  onRecommendationPreview(recommendation);
+                  heading.current?.focus({ preventScroll: true });
+                }}
+              >
+                <img src={publicAssetUrl(recommendation.image)} alt="" loading="lazy" />
+                <span>{zh ? recommendation.titleZh : recommendation.title}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
     </dialog>,
     document.body,
   );

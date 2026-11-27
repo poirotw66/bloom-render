@@ -79,7 +79,7 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
         <label className={UI_LABEL}>
           {t('common.output_size')}
           {!supportsMultiRes && (
-            <span className="ml-2 text-xs font-normal text-gray-500">
+            <span className="ml-2 text-xs font-normal theme-ink-muted">
               ({t('common.gemini2_only_1k')})
             </span>
           )}
@@ -103,7 +103,7 @@ const PortraitForm: React.FC<PortraitFormProps> = ({
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 mt-2">{t('idphoto.model_recommendation')}</p>
+      <p className="text-xs theme-ink-muted mt-2">{t('idphoto.model_recommendation')}</p>
     </div>
   );
 };

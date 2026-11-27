@@ -1,14 +1,16 @@
 import React, { useEffect, useId, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
-import { DEFAULT_TRYON_BACKGROUND, DEFAULT_TRYON_STYLE } from '../constants/tryOn';
 import { ROUTES } from '../constants/routes';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useMaterialBasket } from '../contexts/MaterialBasketContext';
 import { confirmDiscardUnsavedWork } from '../hooks/useUnsavedWork';
-import { createMaterialBasketTransfer, materialBasketMessage } from '../utils/materialBasket';
+import {
+  createMaterialBasketTransfer,
+  createMaterialBasketTryOnRecipe,
+  materialBasketMessage,
+} from '../utils/materialBasket';
 import { publicAssetUrl } from '../utils/publicAsset';
-import type { TryOnRecipe } from '../types/tryOnRecipe';
 import '../styles/material-basket.css';
 import MaterialBoardExport from './MaterialBoardExport';
 import { recordMaterialUse } from '../utils/materialPreferences';
@@ -44,20 +46,7 @@ export default function MaterialBasket() {
       navigate(ROUTES.GENERATE, { state: createMaterialBasketTransfer(materialIds) });
       return;
     }
-    const recipe: TryOnRecipe = {
-      v: 1,
-      kind: 'tryon',
-      materialIds,
-      settings: {
-        background: DEFAULT_TRYON_BACKGROUND,
-        style: DEFAULT_TRYON_STYLE,
-        outputSize: '1K',
-        aspectRatio: '9:16',
-        quantity: 1,
-        keepBackground: false,
-        keepPose: true,
-      },
-    };
+    const recipe = createMaterialBasketTryOnRecipe(materialIds);
     navigate(ROUTES.TRY_ON, { state: { tryOnRecipe: recipe, fromMaterialBasket: true } });
   }
 

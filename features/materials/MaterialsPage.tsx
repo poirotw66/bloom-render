@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TRYON_MATERIALS, type TryOnMaterial } from '../../constants/tryOnMaterials';
 import { DEFAULT_TRYON_BACKGROUND, DEFAULT_TRYON_STYLE } from '../../constants/tryOn';
 import { ROUTES } from '../../constants/routes';
 import { useMaterialBasket } from '../../contexts/MaterialBasketContext';
-import { materialBasketMessage } from '../../utils/materialBasket';
+import { createMaterialBasketTryOnRecipe, materialBasketMessage } from '../../utils/materialBasket';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { confirmDiscardUnsavedWork } from '../../hooks/useUnsavedWork';
 import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
 import {
@@ -14,6 +15,8 @@ import {
   useMaterialPreferences,
 } from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
+import MaterialSearch from '../../components/MaterialSearch';
+import { downloadMaterialBatchZip, materialBatchBrief } from '../../utils/posewearMaterialBatch';
 import MaterialGroupCard from '../../components/MaterialGroupCard';
 import { groupMaterials } from '../../constants/materialGroups';
 import '../../styles/material-browser.css';
@@ -66,7 +69,7 @@ function recipeForMaterial(material: TryOnMaterial): TryOnRecipe {
 
 export default function MaterialsPage() {
   const { id } = useParams();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const basket = useMaterialBasket();
   const navigate = useNavigate();
   const zh = language === 'zh-TW';
@@ -77,6 +80,43 @@ export default function MaterialsPage() {
   const [role, setRole] = useState('all');
   const [batchMode, setBatchMode] = useState(false);
   const [batchIds, setBatchIds] = useState<string[]>([]);
+  const [batchExporting, setBatchExporting] = useState(false);
+  const exportLock = useRef(false);
+  const [batchFeedback, setBatchFeedback] = useState('');
+  const [briefFallback, setBriefFallback] = useState('');
+  const exportBatch = async () => {
+    if (exportLock.current || !batchIds.length) return;
+    exportLock.current = true;
+    setBatchExporting(true);
+    setBatchFeedback('');
+    try {
+      await downloadMaterialBatchZip([...batchIds]);
+      setBatchFeedback(zh ? '所選素材已打包下載。' : 'Selected materials downloaded.');
+    } catch {
+      setBatchFeedback(
+        zh
+          ? '素材打包失敗，請重試。所選素材已保留。'
+          : 'Could not prepare the ZIP. Your selection is kept; please retry.',
+      );
+    } finally {
+      exportLock.current = false;
+      setBatchExporting(false);
+    }
+  };
+  const copyBatch = async () => {
+    if (!batchIds.length) return;
+    const brief = materialBatchBrief([...batchIds], language);
+    try {
+      await navigator.clipboard.writeText(brief);
+      setBriefFallback('');
+      setBatchFeedback(zh ? '參考摘要已複製。' : 'Reference brief copied.');
+    } catch {
+      setBriefFallback(brief);
+      setBatchFeedback(
+        zh ? '請選取下方參考摘要並複製。' : 'Select the reference brief below to copy it.',
+      );
+    }
+  };
   const [variants, setVariants] = useState<Record<string, string>>({});
   const [poseFilters, setPoseFilters] = useState<PoseFilterValues>({ posture: '', view: '' });
   const selected = id ? TRYON_MATERIALS.find((material) => material.id === id) : undefined;
@@ -146,6 +186,11 @@ export default function MaterialsPage() {
         <MaterialViewer
           material={viewer}
           onClose={() => setViewer(null)}
+          onRecommendationPreview={(next) => {
+            recordMaterialUse(next.id);
+            setViewer(next);
+            if (selected) navigate(`${ROUTES.MATERIALS}/${next.id}`);
+          }}
           onMaterialChange={(next) => {
             recordMaterialUse(next.id);
             setViewer(next);
@@ -187,6 +232,44 @@ export default function MaterialsPage() {
           {materialBasketMessage(basket.message, zh)}
         </p>
       </header>
+      {basket.materialIds.length > 0 && (
+        <section
+          className="material-selection-bar"
+          data-testid="material-selection-bar"
+          aria-label={zh ? '目前選材' : 'Current selection'}
+        >
+          <div>
+            <strong>
+              {zh
+                ? `已選 ${basket.materialIds.length} 項素材`
+                : `${basket.materialIds.length} ${basket.materialIds.length === 1 ? 'reference' : 'references'} selected`}
+            </strong>
+            <span>
+              {zh ? '接著上傳人物照，開始試穿。' : 'Next, upload your person photo to try them on.'}
+            </span>
+          </div>
+          <button type="button" className={UI_BTN_SECONDARY} onClick={basket.openBasket}>
+            {zh ? '檢查選材' : 'Review selection'}
+          </button>
+          <button
+            type="button"
+            className={UI_BTN_PRIMARY}
+            onClick={() => {
+              if (!confirmDiscardUnsavedWork(t('main.unsaved_confirm'))) return;
+              const ids = [...basket.materialIds];
+              ids.forEach(recordMaterialUse);
+              navigate(ROUTES.TRY_ON, {
+                state: {
+                  tryOnRecipe: createMaterialBasketTryOnRecipe(ids),
+                  fromMaterialBasket: true,
+                },
+              });
+            }}
+          >
+            {zh ? '繼續試穿' : 'Continue to try-on'}
+          </button>
+        </section>
+      )}
 
       {selected ? (
         <div className="grid gap-7 md:grid-cols-2 items-start">
@@ -280,15 +363,7 @@ export default function MaterialsPage() {
         <>
           <div className="material-browser-toolbar">
             <MaterialCollectionFilters value={collection} onChange={setCollection} />
-            <label className="material-browser-search">
-              {zh ? '搜尋素材' : 'Search materials'}
-              <input
-                className={`block mt-1 w-full ${UI_INPUT}`}
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-              />
-            </label>
+            <MaterialSearch value={query} role={role} onChange={setQuery} />
             <label className="material-browser-role">
               {zh ? '素材類型' : 'Material type'}
               <select
@@ -375,9 +450,45 @@ export default function MaterialsPage() {
                 >
                   {zh ? '將所選加入素材籃' : 'Add selected to basket'}
                 </button>
+                <button
+                  type="button"
+                  className={UI_BTN_SECONDARY}
+                  disabled={!batchIds.length || batchExporting}
+                  onClick={() => void exportBatch()}
+                >
+                  {batchExporting
+                    ? zh
+                      ? '正在打包…'
+                      : 'Preparing ZIP…'
+                    : zh
+                      ? '下載所選 ZIP'
+                      : 'Download selected ZIP'}
+                </button>
+                <button
+                  type="button"
+                  className={UI_BTN_SECONDARY}
+                  disabled={!batchIds.length}
+                  onClick={() => void copyBatch()}
+                >
+                  {zh ? '複製所選參考摘要' : 'Copy selected brief'}
+                </button>
               </>
             )}
           </div>
+          <p role="status" data-testid="material-batch-feedback">
+            {batchFeedback}
+          </p>
+          {briefFallback && (
+            <label className="material-batch-brief">
+              {zh ? '所選參考摘要' : 'Selected reference brief'}
+              <textarea
+                className={UI_INPUT}
+                readOnly
+                value={briefFallback}
+                data-testid="material-batch-brief"
+              />
+            </label>
+          )}
           <p className="material-browser-count" role="status">
             {zh ? `${groups.length} 組素材` : `${groups.length} references`}
           </p>

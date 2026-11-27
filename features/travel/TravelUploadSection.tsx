@@ -50,9 +50,10 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
   const { t } = useLanguage();
   const { isDemoMode } = useSettings();
   const zoneRef = useRef<HTMLDivElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  const modeActive = 'bg-sky-600 text-white ';
-  const modeIdle = 'text-slate-500 hover:text-slate-300';
+  const modeActive = 'bg-sky-700 text-white ';
+  const modeIdle = 'theme-ink-muted hover:text-slate-300';
 
   const emitFile = useCallback(
     (file: File) => {
@@ -64,10 +65,24 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
     },
     [onFileChange],
   );
-  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode });
+  usePasteImage(zoneRef, emitFile, { enabled: !isDemoMode && !loading });
 
   return (
-    <div className={`flex flex-col gap-4 w-full max-w-2xl mx-auto p-4 ${TRAVEL_PANEL}`}>
+    <div
+      id="travel-photo-section"
+      className={`flex flex-col gap-4 w-full max-w-2xl mx-auto p-4 ${TRAVEL_PANEL}`}
+    >
+      <input
+        ref={fileInput}
+        id="image-upload-travel"
+        type="file"
+        hidden
+        accept="image/*"
+        multiple={isGroupMode}
+        disabled={isDemoMode || loading}
+        onChange={onFileChange}
+        aria-label={t('start.upload_button')}
+      />
       {isDemoMode && (
         <p className="text-xs text-sky-200/80 text-center">{t('demo.sample_only_hint')}</p>
       )}
@@ -111,7 +126,7 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
         }`}
         onDragOver={isDemoMode ? (e) => e.preventDefault() : onDragOver}
         onDragLeave={isDemoMode ? undefined : onDragLeave}
-        onDrop={isDemoMode ? (e) => e.preventDefault() : onDrop}
+        onDrop={isDemoMode || loading ? (e) => e.preventDefault() : onDrop}
       >
         {files.length > 0 ? (
           <div className="w-full flex flex-col items-center gap-6">
@@ -134,9 +149,10 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
                   {!isDemoMode && (
                     <button
                       type="button"
+                      disabled={loading}
                       onClick={() => removeFile(idx)}
-                      className="absolute top-1 right-1 w-7 h-7 bg-red-500/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 cursor-pointer focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                      aria-label={t('travel.change_photo')}
+                      className="absolute top-1 right-1 w-11 h-11 bg-red-800 text-white rounded-full flex items-center justify-center hover:bg-red-900 cursor-pointer focus-visible:ring-2 focus-visible:ring-white"
+                      aria-label={t('couple_group.remove_photo')}
                     >
                       <XMarkIcon className="w-4 h-4" />
                     </button>
@@ -148,17 +164,22 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
               ))}
 
               {!isDemoMode && isGroupMode && files.length < 4 && (
-                <label className="w-32 h-32 rounded-xl border-2 border-dashed border-slate-600 bg-slate-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-sky-500 hover:bg-sky-500/5 transition-colors duration-200 text-slate-500 hover:text-sky-300">
-                  <input type="file" className="hidden" accept="image/*" onChange={onFileChange} />
+                <button
+                  type="button"
+                  disabled={loading}
+                  data-upload
+                  onClick={() => fileInput.current?.click()}
+                  className="w-32 h-32 rounded-xl border-2 border-dashed border-slate-600 bg-slate-900/40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-sky-500 hover:bg-sky-500/5 transition-colors duration-200 theme-ink-muted hover:text-sky-300"
+                >
                   <span className="text-2xl font-light">+</span>
                   <span className="text-sm font-bold tracking-tight text-center px-1">
                     {t('travel.add_person')}
                   </span>
-                </label>
+                </button>
               )}
             </div>
 
-            <p className="text-xs text-slate-500 max-w-sm text-center leading-relaxed">
+            <p className="text-xs theme-ink-muted max-w-sm text-center leading-relaxed">
               {isDemoMode
                 ? t('demo.sample_only_hint')
                 : isGroupMode
@@ -170,16 +191,15 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
 
             <div className="flex flex-wrap items-center justify-center gap-3">
               {!isDemoMode && !isGroupMode && (
-                <label className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-slate-300 border border-slate-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors duration-200">
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={onFileChange}
-                    aria-label={t('travel.change_photo')}
-                  />
+                <button
+                  type="button"
+                  disabled={loading}
+                  data-upload
+                  onClick={() => fileInput.current?.click()}
+                  className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-slate-300 border border-slate-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors duration-200"
+                >
                   {t('travel.change_photo')}
-                </label>
+                </button>
               )}
 
               <div className="flex flex-col items-center gap-1.5">
@@ -221,26 +241,20 @@ const TravelUploadSection: React.FC<TravelUploadSectionProps> = ({
               </p>
             </div>
 
-            <label
-              htmlFor="image-upload-travel"
+            <button
+              type="button"
+              disabled={loading}
+              data-upload
+              onClick={() => fileInput.current?.click()}
               className={`relative inline-flex items-center justify-center gap-2 px-10 py-4 text-lg font-bold text-white rounded-2xl cursor-pointer transition-colors duration-200 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 ${
                 isGroupMode
                   ? 'brand-bg-strong hover:brand-bg focus-visible:brand-ring'
-                  : 'bg-sky-600 hover:bg-sky-500 focus-within:ring-sky-400'
+                  : 'bg-sky-700 hover:bg-sky-800 focus-within:ring-sky-400'
               }`}
             >
               {isGroupMode ? <UsersIcon className="w-6 h-6" /> : <UserIcon className="w-6 h-6" />}
               {t('start.upload_button')}
-            </label>
-            <input
-              id="image-upload-travel"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              multiple={isGroupMode}
-              onChange={onFileChange}
-              aria-label={t('start.upload_button')}
-            />
+            </button>
           </div>
         )}
       </div>

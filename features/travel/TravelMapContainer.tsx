@@ -12,7 +12,7 @@ import type { TravelScene } from '../../types';
 import WorldMap from './WorldMap';
 import TaiwanMap from './TaiwanMap';
 import { FoodBowlIcon, GlobeAltIcon, SparklesIcon, TravelIcon } from '../../components/icons';
-import { TRAVEL_PANEL, TRAVEL_SEGMENT_TRACK } from './travelUi';
+import { TRAVEL_CHIP_ACTIVE, TRAVEL_PANEL, TRAVEL_SEGMENT_TRACK } from './travelUi';
 import {
   TRAVEL_WEATHER_OPTIONS,
   TRAVEL_TIME_OPTIONS,
@@ -102,7 +102,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
           <label className="text-sm font-bold text-gray-300 tracking-normal ">
             {t('travel.map_mode_label')}
           </label>
-          <p className="text-xs text-gray-500">{t('travel.map_instruction')}</p>
+          <p className="text-xs theme-ink-muted">{t('travel.map_instruction')}</p>
         </div>
 
         <div className={`${TRAVEL_SEGMENT_TRACK} overflow-hidden`}>
@@ -111,7 +111,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             onClick={() => setMapType('world')}
             className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
               mapType === 'world'
-                ? ' brand-bg text-white '
+                ? TRAVEL_CHIP_ACTIVE
                 : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
@@ -123,7 +123,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
             onClick={() => setMapType('taiwan')}
             className={`px-4 py-2 text-xs font-bold rounded-lg transition-colors duration-200 flex items-center gap-2 cursor-pointer ${
               mapType === 'taiwan'
-                ? ' brand-bg text-white '
+                ? TRAVEL_CHIP_ACTIVE
                 : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
@@ -142,10 +142,8 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
               onClick={() => setCategoryFilter(cat)}
               className={`px-4 py-1.5 text-sm font-bold rounded-md transition-colors duration-200 cursor-pointer ${
                 categoryFilter === cat
-                  ? cat === 'food'
-                    ? 'bg-orange-600/80 text-white '
-                    : 'brand-bg-tint text-white '
-                  : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
+                  ? TRAVEL_CHIP_ACTIVE
+                  : 'theme-ink-muted hover:text-gray-300 hover:bg-white/5'
               }`}
             >
               {t(`travel.category.${cat}`)}
@@ -235,9 +233,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span className="text-sm font-bold tracking-normal opacity-80">
-                              {opt.icon}
-                            </span>
+                            <span className="text-sm font-bold tracking-normal">{opt.icon}</span>
                             <span>{t(opt.nameKey)}</span>
                           </button>
                         ))}
@@ -260,9 +256,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span className="text-sm font-bold tracking-normal opacity-80">
-                              {opt.icon}
-                            </span>
+                            <span className="text-sm font-bold tracking-normal">{opt.icon}</span>
                             <span>{t(opt.nameKey)}</span>
                           </button>
                         ))}
@@ -314,9 +308,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-400 hover:border-gray-600'
                             }`}
                           >
-                            <span className="text-sm font-bold tracking-normal opacity-80">
-                              {opt.icon}
-                            </span>
+                            <span className="text-sm font-bold tracking-normal">{opt.icon}</span>
                             <span>{t(opt.nameKey)}</span>
                           </button>
                         ))}
@@ -351,7 +343,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         >
                           {TRAVEL_POSE_OPTIONS.map((p) => (
                             <option key={p.id} value={p.id}>
-                              <span className="text-sm font-bold tracking-normal opacity-80 mr-1">
+                              <span className="text-sm font-bold tracking-normal mr-1">
                                 {p.icon}
                               </span>
                               {t(p.nameKey)}
@@ -385,7 +377,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                         >
                           {TRAVEL_FRAMING_OPTIONS.map((f) => (
                             <option key={f.id} value={f.id}>
-                              <span className="text-sm font-bold tracking-normal opacity-80 mr-1">
+                              <span className="text-sm font-bold tracking-normal mr-1">
                                 {f.icon}
                               </span>
                               {t(f.nameKey)}
@@ -421,7 +413,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                             />
                           </button>
                         </div>
-                        <span className="text-sm text-gray-500 italic">
+                        <span className="text-sm theme-ink-muted italic">
                           {t('travel.label.vibe_desc')}
                         </span>
                       </div>
@@ -464,7 +456,7 @@ const TravelMapContainer: React.FC<TravelMapContainerProps> = ({
                                       : 'bg-gray-800/40 border-gray-700/50 text-gray-400'
                                 }`}
                               >
-                                <span className="text-sm font-bold tracking-normal opacity-80">
+                                <span className="text-sm font-bold tracking-normal">
                                   {opt.icon}
                                 </span>
                                 <span>{t(opt.nameKey)}</span>

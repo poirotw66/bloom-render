@@ -251,3 +251,43 @@
 .material-viewer__palette .material-viewer__note {
   margin: 0;
 }
+
+.material-viewer__similar {
+  margin-top: 20px;
+  border-top: 1px solid var(--tool-line, #8d6d7b);
+  padding-top: 16px;
+}
+.material-viewer__similar h3 {
+  font-weight: 600;
+}
+.material-viewer__similar p {
+  margin-block: 6px 12px;
+  color: var(--ink-muted, #b8a9af);
+  font-size: 14px;
+}
+.material-viewer__similar > div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.material-viewer__similar button {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--tool-line, #8d6d7b);
+  border-radius: 8px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+.material-viewer__similar img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+@media (max-width: 600px) {
+  .material-viewer__similar > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

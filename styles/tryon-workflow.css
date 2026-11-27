@@ -550,3 +550,62 @@ button.tryon-board-empty > span:first-child {
     height: 208px;
   }
 }
+
+.tryon-workspace-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.tryon-dialog-heading,
+.tryon-dialog-footer {
+  flex: none;
+}
+.tryon-dialog-content {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px;
+  overscroll-behavior: contain;
+}
+.tryon-dialog-footer {
+  border-top: 1px solid var(--tool-line);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+.tryon-materials-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+}
+.tryon-materials-footer > span {
+  color: var(--tool-muted);
+}
+.tryon-person-drop,
+.tryon-role-actions > button {
+  scroll-margin-top: 112px;
+}
+.tryon-generation-controls > .tryon-field-grid {
+  gap: 12px;
+  margin-block: 4px 8px;
+}
+@media (max-width: 600px) {
+  .tryon-materials-footer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tryon-materials-footer > button {
+    width: 100%;
+  }
+  .tryon-board-person > img,
+  .tryon-board-person > .tryon-board-empty {
+    min-height: 220px;
+    height: 220px;
+  }
+  .tryon-board-slot > img,
+  .tryon-board-garments img,
+  button.tryon-board-empty {
+    min-height: 88px;
+    height: 88px;
+  }
+}

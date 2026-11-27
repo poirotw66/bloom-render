@@ -77,7 +77,7 @@ const LocalEnhanceActions: React.FC<LocalEnhanceActionsProps> = ({
         </button>
       </div>
       {busy && progress && (
-        <p className="text-xs text-gray-400" role="status">
+        <p className="text-xs theme-ink-muted" role="status">
           {t(progress.statusKey)}
           {progress.percent > 0 ? ` · ${Math.round(progress.percent)}%` : ''}
           {progress.file ? ` · ${progress.file}` : ''}
@@ -88,9 +88,7 @@ const LocalEnhanceActions: React.FC<LocalEnhanceActionsProps> = ({
           {error}
         </p>
       )}
-      <p className="text-[11px] text-gray-500 text-center max-w-md">
-        {t('enhance.no_api_key_hint')}
-      </p>
+      <p className="text-xs theme-ink-muted text-center max-w-md">{t('enhance.no_api_key_hint')}</p>
     </div>
   );
 };

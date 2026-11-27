@@ -5,7 +5,7 @@
  * Shared download / share controls for generation results.
  */
 
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { downloadImageAs, type ImageExportFormat, withExtension } from '../utils/imageExport';
 import { shareBrandedCard, shareResultImage, type ShareOutcome } from '../utils/shareResult';
@@ -15,6 +15,7 @@ import LocalEnhanceActions from './LocalEnhanceActions';
 import { peekPendingRemix } from '../utils/pendingRemix';
 import { buildRemixUrl } from '../utils/remixLink';
 import { getViralTemplateCardById } from '../constants/viralTemplateCards';
+import '../styles/tool-controls.css';
 
 interface ResultActionsProps {
   result: string | Blob;
@@ -63,7 +64,8 @@ const ResultActions: React.FC<ResultActionsProps> = ({
   hideLocalEnhance = false,
   remixUrl: remixUrlProp,
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const formatId = useId();
   const [format, setFormat] = useState<ImageExportFormat>('png');
   const [quality, setQuality] = useState(0.92);
   const [busy, setBusy] = useState(false);
@@ -84,17 +86,15 @@ const ResultActions: React.FC<ResultActionsProps> = ({
   };
 
   return (
-    <div className={`flex flex-col items-center gap-3 w-full ${className}`}>
-      <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
-        <label htmlFor="result-download-format" className="flex items-center gap-2">
-          <span className="text-xs tracking-normal text-gray-500">
-            {t('result.download_format')}
-          </span>
+    <div className={`result-actions ${className}`}>
+      <div className="result-export-options theme-ink-muted">
+        <label htmlFor={formatId} className="flex items-center gap-2">
+          <span className="text-sm theme-ink-muted">{t('result.download_format')}</span>
           <select
-            id="result-download-format"
+            id={formatId}
             value={format}
             onChange={(e) => setFormat(e.target.value as ImageExportFormat)}
-            className="bg-gray-900 border border-gray-600 rounded-lg px-2 py-1 text-white"
+            disabled={busy}
           >
             {FORMATS.map((f) => (
               <option key={f} value={f}>
@@ -105,9 +105,7 @@ const ResultActions: React.FC<ResultActionsProps> = ({
         </label>
         {format !== 'png' && (
           <label className="flex items-center gap-2">
-            <span className="text-xs tracking-normal text-gray-500">
-              {t('result.download_quality')}
-            </span>
+            <span className="text-sm theme-ink-muted">{t('result.download_quality')}</span>
             <input
               type="range"
               min={0.5}
@@ -116,13 +114,14 @@ const ResultActions: React.FC<ResultActionsProps> = ({
               value={quality}
               onChange={(e) => setQuality(Number(e.target.value))}
               aria-label={t('result.download_quality')}
+              disabled={busy}
             />
             <span className="tabular-nums w-10 text-xs">{Math.round(quality * 100)}%</span>
           </label>
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="result-primary-actions">
         <button
           type="button"
           disabled={busy}
@@ -155,46 +154,6 @@ const ResultActions: React.FC<ResultActionsProps> = ({
           {t('result.share')}
         </button>
 
-        <button
-          type="button"
-          disabled={busy}
-          className={UI_BTN_SECONDARY}
-          onClick={() =>
-            run(async () => {
-              const outcome = await shareBrandedCard({
-                result,
-                before: originalUrl,
-                aspect: '1:1',
-                fileName: `${fileBaseName}-card-1x1.png`,
-                remixUrl,
-              });
-              setStatus(t(outcomeMessageKey(outcome)));
-            })
-          }
-        >
-          {t('result.share_card_square')}
-        </button>
-
-        <button
-          type="button"
-          disabled={busy}
-          className={UI_BTN_SECONDARY}
-          onClick={() =>
-            run(async () => {
-              const outcome = await shareBrandedCard({
-                result,
-                before: originalUrl,
-                aspect: '9:16',
-                fileName: `${fileBaseName}-card-9x16.png`,
-                remixUrl,
-              });
-              setStatus(t(outcomeMessageKey(outcome)));
-            })
-          }
-        >
-          {t('result.share_card_story')}
-        </button>
-
         {remixUrl && (
           <button
             type="button"
@@ -219,17 +178,61 @@ const ResultActions: React.FC<ResultActionsProps> = ({
         {extraActions}
       </div>
 
-      {!hideLocalEnhance && (
-        <LocalEnhanceActions
-          result={result}
-          fileBaseName={fileBaseName}
-          onEnhanced={onEnhanced}
-          disabled={busy}
-        />
-      )}
+      <details className="result-more-tools" data-testid="result-more-tools">
+        <summary>{language === 'zh-TW' ? '更多圖片工具' : 'More image tools'}</summary>
+        <div>
+          <button
+            type="button"
+            disabled={busy}
+            className={UI_BTN_SECONDARY}
+            onClick={() =>
+              run(async () => {
+                const outcome = await shareBrandedCard({
+                  result,
+                  before: originalUrl,
+                  aspect: '1:1',
+                  fileName: `${fileBaseName}-card-1x1.png`,
+                  remixUrl,
+                });
+                setStatus(t(outcomeMessageKey(outcome)));
+              })
+            }
+          >
+            {t('result.share_card_square')}
+          </button>
+
+          <button
+            type="button"
+            disabled={busy}
+            className={UI_BTN_SECONDARY}
+            onClick={() =>
+              run(async () => {
+                const outcome = await shareBrandedCard({
+                  result,
+                  before: originalUrl,
+                  aspect: '9:16',
+                  fileName: `${fileBaseName}-card-9x16.png`,
+                  remixUrl,
+                });
+                setStatus(t(outcomeMessageKey(outcome)));
+              })
+            }
+          >
+            {t('result.share_card_story')}
+          </button>
+        </div>
+        {!hideLocalEnhance && (
+          <LocalEnhanceActions
+            result={result}
+            fileBaseName={fileBaseName}
+            onEnhanced={onEnhanced}
+            disabled={busy}
+          />
+        )}
+      </details>
 
       {status && (
-        <p className="text-xs text-gray-400" role="status">
+        <p className="text-sm theme-ink-muted" role="status">
           {status}
         </p>
       )}

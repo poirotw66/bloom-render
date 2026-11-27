@@ -135,4 +135,39 @@ describe('TryOnMaterialPicker', () => {
     ).toBe('true');
     expect(screen.queryByTestId('tryon-material-standing-study-profile-lineart')).toBeNull();
   });
+  it('keeps selected references unchanged when previewing a similar material or its variants', () => {
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value() {
+        this.setAttribute('open', '');
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value() {
+        this.removeAttribute('open');
+      },
+    });
+    const { onSelect, onRemove } = mount({
+      initialRole: 'pose',
+      selectedIds: ['seated-study-back-depth'],
+    });
+    fireEvent.click(
+      screen.getByRole('button', { name: 'View image Seated study · Back · Depth map' }),
+    );
+    fireEvent.click(screen.getByTestId('similar-material-seated-study-back-lineart'));
+    expect(
+      screen.getByText('Preview only. Close the viewer to select a reference in the library.'),
+    ).toBeTruthy();
+    const viewer = screen.getByRole('dialog');
+    fireEvent.change(viewer.querySelector('[data-testid="pose-view-select"]')!, {
+      target: { value: 'front' },
+    });
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(onRemove).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Close viewer' }));
+    expect(
+      screen.getByTestId('tryon-material-seated-study-back-depth').getAttribute('aria-pressed'),
+    ).toBe('true');
+  });
 });
