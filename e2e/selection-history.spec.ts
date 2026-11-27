@@ -170,10 +170,12 @@ test('catalog batch actions preserve exact variants and reject conflicts atomica
   await page.getByRole('button', { name: 'Batch selection', exact: true }).click();
   const bar = page.getByTestId('material-batch-toolbar');
   await bar.getByRole('button', { name: 'Select visible', exact: true }).click();
-  await expect(bar).toContainText('11 selected');
+  const visibleCount = await page.locator('article[data-material-group]').count();
+  expect(visibleCount).toBeGreaterThan(0);
+  await expect(bar).toContainText(`${visibleCount} selected`);
   await bar.getByRole('button', { name: 'Add selected to basket', exact: true }).click();
   expect(await basketIds(page)).toEqual(['navy-tailored-jacket']);
-  await expect(bar).toContainText('11 selected');
+  await expect(bar).toContainText(`${visibleCount} selected`);
   await bar.getByRole('button', { name: 'Deselect all', exact: true }).click();
   const card = page.locator(
     'article[data-material-group="seated-study:seated:eye-level:full-body"]',

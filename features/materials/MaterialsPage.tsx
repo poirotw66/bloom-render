@@ -344,9 +344,13 @@ export default function MaterialsPage() {
             </p>
             <div className="text-sm theme-ink-muted space-y-2 border-t theme-border pt-4">
               <p>
-                {zh
-                  ? 'BloomRender 原創參考插圖，依 CC0 1.0 提供。'
-                  : 'Original BloomRender reference illustration, provided under CC0 1.0.'}
+                {selected.license === 'LicenseRef-AI-Generated'
+                  ? zh
+                    ? 'AI 生成服裝參考圖，非實際品牌商品照片。生成紀錄與使用說明見素材來源。'
+                    : 'AI-generated clothing reference, not a photograph of a branded product. See the source for generation details and use notes.'
+                  : zh
+                    ? 'BloomRender 原創參考圖，依 CC0 1.0 提供。'
+                    : 'Original BloomRender reference, provided under CC0 1.0.'}
               </p>
               <a
                 href={selected.source}
@@ -577,8 +581,8 @@ export default function MaterialsPage() {
           )}
           <p className="text-sm theme-ink-muted">
             {zh
-              ? '素材為 BloomRender 原創參考插圖，依 CC0 1.0 提供。'
-              : 'Original reference illustrations by BloomRender, provided under CC0 1.0.'}
+              ? '素材包含原創 CC0 示意圖與 AI 生成服裝平拍圖；來源與使用說明請見各素材詳情。'
+              : 'Includes original CC0 illustrations and AI-generated clothing flat lays. See each material for its source and use notes.'}
           </p>
         </>
       )}

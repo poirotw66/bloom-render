@@ -3,7 +3,7 @@ import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 
-const MATERIAL_GROUP_COUNT = 11;
+import { MATERIAL_GROUP_COUNT } from './helpers/materials';
 
 async function openTryOn(page: Page, theme = 'bloom') {
   await page.addInitScript((selectedTheme) => {

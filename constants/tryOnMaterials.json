@@ -9,7 +9,10 @@
     "image": "images/tryon-materials/white-oxford-shirt.svg",
     "prompt": "White cotton Oxford shirt, pointed button-down collar, long sleeves, left chest pocket, curved hem.",
     "license": "CC0-1.0",
-    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "clothing": {
+      "category": "top"
+    }
   },
   {
     "id": "navy-tailored-jacket",
@@ -21,7 +24,10 @@
     "image": "images/tryon-materials/navy-tailored-jacket.svg",
     "prompt": "Navy tailored single-breasted blazer, notched lapels, two dark buttons, flap pockets, long sleeves.",
     "license": "CC0-1.0",
-    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "clothing": {
+      "category": "outerwear"
+    }
   },
   {
     "id": "terracotta-midi-dress",
@@ -33,7 +39,10 @@
     "image": "images/tryon-materials/terracotta-midi-dress.svg",
     "prompt": "Terracotta sleeveless midi dress, round neckline, fitted waist, softly flared A-line skirt, matte woven fabric.",
     "license": "CC0-1.0",
-    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials"
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "clothing": {
+      "category": "dress"
+    }
   },
   {
     "id": "pose-relaxed-front",
@@ -666,6 +675,922 @@
     "poseReference": {
       "pairId": "seated-study-back",
       "representation": "depth"
+    }
+  },
+  {
+    "id": "walking-study-front-lineart",
+    "role": "pose",
+    "title": "Walking study · Front · Line art",
+    "titleZh": "自然跨步走姿・正面・線稿",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the front; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；正面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-front-lineart.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-front",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "walking-study-front-depth",
+    "role": "pose",
+    "title": "Walking study · Front · Depth map",
+    "titleZh": "自然跨步走姿・正面・深度圖",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the front; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；正面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-front-depth.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-front",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "walking-study-three-quarter-lineart",
+    "role": "pose",
+    "title": "Walking study · Three-quarter · Line art",
+    "titleZh": "自然跨步走姿・四分之三側面・線稿",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the three-quarter; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；四分之三側面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-three-quarter-lineart.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-three-quarter",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "walking-study-three-quarter-depth",
+    "role": "pose",
+    "title": "Walking study · Three-quarter · Depth map",
+    "titleZh": "自然跨步走姿・四分之三側面・深度圖",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the three-quarter; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；四分之三側面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-three-quarter-depth.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-three-quarter",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "walking-study-profile-lineart",
+    "role": "pose",
+    "title": "Walking study · Profile · Line art",
+    "titleZh": "自然跨步走姿・側面・線稿",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the profile; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；側面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-profile-lineart.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-profile",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "walking-study-profile-depth",
+    "role": "pose",
+    "title": "Walking study · Profile · Depth map",
+    "titleZh": "自然跨步走姿・側面・深度圖",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the profile; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；側面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-profile-depth.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-profile",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "walking-study-back-lineart",
+    "role": "pose",
+    "title": "Walking study · Back · Line art",
+    "titleZh": "自然跨步走姿・背面・線稿",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the back; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；背面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-back-lineart.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-back",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "walking-study-back-depth",
+    "role": "pose",
+    "title": "Walking study · Back · Depth map",
+    "titleZh": "自然跨步走姿・背面・深度圖",
+    "description": "Original synthetic mannequin with right leg forward, left foot lifted, and arms swinging opposite the legs, viewed from the back; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現右腳向前、左腳抬起，雙臂與腿部反向擺動；背面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/walking-study-back-depth.png",
+    "prompt": "Single full-body walking pose with right leg forward, left foot lifted, and arms swinging opposite the legs, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "walking-study",
+      "posture": "walking",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "walking-study-back",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "arms-crossed-study-front-lineart",
+    "role": "pose",
+    "title": "Arms-crossed study · Front · Line art",
+    "titleZh": "交叉抱臂站姿・正面・線稿",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the front; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；正面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-front-lineart.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-front",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "arms-crossed-study-front-depth",
+    "role": "pose",
+    "title": "Arms-crossed study · Front · Depth map",
+    "titleZh": "交叉抱臂站姿・正面・深度圖",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the front; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；正面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-front-depth.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-front",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "arms-crossed-study-three-quarter-lineart",
+    "role": "pose",
+    "title": "Arms-crossed study · Three-quarter · Line art",
+    "titleZh": "交叉抱臂站姿・四分之三側面・線稿",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the three-quarter; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；四分之三側面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-three-quarter-lineart.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-three-quarter",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "arms-crossed-study-three-quarter-depth",
+    "role": "pose",
+    "title": "Arms-crossed study · Three-quarter · Depth map",
+    "titleZh": "交叉抱臂站姿・四分之三側面・深度圖",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the three-quarter; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；四分之三側面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-three-quarter-depth.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-three-quarter",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "arms-crossed-study-profile-lineart",
+    "role": "pose",
+    "title": "Arms-crossed study · Profile · Line art",
+    "titleZh": "交叉抱臂站姿・側面・線稿",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the profile; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；側面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-profile-lineart.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-profile",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "arms-crossed-study-profile-depth",
+    "role": "pose",
+    "title": "Arms-crossed study · Profile · Depth map",
+    "titleZh": "交叉抱臂站姿・側面・深度圖",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the profile; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；側面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-profile-depth.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-profile",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "arms-crossed-study-back-lineart",
+    "role": "pose",
+    "title": "Arms-crossed study · Back · Line art",
+    "titleZh": "交叉抱臂站姿・背面・線稿",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the back; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；背面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-back-lineart.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-back",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "arms-crossed-study-back-depth",
+    "role": "pose",
+    "title": "Arms-crossed study · Back · Depth map",
+    "titleZh": "交叉抱臂站姿・背面・深度圖",
+    "description": "Original synthetic mannequin with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, viewed from the back; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙前臂在胸前交叉，雙手靠近對側上臂，雙腳自然分開；背面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/arms-crossed-study-back-depth.png",
+    "prompt": "Single full-body standing pose with both forearms crossed across the chest, hands resting near the opposite upper arms and feet apart, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "arms-crossed-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "arms-crossed-study-back",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-front-lineart",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Front · Line art",
+    "titleZh": "雙手插袋站姿・正面・線稿",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the front; line art rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；正面線稿與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-front-lineart.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-front",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-front-depth",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Front · Depth map",
+    "titleZh": "雙手插袋站姿・正面・深度圖",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the front; depth map rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；正面深度圖與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-front-depth.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-front",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-three-quarter-lineart",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Three-quarter · Line art",
+    "titleZh": "雙手插袋站姿・四分之三側面・線稿",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the three-quarter; line art rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；四分之三側面線稿與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-three-quarter-lineart.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-three-quarter",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-three-quarter-depth",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Three-quarter · Depth map",
+    "titleZh": "雙手插袋站姿・四分之三側面・深度圖",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the three-quarter; depth map rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；四分之三側面深度圖與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-three-quarter-depth.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-three-quarter",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-profile-lineart",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Profile · Line art",
+    "titleZh": "雙手插袋站姿・側面・線稿",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the profile; line art rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；側面線稿與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-profile-lineart.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-profile",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-profile-depth",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Profile · Depth map",
+    "titleZh": "雙手插袋站姿・側面・深度圖",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the profile; depth map rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；側面深度圖與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-profile-depth.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-profile",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-back-lineart",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Back · Line art",
+    "titleZh": "雙手插袋站姿・背面・線稿",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the back; line art rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；背面線稿與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-back-lineart.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-back",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "hands-in-pockets-study-back-depth",
+    "role": "pose",
+    "title": "Hands-in-pockets study · Back · Depth map",
+    "titleZh": "雙手插袋站姿・背面・深度圖",
+    "description": "Original synthetic mannequin with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, viewed from the back; depth map rendered from the same geometry and orthographic camera as its paired reference. The mannequin shows hand placement only, not actual garment pockets.",
+    "descriptionZh": "原創合成人偶呈現雙肘向外彎曲，雙手位於髖部前方的褲袋位置，雙腳自然分開；背面深度圖與配對參考圖使用相同三維幾何與正交機位。人偶僅示意手部位置，未繪製實際服裝口袋。",
+    "image": "images/tryon-materials/hands-in-pockets-study-back-depth.png",
+    "prompt": "Single full-body standing pose with both elbows bent outward and both hands at the front hip-pocket positions, with feet apart, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "hands-in-pockets-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "hands-in-pockets-study-back",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-front-lineart",
+    "role": "pose",
+    "title": "Crossed-ankles study · Front · Line art",
+    "titleZh": "交叉腳踝站姿・正面・線稿",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the front; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；正面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-front-lineart.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-front",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-front-depth",
+    "role": "pose",
+    "title": "Crossed-ankles study · Front · Depth map",
+    "titleZh": "交叉腳踝站姿・正面・深度圖",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the front; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；正面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-front-depth.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, front camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "front",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-front",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-three-quarter-lineart",
+    "role": "pose",
+    "title": "Crossed-ankles study · Three-quarter · Line art",
+    "titleZh": "交叉腳踝站姿・四分之三側面・線稿",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the three-quarter; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；四分之三側面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-three-quarter-lineart.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-three-quarter",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-three-quarter-depth",
+    "role": "pose",
+    "title": "Crossed-ankles study · Three-quarter · Depth map",
+    "titleZh": "交叉腳踝站姿・四分之三側面・深度圖",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the three-quarter; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；四分之三側面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-three-quarter-depth.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, three-quarter camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-three-quarter",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-profile-lineart",
+    "role": "pose",
+    "title": "Crossed-ankles study · Profile · Line art",
+    "titleZh": "交叉腳踝站姿・側面・線稿",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the profile; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；側面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-profile-lineart.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-profile",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-profile-depth",
+    "role": "pose",
+    "title": "Crossed-ankles study · Profile · Depth map",
+    "titleZh": "交叉腳踝站姿・側面・深度圖",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the profile; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；側面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-profile-depth.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, profile camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "profile",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-profile",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-back-lineart",
+    "role": "pose",
+    "title": "Crossed-ankles study · Back · Line art",
+    "titleZh": "交叉腳踝站姿・背面・線稿",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the back; line art rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；背面線稿與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-back-lineart.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-back",
+      "representation": "lineart"
+    }
+  },
+  {
+    "id": "crossed-ankles-study-back-depth",
+    "role": "pose",
+    "title": "Crossed-ankles study · Back · Depth map",
+    "titleZh": "交叉腳踝站姿・背面・深度圖",
+    "description": "Original synthetic mannequin with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, viewed from the back; depth map rendered from the same geometry and orthographic camera as its paired reference.",
+    "descriptionZh": "原創合成人偶呈現雙臂自然垂放，小腿交叉，右腳略向前放置；背面深度圖與配對參考圖使用相同三維幾何與正交機位。",
+    "image": "images/tryon-materials/crossed-ankles-study-back-depth.png",
+    "prompt": "Single full-body standing pose with arms relaxed beside the body, lower legs crossing and the right foot placed slightly forward, back camera view. Use the mannequin only as a structural pose and camera reference; preserve the person identity and clothing references.",
+    "license": "CC0-1.0",
+    "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+    "pose": {
+      "groupId": "crossed-ankles-study",
+      "posture": "standing",
+      "view": "back",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "poseReference": {
+      "pairId": "crossed-ankles-study-back",
+      "representation": "depth"
+    }
+  },
+  {
+    "id": "white-crew-neck-tee",
+    "role": "clothing",
+    "title": "White crew-neck tee",
+    "titleZh": "白色圓領短袖T恤",
+    "description": "A regular-fit white cotton T-shirt with short sleeves, a ribbed crew neckline and a straight hem.",
+    "descriptionZh": "白色棉質圓領短袖T恤，標準版型、羅紋領口與平直下襬。",
+    "image": "images/tryon-materials/white-crew-neck-tee.png",
+    "prompt": "A regular-fit white cotton T-shirt with short sleeves, a ribbed crew neckline and a straight hem.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "top"
+    }
+  },
+  {
+    "id": "black-ribbed-tank",
+    "role": "clothing",
+    "title": "Black ribbed tank",
+    "titleZh": "黑色羅紋背心",
+    "description": "A fitted black rib-knit tank with broad shoulder straps, a scoop neckline and a slightly curved hem.",
+    "descriptionZh": "黑色貼身羅紋針織背心，寬肩帶、圓弧領口與微弧下襬。",
+    "image": "images/tryon-materials/black-ribbed-tank.png",
+    "prompt": "A fitted black rib-knit tank with broad shoulder straps, a scoop neckline and a slightly curved hem.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "top"
+    }
+  },
+  {
+    "id": "light-blue-denim-shirt",
+    "role": "clothing",
+    "title": "Light blue denim shirt",
+    "titleZh": "淺藍牛仔長袖襯衫",
+    "description": "A light blue denim shirt with a pointed collar, button front, two patch chest pockets and a curved shirt-tail hem.",
+    "descriptionZh": "淺藍牛仔長袖襯衫，尖領排釦、雙胸貼袋與弧形襯衫下襬。",
+    "image": "images/tryon-materials/light-blue-denim-shirt.png",
+    "prompt": "A light blue denim shirt with a pointed collar, button front, two patch chest pockets and a curved shirt-tail hem.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "top"
+    }
+  },
+  {
+    "id": "oatmeal-knit-sweater",
+    "role": "clothing",
+    "title": "Oatmeal knit sweater",
+    "titleZh": "燕麥色針織毛衣",
+    "description": "An oatmeal crew-neck knit sweater with dropped shoulders, long sleeves and ribbed neck, cuffs and hem.",
+    "descriptionZh": "燕麥色圓領針織毛衣，落肩長袖，領口、袖口與下襬皆有羅紋收邊。",
+    "image": "images/tryon-materials/oatmeal-knit-sweater.png",
+    "prompt": "An oatmeal crew-neck knit sweater with dropped shoulders, long sleeves and ribbed neck, cuffs and hem.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "top"
+    }
+  },
+  {
+    "id": "heather-gray-hoodie",
+    "role": "clothing",
+    "title": "Heather gray hoodie",
+    "titleZh": "麻灰色連帽上衣",
+    "description": "A heather gray pullover hoodie with long sleeves, a drawstring hood, ribbed cuffs and a kangaroo pocket.",
+    "descriptionZh": "麻灰色套頭連帽上衣，抽繩帽口、長袖羅紋袖口與前方袋鼠口袋。",
+    "image": "images/tryon-materials/heather-gray-hoodie.png",
+    "prompt": "A heather gray pullover hoodie with long sleeves, a drawstring hood, ribbed cuffs and a kangaroo pocket.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "top"
+    }
+  },
+  {
+    "id": "navy-striped-long-sleeve",
+    "role": "clothing",
+    "title": "Navy striped long-sleeve",
+    "titleZh": "海軍藍條紋長袖上衣",
+    "description": "A white and navy Breton-striped cotton top with a shallow boat neckline, long sleeves and a straight hem.",
+    "descriptionZh": "白底海軍藍水平條紋棉質上衣，淺船領、長袖與平直下襬。",
+    "image": "images/tryon-materials/navy-striped-long-sleeve.png",
+    "prompt": "A white and navy Breton-striped cotton top with a shallow boat neckline, long sleeves and a straight hem.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "top"
+    }
+  },
+  {
+    "id": "indigo-straight-jeans",
+    "role": "clothing",
+    "title": "Indigo straight jeans",
+    "titleZh": "靛藍直筒牛仔褲",
+    "description": "Indigo five-pocket jeans with a mid-rise waist, belt loops, a button fly and straight full-length legs.",
+    "descriptionZh": "靛藍中腰五袋式直筒牛仔褲，腰耳、前排釦與全長褲管。",
+    "image": "images/tryon-materials/indigo-straight-jeans.png",
+    "prompt": "Indigo five-pocket jeans with a mid-rise waist, belt loops, a button fly and straight full-length legs.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "trousers"
+    }
+  },
+  {
+    "id": "sand-wide-leg-trousers",
+    "role": "clothing",
+    "title": "Sand wide-leg trousers",
+    "titleZh": "沙色寬版長褲",
+    "description": "Sand-colored high-waisted trousers with front pleats, slanted pockets and broad full-length legs.",
+    "descriptionZh": "沙色高腰寬版長褲，前腰褶、斜插口袋與寬鬆全長褲管。",
+    "image": "images/tryon-materials/sand-wide-leg-trousers.png",
+    "prompt": "Sand-colored high-waisted trousers with front pleats, slanted pockets and broad full-length legs.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "trousers"
+    }
+  },
+  {
+    "id": "olive-cargo-trousers",
+    "role": "clothing",
+    "title": "Olive cargo trousers",
+    "titleZh": "橄欖綠工裝長褲",
+    "description": "Olive straight cargo trousers with belt loops, slanted hand pockets and two flap thigh pockets.",
+    "descriptionZh": "橄欖綠直筒工裝長褲，腰耳、斜插手袋與雙側翻蓋大腿口袋。",
+    "image": "images/tryon-materials/olive-cargo-trousers.png",
+    "prompt": "Olive straight cargo trousers with belt loops, slanted hand pockets and two flap thigh pockets.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "trousers"
+    }
+  },
+  {
+    "id": "charcoal-pleated-midi-skirt",
+    "role": "clothing",
+    "title": "Charcoal pleated midi skirt",
+    "titleZh": "炭灰色百褶中長裙",
+    "description": "A charcoal high-waisted midi skirt with a fitted waistband, defined vertical pleats and an A-line hem.",
+    "descriptionZh": "炭灰色高腰百褶中長裙，合腰腰頭、清晰直向褶線與A字裙襬。",
+    "image": "images/tryon-materials/charcoal-pleated-midi-skirt.png",
+    "prompt": "A charcoal high-waisted midi skirt with a fitted waistband, defined vertical pleats and an A-line hem.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "skirt"
+    }
+  },
+  {
+    "id": "beige-trench-coat",
+    "role": "clothing",
+    "title": "Beige trench coat",
+    "titleZh": "米色雙排釦風衣",
+    "description": "A beige knee-length double-breasted trench coat with broad lapels, shoulder tabs, a waist belt and cuff straps.",
+    "descriptionZh": "米色及膝雙排釦風衣，寬翻領、肩章、腰帶與袖口束帶。",
+    "image": "images/tryon-materials/beige-trench-coat.png",
+    "prompt": "A beige knee-length double-breasted trench coat with broad lapels, shoulder tabs, a waist belt and cuff straps.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "outerwear"
+    }
+  },
+  {
+    "id": "cropped-denim-jacket",
+    "role": "clothing",
+    "title": "Cropped denim jacket",
+    "titleZh": "短版牛仔外套",
+    "description": "A medium-blue cropped denim jacket with a pointed collar, metal buttons, flap chest pockets and a fitted waist band.",
+    "descriptionZh": "中藍色短版牛仔外套，尖領金屬排釦、雙胸翻蓋袋與收束腰頭。",
+    "image": "images/tryon-materials/cropped-denim-jacket.png",
+    "prompt": "A medium-blue cropped denim jacket with a pointed collar, metal buttons, flap chest pockets and a fitted waist band.",
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+    "clothing": {
+      "category": "outerwear"
     }
   }
 ]

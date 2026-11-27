@@ -1,13 +1,30 @@
-BloomRender original reference illustrations
+BloomRender reference assets
 
-These SVG reference illustrations were created for BloomRender. No PoseWear
-or other third-party reference images are included in this directory.
+Original CC0 illustrations and synthetic poses
+
+The SVG reference illustrations and synthetic mannequin PNG references were
+created for BloomRender. No PoseWear or other third-party reference images are
+included in this directory.
 
 To the extent possible under law, the creators have waived all copyright and
-related or neighboring rights to these original SVG illustrations under
+related or neighboring rights to these original reference assets under
 CC0 1.0 Universal. They may be copied, modified and used commercially.
 
 https://creativecommons.org/publicdomain/zero/1.0/
 
-This dedication applies only to the original illustrations in this directory.
+This dedication applies only to the SVG illustrations and synthetic mannequin
+PNGs, not to the AI-generated clothing flat lays described below.
 It does not grant rights to any person, brand or other material a user uploads.
+
+AI-generated clothing flat lays (LicenseRef-AI-Generated)
+
+The twelve clothing PNGs listed in clothing-generation-manifest.json were
+generated for BloomRender using the OpenAI image API and original text prompts.
+No input photographs, people, branded products or PoseWear images were supplied.
+The manifest records the requested model, settings, exact prompts and file
+SHA-256 values. These images are not photographs of actual products.
+
+BloomRender provides these outputs for display, download and use as clothing
+references. LicenseRef-AI-Generated identifies this provenance and use statement;
+it is not a claim of exclusive copyright or a CC0 public-domain dedication.
+It does not grant rights to any third-party person or brand.

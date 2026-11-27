@@ -1,12 +1,16 @@
 # Pose views and paired references
 
 A pose reference is one exact material ID. The original materials keep their
-existing IDs. Three original studies provide relaxed standing, one hand on the hip and seated
-poses. Each fixed 3D pose has four actual camera views: front, three-quarter,
+existing IDs. Seven original studies provide relaxed standing, one hand on the hip, seated,
+walking, arms crossed, hands in pockets and crossed ankles poses. Each fixed 3D pose has four actual camera views: front, three-quarter,
 profile and back. Each camera has one line-art render and one normalized depth
 render. The seated mannequin has bent knees, both feet on the floor and hands
 resting on its knees. The hand-on-hip study bends one elbow outward while the
-opposite arm stays relaxed.
+opposite arm stays relaxed. The walking study uses an extended stride with the right
+leg forward, left foot lifted and opposite arm swing. Arms crossed bends both
+forearms across the torso; hands in pockets places hands at the front hips;
+crossed ankles overlaps the lower legs with one foot forward. Walking uses its
+own `posture: "walking"` value; the other three new studies use `standing`.
 
 For example, `standing-study-profile-depth` means the profile camera's depth
 image. `standing-study-profile-lineart` is its aligned line-art partner. Both
@@ -46,11 +50,12 @@ that meaning and use one camera view. Manual prompt text remains unchanged.
 
 ## Source and reproducibility
 
-The twenty-four PNG files and the `standing-study`, `hand-on-hip-study` and
-`seated-study` manifests live in `public/images/tryon-materials/` and are released as original CC0-1.0 assets. Each
+The fifty-six PNG files and seven manifests (`standing-study`,
+`hand-on-hip-study`, `seated-study`, `walking-study`, `arms-crossed-study`,
+`hands-in-pockets-study` and `crossed-ankles-study`) live in `public/images/tryon-materials/` and are released as original CC0-1.0 assets. Each
 manifest records its posture, all camera parameters, generator/geometry SHA-256 values and
 per-image SHA-256 values. The same scene geometry and camera produce each pair. Each study declares its
-own depth range and framing. The original standing PNGs remain byte-identical
+own depth range and framing. All twenty-four previously published study PNGs remain byte-identical
 when the library expands; existing material IDs keep their meaning.
 
 To regenerate or verify the assets, use Python with NumPy and Pillow. The checked
@@ -62,7 +67,8 @@ python3 scripts/generate-pose-study.py --check
 ```
 
 `--check` rerenders the scene and verifies deterministic output, paired
-silhouettes and depth variation. It is separate from the normal Node build;
+silhouettes, genuine per-surface z-buffer depth variation and unclipped image bounds.
+The four new studies retain distinct geometry hashes and camera-aligned pairs. It is separate from the normal Node build;
 NumPy and Pillow are not production or build dependencies.
 
 `constants/poseStudies.mjs` explicitly registers the supported studies; manifests
@@ -76,9 +82,11 @@ check that proves geometry/output reproducibility.
 
 ## Read-only MCP
 
-`bloomrender_search_references` accepts `view: "back"` and
+`bloomrender_search_references` accepts `posture: "walking"`, `view: "back"` and
 `representation: "lineart" | "depth"` in addition to the existing pose filters.
-`get_reference` and search results expose `poseReference`, same-representation
+For example, `{posture:"walking",view:"profile",representation:"depth"}`
+selects `walking-study-profile-depth`; its partner is
+`walking-study-profile-lineart`. `get_reference` and search results expose `poseReference`, same-representation
 `poseAlternatives` and the opposite `pairedReference`, each with exact material
 IDs and public URLs. `compose_brief` preserves those IDs in its v1 recipe link.
 All tools remain read-only and generate no images.

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import * as z from 'zod/v4';
+import { CLOTHING_CATEGORIES, isValidMaterialClothing } from '../constants/clothingMetadata.mjs';
 import {
   POSE_METADATA_FIELDS,
   isValidMaterialPose,
@@ -30,10 +31,29 @@ const poseShape = {
   ),
 };
 const poseSchema = z.object(poseShape).strict();
+const clothingSchema = z.object({ category: z.enum(CLOTHING_CATEGORIES) }).strict();
 const poseReferenceSchema = z
   .object({ pairId: id, representation: z.enum(POSE_REPRESENTATIONS) })
   .strict();
 function validatePoseRole(material, context) {
+  if (
+    material.license === 'LicenseRef-AI-Generated' &&
+    (material.role !== 'clothing' ||
+      (material.image !== undefined
+        ? !material.image.endsWith('.png')
+        : material.mimeType !== 'image/png' || material.requiresRasterization !== false))
+  )
+    context.addIssue({
+      code: 'custom',
+      path: ['license'],
+      message: 'AI-generated references must be clothing PNGs with generation provenance.',
+    });
+  if (!isValidMaterialClothing(material))
+    context.addIssue({
+      code: 'custom',
+      path: ['clothing'],
+      message: 'Clothing materials require a category; other roles must omit clothing metadata.',
+    });
   if (
     material.poseReference !== undefined &&
     (material.role !== 'pose' || !parsePoseReference(material.poseReference))
@@ -55,6 +75,7 @@ export const materialSchema = z
     id,
     role: z.enum(roles),
     pose: poseSchema.optional(),
+    clothing: clothingSchema.optional(),
     poseReference: poseReferenceSchema.optional(),
     title: z.string(),
     titleZh: z.string(),
@@ -62,7 +83,7 @@ export const materialSchema = z
     descriptionZh: z.string(),
     image: z.string().regex(/^images\/tryon-materials\/[a-z0-9-]+\.(svg|png|jpe?g|webp)$/),
     prompt: z.string(),
-    license: z.literal('CC0-1.0'),
+    license: z.enum(['CC0-1.0', 'LicenseRef-AI-Generated']),
     source: z.url(),
   })
   .strict()
@@ -115,11 +136,12 @@ const referenceSchema = z
     id,
     role: z.enum(roles),
     pose: poseSchema.optional(),
+    clothing: clothingSchema.optional(),
     poseReference: poseReferenceSchema.optional(),
     title: z.string(),
     description: z.string(),
     prompt: z.string(),
-    license: z.literal('CC0-1.0'),
+    license: z.enum(['CC0-1.0', 'LicenseRef-AI-Generated']),
     source: z.url(),
     imageUrl: z.url(),
     pageUrl: z.url(),
@@ -248,6 +270,7 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
       id: material.id,
       role: material.role,
       ...(material.pose ? { pose: { ...material.pose } } : {}),
+      ...(material.clothing ? { clothing: { ...material.clothing } } : {}),
       ...(material.poseReference ? { poseReference: { ...material.poseReference } } : {}),
       ...(material.pose
         ? {

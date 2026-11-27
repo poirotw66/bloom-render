@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "id": "hands-in-pockets-study",
+  "posture": "standing",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "1af8774ebf82631f0651c8b3387572fe88a44301cebb590972b39e92550de6ed",
+  "geometrySha256": "45d7094f836a516b96e06693251366b2f792a9bcf884e625c8a692fc4761c8ec",
+  "description": "Original synthetic standing mannequin with elbows bent out and both hands resting at the front hip-pocket positions. The unclothed mannequin indicates hand placement; it does not depict actual pockets. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.0,
+    "far": 5.0,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "hands-in-pockets-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, 4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 50104,
+      "lineart": {
+        "image": "images/tryon-materials/hands-in-pockets-study-front-lineart.png",
+        "sha256": "f870186ccbc33b188f3a7a7a24ddd03954841251c87d3fd3f106f7e1bc27a0f2"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hands-in-pockets-study-front-depth.png",
+        "sha256": "29bc0b1029f0bcce82e6591efbc51a09476a76c5d6dd0e9033f8ed1a5148ede5"
+      }
+    },
+    {
+      "pairId": "hands-in-pockets-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.7, 2.82842712],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 45553,
+      "lineart": {
+        "image": "images/tryon-materials/hands-in-pockets-study-three-quarter-lineart.png",
+        "sha256": "000c6a30e760b19f7abffca8625d6efa2e67907523f4753f3240130a384417b8"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hands-in-pockets-study-three-quarter-depth.png",
+        "sha256": "21186b673455d8cfb6b14674106187a5fcf5f6d7a65baf446399de704c1a1afe"
+      }
+    },
+    {
+      "pairId": "hands-in-pockets-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.7, 0.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 27827,
+      "lineart": {
+        "image": "images/tryon-materials/hands-in-pockets-study-profile-lineart.png",
+        "sha256": "d60f18b425f64848e7bf7cab90088013d0a2c4853a049e1e37a3b8d8839483d9"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hands-in-pockets-study-profile-depth.png",
+        "sha256": "41b0327d14d175b0443dbf661c7277a69c18efca736c2af349d2aafaba635026"
+      }
+    },
+    {
+      "pairId": "hands-in-pockets-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, -4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 50104,
+      "lineart": {
+        "image": "images/tryon-materials/hands-in-pockets-study-back-lineart.png",
+        "sha256": "2df1fc23f34995d227e3bcb8a5d8dae0e63ebe892b7405c7ef8cdcc7e47a4b21"
+      },
+      "depth": {
+        "image": "images/tryon-materials/hands-in-pockets-study-back-depth.png",
+        "sha256": "46e81a053c42ab4e68df6027712f0a61a822949b42297c3be4ef93f58090eac4"
+      }
+    }
+  ]
+}

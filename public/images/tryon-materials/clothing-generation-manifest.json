@@ -1,0 +1,90 @@
+{
+  "v": 1,
+  "kind": "ai-generated-clothing-flatlay",
+  "license": "LicenseRef-AI-Generated",
+  "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/clothing-generation-manifest.json",
+  "provider": "OpenAI",
+  "model": "gpt-image-2.6-sunburst",
+  "generatedOn": "2026-11-27",
+  "inputImages": 0,
+  "settings": {
+    "n": 1,
+    "size": "1024x1024",
+    "quality": "medium",
+    "outputFormat": "png"
+  },
+  "images": [
+    {
+      "id": "white-crew-neck-tee",
+      "image": "images/tryon-materials/white-crew-neck-tee.png",
+      "prompt": "Create a clean studio flat lay product photograph of one white crew-neck tee. Plain white cotton crew-neck T-shirt, regular fit, short sleeves, narrow ribbed neckline, straight hem, no print or logo. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "5c6d37149b22251563e8ba578c509fb980b144e5be09dce6ff41ba2e9b59f930"
+    },
+    {
+      "id": "black-ribbed-tank",
+      "image": "images/tryon-materials/black-ribbed-tank.png",
+      "prompt": "Create a clean studio flat lay product photograph of one black ribbed tank. Plain black fitted rib-knit tank top, broad shoulder straps, scoop neckline, sleeveless armholes, slightly curved hem, no logo. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "3b7c8eb9ae424029e5eed556ed3bc240c60aa459b1ac1417c1f35733f639acc3"
+    },
+    {
+      "id": "light-blue-denim-shirt",
+      "image": "images/tryon-materials/light-blue-denim-shirt.png",
+      "prompt": "Create a clean studio flat lay product photograph of one light blue denim shirt. Light blue denim button-front shirt, pointed collar, long sleeves with button cuffs, two patch chest pockets, curved shirt-tail hem, regular fit. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "2fa2c7275afbcf720e12a42093fc9a996b07d94bc70e3b28c1dd329466275230"
+    },
+    {
+      "id": "oatmeal-knit-sweater",
+      "image": "images/tryon-materials/oatmeal-knit-sweater.png",
+      "prompt": "Create a clean studio flat lay product photograph of one oatmeal knit sweater. Oatmeal cotton-wool knit crew-neck sweater, relaxed dropped shoulders, long sleeves, ribbed neck cuffs and hem, subtle vertical knit texture, no logo. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "dcda043341df75466c6f1bcdf8c8c9f8af707412377f365716b1cecda47b63c1"
+    },
+    {
+      "id": "heather-gray-hoodie",
+      "image": "images/tryon-materials/heather-gray-hoodie.png",
+      "prompt": "Create a clean studio flat lay product photograph of one heather gray hoodie. Heather gray pullover hoodie, relaxed fit, drawstring hood, long sleeves with ribbed cuffs, ribbed hem and large kangaroo front pocket, no logo or print. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "684b7f49515ed1f9b5e8a80b6ada09b03a5324300a9add5a72eec42648182557"
+    },
+    {
+      "id": "navy-striped-long-sleeve",
+      "image": "images/tryon-materials/navy-striped-long-sleeve.png",
+      "prompt": "Create a clean studio flat lay product photograph of one navy striped long-sleeve. White cotton Breton top with navy horizontal stripes, shallow boat neckline, long sleeves, regular fit and straight hem, no logo. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "c0183c461b1a16a4fffc3d95efa0de702baac9113b48bfea2c1d4e1d52ccdac8"
+    },
+    {
+      "id": "indigo-straight-jeans",
+      "image": "images/tryon-materials/indigo-straight-jeans.png",
+      "prompt": "Create a clean studio flat lay product photograph of one indigo straight jeans. Indigo mid-rise five-pocket denim jeans, straight full-length legs, belt loops, button fly, curved front pockets, ochre contrast topstitching. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "9e6781a08de50fcc1f0ba48a957931a476650efe02ba6f0aab4deedb34edf34e"
+    },
+    {
+      "id": "sand-wide-leg-trousers",
+      "image": "images/tryon-materials/sand-wide-leg-trousers.png",
+      "prompt": "Create a clean studio flat lay product photograph of one sand wide-leg trousers. Sand beige high-waisted wide-leg tailored trousers, front pleats, slanted side pockets, full-length wide legs, matte woven fabric, no print. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "86f636e24d164a3e89fec9c42497c79476de3137f05fb73c19735e6320092619"
+    },
+    {
+      "id": "olive-cargo-trousers",
+      "image": "images/tryon-materials/olive-cargo-trousers.png",
+      "prompt": "Create a clean studio flat lay product photograph of one olive cargo trousers. Olive green straight-leg cargo trousers, mid-rise waist, belt loops, slanted hand pockets, two flap cargo pockets on the outer thighs, full-length hems. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "efc09b7b77cc9dd901f9acfe60828bd23973e2706dc4156ec0c0a652f5a4b0f9"
+    },
+    {
+      "id": "charcoal-pleated-midi-skirt",
+      "image": "images/tryon-materials/charcoal-pleated-midi-skirt.png",
+      "prompt": "Create a clean studio flat lay product photograph of one charcoal pleated midi skirt. Charcoal gray high-waisted pleated midi skirt, fitted plain waistband, evenly spaced vertical pleats, A-line silhouette, matte woven fabric. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "1ba867802add20ab03732c0ad5e13800fea0ef52055604ecb25a0e78d55ba552"
+    },
+    {
+      "id": "beige-trench-coat",
+      "image": "images/tryon-materials/beige-trench-coat.png",
+      "prompt": "Create a clean studio flat lay product photograph of one beige trench coat. Beige knee-length double-breasted trench coat, broad notch lapels, shoulder epaulettes, matching waist belt with rectangular buckle, slanted welt pockets, long sleeves with cuff straps. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "9bd756205e82f74258377f77fe1879b0fa5c935f18e238295abf8d5a711a6786"
+    },
+    {
+      "id": "cropped-denim-jacket",
+      "image": "images/tryon-materials/cropped-denim-jacket.png",
+      "prompt": "Create a clean studio flat lay product photograph of one cropped denim jacket. Medium blue cropped denim trucker jacket, pointed collar, long sleeves, metal button front, two flap chest pockets, vertical front panel seams, fitted waistband, contrast topstitching. Front view, garment laid flat naturally, complete garment visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text or watermark. Original everyday fashion reference asset.",
+      "sha256": "5ac44dbca0d5d1c88921ef561ed300dd3cba927741f10a86c3b4042252ea69ca"
+    }
+  ]
+}

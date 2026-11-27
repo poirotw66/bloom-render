@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   copyFileSync,
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -12,6 +13,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { CONTENT_SECURITY_POLICY } from '../constants/csp.mjs';
 import { POSE_STUDIES } from '../constants/poseStudies.mjs';
+import { CLOTHING_GENERATION_MANIFEST } from '../constants/generatedClothing.mjs';
+import { validateGeneratedClothing } from './clothing-generation-validation.mjs';
 import {
   ASSET_CATALOGS,
   checkMaterialSources,
@@ -52,6 +55,19 @@ function copyPoseStudy(assetDir: string) {
     }
   }
 }
+function copyGeneratedClothing(assetDir: string) {
+  const source = path.resolve('public', CLOTHING_GENERATION_MANIFEST);
+  if (!existsSync(source)) return;
+  const manifest = JSON.parse(readFileSync(source, 'utf8'));
+  for (const relative of [
+    CLOTHING_GENERATION_MANIFEST,
+    ...manifest.images.map((image: { image: string }) => image.image),
+  ]) {
+    const target = path.join(assetDir, relative);
+    mkdirSync(path.dirname(target), { recursive: true });
+    copyFileSync(path.resolve('public', relative), target);
+  }
+}
 const html = `<html><head><meta http-equiv="Content-Security-Policy" content="${CONTENT_SECURITY_POLICY}"></head><body></body></html>`;
 function fixture() {
   const root = temp();
@@ -73,6 +89,7 @@ function fixture() {
   expect(inventory.errors).toEqual([]);
   for (const reference of inventory.references) put(root, `public/${reference.value}`, 'fixture');
   copyPoseStudy(path.join(root, 'public'));
+  copyGeneratedClothing(path.join(root, 'public'));
   put(
     root,
     'scripts/generate-pose-study.py',
@@ -133,6 +150,38 @@ describe('material source and CSP build guard', () => {
     expect(errors).toContain('license is required');
     expect(errors).toContain('source attribution must be an HTTPS URL');
   });
+  it('detects changed generated image bytes and missing generation provenance', () => {
+    const root = fixture();
+    expect(validateGeneratedClothing(root)).toEqual([]);
+    const image = path.join(root, 'public/images/tryon-materials/white-crew-neck-tee.png');
+    writeFileSync(image, Buffer.concat([readFileSync(image), Buffer.from('changed')]));
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'image hash differs from manifest',
+    );
+    copyGeneratedClothing(path.join(root, 'public'));
+    rmSync(path.join(root, 'public', CLOTHING_GENERATION_MANIFEST));
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'cannot verify generation provenance',
+    );
+  });
+  it('rejects removing or relabeling reviewed generated references as original CC0 assets', () => {
+    const root = fixture();
+    mutateMaterials(root, (entries) => {
+      entries.find((entry) => entry.id === 'white-crew-neck-tee')!.license = 'CC0-1.0';
+    });
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'must retain their AI-generated provenance label',
+    );
+    mutateMaterials(root, (entries) => {
+      for (let index = entries.length - 1; index >= 0; index--)
+        if (
+          entries[index].license === 'LicenseRef-AI-Generated' ||
+          entries[index].id === 'white-crew-neck-tee'
+        )
+          entries.splice(index, 1);
+    });
+    expect(validateGeneratedClothing(root).join('\n')).toContain('same twelve unique IDs');
+  });
   it('rejects duplicate material IDs that would overwrite route output', () => {
     const root = fixture();
     mutateMaterials(root, (entries) => {
@@ -171,6 +220,7 @@ describe('material source and CSP build guard', () => {
     const inventory = collectAssetReferences(root);
     for (const reference of inventory.references) put(distDir, reference.value, 'fixture');
     copyPoseStudy(distDir);
+    copyGeneratedClothing(distDir);
     for (const file of [
       '404.html',
       ...listSeoRoutes().map(outputPathForRoute),

@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "id": "walking-study",
+  "posture": "walking",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "1af8774ebf82631f0651c8b3387572fe88a44301cebb590972b39e92550de6ed",
+  "geometrySha256": "3ca5bcac236f1242bf162c338cb36cecd75d3ba85834e5c6a7942c5b5538fc9c",
+  "description": "Original synthetic mannequin caught mid-stride, right leg forward, left foot lifted and opposite arms swinging. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.0,
+    "far": 5.0,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "walking-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, 4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 49609,
+      "lineart": {
+        "image": "images/tryon-materials/walking-study-front-lineart.png",
+        "sha256": "0663d94c5af42aa1e35e90750820eb5b486f25196edf34a4c870a48201d226d4"
+      },
+      "depth": {
+        "image": "images/tryon-materials/walking-study-front-depth.png",
+        "sha256": "f7b508beb993895fd0806b2f5d9278165d765ec7d9dc2a15a92d190fa43bf0d6"
+      }
+    },
+    {
+      "pairId": "walking-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.7, 2.82842712],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 45261,
+      "lineart": {
+        "image": "images/tryon-materials/walking-study-three-quarter-lineart.png",
+        "sha256": "7277632b68f34239c26c953b01267c249ca21692a4037b1eb75f62fcbef7eba2"
+      },
+      "depth": {
+        "image": "images/tryon-materials/walking-study-three-quarter-depth.png",
+        "sha256": "dedea2dddad0c5740d759de896048e489e4458223a412ad67c2a3c9856c025c0"
+      }
+    },
+    {
+      "pairId": "walking-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.7, 0.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 42271,
+      "lineart": {
+        "image": "images/tryon-materials/walking-study-profile-lineart.png",
+        "sha256": "0f98116fcf86dc61e2d7f6f42ddc2e902c8baafa3cd1e42cde4811a078724b8c"
+      },
+      "depth": {
+        "image": "images/tryon-materials/walking-study-profile-depth.png",
+        "sha256": "3cecc78d572adfe9d31c0203724fa9110a0152da8ae04e4b26af961581566293"
+      }
+    },
+    {
+      "pairId": "walking-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, -4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 49609,
+      "lineart": {
+        "image": "images/tryon-materials/walking-study-back-lineart.png",
+        "sha256": "d3e47f6aebe63406771e83cacdbc5c0a9c34dc8d9992ed8fb781302d7ce6f419"
+      },
+      "depth": {
+        "image": "images/tryon-materials/walking-study-back-depth.png",
+        "sha256": "4051c7563593eeeddeee0ab06e3d9039507b1cd8d38f2bbf7e602061101b3d30"
+      }
+    }
+  ]
+}

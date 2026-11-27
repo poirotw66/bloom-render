@@ -92,6 +92,20 @@ describe('structured pose metadata', () => {
     ).not.toContain('Reference representation=');
   });
 
+  it('keeps walking distinct from standing with exact camera and representation filters', () => {
+    const matches = TRYON_MATERIALS.filter((item) =>
+      matchesPoseFilters(item, { posture: 'walking', view: 'back' }),
+    );
+    expect(matches.map((item) => item.id)).toEqual([
+      'walking-study-back-lineart',
+      'walking-study-back-depth',
+    ]);
+    expect(getPoseMetadataLabel('posture', 'walking', 'zh-TW')).toBe('走姿');
+    expect(getPoseSearchText(matches[0])).toContain('Walking');
+    expect(getMaterialPrompt(matches[1])).toContain('posture=walking; view=back');
+    expect(matchesPoseFilters(matches[0], { posture: 'standing' })).toBe(false);
+  });
+
   it('leaves non-pose material prompts unchanged', () => {
     for (const material of TRYON_MATERIALS.filter((item) => item.role !== 'pose'))
       expect(getMaterialPrompt(material)).toBe(material.prompt);

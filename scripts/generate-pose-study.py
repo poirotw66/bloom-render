@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import io
 import json
+import re
 import math
 from pathlib import Path
 
@@ -42,6 +43,26 @@ STUDIES = {
         'posture': 'seated', 'cameraHeight': 1.3, 'frameCenter': .78,
         'near': 3.0, 'far': 5.0,
         'description': 'Original synthetic seated mannequin, torso upright, knees bent, feet on the floor and hands on the knees. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.',
+    },
+    'walking-study': {
+        'posture': 'walking', 'cameraHeight': 1.7, 'frameCenter': .98,
+        'near': 3.0, 'far': 5.0,
+        'description': 'Original synthetic mannequin caught mid-stride, right leg forward, left foot lifted and opposite arms swinging. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.',
+    },
+    'arms-crossed-study': {
+        'posture': 'standing', 'cameraHeight': 1.7, 'frameCenter': .98,
+        'near': 3.0, 'far': 5.0,
+        'description': 'Original synthetic standing mannequin with both forearms crossed across the chest and hands resting near the opposite upper arms. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.',
+    },
+    'hands-in-pockets-study': {
+        'posture': 'standing', 'cameraHeight': 1.7, 'frameCenter': .98,
+        'near': 3.0, 'far': 5.0,
+        'description': 'Original synthetic standing mannequin with elbows bent out and both hands resting at the front hip-pocket positions. The unclothed mannequin indicates hand placement; it does not depict actual pockets. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.',
+    },
+    'crossed-ankles-study': {
+        'posture': 'standing', 'cameraHeight': 1.7, 'frameCenter': .98,
+        'near': 3.0, 'far': 5.0,
+        'description': 'Original synthetic standing mannequin with relaxed arms, lower legs crossing and the right foot placed slightly forward. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.',
     },
 }
 
@@ -80,6 +101,21 @@ def geometry(study_id='standing-study'):
             ('right', (.205, 1.07, 0), (.26, .79, .15), (.13, .66, .35)),
             ('left', (-.205, 1.07, 0), (-.26, .79, .15), (-.13, .66, .35)),
         ]
+    elif study_id == 'walking-study':
+        arms = [
+            ('right', (.205, 1.47, 0), (.27, 1.19, -.14), (.21, .94, -.29)),
+            ('left', (-.205, 1.47, 0), (-.25, 1.19, .16), (-.16, .99, .30)),
+        ]
+    elif study_id == 'arms-crossed-study':
+        arms = [
+            ('right', (.205, 1.47, 0), (.22, 1.22, .10), (-.08, 1.31, .16)),
+            ('left', (-.205, 1.47, 0), (-.22, 1.20, .10), (.08, 1.25, .22)),
+        ]
+    elif study_id == 'hands-in-pockets-study':
+        arms = [
+            ('right', (.205, 1.47, 0), (.33, 1.25, .02), (.16, 1.05, .10)),
+            ('left', (-.205, 1.47, 0), (-.33, 1.25, .02), (-.16, 1.05, .10)),
+        ]
     elif study_id == 'hand-on-hip-study':
         arms = [
             ('right', (.205, 1.47, 0), (.43, 1.19, 0), (.19, 1.045, .085)),
@@ -95,7 +131,12 @@ def geometry(study_id='standing-study'):
         limb(side + '-forearm', elbow, wrist, .043)
         ellipsoid(side + '-shoulder', shoulder, (.067, .067, .067))
         ellipsoid(side + '-elbow', elbow, (.047, .047, .047))
-        if seated:
+        if study_id == 'arms-crossed-study':
+            reach = (-.155, 1.36, .10) if side == 'right' else (.155, 1.32, .12)
+            limb(side + '-hand', wrist, reach, .035)
+        elif study_id == 'hands-in-pockets-study':
+            ellipsoid(side + '-hand', (wrist[0] * .9, 1.005, .12), (.038, .065, .028))
+        elif seated:
             ellipsoid(side + '-hand', (wrist[0], .64, .43), (.043, .035, .075))
         elif study_id == 'hand-on-hip-study' and side == 'right':
             ellipsoid(side + '-hand', (.17, 1.01, .10), (.043, .075, .029))
@@ -108,11 +149,22 @@ def geometry(study_id='standing-study'):
         ('right', (.095, .98, 0), (.13, .55, .02), (.15, .15, 0)),
         ('left', (-.095, .98, 0), (-.14, .55, .02), (-.17, .15, .06)),
     ]
+    if study_id == 'walking-study':
+        legs = [
+            ('right', (.095, .98, 0), (.18, .57, .25), (.23, .15, .48)),
+            ('left', (-.095, .98, 0), (-.15, .60, -.22), (-.22, .25, -.48)),
+        ]
+    elif study_id == 'crossed-ankles-study':
+        legs = [
+            ('right', (.095, .98, 0), (.02, .55, .04), (-.07, .15, .14)),
+            ('left', (-.095, .98, 0), (-.02, .55, -.02), (.075, .15, -.04)),
+        ]
     for side, hip, knee, ankle in legs:
         limb(side + '-thigh', hip, knee, .079)
         limb(side + '-shin', knee, ankle, .055)
         ellipsoid(side + '-knee', knee, (.063, .063, .063))
-        ellipsoid(side + '-foot', (ankle[0], .075, ankle[2] + .075), (.064, .06, .135))
+        foot_height = ankle[1] - .075 if study_id == 'walking-study' else .075
+        ellipsoid(side + '-foot', (ankle[0], foot_height, ankle[2] + .075), (.064, .06, .135))
     return parts
 
 
@@ -213,7 +265,14 @@ def study_outputs(study_id):
             pair[representation] = {'image': 'images/tryon-materials/' + name,
                                     'sha256': hashlib.sha256(data).hexdigest()}
         manifest['pairs'].append(pair)
-    outputs[study_id + '-manifest.json'] = (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode()
+    # Keep short numeric camera vectors inline, matching the repository JSON formatter.
+    manifest_json = json.dumps(manifest, ensure_ascii=False, indent=2)
+    manifest_json = re.sub(
+        r'\[\s+(-?\d[\d.eE+-]*(?:,\s+-?\d[\d.eE+-]*)*)\s+\]',
+        lambda match: '[' + ', '.join(re.sub(r'\s+', '', match[1]).split(',')) + ']',
+        manifest_json,
+    )
+    outputs[study_id + '-manifest.json'] = (manifest_json + '\n').encode()
     return outputs
 
 

@@ -49,7 +49,9 @@ describe('TryOnMaterialPicker', () => {
     expect(screen.getByRole('button', { name: 'Clothing' }).getAttribute('aria-pressed')).toBe(
       'true',
     );
-    expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: /^Select / })).toHaveLength(
+      TRYON_MATERIALS.filter((material) => material.role === 'clothing').length,
+    );
     expect(screen.queryByRole('button', { name: 'Select Relaxed front' })).toBeNull();
   });
 

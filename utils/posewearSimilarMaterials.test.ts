@@ -14,11 +14,29 @@ describe('structured material recommendations', () => {
     expect(recommended.every((entry) => entry.pose?.groupId === 'seated-study')).toBe(true);
     expect(similarMaterials(material, TRYON_MATERIALS)).toEqual(recommended);
   });
+  it('prioritizes matching clothing categories while retaining stable order among ties', () => {
+    const shirt = TRYON_MATERIALS[0];
+    const anotherTop = { ...shirt, id: 'another-top' };
+    const nextTop = { ...shirt, id: 'next-top' };
+    const recommendations = similarMaterials(shirt, [
+      ...TRYON_MATERIALS.slice(0, 3),
+      anotherTop,
+      nextTop,
+    ]);
+    expect(recommendations.map((item) => item.id)).toEqual([
+      'another-top',
+      'next-top',
+      'navy-tailored-jacket',
+      'terracotta-midi-dress',
+    ]);
+  });
   it('keeps clothing suggestions within the actual local clothing catalog without inventing metadata', () => {
     const material = TRYON_MATERIALS[0];
     expect(similarMaterials(material, TRYON_MATERIALS).map((entry) => entry.id)).toEqual([
-      'navy-tailored-jacket',
-      'terracotta-midi-dress',
+      'white-crew-neck-tee',
+      'black-ribbed-tank',
+      'light-blue-denim-shirt',
+      'oatmeal-knit-sweater',
     ]);
     expect(similarMaterials(material, [material])).toEqual([]);
   });

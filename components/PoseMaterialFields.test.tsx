@@ -6,9 +6,20 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { MaterialBasketProvider } from '../contexts/MaterialBasketContext';
 import { MATERIAL_BASKET_STORAGE_KEY } from '../utils/materialBasket';
+import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { groupMaterials } from '../constants/materialGroups';
+import { matchesPoseFilters } from '../constants/poseMetadata.mjs';
 import MaterialsPage from '../features/materials/MaterialsPage';
 import TryOnMaterialPicker from '../features/tryon/TryOnMaterialPicker';
 import { PoseMaterialFilters, type PoseFilterValues } from './PoseMaterialFields';
+
+const allGroupCount = groupMaterials(TRYON_MATERIALS).length;
+const poseGroupCount = groupMaterials(
+  TRYON_MATERIALS.filter((material) => material.role === 'pose'),
+).length;
+const threeQuarterFaces = groupMaterials(
+  TRYON_MATERIALS.filter((material) => matchesPoseFilters(material, { view: 'three-quarter' })),
+).map((group) => group.materials[0].id);
 
 beforeEach(() => {
   localStorage.clear();
@@ -75,7 +86,7 @@ describe('pose material controls', () => {
     renderMaterials();
     fireEvent.click(screen.getByTestId('basket-add-pose-relaxed-front'));
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'pose' } });
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(6);
+    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(poseGroupCount);
     fireEvent.change(screen.getByLabelText('Posture'), { target: { value: 'seated' } });
     fireEvent.change(screen.getByLabelText('View', { exact: true }), {
       target: { value: 'profile' },
@@ -96,13 +107,30 @@ describe('pose material controls', () => {
     );
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'all' } });
     expect(screen.queryByLabelText('Posture')).toBeNull();
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(11);
+    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(allGroupCount);
     expect(screen.getByTestId('basket-add-pose-relaxed-front').getAttribute('aria-pressed')).toBe(
       'true',
     );
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'pose' } });
     expect((screen.getByLabelText('Posture') as HTMLSelectElement).value).toBe('');
     expect((screen.getByLabelText('View', { exact: true }) as HTMLSelectElement).value).toBe('');
+  });
+
+  it('offers walking as a separate posture and keeps the selected exact depth view', () => {
+    renderMaterials();
+    fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'pose' } });
+    fireEvent.change(screen.getByLabelText('Posture'), { target: { value: 'walking' } });
+    fireEvent.change(screen.getByLabelText('View', { exact: true }), { target: { value: 'back' } });
+    expect(
+      screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
+    ).toEqual(['basket-add-walking-study-back-lineart']);
+    fireEvent.change(screen.getByLabelText('Reference representation'), {
+      target: { value: 'walking-study-back-depth' },
+    });
+    fireEvent.click(screen.getByTestId('basket-add-walking-study-back-depth'));
+    expect(
+      JSON.parse(localStorage.getItem(MATERIAL_BASKET_STORAGE_KEY)!).materialBasket.materialIds,
+    ).toEqual(['walking-study-back-depth']);
   });
 
   it('shows an honest empty state for incompatible posture, view and keyword filters', () => {
@@ -133,23 +161,13 @@ describe('pose material controls', () => {
     fireEvent.change(query, { target: { value: '四分之三側面' } });
     expect(
       screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual([
-      'basket-add-pose-hand-on-hip',
-      'basket-add-standing-study-three-quarter-lineart',
-      'basket-add-hand-on-hip-study-three-quarter-lineart',
-      'basket-add-seated-study-three-quarter-lineart',
-    ]);
+    ).toEqual(threeQuarterFaces.map((id) => `basket-add-${id}`));
     expect(screen.getByTestId('basket-add-pose-hand-on-hip')).toBeTruthy();
     fireEvent.change(query, { target: { value: 'ＴＨＲＥＥ－ＱＵＡＲＴＥＲ' } });
     expect(screen.getByTestId('basket-add-pose-hand-on-hip')).toBeTruthy();
     expect(
       screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual([
-      'basket-add-pose-hand-on-hip',
-      'basket-add-standing-study-three-quarter-lineart',
-      'basket-add-hand-on-hip-study-three-quarter-lineart',
-      'basket-add-seated-study-three-quarter-lineart',
-    ]);
+    ).toEqual(threeQuarterFaces.map((id) => `basket-add-${id}`));
     fireEvent.change(query, { target: { value: 'relaxed-standing' } });
     expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(1);
     expect(screen.getByTestId('basket-add-pose-relaxed-front')).toBeTruthy();
@@ -172,7 +190,7 @@ describe('pose material controls', () => {
 
   it('preserves selected references while the try-on picker filters and resets categories', async () => {
     renderPicker();
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(11);
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(allGroupCount);
     fireEvent.click(screen.getByRole('button', { name: 'Pose' }));
     fireEvent.change(screen.getByLabelText('View', { exact: true }), {
       target: { value: 'front' },
@@ -189,10 +207,10 @@ describe('pose material controls', () => {
     expect(
       screen.getByTestId('tryon-material-pose-relaxed-front').getAttribute('aria-pressed'),
     ).toBe('true');
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(11);
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(allGroupCount);
     fireEvent.click(screen.getByRole('button', { name: 'Pose' }));
     expect((screen.getByLabelText('View', { exact: true }) as HTMLSelectElement).value).toBe('');
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(6);
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(poseGroupCount);
   });
 
   it('finds metadata text in the try-on reference picker without changing the selected reference', () => {
@@ -204,12 +222,7 @@ describe('pose material controls', () => {
     });
     expect(
       screen.getAllByTestId(/^tryon-material-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual([
-      'tryon-material-pose-hand-on-hip',
-      'tryon-material-standing-study-three-quarter-lineart',
-      'tryon-material-hand-on-hip-study-three-quarter-lineart',
-      'tryon-material-seated-study-three-quarter-lineart',
-    ]);
+    ).toEqual(threeQuarterFaces.map((id) => `tryon-material-${id}`));
     expect(screen.getByTestId('tryon-material-pose-hand-on-hip')).toBeTruthy();
   });
 

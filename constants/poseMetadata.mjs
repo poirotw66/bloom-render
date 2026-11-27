@@ -2,7 +2,7 @@ import { getPoseRepresentationLabel, parsePoseReference } from './poseReferences
 
 /** Shared pose vocabulary for browser prompts, catalog filters and the local MCP. */
 export const POSE_METADATA_FIELDS = Object.freeze({
-  posture: Object.freeze(['standing', 'seated']),
+  posture: Object.freeze(['standing', 'seated', 'walking']),
   view: Object.freeze(['front', 'three-quarter', 'profile', 'back']),
   cameraHeight: Object.freeze(['eye-level', 'high-angle', 'low-angle', 'unspecified']),
   framing: Object.freeze(['full-body', 'upper-body', 'close-up']),
@@ -11,7 +11,7 @@ export const POSE_METADATA_FIELDS = Object.freeze({
 /**
  * @typedef {object} PoseMetadata
  * @property {string} groupId
- * @property {'standing'|'seated'} posture
+ * @property {'standing'|'seated'|'walking'} posture
  * @property {'front'|'three-quarter'|'profile'|'back'} view
  * @property {'eye-level'|'high-angle'|'low-angle'|'unspecified'} cameraHeight
  * @property {'full-body'|'upper-body'|'close-up'} framing
@@ -25,8 +25,16 @@ const LABELS = {
     'standing-study': ['Standing study', '站姿研究'],
     'hand-on-hip-study': ['Hand-on-hip study', '叉腰姿勢研究'],
     'seated-study': ['Seated study', '坐姿研究'],
+    'walking-study': ['Walking study', '行走姿勢研究'],
+    'arms-crossed-study': ['Arms-crossed study', '抱臂站姿研究'],
+    'hands-in-pockets-study': ['Hands-in-pockets study', '雙手插袋站姿研究'],
+    'crossed-ankles-study': ['Crossed-ankles study', '交叉腳踝站姿研究'],
   },
-  posture: { standing: ['Standing', '站姿'], seated: ['Seated', '坐姿'] },
+  posture: {
+    standing: ['Standing', '站姿'],
+    seated: ['Seated', '坐姿'],
+    walking: ['Walking', '走姿'],
+  },
   view: {
     front: ['Front', '正面'],
     'three-quarter': ['Three-quarter', '四分之三側面'],

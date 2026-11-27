@@ -7,6 +7,7 @@ import {
   getPoseVariant,
   validatePoseReferences,
 } from './poseReferences.mjs';
+import { POSE_STUDIES } from './poseStudies.mjs';
 const material = (id: string) => TRYON_MATERIALS.find((item) => item.id === id)!;
 const front = material('standing-study-front-lineart');
 
@@ -66,7 +67,7 @@ describe('pose view and representation identity', () => {
 });
 
 describe('expanded pose studies', () => {
-  it.each(['hand-on-hip-study', 'seated-study'])(
+  it.each(POSE_STUDIES.map((study) => study.id))(
     'keeps %s camera alternatives within its own pose group',
     (group) => {
       const selected = material(`${group}-profile-depth`);
@@ -81,7 +82,9 @@ describe('expanded pose studies', () => {
         getPoseVariant(selected, TRYON_MATERIALS, { view: 'back', representation: 'lineart' })?.id,
       ).toBe(`${group}-back-lineart`);
       expect(alternatives.every((item) => item.pose?.groupId === group)).toBe(true);
-      expect(selected.pose?.posture).toBe(group === 'seated-study' ? 'seated' : 'standing');
+      expect(selected.pose?.posture).toBe(
+        POSE_STUDIES.find((study) => study.id === group)!.posture,
+      );
     },
   );
 });

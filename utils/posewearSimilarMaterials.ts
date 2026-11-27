@@ -14,6 +14,8 @@ export function similarMaterials(
   catalog: readonly TryOnMaterial[],
 ): TryOnMaterial[] {
   const score = (candidate: TryOnMaterial) => {
+    if (material.clothing && candidate.clothing)
+      return material.clothing.category === candidate.clothing.category ? 1 : 0;
     if (!material.pose || !candidate.pose) return 0;
     let value = 0;
     if (material.pose.groupId === candidate.pose.groupId) value += 64;

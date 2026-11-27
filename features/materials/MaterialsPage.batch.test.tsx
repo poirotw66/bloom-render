@@ -6,6 +6,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { MaterialBasketProvider } from '../../contexts/MaterialBasketContext';
 import { MATERIAL_PREFERENCES_STORAGE_KEY } from '../../utils/materialPreferences';
+import { groupMaterials } from '../../constants/materialGroups';
+import { TRYON_MATERIALS } from '../../constants/tryOnMaterials';
 import MaterialsPage from './MaterialsPage';
 
 beforeEach(() => {
@@ -13,6 +15,10 @@ beforeEach(() => {
   localStorage.setItem('bloom_language', 'en');
 });
 afterEach(cleanup);
+const visibleCount = groupMaterials(TRYON_MATERIALS).length;
+const clothingIds = TRYON_MATERIALS.filter((material) => material.role === 'clothing').map(
+  (material) => material.id,
+);
 function openBatch() {
   const view = render(
     <MemoryRouter>
@@ -34,16 +40,12 @@ describe('material catalog batch operations', () => {
   it('selects displayed card faces and prunes filtered-out selections', () => {
     openBatch();
     fireEvent.click(bar().getByRole('button', { name: 'Select visible' }));
-    expect(bar().getByText('11 selected')).toBeTruthy();
+    expect(bar().getByText(`${visibleCount} selected`)).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Material type'), { target: { value: 'clothing' } });
-    expect(bar().getByText('3 selected')).toBeTruthy();
+    expect(bar().getByText(`${clothingIds.length} selected`)).toBeTruthy();
     fireEvent.click(bar().getByRole('button', { name: 'Add favorites' }));
     const saved = JSON.parse(localStorage.getItem(MATERIAL_PREFERENCES_STORAGE_KEY)!);
-    expect(saved.favoriteIds).toEqual([
-      'white-oxford-shirt',
-      'navy-tailored-jacket',
-      'terracotta-midi-dress',
-    ]);
+    expect(saved.favoriteIds).toEqual(clothingIds);
     fireEvent.click(bar().getByRole('button', { name: 'Remove favorites' }));
     expect(JSON.parse(localStorage.getItem(MATERIAL_PREFERENCES_STORAGE_KEY)!).favoriteIds).toEqual(
       [],
@@ -65,7 +67,7 @@ describe('material catalog batch operations', () => {
     ).favoriteIds;
     expect(favorites).toContain('standing-study-back-depth');
     expect(favorites).not.toContain('standing-study-front-lineart');
-    expect(favorites).toHaveLength(11);
+    expect(favorites).toHaveLength(visibleCount);
     fireEvent.click(bar().getByRole('button', { name: 'Deselect all' }));
     fireEvent.click(screen.getByTestId('material-batch-toggle-standing-study-back-depth'));
     expect(bar().getByText('1 selected')).toBeTruthy();

@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "id": "crossed-ankles-study",
+  "posture": "standing",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "1af8774ebf82631f0651c8b3387572fe88a44301cebb590972b39e92550de6ed",
+  "geometrySha256": "5673f5d750d0201fb50dfc1a35801b0e79030003b827ac6b90e69836854c2a42",
+  "description": "Original synthetic standing mannequin with relaxed arms, lower legs crossing and the right foot placed slightly forward. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.0,
+    "far": 5.0,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "crossed-ankles-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, 4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 49164,
+      "lineart": {
+        "image": "images/tryon-materials/crossed-ankles-study-front-lineart.png",
+        "sha256": "f1fd3639ea51ff2f4ed9d5fb27e9f400a1cf69ccacaf3b2961412c5aef85e844"
+      },
+      "depth": {
+        "image": "images/tryon-materials/crossed-ankles-study-front-depth.png",
+        "sha256": "78369147c750042c8c39650ff9ebe271df282372ed2a482d54d8f2df09268fbf"
+      }
+    },
+    {
+      "pairId": "crossed-ankles-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.7, 2.82842712],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 43870,
+      "lineart": {
+        "image": "images/tryon-materials/crossed-ankles-study-three-quarter-lineart.png",
+        "sha256": "5f658f6e9a49a93dcd5bf2afa31939e7e25cfa663258d2c88fb6b177a77e4197"
+      },
+      "depth": {
+        "image": "images/tryon-materials/crossed-ankles-study-three-quarter-depth.png",
+        "sha256": "933f7506a869b717abbd2fe8e902fb8c2c471eb32a27f91f8fe03f98238bd811"
+      }
+    },
+    {
+      "pairId": "crossed-ankles-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.7, 0.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 31659,
+      "lineart": {
+        "image": "images/tryon-materials/crossed-ankles-study-profile-lineart.png",
+        "sha256": "283f166243974e3e8ba5cb930603828547d29068205851dadb102c4018f5af73"
+      },
+      "depth": {
+        "image": "images/tryon-materials/crossed-ankles-study-profile-depth.png",
+        "sha256": "08348479c182d06a3abf6a4aef3d44dc3f72b7a65cfe2faaa68df0b7d611d5f1"
+      }
+    },
+    {
+      "pairId": "crossed-ankles-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, -4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 49164,
+      "lineart": {
+        "image": "images/tryon-materials/crossed-ankles-study-back-lineart.png",
+        "sha256": "86573ef5c7eeb38fdba1567d625c2f8845135ed666ad2c9328add1991b81e9cc"
+      },
+      "depth": {
+        "image": "images/tryon-materials/crossed-ankles-study-back-depth.png",
+        "sha256": "12164daada82ab2e4d93cfdc73f99903c17a75c17103e9695109d9746993d08a"
+      }
+    }
+  ]
+}

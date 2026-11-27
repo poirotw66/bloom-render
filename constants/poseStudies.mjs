@@ -5,6 +5,10 @@ export const POSE_STUDIES = Object.freeze(
     { id: 'standing-study', posture: 'standing' },
     { id: 'hand-on-hip-study', posture: 'standing' },
     { id: 'seated-study', posture: 'seated' },
+    { id: 'walking-study', posture: 'walking' },
+    { id: 'arms-crossed-study', posture: 'standing' },
+    { id: 'hands-in-pockets-study', posture: 'standing' },
+    { id: 'crossed-ankles-study', posture: 'standing' },
   ].map((study) =>
     Object.freeze({
       ...study,

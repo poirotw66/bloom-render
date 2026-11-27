@@ -1,0 +1,130 @@
+{
+  "v": 1,
+  "id": "arms-crossed-study",
+  "posture": "standing",
+  "license": "CC0-1.0",
+  "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
+  "generator": "scripts/generate-pose-study.py",
+  "generatorSha256": "1af8774ebf82631f0651c8b3387572fe88a44301cebb590972b39e92550de6ed",
+  "geometrySha256": "10dda954fd63ddfa4d9255d91c13bc8e0ed7e18ae5a9091d12f88c0119b044f5",
+  "description": "Original synthetic standing mannequin with both forearms crossed across the chest and hands resting near the opposite upper arms. Four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
+  "depth": {
+    "kind": "synthetic-orthographic-camera-depth",
+    "near": 3.0,
+    "far": 5.0,
+    "nearValue": 255,
+    "farValue": 1,
+    "backgroundValue": 0,
+    "units": "scene units; not metric measurements"
+  },
+  "pairs": [
+    {
+      "pairId": "arms-crossed-study-front",
+      "view": "front",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 0,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, 4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 46108,
+      "lineart": {
+        "image": "images/tryon-materials/arms-crossed-study-front-lineart.png",
+        "sha256": "64472f50195dee0f81ffc99a80819d5d12e5dc482525c15a6980edc97105cf80"
+      },
+      "depth": {
+        "image": "images/tryon-materials/arms-crossed-study-front-depth.png",
+        "sha256": "241ca3826f124001e4968ed9163608be4946ca69ebab595528b257e982ce92c1"
+      }
+    },
+    {
+      "pairId": "arms-crossed-study-three-quarter",
+      "view": "three-quarter",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 45,
+        "pitchDegrees": 0,
+        "position": [2.82842712, 1.7, 2.82842712],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 42261,
+      "lineart": {
+        "image": "images/tryon-materials/arms-crossed-study-three-quarter-lineart.png",
+        "sha256": "f05ade3f60d996b70640455eb747b06971f30560d400d2ae3b38b1482dc1d5d9"
+      },
+      "depth": {
+        "image": "images/tryon-materials/arms-crossed-study-three-quarter-depth.png",
+        "sha256": "c45725681c586782724e50b78ac03b11d3e52686bf647fec0ef942cf18964239"
+      }
+    },
+    {
+      "pairId": "arms-crossed-study-profile",
+      "view": "profile",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 90,
+        "pitchDegrees": 0,
+        "position": [4.0, 1.7, 0.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 28629,
+      "lineart": {
+        "image": "images/tryon-materials/arms-crossed-study-profile-lineart.png",
+        "sha256": "9d32d06e8b3e2282719c5f69d825c213b7cfd11068d08af4504b588b2ef05167"
+      },
+      "depth": {
+        "image": "images/tryon-materials/arms-crossed-study-profile-depth.png",
+        "sha256": "b5f315da8f8db828afc95bc0a87c715ad5abd3b70d9a795cb0d310d34e92cb9b"
+      }
+    },
+    {
+      "pairId": "arms-crossed-study-back",
+      "view": "back",
+      "camera": {
+        "projection": "orthographic",
+        "yawDegrees": 180,
+        "pitchDegrees": 0,
+        "position": [0.0, 1.7, -4.0],
+        "targetHeight": 0.98,
+        "verticalFrameOffset": -0.72,
+        "frameWidth": 1.76,
+        "frameHeight": 2.2,
+        "near": 3.0,
+        "far": 5.0,
+        "width": 512,
+        "height": 640
+      },
+      "foregroundPixels": 46108,
+      "lineart": {
+        "image": "images/tryon-materials/arms-crossed-study-back-lineart.png",
+        "sha256": "ad66ee22a5ea1cd6a1efc71ac02b03d86a8faba32130d7ca799a84bb434b3071"
+      },
+      "depth": {
+        "image": "images/tryon-materials/arms-crossed-study-back-depth.png",
+        "sha256": "b48eb06fbea05c83340777bdde9bc367f15addc58dfd63ae334a9c2106edd910"
+      }
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
 } from './catalog.mjs';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
 import { getMaterialPrompt } from '../constants/poseMetadata.mjs';
+import { POSE_STUDIES } from '../constants/poseStudies.mjs';
 import { SITE_URL } from '../constants/site';
 import { parseTryOnRecipe } from '../types/tryOnRecipe';
 import { parseRemixHash } from '../utils/remixLink';
@@ -53,7 +54,9 @@ describe('read-only material catalog', () => {
       framing: 'full-body',
     });
     expect(seated.items.map((item) => item.id)).toEqual(['pose-seated-profile']);
-    expect(catalog.searchReferences({ posture: 'standing' }).items.map((item) => item.id)).toEqual(
+    expect(
+      catalog.searchReferences({ posture: 'standing', limit: 50 }).items.map((item) => item.id),
+    ).toEqual(
       TRYON_MATERIALS.filter((item) => item.pose?.posture === 'standing').map((item) => item.id),
     );
     expect(
@@ -136,6 +139,42 @@ describe('read-only material catalog', () => {
     expect(custom.recipe).not.toHaveProperty('promptOverride');
   });
 
+  it('validates clothing categories and emits independent structured metadata', () => {
+    const clothing = TRYON_MATERIALS.find((item) => item.role === 'clothing')!;
+    expect(materialSchema.safeParse({ ...clothing, clothing: undefined }).success).toBe(false);
+    expect(
+      materialSchema.safeParse({ ...clothing, clothing: { category: 'unknown' } }).success,
+    ).toBe(false);
+    expect(
+      materialSchema.safeParse({ ...clothing, clothing: { category: 'top', extra: true } }).success,
+    ).toBe(false);
+    const pose = TRYON_MATERIALS.find((item) => item.role === 'pose')!;
+    expect(materialSchema.safeParse({ ...pose, clothing: { category: 'top' } }).success).toBe(
+      false,
+    );
+    const reference = catalog.getReference({ id: clothing.id });
+    expect(reference.clothing).toEqual({ category: 'top' });
+    reference.clothing!.category = 'dress';
+    expect(catalog.getReference({ id: clothing.id }).clothing).toEqual({ category: 'top' });
+    expect(
+      outputSchemas.getReference.safeParse({
+        ...reference,
+        clothing: { category: 'top', extra: true },
+      }).success,
+    ).toBe(false);
+  });
+
+  it('searches walking and preserves the exact paired back depth reference', () => {
+    const result = catalog.searchReferences({
+      posture: 'walking',
+      view: 'back',
+      representation: 'depth',
+    });
+    expect(result.items.map((item) => item.id)).toEqual(['walking-study-back-depth']);
+    expect(result.items[0].pairedReference?.id).toBe('walking-study-back-lineart');
+    expect(outputSchemas.searchReferences.safeParse(result).success).toBe(true);
+  });
+
   it('paginates without losing or duplicating entries', () => {
     const first = catalog.searchReferences({ limit: 3 });
     const items = [...first.items];
@@ -189,6 +228,29 @@ describe('read-only material catalog', () => {
       'utf8',
     );
     expect(bytes).toContain('<svg');
+  });
+
+  it('exposes AI garments as PNG references with generation provenance instead of CC0 claims', () => {
+    const reference = catalog.getReference({ id: 'white-crew-neck-tee', language: 'en' });
+    expect(reference).toMatchObject({
+      role: 'clothing',
+      clothing: { category: 'top' },
+      mimeType: 'image/png',
+      requiresRasterization: false,
+      license: 'LicenseRef-AI-Generated',
+    });
+    expect(reference.source).toContain('clothing-generation-manifest.json');
+    expect(reference.imageUrl).toBe(`${SITE_URL}images/tryon-materials/white-crew-neck-tee.png`);
+    expect(reference.prompt).not.toMatch(/create.*flat lay/i);
+    expect(outputSchemas.getReference.safeParse(reference).success).toBe(true);
+    expect(
+      outputSchemas.getReference.safeParse({ ...reference, mimeType: 'image/svg+xml' }).success,
+    ).toBe(false);
+    const garment = TRYON_MATERIALS.find((material) => material.id === reference.id)!;
+    expect(
+      materialSchema.safeParse({ ...garment, image: garment.image.replace('.png', '.svg') })
+        .success,
+    ).toBe(false);
   });
 
   it.each(['unknown-material', 'constructor', '../../.env', 'https://example.com/photo.png'])(
@@ -324,11 +386,9 @@ describe('paired camera material catalog', () => {
   });
   it('filters representation without treating it as a pose-metadata field', () => {
     const result = catalog.searchReferences({ view: 'back', representation: 'depth' });
-    expect(result.items.map((item) => item.id)).toEqual([
-      'standing-study-back-depth',
-      'hand-on-hip-study-back-depth',
-      'seated-study-back-depth',
-    ]);
+    expect(result.items.map((item) => item.id)).toEqual(
+      POSE_STUDIES.map((study) => `${study.id}-back-depth`),
+    );
     expect(catalog.searchReferences({ role: 'clothing', representation: 'depth' }).items).toEqual(
       [],
     );
@@ -347,7 +407,7 @@ describe('paired camera material catalog', () => {
 });
 
 describe('expanded pose study recipes', () => {
-  it.each(['hand-on-hip-study', 'seated-study'])(
+  it.each(POSE_STUDIES.map((study) => study.id))(
     'composes an exact %s pose without mixing other groups',
     (group) => {
       const matches = catalog.searchReferences({
@@ -367,7 +427,7 @@ describe('expanded pose study recipes', () => {
       });
       expect(result.recipe.materialIds).toEqual(['white-oxford-shirt', `${group}-profile-depth`]);
       expect(result.prompt).toContain(
-        `posture=${group === 'seated-study' ? 'seated' : 'standing'}`,
+        `posture=${POSE_STUDIES.find((study) => study.id === group)!.posture}`,
       );
       expect(result.prompt).toContain('view=profile');
       expect(result.prompt).toContain('representation=depth');

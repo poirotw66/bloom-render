@@ -5,7 +5,7 @@
   "license": "CC0-1.0",
   "source": "https://github.com/poirotw66/bloom-render/tree/main/public/images/tryon-materials",
   "generator": "scripts/generate-pose-study.py",
-  "generatorSha256": "d1a1733caa00c26e8c7aa21744a27d9d738e16ce433f1f9770dca001ba552fac",
+  "generatorSha256": "1af8774ebf82631f0651c8b3387572fe88a44301cebb590972b39e92550de6ed",
   "geometrySha256": "bb58694ced713848680e83d37a5dafb6063a7d1fb05dbbdfb53a2ec8e40eab5f",
   "description": "Original synthetic mannequin. One fixed pose, four actual orthographic camera rotations, two matched representations per camera. Not a photograph or measured body scan.",
   "depth": {

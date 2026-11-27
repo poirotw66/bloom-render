@@ -83,6 +83,33 @@ for (const theme of ['bloom', 'night', 'newyear']) {
   }
 }
 
+test('walking filter exposes one study and preserves the profile depth pair', async ({ page }) => {
+  await seed(page);
+  await page.goto('/materials');
+  await page.getByRole('combobox', { name: 'Material type', exact: true }).selectOption('pose');
+  await page.getByRole('combobox', { name: 'Posture', exact: true }).selectOption('walking');
+  await expect(page.locator('article[data-material-group]')).toHaveCount(1);
+  await expect(
+    page.locator('article[data-material-group="walking-study:walking:eye-level:full-body"]'),
+  ).toBeVisible();
+  await page.goto('/materials/walking-study-front-lineart');
+  await page.getByTestId('pose-view-select').selectOption('profile');
+  await page.getByTestId('pose-representation-select').selectOption('depth');
+  await expect(page).toHaveURL(/\/materials\/walking-study-profile-depth$/);
+  await page.getByRole('button', { name: 'View image', exact: true }).click();
+  const viewer = page.getByRole('dialog', { name: 'Material viewer', exact: true });
+  await viewer.getByTestId('pose-compare-toggle').click();
+  for (const id of ['material-viewer-image', 'pose-comparison-depth-image']) {
+    await expect
+      .poll(() =>
+        viewer
+          .getByTestId(id)
+          .evaluate((img: HTMLImageElement) => [img.naturalWidth, img.naturalHeight]),
+      )
+      .toEqual([512, 640]);
+  }
+});
+
 test('legacy pose references never advertise unavailable views or depth pairs', async ({
   page,
 }) => {
