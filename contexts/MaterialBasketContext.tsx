@@ -1,6 +1,15 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   addMaterialToBasket,
+  addMaterialsToBasket,
   createMaterialBasketTransfer,
   MATERIAL_BASKET_STORAGE_KEY,
   parseMaterialBasketTransfer,
@@ -20,9 +29,12 @@ function loadBasket(): { materialIds: string[]; message: MaterialBasketMessage }
   }
 }
 
-type BasketState = ReturnType<typeof loadBasket>;
+type BasketState = ReturnType<typeof loadBasket> & { undoIds: string[] | null };
 interface MaterialBasketValue extends BasketState {
   isOpen: boolean;
+  canUndoClear: boolean;
+  undoClear: () => void;
+  addMaterials: (ids: string[]) => { ok: boolean; message: MaterialBasketMessage };
   addMaterial: (id: string) => void;
   removeMaterial: (id: string) => void;
   clear: () => void;
@@ -32,7 +44,12 @@ interface MaterialBasketValue extends BasketState {
 const MaterialBasketContext = createContext<MaterialBasketValue | undefined>(undefined);
 
 export function MaterialBasketProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState(loadBasket);
+  const [state, setState] = useState<BasketState>(() => ({ ...loadBasket(), undoIds: null }));
+  const stateRef = useRef(state);
+  const commit = useCallback((next: BasketState) => {
+    stateRef.current = next;
+    setState(next);
+  }, []);
   const [isOpen, setOpen] = useState(false);
   useEffect(() => {
     try {
@@ -41,24 +58,81 @@ export function MaterialBasketProvider({ children }: { children: React.ReactNode
         JSON.stringify(createMaterialBasketTransfer(state.materialIds)),
       );
     } catch {
-      setState((current) => ({ ...current, message: 'storage-unavailable' }));
+      commit({ ...stateRef.current, message: 'storage-unavailable' });
     }
-  }, [state.materialIds]);
-  const addMaterial = useCallback((id: string) => {
-    setState((current) => addMaterialToBasket(current.materialIds, id));
-  }, []);
-  const removeMaterial = useCallback((id: string) => {
-    setState((current) => ({
-      materialIds: current.materialIds.filter((selected) => selected !== id),
-      message: 'removed',
-    }));
-  }, []);
-  const clear = useCallback(() => setState({ materialIds: [], message: 'cleared' }), []);
+  }, [state.materialIds, commit]);
+  const addMaterial = useCallback(
+    (id: string) => {
+      const current = stateRef.current;
+      const next = addMaterialToBasket(current.materialIds, id);
+      commit({
+        ...next,
+        undoIds: next.materialIds === current.materialIds ? current.undoIds : null,
+      });
+    },
+    [commit],
+  );
+  const addMaterials = useCallback(
+    (ids: string[]) => {
+      const current = stateRef.current;
+      const next = addMaterialsToBasket(current.materialIds, ids);
+      commit({
+        materialIds: next.materialIds,
+        message: next.message,
+        undoIds: next.materialIds === current.materialIds ? current.undoIds : null,
+      });
+      return { ok: next.ok, message: next.message };
+    },
+    [commit],
+  );
+  const removeMaterial = useCallback(
+    (id: string) => {
+      const current = stateRef.current;
+      if (!current.materialIds.includes(id)) return;
+      commit({
+        materialIds: current.materialIds.filter((selected) => selected !== id),
+        message: 'removed',
+        undoIds: null,
+      });
+    },
+    [commit],
+  );
+  const clear = useCallback(() => {
+    const current = stateRef.current;
+    if (!current.materialIds.length) return;
+    commit({ materialIds: [], message: 'cleared', undoIds: [...current.materialIds] });
+  }, [commit]);
+  const undoClear = useCallback(() => {
+    const current = stateRef.current;
+    if (!current.undoIds) return;
+    commit({ materialIds: [...current.undoIds], message: 'restored', undoIds: null });
+  }, [commit]);
   const openBasket = useCallback(() => setOpen(true), []);
   const closeBasket = useCallback(() => setOpen(false), []);
   const value = useMemo(
-    () => ({ ...state, isOpen, addMaterial, removeMaterial, clear, openBasket, closeBasket }),
-    [state, isOpen, addMaterial, removeMaterial, clear, openBasket, closeBasket],
+    () => ({
+      ...state,
+      isOpen,
+      canUndoClear: state.undoIds !== null,
+      undoClear,
+      addMaterials,
+      addMaterial,
+      removeMaterial,
+      clear,
+      openBasket,
+      closeBasket,
+    }),
+    [
+      state,
+      isOpen,
+      undoClear,
+      addMaterials,
+      addMaterial,
+      removeMaterial,
+      clear,
+      openBasket,
+      closeBasket,
+    ],
   );
   return <MaterialBasketContext.Provider value={value}>{children}</MaterialBasketContext.Provider>;
 }

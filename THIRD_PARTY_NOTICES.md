@@ -11,6 +11,10 @@ The imported source is pinned to commit
 | `src/palette.js`                        | `utils/posewearPalette.ts`    | Extract material-image colors in the viewer.                                         |
 | `src/references.js`, `formatBrief` only | `utils/posewearReferences.ts` | Copy prompts with ordered public references and local-image attachment placeholders. |
 
+| `src/studio.js`, clear/undo selection | `utils/posewearSelectionSnapshot.ts` | Capture and restore local references with a revision guard. |
+| `src/extras.js`, batch selection | `utils/posewearBatchSelection.ts` | Select visible catalog faces and prune stale selections. |
+| `src/history.js`, reference lightbox | `utils/posewearHistoryReferences.ts` | Trace stored reference images and identify missing originals. |
+
 The adaptations use typed ES modules and React consumers instead of the original
 browser-global APIs. BloomRender supplies its own material catalog, localized labels,
 public URLs and clipboard fallback. No upstream images, catalogs, translated material

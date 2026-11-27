@@ -5,6 +5,8 @@ export type MaterialBasketMessage =
   | 'added'
   | 'removed'
   | 'cleared'
+  | 'restored'
+  | 'reference-conflict'
   | 'already-selected'
   | 'replaced'
   | 'clothing-limit'
@@ -66,11 +68,30 @@ export function addMaterialToBasket(materialIds: string[], id: string) {
   return { materialIds: [...materialIds, id], message: 'added' as const };
 }
 
+export function addMaterialsToBasket(materialIds: string[], additions: string[]) {
+  const union = [...new Set([...materialIds, ...additions])];
+  const materials = union.map((id) => TRYON_MATERIALS.find((item) => item.id === id));
+  if (materials.some((item) => !item))
+    return { materialIds, message: 'invalid-material' as const, ok: false };
+  if (materials.filter((item) => item!.role === 'clothing').length > 5)
+    return { materialIds, message: 'clothing-limit' as const, ok: false };
+  if (!validateMaterialBasketIds(union))
+    return { materialIds, message: 'reference-conflict' as const, ok: false };
+  if (union.length === materialIds.length)
+    return { materialIds, message: 'already-selected' as const, ok: true };
+  return { materialIds: union, message: 'added' as const, ok: true };
+}
+
 export function materialBasketMessage(message: MaterialBasketMessage, zh: boolean): string {
   const copy = {
     added: ['素材已加入。', 'Material added.'],
     removed: ['素材已移除。', 'Material removed.'],
     cleared: ['素材籃已清空。', 'Basket cleared.'],
+    restored: ['已復原清空的素材。', 'Cleared materials restored.'],
+    'reference-conflict': [
+      '每種參考類型只能選一張，請先移除衝突素材。',
+      'Choose only one reference of each type. Remove conflicting materials first.',
+    ],
     'already-selected': ['這個素材已在素材籃中。', 'This material is already in your basket.'],
     replaced: ['已替換素材籃中同類型的參考圖。', 'Replaced the selected reference of this type.'],
     'clothing-limit': [

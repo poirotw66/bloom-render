@@ -882,3 +882,55 @@ describe('exact pose view and representation recovery', () => {
     }
   });
 });
+
+describe('reference clear undo', () => {
+  it('preserves person, prompt, settings and completed result while restoring exact files once', async () => {
+    generateVirtualTryOn.mockResolvedValue('data:image/png;base64,result');
+    const { result } = renderHook(useTryOn, { wrapper });
+    await waitFor(() => expect(result.current.draftStatus).not.toBe('loading'));
+    const person = samplePhoto('person.png');
+    const shirt = samplePhoto('shirt.png');
+    const pose = samplePhoto('pose.png');
+    act(() => {
+      result.current.setPerson(person);
+      result.current.addClothing([shirt]);
+      result.current.setReference('pose', pose);
+      result.current.setKeepBackground(false);
+      result.current.setPromptOverride('Keep the outfit details.');
+    });
+    await act(async () => {
+      await result.current.handleGenerate();
+    });
+    act(() => result.current.clearReferences());
+    expect(result.current.clothingFiles).toEqual([]);
+    expect(result.current.referenceFiles).toEqual({});
+    expect(result.current.personFile).toBe(person);
+    expect(result.current.promptOverride).toBe('Keep the outfit details.');
+    expect(result.current.keepBackground).toBe(false);
+    expect(result.current.result).toBe('data:image/png;base64,result');
+    expect(result.current.canUndoReferenceClear).toBe(true);
+    act(() => result.current.undoClearReferences());
+    expect(result.current.clothingFiles[0]).toBe(shirt);
+    expect(result.current.referenceFiles.pose).toBe(pose);
+    expect(result.current.canUndoReferenceClear).toBe(false);
+  });
+
+  it.each(['person', 'settings', 'prompt', 'reference'] as const)(
+    'invalidates undo after a newer %s edit',
+    async (edit) => {
+      const { result } = renderHook(useTryOn, { wrapper });
+      await waitFor(() => expect(result.current.draftStatus).not.toBe('loading'));
+      act(() => result.current.addClothing([samplePhoto('shirt.png')]));
+      act(() => result.current.clearReferences());
+      act(() => {
+        if (edit === 'person') result.current.setPerson(samplePhoto('new.png'));
+        if (edit === 'settings') result.current.setKeepPose(false);
+        if (edit === 'prompt') result.current.setPromptOverride('New prompt');
+        if (edit === 'reference') result.current.setReference('pose', samplePhoto('pose.png'));
+      });
+      expect(result.current.canUndoReferenceClear).toBe(false);
+      act(() => result.current.undoClearReferences());
+      expect(result.current.clothingFiles).toEqual([]);
+    },
+  );
+});

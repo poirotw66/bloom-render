@@ -1,3 +1,8 @@
+import {
+  captureSelection,
+  restoreSelection,
+  type SelectionSnapshot,
+} from '../../utils/posewearSelectionSnapshot';
 import { getMaterialPrompt } from '../../constants/poseMetadata.mjs';
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -172,6 +177,10 @@ export function useTryOn() {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [clearedSelection, setClearedSelection] = useState<SelectionSnapshot<
+    ReferenceFile,
+    TryOnOptionalReferenceRole
+  > | null>(null);
   const revision = useRef(0);
   const compositionRevision = useRef(0);
   const explicitInput = useRef(false);
@@ -205,6 +214,7 @@ export function useTryOn() {
       scope: 'person' | 'composition' = 'composition',
     ) => {
       revision.current += 1;
+      setClearedSelection(null);
       if (scope === 'composition') compositionRevision.current += 1;
       setInputs(change);
       setError(null);
@@ -293,6 +303,7 @@ export function useTryOn() {
       }
       explicitInput.current = true;
       revision.current += 1;
+      setClearedSelection(null);
       compositionRevision.current += 1;
       const currentRevision = revision.current;
       const currentCompositionRevision = compositionRevision.current;
@@ -403,6 +414,7 @@ export function useTryOn() {
     for (const request of materialRequests.current.values()) request.abort();
     explicitInput.current = true;
     revision.current += 1;
+    setClearedSelection(null);
     compositionRevision.current += 1;
     const currentRevision = revision.current;
     setDraftReady(true);
@@ -511,6 +523,7 @@ export function useTryOn() {
       setProgress(0);
       setMaterialLoading(false);
       revision.current += 1;
+      setClearedSelection(null);
       compositionRevision.current += 1;
       recipeRequest.current?.abort();
       for (const request of materialRequests.current.values()) request.abort();
@@ -635,6 +648,7 @@ export function useTryOn() {
       if (material.role === 'clothing' && inputs.clothing.length >= MAX_CLOTHING_IMAGES)
         return false;
       revision.current += 1;
+      setClearedSelection(null);
       compositionRevision.current += 1;
       const controller = new AbortController();
       materialRequests.current.set(material.id, controller);
@@ -696,8 +710,51 @@ export function useTryOn() {
     () => updateInputs((current) => ({ ...current, clothing: [] })),
     [updateInputs],
   );
+  const clearReferences = useCallback(() => {
+    if (
+      settings.isDemoMode ||
+      loading ||
+      materialLoading ||
+      run.isRetrying ||
+      draftStatus === 'loading'
+    )
+      return;
+    if (!inputs.clothing.length && !Object.keys(inputs.references).length) return;
+    revision.current += 1;
+    compositionRevision.current += 1;
+    recipeRequest.current?.abort();
+    for (const controller of materialRequests.current.values()) controller.abort();
+    setClearedSelection(captureSelection(inputs, revision.current));
+    setInputs((current) => ({ ...current, clothing: [], references: {} }));
+    setError(null);
+  }, [inputs, settings.isDemoMode, loading, materialLoading, run.isRetrying, draftStatus]);
+  const undoClearReferences = useCallback(() => {
+    if (
+      settings.isDemoMode ||
+      loading ||
+      materialLoading ||
+      run.isRetrying ||
+      draftStatus === 'loading'
+    )
+      return;
+    const selection = restoreSelection(clearedSelection, revision.current);
+    if (!selection) return;
+    revision.current += 1;
+    compositionRevision.current += 1;
+    setClearedSelection(null);
+    setInputs((current) => ({ ...current, ...selection }));
+    setError(null);
+  }, [
+    clearedSelection,
+    settings.isDemoMode,
+    loading,
+    materialLoading,
+    run.isRetrying,
+    draftStatus,
+  ]);
   const clearDraft = useCallback(async () => {
     revision.current += 1;
+    setClearedSelection(null);
     compositionRevision.current += 1;
     const clearRevision = revision.current;
     recipeRequest.current?.abort();
@@ -973,6 +1030,11 @@ export function useTryOn() {
     recipe,
     applyRecipe,
     clearDraft,
+    clearReferences,
+    undoClearReferences,
+    hasSelectedReferences: inputs.clothing.length > 0 || Object.keys(inputs.references).length > 0,
+    canUndoReferenceClear:
+      clearedSelection !== null && clearedSelection.revision === revision.current,
     draftStatus,
     materialLoading,
     result,

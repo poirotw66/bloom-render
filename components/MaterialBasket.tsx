@@ -145,6 +145,15 @@ export default function MaterialBasket() {
         >
           {zh ? '清空素材籃' : 'Clear basket'}
         </button>
+        {basket.canUndoClear && (
+          <button
+            type="button"
+            className="tool-button tool-button-secondary"
+            onClick={basket.undoClear}
+          >
+            {zh ? '復原清空' : 'Undo clear'}
+          </button>
+        )}
       </div>
     </dialog>
   );

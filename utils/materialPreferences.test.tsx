@@ -7,6 +7,7 @@ import {
   MATERIAL_PREFERENCES_STORAGE_KEY,
   parseMaterialPreferences,
   recordMaterialUse,
+  setMaterialFavorites,
   toggleMaterialFavorite,
   useMaterialPreferences,
 } from './materialPreferences';
@@ -51,6 +52,23 @@ describe('material preferences', () => {
     });
     act(() => toggleMaterialFavorite(first.id));
     expect(current().favoriteIds).toEqual([]);
+  });
+  it('batch favorites save once, remain idempotent, and preserve recent use', () => {
+    render(<State />);
+    act(() => recordMaterialUse(second.id));
+    const save = vi.spyOn(Storage.prototype, 'setItem');
+    act(() => setMaterialFavorites([first.id, second.id, first.id, 'unknown'], true));
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(current().favoriteIds).toEqual([first.id, second.id]);
+    act(() => setMaterialFavorites([first.id], true));
+    expect(current().favoriteIds).toEqual([first.id, second.id]);
+    act(() => setMaterialFavorites([first.id, second.id], false));
+    expect(current().favoriteIds).toEqual([]);
+    expect(current().recentIds).toEqual([second.id]);
+    expect(JSON.parse(localStorage.getItem(MATERIAL_PREFERENCES_STORAGE_KEY)!)).toEqual({
+      favoriteIds: [],
+      recentIds: [second.id],
+    });
   });
   it('records latest actual use first, deduplicates it, and ignores unknown IDs', () => {
     render(<State />);

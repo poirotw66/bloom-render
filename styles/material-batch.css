@@ -1,0 +1,39 @@
+.material-batch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-block: 1.25rem;
+}
+.material-batch > span {
+  color: var(--tool-muted, var(--ink-soft));
+  font-size: 0.875rem;
+}
+.material-batch button,
+.material-batch-pick {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+.material-batch button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.material-batch-pick {
+  width: 100%;
+  border: 1px solid var(--tool-line, var(--border));
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+  color: var(--tool-ink, var(--ink));
+  background: var(--tool-surface, var(--surface));
+  font-weight: 600;
+}
+.material-batch-pick[aria-pressed='true'] {
+  color: var(--tool-action-ink, #fff);
+  background: var(--tool-action, #b5355c);
+  border-color: var(--tool-action, #b5355c);
+}
+.material-batch-pick:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

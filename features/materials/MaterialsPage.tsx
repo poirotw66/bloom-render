@@ -8,11 +8,21 @@ import { materialBasketMessage } from '../../utils/materialBasket';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { TryOnRecipe } from '../../types/tryOnRecipe';
 import { publicAssetUrl } from '../../utils/publicAsset';
-import { recordMaterialUse, useMaterialPreferences } from '../../utils/materialPreferences';
+import {
+  recordMaterialUse,
+  setMaterialFavorites,
+  useMaterialPreferences,
+} from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
 import MaterialGroupCard from '../../components/MaterialGroupCard';
 import { groupMaterials } from '../../constants/materialGroups';
 import '../../styles/material-browser.css';
+import '../../styles/material-batch.css';
+import {
+  pruneBatchSelection,
+  toggleBatchSelection,
+  selectVisibleMaterials,
+} from '../../utils/posewearBatchSelection';
 import PoseVariantControls from '../../components/PoseVariantControls';
 import {
   MaterialCollectionFilters,
@@ -65,6 +75,9 @@ export default function MaterialsPage() {
   const [collection, setCollection] = useState<MaterialCollection>('all');
   const [viewer, setViewer] = useState<TryOnMaterial | null>(null);
   const [role, setRole] = useState('all');
+  const [batchMode, setBatchMode] = useState(false);
+  const [batchIds, setBatchIds] = useState<string[]>([]);
+  const [variants, setVariants] = useState<Record<string, string>>({});
   const [poseFilters, setPoseFilters] = useState<PoseFilterValues>({ posture: '', view: '' });
   const selected = id ? TRYON_MATERIALS.find((material) => material.id === id) : undefined;
   useEffect(() => {
@@ -93,6 +106,22 @@ export default function MaterialsPage() {
         .toLocaleLowerCase()
         .includes(query.normalize('NFKC').trim().toLocaleLowerCase()),
   );
+  const groups = groupMaterials(items);
+  const faces = groups.map(
+    (group) =>
+      group.materials.find((material) => material.id === variants[group.id]) ??
+      group.materials.find((material) => basket.materialIds.includes(material.id)) ??
+      group.materials.find((material) => material.poseReference?.representation === 'lineart') ??
+      group.materials[0],
+  );
+  const visibleKey = JSON.stringify(faces.map((material) => material.id));
+  useEffect(() => {
+    const visible: string[] = JSON.parse(visibleKey);
+    setBatchIds((current) => {
+      const next = pruneBatchSelection(current, visible);
+      return next.length === current.length ? current : next;
+    });
+  }, [visibleKey]);
   const roles = [
     ['all', zh ? '全部素材' : 'All materials'],
     ['clothing', zh ? '服裝' : 'Clothing'],
@@ -279,56 +308,154 @@ export default function MaterialsPage() {
             </label>
           </div>
           {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
+          <div className="material-batch" data-testid="material-batch-toolbar">
+            <button
+              type="button"
+              className={UI_BTN_SECONDARY}
+              aria-pressed={batchMode}
+              onClick={() => {
+                setBatchMode(!batchMode);
+                setBatchIds([]);
+              }}
+            >
+              {batchMode
+                ? zh
+                  ? '完成批次選取'
+                  : 'Done selecting'
+                : zh
+                  ? '批次選取'
+                  : 'Batch selection'}
+            </button>
+            {batchMode && (
+              <>
+                <span role="status">
+                  {zh ? `已選 ${batchIds.length} 項` : `${batchIds.length} selected`}
+                </span>
+                <button
+                  type="button"
+                  className={UI_BTN_SECONDARY}
+                  disabled={!faces.length}
+                  onClick={() =>
+                    setBatchIds(selectVisibleMaterials(faces.map((material) => material.id)))
+                  }
+                >
+                  {zh ? '全選目前素材' : 'Select visible'}
+                </button>
+                <button
+                  type="button"
+                  className={UI_BTN_SECONDARY}
+                  disabled={!batchIds.length}
+                  onClick={() => setBatchIds([])}
+                >
+                  {zh ? '取消全選' : 'Deselect all'}
+                </button>
+                <button
+                  type="button"
+                  className={UI_BTN_SECONDARY}
+                  disabled={!batchIds.length}
+                  onClick={() => setMaterialFavorites(batchIds, true)}
+                >
+                  {zh ? '加入收藏' : 'Add favorites'}
+                </button>
+                <button
+                  type="button"
+                  className={UI_BTN_SECONDARY}
+                  disabled={!batchIds.length}
+                  onClick={() => setMaterialFavorites(batchIds, false)}
+                >
+                  {zh ? '移除收藏' : 'Remove favorites'}
+                </button>
+                <button
+                  type="button"
+                  className={UI_BTN_PRIMARY}
+                  disabled={!batchIds.length}
+                  onClick={() => {
+                    if (basket.addMaterials(batchIds).ok) setBatchIds([]);
+                  }}
+                >
+                  {zh ? '將所選加入素材籃' : 'Add selected to basket'}
+                </button>
+              </>
+            )}
+          </div>
           <p className="material-browser-count" role="status">
-            {zh
-              ? `${groupMaterials(items).length} 組素材`
-              : `${groupMaterials(items).length} references`}
+            {zh ? `${groups.length} 組素材` : `${groups.length} references`}
           </p>
           <div className="material-browser-grid">
-            {groupMaterials(items).map((group) => (
+            {groups.map((group, index) => (
               <MaterialGroupCard
                 key={group.id}
                 group={group}
+                displayedMaterial={faces[index]}
+                onVariantChange={(next) => {
+                  setVariants((current) => ({ ...current, [group.id]: next.id }));
+                  setBatchIds((current) =>
+                    current.filter(
+                      (value) => !group.materials.some((material) => material.id === value),
+                    ),
+                  );
+                }}
                 selectedIds={basket.materialIds}
                 onPreview={(material) => {
                   recordMaterialUse(material.id);
                   setViewer(material);
                 }}
               >
-                {(material) => (
-                  <>
+                {(material) =>
+                  batchMode ? (
                     <button
                       type="button"
-                      className={UI_BTN_PRIMARY}
-                      data-testid={`basket-add-${material.id}`}
-                      aria-pressed={basket.materialIds.includes(material.id)}
+                      className="material-batch-pick"
+                      data-testid={`material-batch-toggle-${material.id}`}
+                      aria-pressed={batchIds.includes(material.id)}
+                      aria-label={`${zh ? '選取' : 'Select'} ${zh ? material.titleZh : material.title}`}
                       onClick={() =>
-                        basket.materialIds.includes(material.id)
-                          ? basket.removeMaterial(material.id)
-                          : basket.addMaterial(material.id)
+                        setBatchIds((current) => toggleBatchSelection(current, material.id))
                       }
                     >
-                      {basket.materialIds.includes(material.id)
+                      {batchIds.includes(material.id)
                         ? zh
-                          ? '從素材籃移除'
-                          : 'Remove from basket'
+                          ? '已選取'
+                          : 'Selected'
                         : zh
-                          ? '加入素材籃'
-                          : 'Add to basket'}
+                          ? '選取素材'
+                          : 'Select material'}
                     </button>
-                    <MaterialFavoriteButton
-                      id={material.id}
-                      title={zh ? material.titleZh : material.title}
-                    />
-                    <Link
-                      className={UI_BTN_SECONDARY}
-                      to={`${ROUTES.MATERIALS}/${material.id}`}
-                      aria-label={`${zh ? material.titleZh : material.title} ${zh ? '素材詳情' : 'details'}`}
-                    >
-                      {zh ? '素材詳情' : 'Details'}
-                    </Link>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className={UI_BTN_PRIMARY}
+                        data-testid={`basket-add-${material.id}`}
+                        aria-pressed={basket.materialIds.includes(material.id)}
+                        onClick={() =>
+                          basket.materialIds.includes(material.id)
+                            ? basket.removeMaterial(material.id)
+                            : basket.addMaterial(material.id)
+                        }
+                      >
+                        {basket.materialIds.includes(material.id)
+                          ? zh
+                            ? '從素材籃移除'
+                            : 'Remove from basket'
+                          : zh
+                            ? '加入素材籃'
+                            : 'Add to basket'}
+                      </button>
+                      <MaterialFavoriteButton
+                        id={material.id}
+                        title={zh ? material.titleZh : material.title}
+                      />
+                      <Link
+                        className={UI_BTN_SECONDARY}
+                        to={`${ROUTES.MATERIALS}/${material.id}`}
+                        aria-label={`${zh ? material.titleZh : material.title} ${zh ? '素材詳情' : 'details'}`}
+                      >
+                        {zh ? '素材詳情' : 'Details'}
+                      </Link>
+                    </>
+                  )
+                }
               </MaterialGroupCard>
             ))}
           </div>

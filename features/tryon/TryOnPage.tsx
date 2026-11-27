@@ -183,6 +183,26 @@ export default function TryOnPage({ onImageSelected }: TryOnPageProps) {
               <legend id="tryon-setup-title">{zh ? '準備試穿' : 'Prepare your try-on'}</legend>
               <div className="tryon-pane-scroll" role="region" aria-labelledby="tryon-setup-title">
                 <HistoryStorageNotice />
+                <div className="tryon-action-row">
+                  <button
+                    type="button"
+                    className="tool-button tool-button-secondary"
+                    disabled={formDisabled || isDemoMode || !tryOn.hasSelectedReferences}
+                    onClick={tryOn.clearReferences}
+                  >
+                    {zh ? '清空參考素材' : 'Clear references'}
+                  </button>
+                  {tryOn.canUndoReferenceClear && (
+                    <button
+                      type="button"
+                      className="tool-button tool-button-secondary"
+                      disabled={formDisabled || isDemoMode}
+                      onClick={tryOn.undoClearReferences}
+                    >
+                      {zh ? '復原清空' : 'Undo clear'}
+                    </button>
+                  )}
+                </div>
                 <TryOnUploadSection
                   personPreviewUrl={tryOn.personPreviewUrl}
                   clothingPreviewUrls={tryOn.clothingPreviewUrls}

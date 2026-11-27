@@ -93,6 +93,16 @@ export function toggleMaterialFavorite(id: string) {
       : [...current.favoriteIds, id],
   });
 }
+export function setMaterialFavorites(ids: readonly string[], favorite: boolean) {
+  const current = getSnapshot();
+  const next = new Set(current.favoriteIds);
+  for (const id of ids) {
+    if (!knownIds.has(id)) continue;
+    if (favorite) next.add(id);
+    else next.delete(id);
+  }
+  save({ ...current, favoriteIds: [...next] });
+}
 export function clearRecentMaterials() {
   save({ ...getSnapshot(), recentIds: [] });
 }

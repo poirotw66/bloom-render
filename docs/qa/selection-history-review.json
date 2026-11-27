@@ -1,0 +1,57 @@
+{
+  "date": "2026-11-27",
+  "goal": "Selection clear/undo, catalog batch actions and history reference tracing.",
+  "implementation": {
+    "undo": "Single in-memory snapshot; newer edits invalidate it. Person, prompt, settings and completed results survive reference clearing. Reload does not restore undo.",
+    "batch": "Select displayed atomic material variants; prune filtered or changed variants; idempotent favorite updates; basket union validation is atomic.",
+    "history": "Stored input blobs first, exact trusted catalog links, explicitly labeled current catalog fallback and missing original inputs. Viewer owns only its own reference object URLs."
+  },
+  "verification": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "unit": {
+      "files": 129,
+      "passed": 834
+    },
+    "browser": {
+      "passed": 185,
+      "added": 11,
+      "themes": ["bloom", "night", "newyear"],
+      "widths": [390, 1440],
+      "accessibility": "No serious or critical WCAG2A/AA violations in new catalog batch UI and active history modal. Native modal scope excludes inert background."
+    },
+    "build": "passed",
+    "sourceCsp": {
+      "catalogAssetReferences": 608,
+      "htmlShells": 53
+    },
+    "bundle": {
+      "entryGzipBytes": 123967,
+      "homeGzipBytes": {
+        "en": 162559,
+        "zh-TW": 166251
+      },
+      "budgetBytes": 179200
+    },
+    "layoutGate": {
+      "status": "pass",
+      "reused": false,
+      "existingWaivers": 5,
+      "newWaivers": 0,
+      "warnings": 9
+    },
+    "visualInspection": ["History viewer at 390 and 1440", "Try-on workspace at 768 and 1024"]
+  },
+  "licensing": {
+    "upstream": "https://github.com/atuizz/posewear",
+    "revision": "f9f55db356464af87f97b39f5bb57930ed0cd6df",
+    "notice": "public/licenses/posewear-MIT.txt",
+    "sha256": "e51839a61736e058feea7e959cdba9caf7682f503c31f47364e90aac53ef3c47",
+    "builtNoticeIdentical": true,
+    "copyrightPreservedInBuiltChunks": true,
+    "newAssetsImported": false
+  },
+  "privacy": "Only synthetic fixture images and existing local catalog assets used. No private photos read or copied; no paid generation calls.",
+  "deployment": "Local implementation only; not committed or pushed."
+}

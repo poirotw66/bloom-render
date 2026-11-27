@@ -1,0 +1,6 @@
+GATE: PASS
+Route: /try-on
+Production preview: http://127.0.0.1:4218/try-on
+Date: 2026-11-27
+Existing documented waivers: 5; new waivers: 0; open failures: 0; warnings: 9.
+Full regression: 834 unit tests and 185 browser tests passed.

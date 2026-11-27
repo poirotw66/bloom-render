@@ -34,6 +34,36 @@
         "Built-in references resolve through BloomRender's own catalog and canonical public site.",
         "Private upload slots use generic attachment placeholders; a separate action preserves existing prompt copying."
       ]
+    },
+    {
+      "upstreamPath": "src/studio.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/studio.js",
+      "sourceSha256": "173e7d9dc53976e91d5f8aea1ce48714c9620c918206b83960102d3c28e39706",
+      "localPath": "utils/posewearSelectionSnapshot.ts",
+      "consumers": ["features/tryon/useTryOn.ts"],
+      "adaptations": [
+        "Typed reference snapshot and revision-guarded single-level restore; immutable local Files replace browser-global URLs."
+      ]
+    },
+    {
+      "upstreamPath": "src/extras.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/extras.js",
+      "sourceSha256": "1061052b2f696f5b1c57bc8739838d823c1cc7155f93748c9afa1e4d3e7685d9",
+      "localPath": "utils/posewearBatchSelection.ts",
+      "consumers": ["features/materials/MaterialsPage.tsx"],
+      "adaptations": [
+        "Typed Set selection and visible-item pruning replace global DOM selection; only the local catalog is used."
+      ]
+    },
+    {
+      "upstreamPath": "src/history.js",
+      "sourceUrl": "https://github.com/atuizz/posewear/blob/f9f55db356464af87f97b39f5bb57930ed0cd6df/src/history.js",
+      "sourceSha256": "5cf48b776309a49788097a644792c09b31f19e92e581b0ab1ae4adaed0597cd0",
+      "localPath": "utils/posewearHistoryReferences.ts",
+      "consumers": ["components/HistoryResultViewer.tsx"],
+      "adaptations": [
+        "Ordered typed reference descriptors replace lightbox HTML; private stored blobs take priority and only trusted local catalog IDs resolve."
+      ]
     }
   ],
   "excluded": [

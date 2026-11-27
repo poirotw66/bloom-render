@@ -10,19 +10,34 @@ import '../styles/material-browser.css';
 interface Props {
   group: MaterialGroup;
   selectedIds?: readonly string[];
+  displayedMaterial?: TryOnMaterial;
+  onVariantChange?: (material: TryOnMaterial) => void;
   children: (material: TryOnMaterial) => React.ReactNode;
   onPreview: (material: TryOnMaterial) => void;
 }
 
-export default function MaterialGroupCard({ group, selectedIds = [], children, onPreview }: Props) {
+export default function MaterialGroupCard({
+  group,
+  selectedIds = [],
+  displayedMaterial,
+  onVariantChange,
+  children,
+  onPreview,
+}: Props) {
   const { language } = useLanguage();
   const zh = language === 'zh-TW';
   const [variantId, setVariantId] = useState<string>();
   const material =
+    displayedMaterial ??
     group.materials.find((item) => item.id === variantId) ??
     group.materials.find((item) => selectedIds.includes(item.id)) ??
     group.materials.find((item) => item.poseReference?.representation === 'lineart') ??
     group.materials[0];
+  const changeVariant = (next: TryOnMaterial) => {
+    if (next.id === material.id) return;
+    setVariantId(next.id);
+    onVariantChange?.(next);
+  };
   const title = zh ? material.titleZh : material.title;
   const views = [...new Set(group.materials.map((item) => item.pose?.view).filter(Boolean))];
   const representations = group.materials.filter((item) => item.pose?.view === material.pose?.view);
@@ -73,7 +88,7 @@ export default function MaterialGroupCard({ group, selectedIds = [], children, o
                       item.pose?.view === view &&
                       item.poseReference?.representation === material.poseReference?.representation,
                   ) ?? group.materials.find((item) => item.pose?.view === view);
-                if (next) setVariantId(next.id);
+                if (next) changeVariant(next);
               }}
             >
               {getPoseMetadataLabel('view', view!, language)}
@@ -89,7 +104,10 @@ export default function MaterialGroupCard({ group, selectedIds = [], children, o
             <select
               className="tool-control"
               value={material.id}
-              onChange={(event) => setVariantId(event.target.value)}
+              onChange={(event) => {
+                const next = group.materials.find((item) => item.id === event.target.value);
+                if (next) changeVariant(next);
+              }}
             >
               {representations.map((item) => (
                 <option key={item.id} value={item.id}>

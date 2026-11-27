@@ -48,6 +48,15 @@ export function useDialog<T extends HTMLElement>(
     container?.focus({ preventScroll: true });
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      // A native top-layer dialog owns keyboard interaction while above this panel.
+      // Older engines/test DOMs may not implement :modal; an open modeless dialog
+      // must not disable the panel's focus trap.
+      try {
+        const modal = document.querySelector('dialog:modal');
+        if (modal && !container?.contains(modal)) return;
+      } catch {
+        // Keep the ordinary panel behavior when :modal is unsupported.
+      }
       if (event.key === 'Escape') {
         event.stopPropagation();
         onCloseRef.current();

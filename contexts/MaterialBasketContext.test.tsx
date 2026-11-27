@@ -58,4 +58,43 @@ describe('persistent material basket', () => {
     expect(view.result.current.materialIds).toEqual(['white-oxford-shirt']);
     expect(view.result.current.message).toBe('storage-unavailable');
   });
+  it('undoes clear once with exact order, invalidates on edits and never persists undo', () => {
+    const view = renderHook(useMaterialBasket, { wrapper });
+    act(() => {
+      view.result.current.addMaterials(['pose-relaxed-front', 'white-oxford-shirt']);
+      view.result.current.clear();
+    });
+    expect(view.result.current.canUndoClear).toBe(true);
+    expect(JSON.parse(localStorage.getItem(MATERIAL_BASKET_STORAGE_KEY)!)).toEqual({
+      materialBasket: { v: 1, materialIds: [] },
+    });
+    act(() => view.result.current.undoClear());
+    expect(view.result.current.materialIds).toEqual(['pose-relaxed-front', 'white-oxford-shirt']);
+    expect(view.result.current.canUndoClear).toBe(false);
+    act(() => {
+      view.result.current.clear();
+      view.result.current.addMaterial('white-oxford-shirt');
+      view.result.current.undoClear();
+    });
+    expect(view.result.current.materialIds).toEqual(['white-oxford-shirt']);
+    view.unmount();
+    expect(renderHook(useMaterialBasket, { wrapper }).result.current.canUndoClear).toBe(false);
+  });
+
+  it('rejects batch conflicts atomically including existing references', () => {
+    const view = renderHook(useMaterialBasket, { wrapper });
+    act(() => view.result.current.addMaterial('pose-relaxed-front'));
+    const before = view.result.current.materialIds;
+    let outcome;
+    act(() => {
+      outcome = view.result.current.addMaterials(['white-oxford-shirt', 'pose-hand-on-hip']);
+    });
+    expect(outcome).toEqual({ ok: false, message: 'reference-conflict' });
+    expect(view.result.current.materialIds).toBe(before);
+    act(() => {
+      view.result.current.addMaterial('white-oxford-shirt');
+      view.result.current.addMaterials(['white-oxford-shirt']);
+    });
+    expect(view.result.current.materialIds).toEqual(['pose-relaxed-front', 'white-oxford-shirt']);
+  });
 });
