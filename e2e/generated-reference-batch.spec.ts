@@ -2,27 +2,12 @@ import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { openWorkspace } from './helpers/workspace';
 import type { TryOnMaterial } from '../constants/tryOnMaterials';
+import { GENERATED_REFERENCE_BATCH } from '../constants/generatedReferenceBatch.mjs';
 
 const catalog: TryOnMaterial[] = JSON.parse(
   readFileSync(new URL('../constants/tryOnMaterials.json', import.meta.url), 'utf8'),
 );
-const previous = new Set([
-  'white-crew-neck-tee',
-  'black-ribbed-tank',
-  'light-blue-denim-shirt',
-  'oatmeal-knit-sweater',
-  'heather-gray-hoodie',
-  'navy-striped-long-sleeve',
-  'indigo-straight-jeans',
-  'sand-wide-leg-trousers',
-  'olive-cargo-trousers',
-  'charcoal-pleated-midi-skirt',
-  'beige-trench-coat',
-  'cropped-denim-jacket',
-]);
-const batch = catalog.filter(
-  (item) => item.license === 'LicenseRef-AI-Generated' && !previous.has(item.id),
-);
+const batch = catalog.filter((item) => Object.hasOwn(GENERATED_REFERENCE_BATCH, item.id));
 const SAMPLE = readFileSync(new URL('./fixtures/sample.png', import.meta.url));
 
 async function seed(page: Page) {
@@ -55,7 +40,7 @@ test('all sixty approved references ship exact original PNGs and source records'
   }
 });
 
-for (const [posture, count, id] of [
+for (const [posture, , id] of [
   ['squatting', 4, 'pose-full-single-p061'],
   ['kneeling', 2, 'pose-full-single-p033'],
   ['lying', 2, 'pose-full-single-p050'],
@@ -66,6 +51,7 @@ for (const [posture, count, id] of [
     await page.goto('/materials');
     await page.getByRole('combobox', { name: 'Material type', exact: true }).selectOption('pose');
     await page.getByRole('combobox', { name: 'Posture', exact: true }).selectOption(posture);
+    const count = catalog.filter((item) => item.pose?.posture === posture).length;
     await expect(page.locator('article[data-material-group]')).toHaveCount(count);
     await page.goto(`/materials/${id}`);
     await expect(page.getByTestId('pose-view-select')).toHaveCount(0);
@@ -85,50 +71,54 @@ for (const [posture, count, id] of [
   });
 }
 
-test('new dress and crouching pose preserve exact input bytes through try-on and replay', async ({
-  page,
-}) => {
-  test.setTimeout(60_000);
-  await seed(page);
-  const calls: Array<{ prompt: string; input_references: unknown[] }> = [];
-  await page.route('https://openrouter.ai/api/v1/images', async (route) => {
-    calls.push(route.request().postDataJSON());
-    await route.fulfill({
-      contentType: 'application/json',
-      body: JSON.stringify({
-        data: [{ b64_json: SAMPLE.toString('base64'), media_type: 'image/png' }],
-      }),
+for (const [label, ids] of [
+  ['original PNG', ['navy-wrap-dress', 'pose-full-single-p061']],
+  ['WebP outfit and pose', ['outfit-spr-0032', 'pose-full-single-p018']],
+] as const) {
+  test(`${label} references preserve exact input bytes through try-on and replay`, async ({
+    page,
+  }) => {
+    test.setTimeout(60_000);
+    await seed(page);
+    const calls: Array<{ prompt: string; input_references: unknown[] }> = [];
+    await page.route('https://openrouter.ai/api/v1/images', async (route) => {
+      calls.push(route.request().postDataJSON());
+      await route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({
+          data: [{ b64_json: SAMPLE.toString('base64'), media_type: 'image/png' }],
+        }),
+      });
     });
+    for (const id of ids) {
+      await page.goto(`/materials/${id}`);
+      await page.getByTestId(`basket-add-${id}`).click();
+    }
+    const basket = await openWorkspace(page, 'Material basket');
+    await basket.getByRole('button', { name: 'Use in try-on', exact: true }).click();
+    await page
+      .getByTestId('tryon-person-input')
+      .setInputFiles({ name: 'synthetic-person.png', mimeType: 'image/png', buffer: SAMPLE });
+    await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
+    await expect.poll(() => calls.length).toBe(1);
+    expect(calls[0].input_references).toHaveLength(3);
+    expect(calls[0].prompt).not.toMatch(
+      /Create a clean studio flat lay|Create one original neutral pose-reference/,
+    );
+    for (const id of ids)
+      expect(JSON.stringify(calls[0].input_references)).toContain(
+        readFileSync(
+          new URL(`../public/${catalog.find((item) => item.id === id)!.image}`, import.meta.url),
+        ).toString('base64'),
+      );
+    await expect(page.locator('.tryon-result-image img').first()).toBeVisible();
+    await page.goto('/history');
+    await page.getByRole('button', { name: 'Generate again', exact: true }).first().click();
+    const library = await openWorkspace(page, 'Reference library');
+    for (const id of ids)
+      await expect(library.getByTestId(`tryon-material-${id}`)).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
   });
-  const ids = ['navy-wrap-dress', 'pose-full-single-p061'];
-  for (const id of ids) {
-    await page.goto(`/materials/${id}`);
-    await page.getByTestId(`basket-add-${id}`).click();
-  }
-  const basket = await openWorkspace(page, 'Material basket');
-  await basket.getByRole('button', { name: 'Use in try-on', exact: true }).click();
-  await page
-    .getByTestId('tryon-person-input')
-    .setInputFiles({ name: 'synthetic-person.png', mimeType: 'image/png', buffer: SAMPLE });
-  await page.getByRole('button', { name: 'Generate Try-On', exact: true }).click();
-  await expect.poll(() => calls.length).toBe(1);
-  expect(calls[0].input_references).toHaveLength(3);
-  expect(calls[0].prompt).not.toMatch(
-    /Create a clean studio flat lay|Create one original neutral pose-reference/,
-  );
-  for (const id of ids)
-    expect(JSON.stringify(calls[0].input_references)).toContain(
-      readFileSync(new URL(`../public/images/tryon-materials/${id}.png`, import.meta.url)).toString(
-        'base64',
-      ),
-    );
-  await expect(page.locator('.tryon-result-image img').first()).toBeVisible();
-  await page.goto('/history');
-  await page.getByRole('button', { name: 'Generate again', exact: true }).first().click();
-  const library = await openWorkspace(page, 'Reference library');
-  for (const id of ids)
-    await expect(library.getByTestId(`tryon-material-${id}`)).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
-});
+}

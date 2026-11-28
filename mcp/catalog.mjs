@@ -47,14 +47,15 @@ function validatePoseRole(material, context) {
     (!['clothing', 'pose'].includes(material.role) ||
       (material.role === 'pose' && material.poseReference !== undefined) ||
       (material.image !== undefined
-        ? !material.image.endsWith('.png')
-        : material.mimeType !== 'image/png' || material.requiresRasterization !== false))
+        ? !/\.(png|webp)$/.test(material.image)
+        : !['image/png', 'image/webp'].includes(material.mimeType) ||
+          material.requiresRasterization !== false))
   )
     context.addIssue({
       code: 'custom',
       path: ['license'],
       message:
-        'AI-generated references must be clothing or single-view pose PNGs with generation provenance.',
+        'AI-generated references must be clothing or single-view pose PNG/WebP images with generation provenance.',
     });
   if (!isValidMaterialClothing(material))
     context.addIssue({

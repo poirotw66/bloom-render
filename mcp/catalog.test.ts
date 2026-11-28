@@ -9,6 +9,7 @@ import {
 } from './catalog.mjs';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
 import { GENERATED_REFERENCE_BATCH } from '../constants/generatedReferenceBatch.mjs';
+import { GENERATED_MATERIAL_BATCHES } from '../constants/generatedMaterialBatches.mjs';
 import { getMaterialPrompt } from '../constants/poseMetadata.mjs';
 import { POSE_STUDIES } from '../constants/poseStudies.mjs';
 import { SITE_URL } from '../constants/site';
@@ -96,11 +97,17 @@ describe('read-only material catalog', () => {
     expect(catalog.searchReferences({ groupId: 'unknown-group' }).items).toEqual([]);
     expect(catalog.searchReferences({ role: 'clothing', view: 'front' }).items).toEqual([]);
     expect(catalog.searchReferences({ cameraHeight: 'high-angle' }).items).toEqual([]);
-    expect(
-      catalog.searchReferences({ query: '四分之三', limit: 50 }).items.map((item) => item.id),
-    ).toEqual(
-      TRYON_MATERIALS.filter((item) => item.pose?.view === 'three-quarter').map((item) => item.id),
+    const expectedThreeQuarter = TRYON_MATERIALS.filter(
+      (item) => item.pose?.view === 'three-quarter',
+    ).map((item) => item.id);
+    const threeQuarterPages = Array.from(
+      { length: Math.ceil(expectedThreeQuarter.length / 50) },
+      (_, page) => catalog.searchReferences({ query: '四分之三', limit: 50, offset: page * 50 }),
     );
+    expect(threeQuarterPages.flatMap((page) => page.items.map((item) => item.id))).toEqual(
+      expectedThreeQuarter,
+    );
+    expect(threeQuarterPages[0].total).toBe(expectedThreeQuarter.length);
     expect(catalog.searchReferences({ query: 'Not specified' }).items).toHaveLength(3);
     expect(catalog.searchReferences({ query: '未標示' }).items).toHaveLength(3);
     expect(
@@ -219,7 +226,7 @@ describe('read-only material catalog', () => {
     }
     expect(items.map((item) => item.id)).toEqual(TRYON_MATERIALS.map((item) => item.id));
     expect(new Set(items.map((item) => item.id)).size).toBe(TRYON_MATERIALS.length);
-    expect(catalog.searchReferences({ offset: 500 }).items).toEqual([]);
+    expect(catalog.searchReferences({ offset: TRYON_MATERIALS.length + 10 }).items).toEqual([]);
     expect(outputSchemas.searchReferences.safeParse(first).success).toBe(true);
   });
 
@@ -300,11 +307,19 @@ describe('read-only material catalog', () => {
         expect(reference).toMatchObject({
           role: 'pose',
           license: 'LicenseRef-AI-Generated',
-          mimeType: 'image/png',
+          mimeType: TRYON_MATERIALS.find(
+            (material) => material.id === reference.id,
+          )!.image.endsWith('.webp')
+            ? 'image/webp'
+            : 'image/png',
           requiresRasterization: false,
           pose: { posture, view: 'three-quarter' },
         });
-        expect(reference.source).toContain('reference-generation-2026-11-28-manifest.json');
+        const batch = GENERATED_MATERIAL_BATCHES.find((entry) =>
+          Object.hasOwn(entry.entries, reference.id),
+        );
+        expect(batch).toBeDefined();
+        expect(reference.source).toBe(batch!.source);
         expect(reference).not.toHaveProperty('poseReference');
         expect(reference).not.toHaveProperty('pairedReference');
         expect(reference.poseAlternatives?.map((alternative) => alternative.id)).toEqual([

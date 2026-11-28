@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import React, { useState } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { MaterialBasketProvider } from '../contexts/MaterialBasketContext';
@@ -20,6 +20,18 @@ const poseGroupCount = groupMaterials(
 const threeQuarterFaces = groupMaterials(
   TRYON_MATERIALS.filter((material) => matchesPoseFilters(material, { view: 'three-quarter' })),
 ).map((group) => group.materials[0].id);
+const englishThreeQuarterFaces = groupMaterials(
+  TRYON_MATERIALS.filter(
+    (material) =>
+      matchesPoseFilters(material, { view: 'three-quarter' }) || material.id === 'navy-wrap-dress',
+  ),
+).map((group) => group.materials[0].id);
+
+vi.mock('../constants/tryOnMaterials', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../constants/tryOnMaterials')>();
+  const { materialUiCatalog } = await import('../test-fixtures/materialUiCatalog');
+  return { ...actual, TRYON_MATERIALS: materialUiCatalog(actual.TRYON_MATERIALS) };
+});
 
 beforeEach(() => {
   localStorage.clear();
@@ -167,7 +179,7 @@ describe('pose material controls', () => {
     expect(screen.getByTestId('basket-add-pose-hand-on-hip')).toBeTruthy();
     expect(
       screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual([...threeQuarterFaces, 'navy-wrap-dress'].map((id) => `basket-add-${id}`));
+    ).toEqual(englishThreeQuarterFaces.map((id) => `basket-add-${id}`));
     fireEvent.change(query, { target: { value: 'relaxed-standing' } });
     expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(1);
     expect(screen.getByTestId('basket-add-pose-relaxed-front')).toBeTruthy();
@@ -234,7 +246,7 @@ describe('pose material controls', () => {
     });
     expect(
       screen.getAllByTestId(/^tryon-material-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual([...threeQuarterFaces, 'navy-wrap-dress'].map((id) => `tryon-material-${id}`));
+    ).toEqual(englishThreeQuarterFaces.map((id) => `tryon-material-${id}`));
     expect(screen.getByTestId('tryon-material-pose-hand-on-hip')).toBeTruthy();
   });
 

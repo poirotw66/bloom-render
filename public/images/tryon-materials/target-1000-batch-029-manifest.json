@@ -1,0 +1,248 @@
+{
+  "v": 1,
+  "kind": "ai-generated-reference-batch",
+  "license": "LicenseRef-AI-Generated",
+  "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/target-1000-batch-029-manifest.json",
+  "provider": "OpenAI",
+  "model": "gpt-image-2.6-sunburst",
+  "generatedOn": "2026-11-28",
+  "inputImages": 0,
+  "distribution": {
+    "format": "webp",
+    "quality": 95,
+    "originalFormat": "png",
+    "losslessFallback": true
+  },
+  "settings": {
+    "n": 1,
+    "size": "1024x1024",
+    "quality": "medium",
+    "outputFormat": "png"
+  },
+  "subjectSource": {
+    "repository": "https://github.com/atuizz/posewear",
+    "use": "Text topic research only; no source image downloaded, supplied or copied."
+  },
+  "images": [
+    {
+      "id": "outfit-aut-0097",
+      "image": "images/tryon-materials/outfit-aut-0097.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: autumn outfit, knit cardigan, trousers, wool coat, socks, bag, necklace. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "AUT-0097",
+      "originalSha256": "5dfb120fd6be802722db0d1b52b749c4a02c6c2e455239ed2735c762ce3bbf82",
+      "sha256": "99362a083de77a7290169d7a9d72bd8ef63093162bd9701c0f87895d58a40177",
+      "distributionPsnrDb": 43.3418,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-win-0096",
+      "image": "images/tryon-materials/outfit-win-0096.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: winter outfit, ivory knit mini dress, socks, suede boots, fur bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "WIN-0096",
+      "originalSha256": "19ebf54ff7b8c8e1c1478642605fac2d877507945d62ae547681f5831c56a3a3",
+      "sha256": "a62a7ec51f161fdfe1dbbb2a56c224c49991f4bd985ff7eaf8ca28c1e625498d",
+      "distributionPsnrDb": 43.1131,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-spr-0109",
+      "image": "images/tryon-materials/outfit-spr-0109.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: spring outfit, pink knit cardigan, lace camisole, pleated midi skirt, denim jacket. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SPR-0109",
+      "originalSha256": "b6cfb5af489b926fd0692d8d7b4127a5e58b8143e63dbe4329a9902d0e09d19e",
+      "sha256": "e3ad7a4848d6038c576a2d1980bef6b4639d0ebb81c636bcccbf5722d71c64a1",
+      "distributionPsnrDb": 42.3647,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-sum-0002",
+      "image": "images/tryon-materials/outfit-sum-0002.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: summer outfit, blue black denim shorts, white socks, sandals, ribbon bag, necklace. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SUM-0002",
+      "originalSha256": "87319d70385b6c6e6f400b34dcf55794514ee7304e13808c9b61ffa6d4afa4c0",
+      "sha256": "31d36e1a8b9074bad344a9f7d5ca41dce040e4280e6f5cca0eb4af5cff74792a",
+      "distributionPsnrDb": 43.7234,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-aut-0098",
+      "image": "images/tryon-materials/outfit-aut-0098.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: autumn outfit, burgundy blouse, red pleated skirt, brown leather boots, bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "AUT-0098",
+      "originalSha256": "c37efe0a94025c429c642b42140c9d46bc5a6fea7892501cf391efff216f7c33",
+      "sha256": "e3db2b7c32931bb9c146207f2e119341cb76ed095a32cddc3cbf1ef34c3d4705",
+      "distributionPsnrDb": 41.6685,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-win-0097",
+      "image": "images/tryon-materials/outfit-win-0097.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: winter outfit, beige fur knit cardigan, brown trousers, black tights, boots, bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "WIN-0097",
+      "originalSha256": "8817a5eb7e074eea97d7a5eae229793703e2497a661fe904d3df4fe3f201bd97",
+      "sha256": "67bdc31fea7d1293c41358c8d7aa37f9df1b46aed1a149838d708349b02049c4",
+      "distributionPsnrDb": 44.1467,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-spr-0111",
+      "image": "images/tryon-materials/outfit-spr-0111.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: spring outfit, lace camisole, cardigan, ivory denim trousers, beige socks, ribbon, miniskirt. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SPR-0111",
+      "originalSha256": "f44972251e0b957c9a2adaf1cf3514d2109aea437b2047e482dc4f8c1704842a",
+      "sha256": "616bb9f4d99233ad312462dcc2101150f29a80f66e08dd01329e2dd1c77cc5b9",
+      "distributionPsnrDb": 43.3332,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-sum-0003",
+      "image": "images/tryon-materials/outfit-sum-0003.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: summer outfit, white lace trim, navy pleated mini skirt, shorts, shirt, socks, sandals. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SUM-0003",
+      "originalSha256": "88db8cc1f8c057808388fc0a91c487272ceddebdc4521f941201b37050619ec7",
+      "sha256": "0ca2d8f2c2421d1bff1c67ac1a2cf71f070632ac180397838bddd9f9610aff61",
+      "distributionPsnrDb": 43.9999,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-aut-0099",
+      "image": "images/tryon-materials/outfit-aut-0099.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: autumn outfit, ribbon knit mini dress, leather jacket, socks, suede boots, bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "AUT-0099",
+      "originalSha256": "0a60131ca4e59ef709e38646460a425e45b287e5a5cdad6e5b960f9550725e36",
+      "sha256": "dff8816c8a29ee78b79624352745b301a02869108335ef2259441539dc67bc6b",
+      "distributionPsnrDb": 43.9737,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-win-0098",
+      "image": "images/tryon-materials/outfit-win-0098.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: winter outfit, brown knit top, cream pleated mini skirt, socks, boots, leather bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "WIN-0098",
+      "originalSha256": "1f646b9f4987cf34054a9aabccb865f52136a07c519942ddf28f97bb10e768d7",
+      "sha256": "8868abe39c375804e5e4b08e7613713576a5887dd29ea81888652d1d0c8fd320",
+      "distributionPsnrDb": 42.8057,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-spr-0112",
+      "image": "images/tryon-materials/outfit-spr-0112.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: spring outfit, green ivory mini skirt, shorts, socks, sandals, bag, hat. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SPR-0112",
+      "originalSha256": "459866f803835dfb501ed85bd7d55df279a88fe35b3cc81d424c1ddcc039db2e",
+      "sha256": "c62e9bf605eb2f7cac6fe42e684b03aa0818ca629b518ea4bfe62b4bca593b3d",
+      "distributionPsnrDb": 43.8874,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-sum-0004",
+      "image": "images/tryon-materials/outfit-sum-0004.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: summer outfit, blue cardigan, pink denim mini skirt, lace socks, sandals, tote bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SUM-0004",
+      "originalSha256": "18281823902b907c96041408571a22a380de86ad12450b48278e16934726d559",
+      "sha256": "0889589df327549c81a7ac73006b59b730ec1b70b82c7903b878fc0b7b662bba",
+      "distributionPsnrDb": 42.385,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-aut-0100",
+      "image": "images/tryon-materials/outfit-aut-0100.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: autumn outfit, ivory knit top, red leather mini skirt, socks, ribbon loafers, bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "AUT-0100",
+      "originalSha256": "1c81a755e5a019a45e0ce615535b272cb01d43db5071bb7a0e1c7a3a341c0e01",
+      "sha256": "d80ab2af294e10a27130ee517cd02f2fba17985aa5b57f288b7487dc77e95e20",
+      "distributionPsnrDb": 43.1295,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-win-0099",
+      "image": "images/tryon-materials/outfit-win-0099.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: winter outfit, knit dress, jacket, brown tights, fur boots, bag, beret. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "WIN-0099",
+      "originalSha256": "ba1585e4532cfb02b43d8f32447778a5bb1dfc79cecb2f9738f853963624bc14",
+      "sha256": "cfa1f64ce9cb8a67e16f800867b8b3f8169799829ec547f540bf89b19ea42f6f",
+      "distributionPsnrDb": 43.0175,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-spr-0113",
+      "image": "images/tryon-materials/outfit-spr-0113.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: spring outfit, yellow mini dress, jacket, white socks, beige ribbon bag, choker. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SPR-0113",
+      "originalSha256": "dbea6f9c2c40cc65baba97ef752b3837ffc548caac731b9942a6af6ef89841be",
+      "sha256": "4cb4f427ccda8a37fd4fc18370cccc84f4d4e66ca6201be3bedff825a3943bf2",
+      "distributionPsnrDb": 43.8048,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-sum-0005",
+      "image": "images/tryon-materials/outfit-sum-0005.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: summer outfit, orange white mini skirt, cardigan, lace socks, sandals, tote bag, hat. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SUM-0005",
+      "originalSha256": "b53f5987ca6a551e05290dc3c74beb74db336888e4b0fa88b2202e38610baa85",
+      "sha256": "6896e49d0e6f29bfe609c8d14090a53369768b387f8f75df54a5b02f8fb7c0a0",
+      "distributionPsnrDb": 41.0189,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-aut-0101",
+      "image": "images/tryon-materials/outfit-aut-0101.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: autumn outfit, burgundy ribbon knit mini dress, brown tights, black boots, bag. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "AUT-0101",
+      "originalSha256": "3adfbc7fb9c689c7a6c0175b63430fa48cc11d3ee4c2d9cd39968f642c1ad018",
+      "sha256": "a83ac1bdb82a3407c3156502d37e73937909184e3971a0439fb41b2ca65260be",
+      "distributionPsnrDb": 42.9329,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-win-0100",
+      "image": "images/tryon-materials/outfit-win-0100.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: winter outfit, grey turtleneck, knit ribbon, navy fur mini skirt, brown jacket. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "WIN-0100",
+      "originalSha256": "de9bff52ab5692ac8b08a4b075ade469462e86a811c2dbadfedbca8b572cc532",
+      "sha256": "b797a2ff1561d36dfb22129cdbb0824a9ced35e823bfab854c395456b5414d6b",
+      "distributionPsnrDb": 44.3807,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-spr-0115",
+      "image": "images/tryon-materials/outfit-spr-0115.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: spring outfit, beige jacket, camisole, ivory trousers, cardigan, ribbon bag, hat. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SPR-0115",
+      "originalSha256": "e990cbed81df1631503d82f6d70f5874b6590afc2e819edbc7aaa9826d9ba155",
+      "sha256": "63d292166caf17db555337a0f8ac15cfffb179db219c66b85efd363c078bf138",
+      "distributionPsnrDb": 44.0387,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "outfit-sum-0006",
+      "image": "images/tryon-materials/outfit-sum-0006.webp",
+      "role": "clothing",
+      "prompt": "Create an original coordinated clothing flat lay based only on this generic text topic: summer outfit, pink cardigan, mint denim mini skirt, lace socks, sandals, ribbon. Arrange the complete adult-sized outfit with each garment and accessory separately visible, naturally laid flat from the front, no overlapping important construction details, all items fully inside the frame. Realistic fabric, seams and construction, warm off-white seamless studio background, soft even light, generous margins, square composition. No person, mannequin, body parts, hanger, branding, text, logos, watermark or collage. Avoid readable lettering and reproduce no existing photograph or branded design. This is one complete outfit reference, not a single-garment substitute.",
+      "subjectSourceId": "SUM-0006",
+      "originalSha256": "4543e5802541026de80488b0711982d7ca125895f4cf0140cee6c5fdd17ea885",
+      "sha256": "e81c914c0dd550daa659051c99be16f2be35921edcf3d69bcd4af74040c5eeb1",
+      "distributionPsnrDb": 42.4298,
+      "distributionEncoding": "lossy"
+    }
+  ]
+}

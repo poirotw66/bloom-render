@@ -8,6 +8,12 @@ import { MaterialBasketProvider } from '../../contexts/MaterialBasketContext';
 import { confirmDiscardUnsavedWork } from '../../hooks/useUnsavedWork';
 import MaterialsPage from './MaterialsPage';
 vi.mock('../../hooks/useUnsavedWork', () => ({ confirmDiscardUnsavedWork: vi.fn(() => true) }));
+vi.mock('../../constants/tryOnMaterials', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../constants/tryOnMaterials')>();
+  const { materialUiCatalog } = await import('../../test-fixtures/materialUiCatalog');
+  return { ...actual, TRYON_MATERIALS: materialUiCatalog(actual.TRYON_MATERIALS) };
+});
+
 beforeEach(() => {
   localStorage.clear();
   localStorage.setItem('bloom_language', 'en');

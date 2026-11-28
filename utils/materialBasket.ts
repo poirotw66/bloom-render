@@ -1,6 +1,8 @@
-import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { TRYON_MATERIAL_IDENTITIES } from '../constants/tryOnMaterialIdentities';
 import { DEFAULT_TRYON_BACKGROUND, DEFAULT_TRYON_STYLE } from '../constants/tryOn';
 import type { TryOnRecipe } from '../types/tryOnRecipe';
+
+const materialsById = new Map(TRYON_MATERIAL_IDENTITIES.map((material) => [material.id, material]));
 
 export const MATERIAL_BASKET_STORAGE_KEY = 'bloom_material_basket';
 export type MaterialBasketMessage =
@@ -27,7 +29,7 @@ export function validateMaterialBasketIds(value: unknown): string[] | null {
   const roles = new Map<string, number>();
   for (const id of value) {
     if (typeof id !== 'string') return null;
-    const material = TRYON_MATERIALS.find((item) => item.id === id);
+    const material = materialsById.get(id);
     if (!material) return null;
     const count = (roles.get(material.role) ?? 0) + 1;
     if (count > (material.role === 'clothing' ? 5 : 1)) return null;
@@ -72,11 +74,11 @@ export function createMaterialBasketTryOnRecipe(materialIds: string[]): TryOnRec
 }
 
 export function addMaterialToBasket(materialIds: string[], id: string) {
-  const material = TRYON_MATERIALS.find((item) => item.id === id);
+  const material = materialsById.get(id);
   if (!material) return { materialIds, message: 'invalid-material' as const };
   if (materialIds.includes(id)) return { materialIds, message: 'already-selected' as const };
   const sameRole = materialIds.filter(
-    (selected) => TRYON_MATERIALS.find((item) => item.id === selected)?.role === material.role,
+    (selected) => materialsById.get(selected)?.role === material.role,
   );
   if (material.role === 'clothing' && sameRole.length >= 5)
     return { materialIds, message: 'clothing-limit' as const };
@@ -91,7 +93,7 @@ export function addMaterialToBasket(materialIds: string[], id: string) {
 
 export function addMaterialsToBasket(materialIds: string[], additions: string[]) {
   const union = [...new Set([...materialIds, ...additions])];
-  const materials = union.map((id) => TRYON_MATERIALS.find((item) => item.id === id));
+  const materials = union.map((id) => materialsById.get(id));
   if (materials.some((item) => !item))
     return { materialIds, message: 'invalid-material' as const, ok: false };
   if (materials.filter((item) => item!.role === 'clothing').length > 5)

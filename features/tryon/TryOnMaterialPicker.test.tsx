@@ -7,6 +7,12 @@ import { TRYON_MATERIALS } from '../../constants/tryOnMaterials';
 import { groupMaterials } from '../../constants/materialGroups';
 import TryOnMaterialPicker from './TryOnMaterialPicker';
 
+vi.mock('../../constants/tryOnMaterials', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../constants/tryOnMaterials')>();
+  const { materialUiCatalog } = await import('../../test-fixtures/materialUiCatalog');
+  return { ...actual, TRYON_MATERIALS: materialUiCatalog(actual.TRYON_MATERIALS) };
+});
+
 vi.mock('../../contexts/LanguageContext', () => ({
   useLanguage: () => ({ language: 'en' }),
 }));

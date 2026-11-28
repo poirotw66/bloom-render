@@ -45,4 +45,12 @@ describe('clothing category metadata', () => {
     expect(matchesClothingCategory(pose, 'trousers')).toBe(false);
     expect(matchesClothingCategory(pose)).toBe(true);
   });
+  it('keeps a complete outfit distinct from individual garment categories', () => {
+    const outfit = { role: 'clothing', clothing: { category: 'outfit' } };
+    expect(isValidMaterialClothing(outfit)).toBe(true);
+    expect(getClothingCategoryLabel('outfit', 'zh-TW')).toBe('整套穿搭');
+    expect(getClothingSearchText(outfit)).toContain('套裝');
+    expect(matchesClothingCategory(outfit, 'outfit')).toBe(true);
+    expect(matchesClothingCategory(outfit, 'top')).toBe(false);
+  });
 });

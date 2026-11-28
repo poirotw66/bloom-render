@@ -21,8 +21,7 @@ import { consumePendingRemix } from './utils/pendingRemix';
 import './styles/tool-shell.css';
 import './styles/studio-shell.css';
 import './styles/tool-pages.css';
-import MaterialBasket from './components/MaterialBasket';
-import { MaterialBasketProvider } from './contexts/MaterialBasketContext';
+import { MaterialBasketProvider, useMaterialBasket } from './contexts/MaterialBasketContext';
 import { ToolCommandsProvider } from './contexts/ToolCommandsContext';
 import { CommandPaletteProvider } from './contexts/CommandPaletteContext';
 
@@ -46,6 +45,16 @@ const EditorPage = lazy(() => import('./features/editor/EditorPage'));
 const PromptGalleryPage = lazy(() => import('./features/prompt-gallery/PromptGalleryPage'));
 const RemixPage = lazy(() => import('./features/remix/RemixPage'));
 const OpenRouterCallbackPage = lazy(() => import('./features/oauth/OpenRouterCallbackPage'));
+const MaterialBasket = lazy(() => import('./components/MaterialBasket'));
+
+function MaterialBasketHost() {
+  const { isOpen } = useMaterialBasket();
+  return isOpen ? (
+    <Suspense fallback={null}>
+      <MaterialBasket />
+    </Suspense>
+  ) : null;
+}
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -199,7 +208,7 @@ const App: React.FC = () => {
               !isTryOnRoute && <SiteFooter />
             )}
             <StarNudge />
-            <MaterialBasket />
+            <MaterialBasketHost />
           </div>
         </CommandPaletteProvider>
       </ToolCommandsProvider>

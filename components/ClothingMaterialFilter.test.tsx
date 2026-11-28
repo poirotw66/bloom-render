@@ -8,6 +8,14 @@ import { MaterialBasketProvider } from '../contexts/MaterialBasketContext';
 import { MATERIAL_BASKET_STORAGE_KEY } from '../utils/materialBasket';
 import MaterialsPage from '../features/materials/MaterialsPage';
 import TryOnMaterialPicker from '../features/tryon/TryOnMaterialPicker';
+import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+const clothingCount = TRYON_MATERIALS.filter((item) => item.role === 'clothing').length;
+
+vi.mock('../constants/tryOnMaterials', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../constants/tryOnMaterials')>();
+  const { materialUiCatalog } = await import('../test-fixtures/materialUiCatalog');
+  return { ...actual, TRYON_MATERIALS: materialUiCatalog(actual.TRYON_MATERIALS) };
+});
 
 beforeEach(() => {
   localStorage.clear();
@@ -48,7 +56,7 @@ describe('clothing discovery controls', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
     expect(screen.getByLabelText('Clothing category')).toHaveProperty('value', '');
     expect(screen.getByLabelText('Search materials')).toHaveProperty('value', '');
-    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(51);
+    expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(clothingCount);
     await waitFor(() =>
       expect(
         JSON.parse(localStorage.getItem(MATERIAL_BASKET_STORAGE_KEY)!).materialBasket.materialIds,
@@ -61,12 +69,12 @@ describe('clothing discovery controls', () => {
     expect(screen.getByLabelText('Clothing category')).toHaveProperty('value', '');
   });
 
-  it('localizes the five clothing categories', () => {
+  it('localizes all clothing categories including complete outfits', () => {
     localStorage.setItem('bloom_language', 'zh-TW');
     page();
     fireEvent.change(screen.getByLabelText('素材類型'), { target: { value: 'clothing' } });
     expect(screen.getByLabelText('服裝分類')).toBeTruthy();
-    for (const name of ['全部服裝', '上衣', '褲裝', '裙裝', '外套', '洋裝'])
+    for (const name of ['全部服裝', '上衣', '褲裝', '裙裝', '外套', '洋裝', '整套穿搭'])
       expect(screen.getByRole('option', { name })).toBeTruthy();
   });
 
@@ -95,7 +103,7 @@ describe('clothing discovery controls', () => {
     fireEvent.change(screen.getByLabelText('Clothing category'), { target: { value: 'dress' } });
     expect(screen.queryAllByTestId(/^tryon-material-/)).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
-    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(51);
+    expect(screen.getAllByTestId(/^tryon-material-/)).toHaveLength(clothingCount);
     expect(
       screen.getByTestId('tryon-material-white-oxford-shirt').getAttribute('aria-pressed'),
     ).toBe('true');

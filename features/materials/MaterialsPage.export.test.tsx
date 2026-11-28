@@ -11,6 +11,12 @@ vi.mock('../../utils/posewearMaterialBatch', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../utils/posewearMaterialBatch')>()),
   downloadMaterialBatchZip: vi.fn(),
 }));
+vi.mock('../../constants/tryOnMaterials', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../constants/tryOnMaterials')>();
+  const { materialUiCatalog } = await import('../../test-fixtures/materialUiCatalog');
+  return { ...actual, TRYON_MATERIALS: materialUiCatalog(actual.TRYON_MATERIALS) };
+});
+
 beforeEach(() => {
   localStorage.clear();
   localStorage.setItem('bloom_language', 'en');
@@ -27,6 +33,9 @@ function open() {
       </LanguageProvider>
     </MemoryRouter>,
   );
+  fireEvent.change(screen.getByLabelText('Search materials'), {
+    target: { value: 'Oxford shirt' },
+  });
   fireEvent.click(screen.getByRole('button', { name: 'Batch selection' }));
   fireEvent.click(screen.getByTestId('material-batch-toggle-white-oxford-shirt'));
 }

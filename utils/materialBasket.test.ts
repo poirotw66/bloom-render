@@ -7,13 +7,13 @@ import {
   validateMaterialBasketIds,
 } from './materialBasket';
 
-vi.mock('../constants/tryOnMaterials', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../constants/tryOnMaterials')>();
-  const shirt = actual.TRYON_MATERIALS.find((item) => item.role === 'clothing')!;
+vi.mock('../constants/tryOnMaterialIdentities', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../constants/tryOnMaterialIdentities')>();
+  const shirt = actual.TRYON_MATERIAL_IDENTITIES.find((item) => item.role === 'clothing')!;
   return {
     ...actual,
-    TRYON_MATERIALS: [
-      ...actual.TRYON_MATERIALS,
+    TRYON_MATERIAL_IDENTITIES: [
+      ...actual.TRYON_MATERIAL_IDENTITIES,
       ...Array.from({ length: 6 }, (_, index) => ({ ...shirt, id: `fixture-shirt-${index}` })),
     ],
   };

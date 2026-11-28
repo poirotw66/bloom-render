@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { GENERATED_MATERIAL_BATCHES } from '../constants/generatedMaterialBatches.mjs';
+import { generatedImageDimensions } from './generated-image-dimensions.mjs';
 
 /** Validate provenance and shipped bytes; image generation is intentionally not reproducible. */
 export function validateGeneratedClothing(root, assetDir = path.join(root, 'public')) {
@@ -38,6 +39,15 @@ export function validateGeneratedClothing(root, assetDir = path.join(root, 'publ
           `${batch.manifest}: manifest identity, model and generation settings must match the reviewed batch`,
         );
       const expectedIds = Object.keys(batch.entries);
+      const imageFormat = batch.imageFormat ?? 'png';
+      if (!['png', 'webp'].includes(imageFormat)) fail('Unsupported reviewed distribution format');
+      if (
+        imageFormat === 'webp' &&
+        (manifest.distribution?.format !== 'webp' ||
+          manifest.distribution?.quality !== 95 ||
+          manifest.distribution?.originalFormat !== 'png')
+      )
+        fail(`${batch.manifest}: WebP distribution settings differ from the reviewed encoding`);
       if (!Array.isArray(manifest.images) || manifest.images.length !== expectedIds.length) {
         fail(
           `${batch.manifest}: manifest must describe all ${expectedIds.length} reviewed references`,
@@ -54,7 +64,7 @@ export function validateGeneratedClothing(root, assetDir = path.join(root, 'publ
         }
         const expected = batch.entries[image.id];
         const material = generated.find((entry) => entry.id === image.id);
-        const expectedPath = `images/tryon-materials/${image.id}.png`;
+        const expectedPath = `images/tryon-materials/${image.id}.${imageFormat}`;
         const matchingClothing =
           expected.role !== 'clothing' ||
           material?.clothing?.category === expected.clothing.category;
@@ -81,13 +91,16 @@ export function validateGeneratedClothing(root, assetDir = path.join(root, 'publ
         const bytes = readFileSync(path.join(assetDir, expectedPath));
         if (createHash('sha256').update(bytes).digest('hex') !== image.sha256)
           fail(`${image.id}: image hash differs from manifest`);
+        const dimensions = generatedImageDimensions(bytes, imageFormat);
+        if (dimensions?.width !== 1024 || dimensions?.height !== 1024)
+          fail(`${image.id}: expected a 1024 by 1024 ${imageFormat.toUpperCase()}`);
         if (
-          bytes.length < 24 ||
-          bytes.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a' ||
-          bytes.readUInt32BE(16) !== 1024 ||
-          bytes.readUInt32BE(20) !== 1024
+          imageFormat === 'webp' &&
+          (!/^[a-f0-9]{64}$/.test(image.originalSha256 ?? '') ||
+            typeof image.distributionPsnrDb !== 'number' ||
+            image.distributionPsnrDb < 38)
         )
-          fail(`${image.id}: expected a 1024 by 1024 PNG`);
+          fail(`${image.id}: original PNG hash and verified distribution fidelity are required`);
       }
     } catch (error) {
       fail(`${batch.manifest}: cannot verify generation provenance (${error.message})`);

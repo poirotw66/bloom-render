@@ -166,6 +166,24 @@ describe('material source and CSP build guard', () => {
       'cannot verify generation provenance',
     );
   });
+  it('requires the original PNG hash and checked fidelity on WebP distribution copies', () => {
+    const root = fixture();
+    const batch = GENERATED_MATERIAL_BATCHES.find((entry) => entry.imageFormat === 'webp')!;
+    const file = path.join(root, 'public', batch.manifest);
+    const manifest = JSON.parse(readFileSync(file, 'utf8'));
+    manifest.images[0].originalSha256 = '';
+    manifest.images[0].distributionPsnrDb = 20;
+    writeFileSync(file, JSON.stringify(manifest));
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'original PNG hash and verified distribution fidelity are required',
+    );
+    copyGeneratedClothing(path.join(root, 'public'));
+    const image = path.join(root, 'public', manifest.images[0].image);
+    writeFileSync(image, Buffer.concat([readFileSync(image), Buffer.from('tampered')]));
+    const errors = validateGeneratedClothing(root).join('\n');
+    expect(errors).toContain('image hash differs from manifest');
+    expect(errors).toContain('1024 by 1024 WEBP');
+  });
   it('rejects removing or relabeling reviewed generated references as original CC0 assets', () => {
     const root = fixture();
     mutateMaterials(root, (entries) => {
@@ -294,7 +312,7 @@ describe('material source and CSP build guard', () => {
     expect(errors).toContain('seated-study-manifest.json');
     expect(errors).toContain('missing route shell');
     expect(errors).toContain('dist/travel/index.html: CSP differs');
-  }, 15_000); // This fixture copies and hashes both source and dist for every generated PNG.
+  }, 30_000); // Copies and hashes source + dist for all 1,112 references, including PNG and WebP.
 });
 
 describe('asset reference boundaries', () => {

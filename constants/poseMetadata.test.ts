@@ -125,7 +125,7 @@ describe('structured pose metadata', () => {
       const matches = TRYON_MATERIALS.filter((material) =>
         matchesPoseFilters(material, { posture }),
       );
-      expect(matches.map((material) => material.id)).toEqual(ids);
+      expect(matches.map((material) => material.id)).toEqual(expect.arrayContaining([...ids]));
       expect(getPoseMetadataLabel('posture', posture, 'zh-TW')).toBe(label);
       for (const material of matches) {
         expect(material.license).toBe('LicenseRef-AI-Generated');

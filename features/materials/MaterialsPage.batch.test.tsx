@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import React from 'react';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { MaterialBasketProvider } from '../../contexts/MaterialBasketContext';
@@ -9,6 +9,12 @@ import { MATERIAL_PREFERENCES_STORAGE_KEY } from '../../utils/materialPreference
 import { groupMaterials } from '../../constants/materialGroups';
 import { TRYON_MATERIALS } from '../../constants/tryOnMaterials';
 import MaterialsPage from './MaterialsPage';
+
+vi.mock('../../constants/tryOnMaterials', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../constants/tryOnMaterials')>();
+  const { materialUiCatalog } = await import('../../test-fixtures/materialUiCatalog');
+  return { ...actual, TRYON_MATERIALS: materialUiCatalog(actual.TRYON_MATERIALS) };
+});
 
 beforeEach(() => {
   localStorage.clear();

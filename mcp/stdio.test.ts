@@ -150,12 +150,19 @@ describe('BloomRender MCP over real stdio', () => {
       language: 'zh-TW',
     });
     expect(chinese.items.map((item) => item.id)).toContain(target.id);
-    const english = await call<Search>(client, 'bloomrender_search_references', {
-      query: 'SEATED',
-      role: 'pose',
-      language: 'en',
-    });
-    expect(english.items.map((item) => item.id)).toEqual(
+    const englishIds: string[] = [];
+    let englishOffset: number | null = 0;
+    while (englishOffset !== null) {
+      const english: Search = await call<Search>(client, 'bloomrender_search_references', {
+        query: 'SEATED',
+        role: 'pose',
+        language: 'en',
+        offset: englishOffset,
+      });
+      englishIds.push(...english.items.map((item) => item.id));
+      englishOffset = english.nextOffset;
+    }
+    expect(englishIds).toEqual(
       TRYON_MATERIALS.filter((item) => item.pose?.posture === 'seated').map((item) => item.id),
     );
     const first = await call<Search>(client, 'bloomrender_search_references', {
@@ -191,7 +198,11 @@ describe('BloomRender MCP over real stdio', () => {
         prompt: getMaterialPrompt(material, 'en'),
         license: material.license,
         source: material.source,
-        mimeType: material.image.endsWith('.svg') ? 'image/svg+xml' : 'image/png',
+        mimeType: material.image.endsWith('.svg')
+          ? 'image/svg+xml'
+          : material.image.endsWith('.webp')
+            ? 'image/webp'
+            : 'image/png',
         requiresRasterization: material.image.endsWith('.svg'),
       });
       expect(ref.imageUrl).toBe(new URL(material.image, SITE_URL).href);

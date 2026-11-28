@@ -1,0 +1,248 @@
+{
+  "v": 1,
+  "kind": "ai-generated-reference-batch",
+  "license": "LicenseRef-AI-Generated",
+  "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/target-1000-batch-002-manifest.json",
+  "provider": "OpenAI",
+  "model": "gpt-image-2.6-sunburst",
+  "generatedOn": "2026-11-28",
+  "inputImages": 0,
+  "settings": {
+    "n": 1,
+    "size": "1024x1024",
+    "quality": "medium",
+    "outputFormat": "png"
+  },
+  "subjectSource": {
+    "repository": "https://github.com/atuizz/posewear",
+    "use": "Text topic research only; no source image downloaded, supplied or copied."
+  },
+  "images": [
+    {
+      "id": "pose-full-single-p034",
+      "image": "images/tryon-materials/pose-full-single-p034.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: kneeling, upper body arched back. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P034",
+      "sha256": "e62a86b28b928182ab28b35b56d24a60441d5cbe07435ad6b582c36ddb202e0d",
+      "originalSha256": "6dfca743948ba7de55e02ab9b0477d8134e5a0dfd3dc60bb5ec046738b5a1f03",
+      "distributionPsnrDb": 46.1911,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p035",
+      "image": "images/tryon-materials/pose-full-single-p035.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: kneeling upright, arms stretched up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P035",
+      "sha256": "f7d6157c5f8f9523719bc394908b10b752dc5d8f956b66ee6bd3527a4d58ae49",
+      "originalSha256": "7fd821dd5ea1aacbfbc004244a137b3c6cef1d0b6886ca69ac2f01123fa51140",
+      "distributionPsnrDb": 46.5625,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p036",
+      "image": "images/tryon-materials/pose-full-single-p036.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: kneeling, one hand in hair, other on hip. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P036",
+      "sha256": "1b5e28ab96a2407a296379981db8b3aeb9261abd0f022846f1acf6bf8d775f8a",
+      "originalSha256": "a5103fb8e2f2fe81722a9d7157315c46ba8a124902842d59937bafd9b5b9108b",
+      "distributionPsnrDb": 46.3217,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p037",
+      "image": "images/tryon-materials/pose-full-single-p037.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: half-kneeling, looking up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P037",
+      "sha256": "d6b23618466d48a2709678497660ad3eac1a67d59bf3ea1c1559192fce8c5b93",
+      "originalSha256": "4835465a5a4252feea7227f8422af934565fda1e71a2e3980f953f7933b81241",
+      "distributionPsnrDb": 46.737,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p038",
+      "image": "images/tryon-materials/pose-full-single-p038.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: kneeling, leaning sideways, hand on floor. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P038",
+      "sha256": "1019c171b1b9d8f76c24aea08d5c7f386afb1c369a271462bb7924ebd9ba7322",
+      "originalSha256": "4643e4496a84d78dc26a7ed18589178a112c49e0c24f719fa57c795ba639989a",
+      "distributionPsnrDb": 46.1662,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p039",
+      "image": "images/tryon-materials/pose-full-single-p039.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: kneeling, hands on hips, arching. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P039",
+      "sha256": "7459f7292e85d0bb88658f13ddbb801ec67a2c98c937ee9ee43fac704ccd5436",
+      "originalSha256": "6e6748c5e854fd709deaaca93f8114827d3cfd9212601d1eb4cb00f7c9acc4db",
+      "distributionPsnrDb": 46.027,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p040",
+      "image": "images/tryon-materials/pose-full-single-p040.webp",
+      "role": "pose",
+      "prompt": "Required posture: kneeling on the floor. Create an original neutral pose reference: kneeling, swaying hips, one arm raised. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P040",
+      "sha256": "fc012507cced5110d1d62af5ea7b9dd08023d8998ea65f1e8b06be68611a9938",
+      "originalSha256": "f22be97e355cceb4a147e841cfb51feb7022904721eadbc50809cea6dcca2ac4",
+      "distributionPsnrDb": 46.574,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p041",
+      "image": "images/tryon-materials/pose-full-single-p041.webp",
+      "role": "pose",
+      "prompt": "Required posture: seated on the floor with hips resting on the floor. Create an original neutral pose reference: W-sitting, hands on thighs. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P041",
+      "sha256": "9c45f188b66fd3739734cfd66215021d3af2eab47ecd68719042f6964a0cda41",
+      "originalSha256": "7643ad980538a502ce28e29144fb63342a53516121d90bb819c8e6d687f6c80d",
+      "distributionPsnrDb": 46.219,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p042",
+      "image": "images/tryon-materials/pose-full-single-p042.webp",
+      "role": "pose",
+      "prompt": "Required posture: seated on the floor with hips resting on the floor. Create an original neutral pose reference: W-sitting, hands on floor in front. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P042",
+      "sha256": "0b0cb4322bb09177a61c198b0c9527bad80aceaee04ae0e04938fc9f6963f158",
+      "originalSha256": "0187f5232ee2e5bd326107d98e6316757f282273ea4eb746251b7cc27b4e9b1d",
+      "distributionPsnrDb": 46.1373,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p043",
+      "image": "images/tryon-materials/pose-full-single-p043.webp",
+      "role": "pose",
+      "prompt": "Required posture: seated on the floor with hips resting on the floor. Create an original neutral pose reference: W-sitting, hands behind head. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P043",
+      "sha256": "9e48141b66323e09a4ee42810b4a9ee4635ae4a9da69fe9cbaaf2abb7965c52a",
+      "originalSha256": "e720beda1d14e3570b2ba7069651fb021bb1d97bf47401d809a8c68bde502a3f",
+      "distributionPsnrDb": 45.6364,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p044",
+      "image": "images/tryon-materials/pose-full-single-p044.webp",
+      "role": "pose",
+      "prompt": "Required posture: seated on the floor with hips resting on the floor. Create an original neutral pose reference: W-sitting, hands propped behind. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P044",
+      "sha256": "00ee6e7b24452227a829a2b05bdcc9a6d0c518eab438ed66c83afe03aced7e67",
+      "originalSha256": "192d071213100dde0aee9b66ce6b0a9117141c9f485542c44da4d3fd80973d0c",
+      "distributionPsnrDb": 45.7854,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p047",
+      "image": "images/tryon-materials/pose-full-single-p047.webp",
+      "role": "pose",
+      "prompt": "Required posture: seated on the floor with hips resting on the floor. Create an original neutral pose reference: side-sitting, one arm stretched up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P047",
+      "sha256": "70de17760636d447fd18b376a7e3078e565a533e39945ce1b65e18b9a4f0fbe2",
+      "originalSha256": "59312320638956c43fe95675b0457e88295a3f50c64adaf203808b02d14b447d",
+      "distributionPsnrDb": 47.0863,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p048",
+      "image": "images/tryon-materials/pose-full-single-p048.webp",
+      "role": "pose",
+      "prompt": "Required posture: seated on the floor with hips resting on the floor. Create an original neutral pose reference: W-sitting, hand at neck. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P048",
+      "sha256": "f09b179e5dcbdaf19971dd363ec51b36dc47deffbb18778a1cf632b54e30640d",
+      "originalSha256": "fad460f3beff095ef0f33586b568db0340a07d19c33e9e391137fb10e6fee2fa",
+      "distributionPsnrDb": 46.1411,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p049",
+      "image": "images/tryon-materials/pose-full-single-p049.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying on back, arms overhead. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P049",
+      "sha256": "84403ac02e927ebf81f5e62c37c2a1b621a13d2b67cbeb6ee36d996cda2a620f",
+      "originalSha256": "95bcbf751200636f9c0dc131a9a6c2c8e8e36711889f61553978415a92190d97",
+      "distributionPsnrDb": 47.192,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p051",
+      "image": "images/tryon-materials/pose-full-single-p051.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying prone with feet up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P051",
+      "sha256": "bb7f5bb2a86c3d1392a1e42fb382de1de7f2a0be5d8cb23bd6b20584fa2ec192",
+      "originalSha256": "7dce1b7ed4c24c6e5c294d37e91669eb0476b76c3dd2c54783cc8687469e967c",
+      "distributionPsnrDb": 46.3406,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p052",
+      "image": "images/tryon-materials/pose-full-single-p052.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying on back, one knee bent up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P052",
+      "sha256": "5f13c28c3332c92c2530020d210bf4077f4eb8e52cf2e720ba2d4e88e72a3e5e",
+      "originalSha256": "9d03cd5cb5143a24651f1492e37e2dfb7fe4487dc041320ca1e139ef6b37bc3f",
+      "distributionPsnrDb": 46.5971,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p054",
+      "image": "images/tryon-materials/pose-full-single-p054.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying on side, showing waist curve. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P054",
+      "sha256": "3eb7efd07f30556c9dfd1196194ef71f363c7bec16dc83b85f1699ca9af85b7c",
+      "originalSha256": "3fb22b24e0c0e1622cef381632dcf6e314e5b4cab71bc16b24999131a265fefc",
+      "distributionPsnrDb": 46.9547,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p056",
+      "image": "images/tryon-materials/pose-full-single-p056.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying on back, both legs straight up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P056",
+      "sha256": "b939f0c5932683935236710db0e821802ca6bacccfc510598ffe1e0fa901c95b",
+      "originalSha256": "05574a374ab502073621da051b75db762544553d7ec4c4baef7fc01e2b331404",
+      "distributionPsnrDb": 46.7506,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p057",
+      "image": "images/tryon-materials/pose-full-single-p057.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying on side, one arm overhead. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P057",
+      "sha256": "84b1910b891130071b108329bab201ad9da0eff330784073b829759d25582a90",
+      "originalSha256": "e6d7815f089ed487136dfff2953eab9f7d0bad24373a62a84740d3716b753e14",
+      "distributionPsnrDb": 48.56,
+      "distributionEncoding": "lossy"
+    },
+    {
+      "id": "pose-full-single-p059",
+      "image": "images/tryon-materials/pose-full-single-p059.webp",
+      "role": "pose",
+      "prompt": "Required posture: lying or reclining on the floor. Create an original neutral pose reference: lying on back, chest arched up. Subject count and composition: full body, solo. Use adult-proportioned faceless gray mannequins fully covered in plain opaque gray bodysuits. Show all figures completely, including hands and feet, with clear readable joints and anatomically plausible contact and balance. Eye-level three-quarter camera, orthographic-style rendering, warm off-white studio background, soft even light, generous margins, square composition. No text, logos, watermark or collage. This is a visual pose reference, not a measured depth map. Do not imitate any existing image.",
+      "subjectSourceId": "full_single_P059",
+      "sha256": "c1f86ff31a75a493e118d963d1f68e23aa7d049b9b65ef01658aaeb7fbbcf6f5",
+      "originalSha256": "9abd9d9effcbc11b4acea59336f8498edffdafed32f69f3f71ccfad4abe89fed",
+      "distributionPsnrDb": 46.6504,
+      "distributionEncoding": "lossy"
+    }
+  ],
+  "distribution": {
+    "format": "webp",
+    "quality": 95,
+    "originalFormat": "png",
+    "losslessFallback": true
+  }
+}

@@ -1,0 +1,579 @@
+{
+  "v": 1,
+  "updatedOn": "2026-11-28",
+  "status": "target-1000-complete",
+  "procedure": [
+    "盤點與去重",
+    "列出項目、來源與費用",
+    "使用者核准清單",
+    "API生成",
+    "逐項外觀檢查",
+    "整合素材庫並校驗",
+    "回填盤點狀態"
+  ],
+  "sourceInventory": {
+    "totalSubjects": 1695,
+    "poseSubjects": 288,
+    "clothingOutfits": 1407,
+    "poseViews": 1439,
+    "localCsv": "output/imagegen/asset-plan-2026-11-28/complete-source-inventory.csv",
+    "coverageCounts": {
+      "本輪單一機位已完成": 98,
+      "未排程，需另行審核": 529,
+      "整套原創服裝已完成": 902,
+      "待排程": 166
+    },
+    "note": "來源整套服裝與我們生成的單件服裝不是一對一關係。不得用1695減60宣稱剩餘1635項。"
+  },
+  "completedBatch": {
+    "id": "reference60-2026-11-28",
+    "status": "integrated",
+    "items": 60,
+    "poseImages": 24,
+    "clothingImages": 36,
+    "manifest": "public/images/tryon-materials/reference-generation-2026-11-28-manifest.json",
+    "completionCsv": "output/imagegen/batch-2026-11-28/completion-status.csv",
+    "itemsById": [
+      {
+        "id": "pose-full-single-p004",
+        "titleZh": "抱膝側坐",
+        "kind": "pose",
+        "sourceId": "full_single_P004",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p012",
+        "titleZh": "單膝立起托腮",
+        "kind": "pose",
+        "sourceId": "full_single_P012",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p014",
+        "titleZh": "坐姿握腳踝",
+        "kind": "pose",
+        "sourceId": "full_single_P014",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p045",
+        "titleZh": "側坐雙腿斜伸",
+        "kind": "pose",
+        "sourceId": "full_single_P045",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p046",
+        "titleZh": "側坐手貼臉頰",
+        "kind": "pose",
+        "sourceId": "full_single_P046",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p079",
+        "titleZh": "坐姿轉身",
+        "kind": "pose",
+        "sourceId": "full_single_P079",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p016",
+        "titleZh": "站姿雙手整理頭髮",
+        "kind": "pose",
+        "sourceId": "full_single_P016",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p017",
+        "titleZh": "站姿越肩回望",
+        "kind": "pose",
+        "sourceId": "full_single_P017",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p019",
+        "titleZh": "站姿雙臂上伸",
+        "kind": "pose",
+        "sourceId": "full_single_P019",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p020",
+        "titleZh": "站姿單手置後腦",
+        "kind": "pose",
+        "sourceId": "full_single_P020",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p022",
+        "titleZh": "站姿雙手背後",
+        "kind": "pose",
+        "sourceId": "full_single_P022",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p024",
+        "titleZh": "站姿向後抬腳",
+        "kind": "pose",
+        "sourceId": "full_single_P024",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p061",
+        "titleZh": "蹲姿雙手放膝",
+        "kind": "pose",
+        "sourceId": "full_single_P061",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p062",
+        "titleZh": "蹲姿單手撐地",
+        "kind": "pose",
+        "sourceId": "full_single_P062",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p063",
+        "titleZh": "蹲姿托腮",
+        "kind": "pose",
+        "sourceId": "full_single_P063",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p066",
+        "titleZh": "蹲姿回頭",
+        "kind": "pose",
+        "sourceId": "full_single_P066",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p031",
+        "titleZh": "跪坐雙手放大腿",
+        "kind": "pose",
+        "sourceId": "full_single_P031",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p033",
+        "titleZh": "單膝跪手放膝",
+        "kind": "pose",
+        "sourceId": "full_single_P033",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-upper80v2-p001",
+        "titleZh": "胸前雙手比心",
+        "kind": "pose",
+        "sourceId": "upper80v2_P001",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-upper80v2-p019",
+        "titleZh": "將頭髮別到耳後",
+        "kind": "pose",
+        "sourceId": "upper80v2_P019",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p050",
+        "titleZh": "側躺托腮",
+        "kind": "pose",
+        "sourceId": "full_single_P050",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p058",
+        "titleZh": "俯臥枕臂",
+        "kind": "pose",
+        "sourceId": "full_single_P058",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p067",
+        "titleZh": "前傾雙手放膝",
+        "kind": "pose",
+        "sourceId": "full_single_P067",
+        "stage": "integrated"
+      },
+      {
+        "id": "pose-full-single-p071",
+        "titleZh": "前傾雙臂下垂",
+        "kind": "pose",
+        "sourceId": "full_single_P071",
+        "stage": "integrated"
+      },
+      {
+        "id": "ivory-camisole",
+        "titleZh": "象牙白細肩帶上衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0002",
+        "stage": "integrated"
+      },
+      {
+        "id": "black-draped-blouse",
+        "titleZh": "黑色垂墜襯衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "pink-poplin-blouse",
+        "titleZh": "粉色棉府綢襯衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "yellow-floral-blouse",
+        "titleZh": "黃色碎花襯衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "navy-v-neck-knit",
+        "titleZh": "藏青 V 領針織上衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "gray-ribbed-turtleneck",
+        "titleZh": "灰色羅紋高領上衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0168",
+        "stage": "integrated"
+      },
+      {
+        "id": "white-cropped-shirt",
+        "titleZh": "白色短版襯衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0008",
+        "stage": "integrated"
+      },
+      {
+        "id": "brown-cable-knit",
+        "titleZh": "棕色麻花針織上衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "green-boatneck-knit",
+        "titleZh": "綠色船領針織上衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "blue-ruffle-blouse",
+        "titleZh": "淺藍荷葉領襯衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "cream-knit-vest",
+        "titleZh": "奶油色針織背心",
+        "kind": "clothing",
+        "sourceId": "SPR-0177",
+        "stage": "integrated"
+      },
+      {
+        "id": "burgundy-short-sleeve-knit",
+        "titleZh": "酒紅短袖針織上衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "black-tailored-trousers",
+        "titleZh": "黑色西裝長褲",
+        "kind": "clothing",
+        "sourceId": "SPR-0009",
+        "stage": "integrated"
+      },
+      {
+        "id": "white-wide-leg-trousers",
+        "titleZh": "白色寬管長褲",
+        "kind": "clothing",
+        "sourceId": "SPR-0009",
+        "stage": "integrated"
+      },
+      {
+        "id": "brown-corduroy-trousers",
+        "titleZh": "棕色燈芯絨長褲",
+        "kind": "clothing",
+        "sourceId": "SPR-0162",
+        "stage": "integrated"
+      },
+      {
+        "id": "blue-flared-jeans",
+        "titleZh": "藍色微喇叭牛仔褲",
+        "kind": "clothing",
+        "sourceId": "SPR-0161",
+        "stage": "integrated"
+      },
+      {
+        "id": "beige-tailored-shorts",
+        "titleZh": "米色打褶短褲",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "black-denim-shorts",
+        "titleZh": "黑色牛仔短褲",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "navy-a-line-midi-skirt",
+        "titleZh": "藏青 A 字中長裙",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "floral-maxi-skirt",
+        "titleZh": "碎花長裙",
+        "kind": "clothing",
+        "sourceId": "SPR-0002",
+        "stage": "integrated"
+      },
+      {
+        "id": "cream-button-cardigan",
+        "titleZh": "奶油色排釦開衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0002",
+        "stage": "integrated"
+      },
+      {
+        "id": "navy-long-cardigan",
+        "titleZh": "藏青長版開衫",
+        "kind": "clothing",
+        "sourceId": "SPR-0002",
+        "stage": "integrated"
+      },
+      {
+        "id": "gray-wool-coat",
+        "titleZh": "灰色羊毛大衣",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "black-leather-jacket",
+        "titleZh": "黑色皮革外套",
+        "kind": "clothing",
+        "sourceId": "SPR-0168",
+        "stage": "integrated"
+      },
+      {
+        "id": "gray-cropped-jacket",
+        "titleZh": "灰色短版西裝外套",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "olive-quilted-coat",
+        "titleZh": "橄欖綠鋪棉外套",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "white-cropped-jacket",
+        "titleZh": "白色短版外套",
+        "kind": "clothing",
+        "sourceId": "SPR-0003",
+        "stage": "integrated"
+      },
+      {
+        "id": "navy-hooded-coat",
+        "titleZh": "藏青連帽長外套",
+        "kind": "clothing",
+        "sourceId": "SPR-0001",
+        "stage": "integrated"
+      },
+      {
+        "id": "black-slip-midi-dress",
+        "titleZh": "黑色細肩帶中長洋裝",
+        "kind": "clothing",
+        "sourceId": "SPR-0004",
+        "stage": "integrated"
+      },
+      {
+        "id": "ivory-shirt-dress",
+        "titleZh": "象牙白襯衫洋裝",
+        "kind": "clothing",
+        "sourceId": "SPR-0008",
+        "stage": "integrated"
+      },
+      {
+        "id": "navy-wrap-dress",
+        "titleZh": "藏青裹身洋裝",
+        "kind": "clothing",
+        "sourceId": "SPR-0004",
+        "stage": "integrated"
+      },
+      {
+        "id": "beige-floral-maxi-dress",
+        "titleZh": "米色碎花長洋裝",
+        "kind": "clothing",
+        "sourceId": "SPR-0005",
+        "stage": "integrated"
+      },
+      {
+        "id": "burgundy-party-dress",
+        "titleZh": "酒紅緞面禮服",
+        "kind": "clothing",
+        "sourceId": "SPR-0004",
+        "stage": "integrated"
+      },
+      {
+        "id": "blue-summer-dress",
+        "titleZh": "藍色夏日洋裝",
+        "kind": "clothing",
+        "sourceId": "SPR-0004",
+        "stage": "integrated"
+      },
+      {
+        "id": "brown-knit-dress",
+        "titleZh": "棕色針織洋裝",
+        "kind": "clothing",
+        "sourceId": "SPR-0006",
+        "stage": "integrated"
+      },
+      {
+        "id": "lavender-pleated-dress",
+        "titleZh": "淡紫百褶洋裝",
+        "kind": "clothing",
+        "sourceId": "SUM-0021",
+        "stage": "integrated"
+      }
+    ]
+  },
+  "nextBatch": {
+    "id": "next9-2026-11-28",
+    "status": "superseded-by-target-1000-plan",
+    "items": 9,
+    "poseImages": 3,
+    "clothingImages": 6,
+    "localReviewCsv": "output/imagegen/asset-plan-2026-11-28/next-9-items.csv",
+    "localExecutionPlan": "output/imagegen/asset-plan-2026-11-28/next-9-items.json",
+    "localBudgetRecord": "output/imagegen/asset-plan-2026-11-28/next-9-budget.json",
+    "approvals": {
+      "user": "superseded-by-approved-target-1000",
+      "generation": "see-target-1000",
+      "visualReview": "see-target-1000",
+      "integration": "see-target-1000"
+    },
+    "itemsById": [
+      {
+        "id": "blue-denim-mini-skirt",
+        "titleZh": "藍色牛仔短裙",
+        "kind": "clothing",
+        "sourceId": "SPR-0139",
+        "stage": "superseded-by-target-1000",
+        "replacementMaterialId": "outfit-spr-0139"
+      },
+      {
+        "id": "green-satin-midi-skirt",
+        "titleZh": "綠色緞面中長裙",
+        "kind": "clothing",
+        "sourceId": "SUM-0206",
+        "stage": "superseded-by-target-1000",
+        "replacementMaterialId": "outfit-sum-0206"
+      },
+      {
+        "id": "black-leather-midi-skirt",
+        "titleZh": "黑色皮革中長裙",
+        "kind": "clothing",
+        "sourceId": "SPR-0249",
+        "stage": "superseded-by-target-1000",
+        "replacementMaterialId": "outfit-spr-0249"
+      },
+      {
+        "id": "yellow-pleated-mini-skirt",
+        "titleZh": "黃色百褶短裙",
+        "kind": "clothing",
+        "sourceId": "SPR-0032",
+        "stage": "superseded-by-target-1000",
+        "replacementMaterialId": "outfit-spr-0032"
+      },
+      {
+        "id": "khaki-a-line-skirt",
+        "titleZh": "卡其 A 字裙",
+        "kind": "clothing",
+        "sourceId": "AUT-0118",
+        "stage": "superseded-by-target-1000",
+        "replacementMaterialId": "outfit-aut-0118"
+      },
+      {
+        "id": "beige-corduroy-skirt",
+        "titleZh": "米色燈芯絨半身裙",
+        "kind": "clothing",
+        "sourceId": "WIN-0064",
+        "stage": "superseded-by-target-1000",
+        "replacementMaterialId": "outfit-win-0064"
+      },
+      {
+        "id": "pose-full-single-p018",
+        "titleZh": "站姿雙手叉腰",
+        "kind": "pose",
+        "sourceId": "full_single_P018",
+        "stage": "integrated",
+        "replacementMaterialId": "pose-full-single-p018"
+      },
+      {
+        "id": "pose-full-single-p006",
+        "titleZh": "坐姿斜伸雙腿、單手叉腰",
+        "kind": "pose",
+        "sourceId": "full_single_P006",
+        "stage": "integrated",
+        "replacementMaterialId": "pose-full-single-p006"
+      },
+      {
+        "id": "pose-full-single-p026",
+        "titleZh": "站姿單臂上舉、髖部側移",
+        "kind": "pose",
+        "sourceId": "full_single_P026",
+        "stage": "integrated",
+        "replacementMaterialId": "pose-full-single-p026"
+      }
+    ]
+  },
+  "preservation": {
+    "originalInventoryRows": 1695,
+    "sourceImagesDownloaded": 0,
+    "upstreamMetadataAndBillingRemainLocal": true,
+    "previousLooseTenItemRecommendation": "superseded; not an approved batch"
+  },
+  "target": {
+    "count": 1000,
+    "metric": "unique-original-inventory-subjects",
+    "alreadyIntegrated": 1000,
+    "pendingGeneration": 0,
+    "selectedPoseSubjects": 98,
+    "selectedClothingOutfits": 902,
+    "localPlan": "output/imagegen/target-1000-2026-11-28/plan.json",
+    "localReviewCsv": "output/imagegen/target-1000-2026-11-28/target-1000.csv",
+    "checkpoints": 49,
+    "checkpointSize": 20,
+    "state": "complete",
+    "approvedBudgetUsd": 70,
+    "generatedAwaitingReview": 0,
+    "needsCorrection": 0,
+    "distribution": {
+      "newImages": "1024px WebP; quality95 with lossless fallback below the fidelity threshold",
+      "originalFormat": "PNG retained in private local generation archives",
+      "originalArchive": "output/imagegen/target-1000-2026-11-28/selected",
+      "earlierOriginalArchive": "output/imagegen/batch-2026-11-28/selected",
+      "legacyPublicImages": "unchanged"
+    },
+    "apiLogicalAttempts": 1000
+  }
+}

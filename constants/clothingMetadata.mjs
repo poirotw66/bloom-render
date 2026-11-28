@@ -4,6 +4,7 @@ export const CLOTHING_CATEGORIES = Object.freeze([
   'skirt',
   'outerwear',
   'dress',
+  'outfit',
 ]);
 
 const CATEGORY_LABELS = {
@@ -12,6 +13,7 @@ const CATEGORY_LABELS = {
   skirt: ['Skirts', '裙裝'],
   outerwear: ['Outerwear', '外套'],
   dress: ['Dresses', '洋裝'],
+  outfit: ['Complete outfits', '整套穿搭'],
 };
 const CATEGORY_ALIASES = {
   top: 'top tops 上衣',
@@ -19,6 +21,7 @@ const CATEGORY_ALIASES = {
   skirt: 'skirt skirts 裙裝 裙子 半身裙',
   outerwear: 'outerwear 外套 外衣',
   dress: 'dress dresses 洋裝 連身裙 連衣裙',
+  outfit: 'outfit outfits coordinated complete look set 整套穿搭 套裝 全套 搭配',
 };
 
 /** @param {string} category @param {string} [language] */
@@ -26,7 +29,7 @@ export function getClothingCategoryLabel(category, language = 'en') {
   return CATEGORY_LABELS[category]?.[language === 'zh-TW' ? 1 : 0] ?? category;
 }
 
-/** @typedef {{category:'top'|'trousers'|'skirt'|'outerwear'|'dress'}} ClothingMetadata */
+/** @typedef {{category:'top'|'trousers'|'skirt'|'outerwear'|'dress'|'outfit'}} ClothingMetadata */
 
 /** @param {unknown} value @returns {ClothingMetadata|null} */
 export function parseClothingMetadata(value) {
