@@ -2,7 +2,7 @@ import { getPoseRepresentationLabel, parsePoseReference } from './poseReferences
 
 /** Shared pose vocabulary for browser prompts, catalog filters and the local MCP. */
 export const POSE_METADATA_FIELDS = Object.freeze({
-  posture: Object.freeze(['standing', 'seated', 'walking']),
+  posture: Object.freeze(['standing', 'seated', 'walking', 'squatting', 'kneeling', 'lying']),
   view: Object.freeze(['front', 'three-quarter', 'profile', 'back']),
   cameraHeight: Object.freeze(['eye-level', 'high-angle', 'low-angle', 'unspecified']),
   framing: Object.freeze(['full-body', 'upper-body', 'close-up']),
@@ -11,7 +11,7 @@ export const POSE_METADATA_FIELDS = Object.freeze({
 /**
  * @typedef {object} PoseMetadata
  * @property {string} groupId
- * @property {'standing'|'seated'|'walking'} posture
+ * @property {'standing'|'seated'|'walking'|'squatting'|'kneeling'|'lying'} posture
  * @property {'front'|'three-quarter'|'profile'|'back'} view
  * @property {'eye-level'|'high-angle'|'low-angle'|'unspecified'} cameraHeight
  * @property {'full-body'|'upper-body'|'close-up'} framing
@@ -34,6 +34,9 @@ const LABELS = {
     standing: ['Standing', '站姿'],
     seated: ['Seated', '坐姿'],
     walking: ['Walking', '走姿'],
+    squatting: ['Squatting', '蹲姿'],
+    kneeling: ['Kneeling', '跪姿'],
+    lying: ['Lying', '躺姿'],
   },
   view: {
     front: ['Front', '正面'],

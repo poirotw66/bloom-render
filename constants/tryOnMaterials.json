@@ -1592,5 +1592,1001 @@
     "clothing": {
       "category": "outerwear"
     }
+  },
+  {
+    "id": "pose-full-single-p004",
+    "role": "pose",
+    "title": "Seated knee hug",
+    "titleZh": "抱膝側坐",
+    "description": "A seated adult-proportioned mannequin hugging both knees, knees tilted together slightly to the left. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "抱膝側坐，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p004.png",
+    "prompt": "Follow this pose: a seated adult-proportioned mannequin hugging both knees, knees tilted together slightly to the left. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p004",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p012",
+    "role": "pose",
+    "title": "Seated chin rest",
+    "titleZh": "單膝立起托腮",
+    "description": "A seated mannequin with one knee raised and the chin resting naturally on one hand. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "單膝立起托腮，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p012.png",
+    "prompt": "Follow this pose: a seated mannequin with one knee raised and the chin resting naturally on one hand. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p012",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p014",
+    "role": "pose",
+    "title": "Seated ankle hold",
+    "titleZh": "坐姿握腳踝",
+    "description": "A seated mannequin with one knee raised and one hand holding that ankle. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "坐姿握腳踝，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p014.png",
+    "prompt": "Follow this pose: a seated mannequin with one knee raised and one hand holding that ankle. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p014",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p045",
+    "role": "pose",
+    "title": "Side sit with angled legs",
+    "titleZh": "側坐雙腿斜伸",
+    "description": "A mannequin sitting sideways with both legs angled together to the right. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "側坐雙腿斜伸，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p045.png",
+    "prompt": "Follow this pose: a mannequin sitting sideways with both legs angled together to the right. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p045",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p046",
+    "role": "pose",
+    "title": "Side sit with hand at cheek",
+    "titleZh": "側坐手貼臉頰",
+    "description": "A mannequin sitting sideways with one hand gently resting beside its cheek. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "側坐手貼臉頰，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p046.png",
+    "prompt": "Follow this pose: a mannequin sitting sideways with one hand gently resting beside its cheek. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p046",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p079",
+    "role": "pose",
+    "title": "Seated torso twist",
+    "titleZh": "坐姿轉身",
+    "description": "A seated mannequin rotating its upper torso gently to look to the side. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "坐姿轉身，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p079.png",
+    "prompt": "Follow this pose: a seated mannequin rotating its upper torso gently to look to the side. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p079",
+      "posture": "seated",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p016",
+    "role": "pose",
+    "title": "Standing hair adjustment",
+    "titleZh": "站姿雙手整理頭髮",
+    "description": "A standing mannequin with both hands raised beside its head in a hair-adjusting gesture. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "站姿雙手整理頭髮，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p016.png",
+    "prompt": "Follow this pose: a standing mannequin with both hands raised beside its head in a hair-adjusting gesture. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p016",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p017",
+    "role": "pose",
+    "title": "Standing over-shoulder glance",
+    "titleZh": "站姿越肩回望",
+    "description": "A standing mannequin turned three-quarter away, looking back over one shoulder. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "站姿越肩回望，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p017.png",
+    "prompt": "Follow this pose: a standing mannequin turned three-quarter away, looking back over one shoulder. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p017",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p019",
+    "role": "pose",
+    "title": "Standing overhead stretch",
+    "titleZh": "站姿雙臂上伸",
+    "description": "A standing mannequin stretching both arms overhead, feet comfortably apart. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "站姿雙臂上伸，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p019.png",
+    "prompt": "Follow this pose: a standing mannequin stretching both arms overhead, feet comfortably apart. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p019",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p020",
+    "role": "pose",
+    "title": "Standing hand behind head",
+    "titleZh": "站姿單手置後腦",
+    "description": "A standing mannequin with one hand behind its head and the other arm resting at its side. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "站姿單手置後腦，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p020.png",
+    "prompt": "Follow this pose: a standing mannequin with one hand behind its head and the other arm resting at its side. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p020",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p022",
+    "role": "pose",
+    "title": "Standing hands behind back",
+    "titleZh": "站姿雙手背後",
+    "description": "A standing mannequin with both hands loosely clasped behind its back and a neutral upright torso. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "站姿雙手背後，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p022.png",
+    "prompt": "Follow this pose: a standing mannequin with both hands loosely clasped behind its back and a neutral upright torso. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p022",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p024",
+    "role": "pose",
+    "title": "Standing heel lift",
+    "titleZh": "站姿向後抬腳",
+    "description": "A balanced standing mannequin gently lifting one bent lower leg behind it. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "站姿向後抬腳，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p024.png",
+    "prompt": "Follow this pose: a balanced standing mannequin gently lifting one bent lower leg behind it. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p024",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p061",
+    "role": "pose",
+    "title": "Crouch with hands on knees",
+    "titleZh": "蹲姿雙手放膝",
+    "description": "A balanced crouching mannequin with both hands resting on its knees. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "蹲姿雙手放膝，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p061.png",
+    "prompt": "Follow this pose: a balanced crouching mannequin with both hands resting on its knees. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p061",
+      "posture": "squatting",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p062",
+    "role": "pose",
+    "title": "Crouch with one hand on floor",
+    "titleZh": "蹲姿單手撐地",
+    "description": "A crouching mannequin with one hand on the floor for balance. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "蹲姿單手撐地，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p062.png",
+    "prompt": "Follow this pose: a crouching mannequin with one hand on the floor for balance. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p062",
+      "posture": "squatting",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p063",
+    "role": "pose",
+    "title": "Crouching chin rest",
+    "titleZh": "蹲姿托腮",
+    "description": "A balanced crouching mannequin resting its chin on one hand. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "蹲姿托腮，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p063.png",
+    "prompt": "Follow this pose: a balanced crouching mannequin resting its chin on one hand. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p063",
+      "posture": "squatting",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p066",
+    "role": "pose",
+    "title": "Crouching over-shoulder glance",
+    "titleZh": "蹲姿回頭",
+    "description": "A crouching mannequin gently looking back over its shoulder. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "蹲姿回頭，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p066.png",
+    "prompt": "Follow this pose: a crouching mannequin gently looking back over its shoulder. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p066",
+      "posture": "squatting",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p031",
+    "role": "pose",
+    "title": "Upright kneeling",
+    "titleZh": "跪坐雙手放大腿",
+    "description": "An upright kneeling mannequin resting both hands naturally on its thighs. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "跪坐雙手放大腿，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p031.png",
+    "prompt": "Follow this pose: an upright kneeling mannequin resting both hands naturally on its thighs. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p031",
+      "posture": "kneeling",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p033",
+    "role": "pose",
+    "title": "One-knee kneeling",
+    "titleZh": "單膝跪手放膝",
+    "description": "A mannequin kneeling on one knee with one hand resting on the raised knee. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "單膝跪手放膝，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p033.png",
+    "prompt": "Follow this pose: a mannequin kneeling on one knee with one hand resting on the raised knee. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p033",
+      "posture": "kneeling",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-upper80v2-p001",
+    "role": "pose",
+    "title": "Hands forming a heart",
+    "titleZh": "胸前雙手比心",
+    "description": "A standing mannequin forming a heart shape with both hands in front of the upper chest. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "胸前雙手比心，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-upper80v2-p001.png",
+    "prompt": "Follow this pose: a standing mannequin forming a heart shape with both hands in front of the upper chest. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-upper80v2-p001",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-upper80v2-p019",
+    "role": "pose",
+    "title": "Tucking hair behind ear",
+    "titleZh": "將頭髮別到耳後",
+    "description": "A standing mannequin lifting one hand beside its ear in a hair-tucking gesture. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "將頭髮別到耳後，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-upper80v2-p019.png",
+    "prompt": "Follow this pose: a standing mannequin lifting one hand beside its ear in a hair-tucking gesture. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-upper80v2-p019",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p050",
+    "role": "pose",
+    "title": "Side-lying chin rest",
+    "titleZh": "側躺托腮",
+    "description": "A mannequin lying comfortably on its side with the head supported by one hand. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "側躺托腮，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p050.png",
+    "prompt": "Follow this pose: a mannequin lying comfortably on its side with the head supported by one hand. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p050",
+      "posture": "lying",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p058",
+    "role": "pose",
+    "title": "Prone rest on forearms",
+    "titleZh": "俯臥枕臂",
+    "description": "A mannequin lying prone in a neutral resting posture with its head resting on folded forearms. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "俯臥枕臂，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p058.png",
+    "prompt": "Follow this pose: a mannequin lying prone in a neutral resting posture with its head resting on folded forearms. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p058",
+      "posture": "lying",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p067",
+    "role": "pose",
+    "title": "Forward lean with hands on knees",
+    "titleZh": "前傾雙手放膝",
+    "description": "A standing mannequin leaning slightly forward with hands resting on its knees. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "前傾雙手放膝，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p067.png",
+    "prompt": "Follow this pose: a standing mannequin leaning slightly forward with hands resting on its knees. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p067",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pose-full-single-p071",
+    "role": "pose",
+    "title": "Forward bend with relaxed arms",
+    "titleZh": "前傾雙臂下垂",
+    "description": "A standing mannequin gently bending forward at the hips with both arms hanging naturally. Single-view synthetic mannequin pose reference, not measured depth.",
+    "descriptionZh": "前傾雙臂下垂，平視四分之三機位的合成人台姿勢參考，非實測深度圖。",
+    "image": "images/tryon-materials/pose-full-single-p071.png",
+    "prompt": "Follow this pose: a standing mannequin gently bending forward at the hips with both arms hanging naturally. Use only the pose, silhouette and limb structure; do not transfer mannequin appearance, bodysuit, material or rendering style. This is a single-view visual pose reference, not measured depth. Do not create multiple panels.",
+    "pose": {
+      "groupId": "pose-full-single-p071",
+      "posture": "standing",
+      "view": "three-quarter",
+      "cameraHeight": "eye-level",
+      "framing": "full-body"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "ivory-camisole",
+    "role": "clothing",
+    "title": "Ivory Camisole",
+    "titleZh": "象牙白細肩帶上衣",
+    "description": "An ivory cotton camisole with thin straps, a straight neckline and plain hem. Unbranded single-garment flat lay.",
+    "descriptionZh": "象牙白細肩帶上衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/ivory-camisole.png",
+    "prompt": "Wear an ivory cotton camisole with thin straps, a straight neckline and plain hem. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "black-draped-blouse",
+    "role": "clothing",
+    "title": "Black Draped Blouse",
+    "titleZh": "黑色垂墜襯衫",
+    "description": "A black draped long-sleeve blouse with a modest V-neck and button cuffs. Unbranded single-garment flat lay.",
+    "descriptionZh": "黑色垂墜襯衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/black-draped-blouse.png",
+    "prompt": "Wear a black draped long-sleeve blouse with a modest V-neck and button cuffs. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "pink-poplin-blouse",
+    "role": "clothing",
+    "title": "Pink Poplin Blouse",
+    "titleZh": "粉色棉府綢襯衫",
+    "description": "A pale pink poplin blouse with a pointed collar, long sleeves and a relaxed straight fit. Unbranded single-garment flat lay.",
+    "descriptionZh": "粉色棉府綢襯衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/pink-poplin-blouse.png",
+    "prompt": "Wear a pale pink poplin blouse with a pointed collar, long sleeves and a relaxed straight fit. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "yellow-floral-blouse",
+    "role": "clothing",
+    "title": "Yellow Floral Blouse",
+    "titleZh": "黃色碎花襯衫",
+    "description": "A yellow small-floral-print blouse with short sleeves and a round neckline. Unbranded single-garment flat lay.",
+    "descriptionZh": "黃色碎花襯衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/yellow-floral-blouse.png",
+    "prompt": "Wear a yellow small-floral-print blouse with short sleeves and a round neckline. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "navy-v-neck-knit",
+    "role": "clothing",
+    "title": "Navy V Neck Knit",
+    "titleZh": "藏青 V 領針織上衣",
+    "description": "A navy V-neck knit pullover with long sleeves and ribbed cuffs. Unbranded single-garment flat lay.",
+    "descriptionZh": "藏青 V 領針織上衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/navy-v-neck-knit.png",
+    "prompt": "Wear a navy V-neck knit pullover with long sleeves and ribbed cuffs. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "gray-ribbed-turtleneck",
+    "role": "clothing",
+    "title": "Gray Ribbed Turtleneck",
+    "titleZh": "灰色羅紋高領上衣",
+    "description": "A gray ribbed turtleneck pullover with a fitted body and long sleeves. Unbranded single-garment flat lay.",
+    "descriptionZh": "灰色羅紋高領上衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/gray-ribbed-turtleneck.png",
+    "prompt": "Wear a gray ribbed turtleneck pullover with a fitted body and long sleeves. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "white-cropped-shirt",
+    "role": "clothing",
+    "title": "White Cropped Shirt",
+    "titleZh": "白色短版襯衫",
+    "description": "A white cropped cotton shirt with a pointed collar, button front and chest pocket. Unbranded single-garment flat lay.",
+    "descriptionZh": "白色短版襯衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/white-cropped-shirt.png",
+    "prompt": "Wear a white cropped cotton shirt with a pointed collar, button front and chest pocket. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "brown-cable-knit",
+    "role": "clothing",
+    "title": "Brown Cable Knit",
+    "titleZh": "棕色麻花針織上衣",
+    "description": "A brown cable-knit crew-neck sweater with visible braided knit panels. Unbranded single-garment flat lay.",
+    "descriptionZh": "棕色麻花針織上衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/brown-cable-knit.png",
+    "prompt": "Wear a brown cable-knit crew-neck sweater with visible braided knit panels. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "green-boatneck-knit",
+    "role": "clothing",
+    "title": "Green Boatneck Knit",
+    "titleZh": "綠色船領針織上衣",
+    "description": "A muted green boat-neck long-sleeve knit top with a straight hem. Unbranded single-garment flat lay.",
+    "descriptionZh": "綠色船領針織上衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/green-boatneck-knit.png",
+    "prompt": "Wear a muted green boat-neck long-sleeve knit top with a straight hem. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "blue-ruffle-blouse",
+    "role": "clothing",
+    "title": "Blue Ruffle Blouse",
+    "titleZh": "淺藍荷葉領襯衫",
+    "description": "A light blue blouse with a small ruffled collar and long cuffed sleeves. Unbranded single-garment flat lay.",
+    "descriptionZh": "淺藍荷葉領襯衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/blue-ruffle-blouse.png",
+    "prompt": "Wear a light blue blouse with a small ruffled collar and long cuffed sleeves. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "cream-knit-vest",
+    "role": "clothing",
+    "title": "Cream Knit Vest",
+    "titleZh": "奶油色針織背心",
+    "description": "A cream V-neck sleeveless knit vest with ribbed neckline and hem. Unbranded single-garment flat lay.",
+    "descriptionZh": "奶油色針織背心，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/cream-knit-vest.png",
+    "prompt": "Wear a cream V-neck sleeveless knit vest with ribbed neckline and hem. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "burgundy-short-sleeve-knit",
+    "role": "clothing",
+    "title": "Burgundy Short Sleeve Knit",
+    "titleZh": "酒紅短袖針織上衣",
+    "description": "A burgundy fine-knit short-sleeve top with a round neckline. Unbranded single-garment flat lay.",
+    "descriptionZh": "酒紅短袖針織上衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/burgundy-short-sleeve-knit.png",
+    "prompt": "Wear a burgundy fine-knit short-sleeve top with a round neckline. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "top"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "black-tailored-trousers",
+    "role": "clothing",
+    "title": "Black Tailored Trousers",
+    "titleZh": "黑色西裝長褲",
+    "description": "Black tailored full-length trousers with a mid-rise waist, pressed creases and straight legs. Unbranded single-garment flat lay.",
+    "descriptionZh": "黑色西裝長褲，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/black-tailored-trousers.png",
+    "prompt": "Wear black tailored full-length trousers with a mid-rise waist, pressed creases and straight legs. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "trousers"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "white-wide-leg-trousers",
+    "role": "clothing",
+    "title": "White Wide Leg Trousers",
+    "titleZh": "白色寬管長褲",
+    "description": "White high-waisted wide-leg trousers with front pleats and side pockets. Unbranded single-garment flat lay.",
+    "descriptionZh": "白色寬管長褲，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/white-wide-leg-trousers.png",
+    "prompt": "Wear white high-waisted wide-leg trousers with front pleats and side pockets. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "trousers"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "brown-corduroy-trousers",
+    "role": "clothing",
+    "title": "Brown Corduroy Trousers",
+    "titleZh": "棕色燈芯絨長褲",
+    "description": "Brown corduroy trousers with fine vertical wales and straight full-length legs. Unbranded single-garment flat lay.",
+    "descriptionZh": "棕色燈芯絨長褲，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/brown-corduroy-trousers.png",
+    "prompt": "Wear brown corduroy trousers with fine vertical wales and straight full-length legs. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "trousers"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "blue-flared-jeans",
+    "role": "clothing",
+    "title": "Blue Flared Jeans",
+    "titleZh": "藍色微喇叭牛仔褲",
+    "description": "Blue denim jeans fitted through the hips with gently flared full-length legs. Unbranded single-garment flat lay.",
+    "descriptionZh": "藍色微喇叭牛仔褲，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/blue-flared-jeans.png",
+    "prompt": "Wear blue denim jeans fitted through the hips with gently flared full-length legs. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "trousers"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "beige-tailored-shorts",
+    "role": "clothing",
+    "title": "Beige Tailored Shorts",
+    "titleZh": "米色打褶短褲",
+    "description": "Beige tailored mid-thigh shorts with front pleats and a plain waistband. Unbranded single-garment flat lay.",
+    "descriptionZh": "米色打褶短褲，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/beige-tailored-shorts.png",
+    "prompt": "Wear beige tailored mid-thigh shorts with front pleats and a plain waistband. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "trousers"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "black-denim-shorts",
+    "role": "clothing",
+    "title": "Black Denim Shorts",
+    "titleZh": "黑色牛仔短褲",
+    "description": "Black mid-thigh five-pocket denim shorts with neat stitched hems. Unbranded single-garment flat lay.",
+    "descriptionZh": "黑色牛仔短褲，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/black-denim-shorts.png",
+    "prompt": "Wear black mid-thigh five-pocket denim shorts with neat stitched hems. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "trousers"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "navy-a-line-midi-skirt",
+    "role": "clothing",
+    "title": "Navy A Line Midi Skirt",
+    "titleZh": "藏青 A 字中長裙",
+    "description": "A navy A-line midi skirt with a structured waistband and smooth unpleated panels. Unbranded single-garment flat lay.",
+    "descriptionZh": "藏青 A 字中長裙，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/navy-a-line-midi-skirt.png",
+    "prompt": "Wear a navy A-line midi skirt with a structured waistband and smooth unpleated panels. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "skirt"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "floral-maxi-skirt",
+    "role": "clothing",
+    "title": "Floral Maxi Skirt",
+    "titleZh": "碎花長裙",
+    "description": "A small-floral-print maxi skirt with a flowing A-line silhouette. Unbranded single-garment flat lay.",
+    "descriptionZh": "碎花長裙，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/floral-maxi-skirt.png",
+    "prompt": "Wear a small-floral-print maxi skirt with a flowing A-line silhouette. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "skirt"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "cream-button-cardigan",
+    "role": "clothing",
+    "title": "Cream Button Cardigan",
+    "titleZh": "奶油色排釦開衫",
+    "description": "A cream button-front knit cardigan with a round neckline and long sleeves. Unbranded single-garment flat lay.",
+    "descriptionZh": "奶油色排釦開衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/cream-button-cardigan.png",
+    "prompt": "Wear a cream button-front knit cardigan with a round neckline and long sleeves. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "navy-long-cardigan",
+    "role": "clothing",
+    "title": "Navy Long Cardigan",
+    "titleZh": "藏青長版開衫",
+    "description": "A navy longline open-front knit cardigan with patch pockets. Unbranded single-garment flat lay.",
+    "descriptionZh": "藏青長版開衫，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/navy-long-cardigan.png",
+    "prompt": "Wear a navy longline open-front knit cardigan with patch pockets. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "gray-wool-coat",
+    "role": "clothing",
+    "title": "Gray Wool Coat",
+    "titleZh": "灰色羊毛大衣",
+    "description": "A gray wool knee-length coat with notched lapels and a single-breasted button front. Unbranded single-garment flat lay.",
+    "descriptionZh": "灰色羊毛大衣，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/gray-wool-coat.png",
+    "prompt": "Wear a gray wool knee-length coat with notched lapels and a single-breasted button front. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "black-leather-jacket",
+    "role": "clothing",
+    "title": "Black Leather Jacket",
+    "titleZh": "黑色皮革外套",
+    "description": "A black waist-length leather jacket with an asymmetric zip and notched collar. Unbranded single-garment flat lay.",
+    "descriptionZh": "黑色皮革外套，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/black-leather-jacket.png",
+    "prompt": "Wear a black waist-length leather jacket with an asymmetric zip and notched collar. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "gray-cropped-jacket",
+    "role": "clothing",
+    "title": "Gray Cropped Jacket",
+    "titleZh": "灰色短版西裝外套",
+    "description": "A gray cropped tailored jacket with notched lapels and one front button. Unbranded single-garment flat lay.",
+    "descriptionZh": "灰色短版西裝外套，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/gray-cropped-jacket.png",
+    "prompt": "Wear a gray cropped tailored jacket with notched lapels and one front button. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "olive-quilted-coat",
+    "role": "clothing",
+    "title": "Olive Quilted Coat",
+    "titleZh": "橄欖綠鋪棉外套",
+    "description": "An olive quilted hip-length coat with a round collar and snap fasteners. Unbranded single-garment flat lay.",
+    "descriptionZh": "橄欖綠鋪棉外套，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/olive-quilted-coat.png",
+    "prompt": "Wear an olive quilted hip-length coat with a round collar and snap fasteners. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "white-cropped-jacket",
+    "role": "clothing",
+    "title": "White Cropped Jacket",
+    "titleZh": "白色短版外套",
+    "description": "A white cropped cotton jacket with a pointed collar and button-front patch pockets. Unbranded single-garment flat lay.",
+    "descriptionZh": "白色短版外套，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/white-cropped-jacket.png",
+    "prompt": "Wear a white cropped cotton jacket with a pointed collar and button-front patch pockets. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "navy-hooded-coat",
+    "role": "clothing",
+    "title": "Navy Hooded Coat",
+    "titleZh": "藏青連帽長外套",
+    "description": "A navy mid-thigh hooded coat with a zip front, drawcord hood and flap pockets. Unbranded single-garment flat lay.",
+    "descriptionZh": "藏青連帽長外套，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/navy-hooded-coat.png",
+    "prompt": "Wear a navy mid-thigh hooded coat with a zip front, drawcord hood and flap pockets. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "outerwear"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "black-slip-midi-dress",
+    "role": "clothing",
+    "title": "Black Slip Midi Dress",
+    "titleZh": "黑色細肩帶中長洋裝",
+    "description": "A black satin slip midi dress with thin straps and a modest scoop neckline. Unbranded single-garment flat lay.",
+    "descriptionZh": "黑色細肩帶中長洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/black-slip-midi-dress.png",
+    "prompt": "Wear a black satin slip midi dress with thin straps and a modest scoop neckline. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "ivory-shirt-dress",
+    "role": "clothing",
+    "title": "Ivory Shirt Dress",
+    "titleZh": "象牙白襯衫洋裝",
+    "description": "An ivory cotton shirt dress with a pointed collar, button front and matching fabric belt. Unbranded single-garment flat lay.",
+    "descriptionZh": "象牙白襯衫洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/ivory-shirt-dress.png",
+    "prompt": "Wear an ivory cotton shirt dress with a pointed collar, button front and matching fabric belt. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "navy-wrap-dress",
+    "role": "clothing",
+    "title": "Navy Wrap Dress",
+    "titleZh": "藏青裹身洋裝",
+    "description": "A navy wrap midi dress with a modest V-neck, three-quarter sleeves and waist tie. Unbranded single-garment flat lay.",
+    "descriptionZh": "藏青裹身洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/navy-wrap-dress.png",
+    "prompt": "Wear a navy wrap midi dress with a modest V-neck, three-quarter sleeves and waist tie. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "beige-floral-maxi-dress",
+    "role": "clothing",
+    "title": "Beige Floral Maxi Dress",
+    "titleZh": "米色碎花長洋裝",
+    "description": "A beige small-floral-print maxi dress with short sleeves and a defined waist. Unbranded single-garment flat lay.",
+    "descriptionZh": "米色碎花長洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/beige-floral-maxi-dress.png",
+    "prompt": "Wear a beige small-floral-print maxi dress with short sleeves and a defined waist. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "burgundy-party-dress",
+    "role": "clothing",
+    "title": "Burgundy Party Dress",
+    "titleZh": "酒紅緞面禮服",
+    "description": "A burgundy satin knee-length party dress with broad straps and a softly flared skirt. Unbranded single-garment flat lay.",
+    "descriptionZh": "酒紅緞面禮服，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/burgundy-party-dress.png",
+    "prompt": "Wear a burgundy satin knee-length party dress with broad straps and a softly flared skirt. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "blue-summer-dress",
+    "role": "clothing",
+    "title": "Blue Summer Dress",
+    "titleZh": "藍色夏日洋裝",
+    "description": "A blue cotton sundress with broad straps, a square neckline and a gathered midi skirt. Unbranded single-garment flat lay.",
+    "descriptionZh": "藍色夏日洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/blue-summer-dress.png",
+    "prompt": "Wear a blue cotton sundress with broad straps, a square neckline and a gathered midi skirt. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "brown-knit-dress",
+    "role": "clothing",
+    "title": "Brown Knit Dress",
+    "titleZh": "棕色針織洋裝",
+    "description": "A brown rib-knit midi dress with long sleeves, a crew neckline and straight silhouette. Unbranded single-garment flat lay.",
+    "descriptionZh": "棕色針織洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/brown-knit-dress.png",
+    "prompt": "Wear a brown rib-knit midi dress with long sleeves, a crew neckline and straight silhouette. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
+  },
+  {
+    "id": "lavender-pleated-dress",
+    "role": "clothing",
+    "title": "Lavender Pleated Dress",
+    "titleZh": "淡紫百褶洋裝",
+    "description": "A lavender sleeveless midi dress with a round neckline and a softly pleated skirt. Unbranded single-garment flat lay.",
+    "descriptionZh": "淡紫百褶洋裝，無人物、無品牌的單件服裝平拍圖。",
+    "image": "images/tryon-materials/lavender-pleated-dress.png",
+    "prompt": "Wear a lavender sleeveless midi dress with a round neckline and a softly pleated skirt. Preserve its cut, color and fabric details.",
+    "clothing": {
+      "category": "dress"
+    },
+    "license": "LicenseRef-AI-Generated",
+    "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json"
   }
 ]

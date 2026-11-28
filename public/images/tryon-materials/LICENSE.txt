@@ -2,7 +2,8 @@ BloomRender reference assets
 
 Original CC0 illustrations and synthetic poses
 
-The SVG reference illustrations and synthetic mannequin PNG references were
+The SVG reference illustrations and deterministic 3D mannequin PNG references
+listed in the seven *-study-manifest.json files were
 created for BloomRender. No PoseWear or other third-party reference images are
 included in this directory.
 
@@ -12,19 +13,22 @@ CC0 1.0 Universal. They may be copied, modified and used commercially.
 
 https://creativecommons.org/publicdomain/zero/1.0/
 
-This dedication applies only to the SVG illustrations and synthetic mannequin
-PNGs, not to the AI-generated clothing flat lays described below.
+This dedication applies only to the SVG illustrations and deterministic 3D
+mannequin PNGs, not to any AI-generated references described below.
 It does not grant rights to any person, brand or other material a user uploads.
 
-AI-generated clothing flat lays (LicenseRef-AI-Generated)
+AI-generated clothing and pose references (LicenseRef-AI-Generated)
 
-The twelve clothing PNGs listed in clothing-generation-manifest.json were
-generated for BloomRender using the OpenAI image API and original text prompts.
+The twelve clothing PNGs listed in clothing-generation-manifest.json and the
+sixty clothing/pose PNGs listed in reference-generation-2026-11-28-manifest.json
+were generated for BloomRender using the OpenAI image API and original text
+prompts.
 No input photographs, people, branded products or PoseWear images were supplied.
 The manifest records the requested model, settings, exact prompts and file
-SHA-256 values. These images are not photographs of actual products.
+SHA-256 values. These images are not photographs of actual products or real people.
+AI pose studies have a single view and no calibrated depth or paired line art.
 
 BloomRender provides these outputs for display, download and use as clothing
-references. LicenseRef-AI-Generated identifies this provenance and use statement;
+or pose references. LicenseRef-AI-Generated identifies this provenance and use statement;
 it is not a claim of exclusive copyright or a CC0 public-domain dedication.
 It does not grant rights to any third-party person or brand.

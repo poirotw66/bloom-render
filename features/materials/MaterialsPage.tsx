@@ -16,6 +16,12 @@ import {
 } from '../../utils/materialPreferences';
 import MaterialViewer from '../../components/MaterialViewer';
 import MaterialSearch from '../../components/MaterialSearch';
+import ClothingMaterialFilter from '../../components/ClothingMaterialFilter';
+import {
+  getClothingSearchText,
+  matchesClothingCategory,
+} from '../../constants/clothingMetadata.mjs';
+import { matchesMaterialSearch } from '../../constants/materialSearch.mjs';
 import { downloadMaterialBatchZip, materialBatchBrief } from '../../utils/posewearMaterialBatch';
 import MaterialGroupCard from '../../components/MaterialGroupCard';
 import { groupMaterials } from '../../constants/materialGroups';
@@ -78,6 +84,7 @@ export default function MaterialsPage() {
   const [collection, setCollection] = useState<MaterialCollection>('all');
   const [viewer, setViewer] = useState<TryOnMaterial | null>(null);
   const [role, setRole] = useState('all');
+  const [clothingCategory, setClothingCategory] = useState('');
   const [batchMode, setBatchMode] = useState(false);
   const [batchIds, setBatchIds] = useState<string[]>([]);
   const [batchExporting, setBatchExporting] = useState(false);
@@ -134,17 +141,15 @@ export default function MaterialsPage() {
       (collection !== 'favorites' || preferences.favoriteIds.includes(material.id)) &&
       (role === 'all' || material.role === role) &&
       (role !== 'pose' || matchesPoseFilters(material, poseFilters)) &&
-      [
+      (role !== 'clothing' || matchesClothingCategory(material, clothingCategory)) &&
+      matchesMaterialSearch(query, [
         material.title,
         material.titleZh,
         material.description,
         material.descriptionZh,
         getPoseSearchText(material),
-      ]
-        .join(' ')
-        .normalize('NFKC')
-        .toLocaleLowerCase()
-        .includes(query.normalize('NFKC').trim().toLocaleLowerCase()),
+        getClothingSearchText(material),
+      ]),
   );
   const groups = groupMaterials(items);
   const faces = groups.map(
@@ -345,9 +350,13 @@ export default function MaterialsPage() {
             <div className="text-sm theme-ink-muted space-y-2 border-t theme-border pt-4">
               <p>
                 {selected.license === 'LicenseRef-AI-Generated'
-                  ? zh
-                    ? 'AI 生成服裝參考圖，非實際品牌商品照片。生成紀錄與使用說明見素材來源。'
-                    : 'AI-generated clothing reference, not a photograph of a branded product. See the source for generation details and use notes.'
+                  ? selected.role === 'pose'
+                    ? zh
+                      ? 'AI 生成姿勢人台參考圖，單一機位，非實測深度圖。生成紀錄與使用說明見素材來源。'
+                      : 'AI-generated pose reference with a mannequin, one camera view, not measured depth. See the source for generation details and use notes.'
+                    : zh
+                      ? 'AI 生成服裝參考圖，非實際品牌商品照片。生成紀錄與使用說明見素材來源。'
+                      : 'AI-generated clothing reference, not a photograph of a branded product. See the source for generation details and use notes.'
                   : zh
                     ? 'BloomRender 原創參考圖，依 CC0 1.0 提供。'
                     : 'Original BloomRender reference, provided under CC0 1.0.'}
@@ -365,16 +374,24 @@ export default function MaterialsPage() {
         </div>
       ) : (
         <>
-          <div className="material-browser-toolbar">
+          <div
+            className={`material-browser-toolbar${role === 'clothing' ? ' material-browser-toolbar--clothing' : ''}`}
+          >
             <MaterialCollectionFilters value={collection} onChange={setCollection} />
-            <MaterialSearch value={query} role={role} onChange={setQuery} />
+            <MaterialSearch
+              value={query}
+              role={role}
+              clothingCategory={clothingCategory}
+              onChange={setQuery}
+            />
             <label className="material-browser-role">
-              {zh ? '素材類型' : 'Material type'}
+              <span>{zh ? '素材類型' : 'Material type'}</span>
               <select
                 className={`block mt-1 ${UI_INPUT}`}
                 value={role}
                 onChange={(event) => {
                   setRole(event.target.value);
+                  setClothingCategory('');
                   setPoseFilters({ posture: '', view: '' });
                 }}
               >
@@ -385,6 +402,9 @@ export default function MaterialsPage() {
                 ))}
               </select>
             </label>
+            {role === 'clothing' && (
+              <ClothingMaterialFilter value={clothingCategory} onChange={setClothingCategory} />
+            )}
           </div>
           {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
           <div className="material-batch" data-testid="material-batch-toolbar">
@@ -575,14 +595,28 @@ export default function MaterialsPage() {
             ))}
           </div>
           {items.length === 0 && (
-            <p role="status" className="theme-ink-muted">
-              {zh ? '找不到符合條件的素材。' : 'No materials match your search.'}
-            </p>
+            <div className="space-y-3">
+              <p role="status" className="theme-ink-muted">
+                {zh ? '找不到符合條件的素材。' : 'No materials match your search.'}
+              </p>
+              <button
+                type="button"
+                className={UI_BTN_SECONDARY}
+                onClick={() => {
+                  setQuery('');
+                  setCollection('all');
+                  setClothingCategory('');
+                  setPoseFilters({ posture: '', view: '' });
+                }}
+              >
+                {zh ? '清除篩選' : 'Clear filters'}
+              </button>
+            </div>
           )}
           <p className="text-sm theme-ink-muted">
             {zh
-              ? '素材包含原創 CC0 示意圖與 AI 生成服裝平拍圖；來源與使用說明請見各素材詳情。'
-              : 'Includes original CC0 illustrations and AI-generated clothing flat lays. See each material for its source and use notes.'}
+              ? '素材包含原創 CC0 示意圖與 AI 生成服裝與姿勢參考圖；來源與使用說明請見各素材詳情。'
+              : 'Includes original CC0 illustrations and AI-generated clothing and pose references. See each material for its source and use notes.'}
           </p>
         </>
       )}

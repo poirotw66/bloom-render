@@ -82,7 +82,7 @@
       "localPath": "utils/posewearSearchSuggestions.ts",
       "consumers": ["components/MaterialSearch.tsx"],
       "adaptations": [
-        "Bounded local search history and contextual suggestions use own catalog metadata, explicit query submission and keyboard-accessible React controls."
+        "Bounded local search history and contextual suggestions use own catalog metadata, explicit query submission and keyboard-accessible React controls; clothing suggestions follow the active category."
       ]
     },
     {

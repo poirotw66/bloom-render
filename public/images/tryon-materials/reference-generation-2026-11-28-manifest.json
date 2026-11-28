@@ -1,0 +1,502 @@
+{
+  "v": 1,
+  "kind": "ai-generated-reference-batch",
+  "license": "LicenseRef-AI-Generated",
+  "source": "https://github.com/poirotw66/bloom-render/blob/main/public/images/tryon-materials/reference-generation-2026-11-28-manifest.json",
+  "provider": "OpenAI",
+  "model": "gpt-image-2.6-sunburst",
+  "generatedOn": "2026-11-28",
+  "inputImages": 0,
+  "settings": {
+    "n": 1,
+    "size": "1024x1024",
+    "quality": "medium",
+    "outputFormat": "png"
+  },
+  "subjectSource": {
+    "repository": "https://github.com/atuizz/posewear",
+    "use": "Text category research only; no source image was downloaded, supplied or copied."
+  },
+  "images": [
+    {
+      "id": "pose-full-single-p004",
+      "image": "images/tryon-materials/pose-full-single-p004.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a seated adult-proportioned mannequin hugging both knees, knees tilted together slightly to the left. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P004",
+      "sha256": "6160fcbb7f2c90bd7f71053e6109718b106d3b086d0938fed184cce03ef12faa"
+    },
+    {
+      "id": "pose-full-single-p012",
+      "image": "images/tryon-materials/pose-full-single-p012.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a seated mannequin with one knee raised and the chin resting naturally on one hand. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P012",
+      "sha256": "3885ab1d8b7546d587843e1bd0b247988f50b2d2a2d097dab46bb52f354fdfa8"
+    },
+    {
+      "id": "pose-full-single-p014",
+      "image": "images/tryon-materials/pose-full-single-p014.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a seated mannequin with one knee raised and one hand holding that ankle. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map. Critical pose constraint: the raised foot remains planted and the same-side hand must visibly encircle the narrow ankle immediately above that foot, below the calf. Place the hand at ankle height, not on the shin or knee. Show the hand-to-ankle contact clearly with anatomically plausible wrist and fingers.",
+      "subjectSourceId": "full_single_P014",
+      "sha256": "38569cbea8583dbd579b5248c951a5b20f2661a7e557a506eba605befaedb7ee"
+    },
+    {
+      "id": "pose-full-single-p045",
+      "image": "images/tryon-materials/pose-full-single-p045.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a mannequin sitting sideways with both legs angled together to the right. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P045",
+      "sha256": "b709ea77463d85a27a076a78ab245f78a434e93089f176832aa4f3637d45073a"
+    },
+    {
+      "id": "pose-full-single-p046",
+      "image": "images/tryon-materials/pose-full-single-p046.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a mannequin sitting sideways with one hand gently resting beside its cheek. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P046",
+      "sha256": "e23e519af86dfe39b75937e7c7290f91a46dd618d6132030d95108fa68a752ef"
+    },
+    {
+      "id": "pose-full-single-p079",
+      "image": "images/tryon-materials/pose-full-single-p079.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a seated mannequin rotating its upper torso gently to look to the side. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P079",
+      "sha256": "cdb020cbed0e3f671cc13e722ad65bf4abfc29808e846286e9444be62cdb5145"
+    },
+    {
+      "id": "pose-full-single-p016",
+      "image": "images/tryon-materials/pose-full-single-p016.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin with both hands raised beside its head in a hair-adjusting gesture. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P016",
+      "sha256": "d14cb71bc5e6b3297b08e0504457c6e932e00ac696de3d619857b859cb0afeba"
+    },
+    {
+      "id": "pose-full-single-p017",
+      "image": "images/tryon-materials/pose-full-single-p017.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin turned three-quarter away, looking back over one shoulder. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P017",
+      "sha256": "0553e9fc1fed181a77ea356cf750f72f882a43b8a3f9fdf57349345b225e0b01"
+    },
+    {
+      "id": "pose-full-single-p019",
+      "image": "images/tryon-materials/pose-full-single-p019.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin stretching both arms overhead, feet comfortably apart. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P019",
+      "sha256": "699a95e252b6f2b1972c357015558752a4bb373931a18bd4bca07d2489fea035"
+    },
+    {
+      "id": "pose-full-single-p020",
+      "image": "images/tryon-materials/pose-full-single-p020.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin with one hand behind its head and the other arm resting at its side. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P020",
+      "sha256": "357f558ecd11e3bb1f04e267836adde465718ce955bdc46b48e4ee545a28d9e2"
+    },
+    {
+      "id": "pose-full-single-p022",
+      "image": "images/tryon-materials/pose-full-single-p022.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin with both hands loosely clasped behind its back and a neutral upright torso. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P022",
+      "sha256": "082fa53b8f420525167d10f91e1c8dd0d87769698ed5df6df1c35cc0aff27459"
+    },
+    {
+      "id": "pose-full-single-p024",
+      "image": "images/tryon-materials/pose-full-single-p024.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a balanced standing mannequin gently lifting one bent lower leg behind it. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P024",
+      "sha256": "e382312e7ef216ed8f55fba99d28d7d1427573eea021d7f4532b45d6ba0d2567"
+    },
+    {
+      "id": "pose-full-single-p061",
+      "image": "images/tryon-materials/pose-full-single-p061.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a balanced crouching mannequin with both hands resting on its knees. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P061",
+      "sha256": "bd85390fde0f5c17549297500942248d5882900c4e6c90fd192f90a78dc08e5b"
+    },
+    {
+      "id": "pose-full-single-p062",
+      "image": "images/tryon-materials/pose-full-single-p062.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a crouching mannequin with one hand on the floor for balance. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P062",
+      "sha256": "22c664b004ff4c3d1b6b234ea3036873473cb4ceacfa4a61986b374af924709b"
+    },
+    {
+      "id": "pose-full-single-p063",
+      "image": "images/tryon-materials/pose-full-single-p063.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a balanced crouching mannequin resting its chin on one hand. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P063",
+      "sha256": "e19532517a3c1723566d3d4378dbb32427fffa5c5cb5b2d827a56daf8899dfef"
+    },
+    {
+      "id": "pose-full-single-p066",
+      "image": "images/tryon-materials/pose-full-single-p066.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a crouching mannequin gently looking back over its shoulder. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P066",
+      "sha256": "4c847c27830ee9e377d08f3331d99011b61c0cc9b7f10c99fadcab5db7ddc6c8"
+    },
+    {
+      "id": "pose-full-single-p031",
+      "image": "images/tryon-materials/pose-full-single-p031.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of an upright kneeling mannequin resting both hands naturally on its thighs. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P031",
+      "sha256": "f3729e9c2107afb9f34cb8c22beb4ba93648cb43c680fc98970005f09f535426"
+    },
+    {
+      "id": "pose-full-single-p033",
+      "image": "images/tryon-materials/pose-full-single-p033.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a mannequin kneeling on one knee with one hand resting on the raised knee. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P033",
+      "sha256": "706d92e7fb84d4e7828bddbf95b59bf43fe8c5a6a8ef7f7d2bf59102df7fd7b9"
+    },
+    {
+      "id": "pose-upper80v2-p001",
+      "image": "images/tryon-materials/pose-upper80v2-p001.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin forming a heart shape with both hands in front of the upper chest. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "upper80v2_P001",
+      "sha256": "52ec8af5f7aeadd8bbfff14e4e205e52164e39b7cb48dcfd2f5fa1421125d6fd"
+    },
+    {
+      "id": "pose-upper80v2-p019",
+      "image": "images/tryon-materials/pose-upper80v2-p019.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin lifting one hand beside its ear in a hair-tucking gesture. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "upper80v2_P019",
+      "sha256": "b0f3d2a5fba6d8ddeef23253553ee9c3f04ab2667109cca198f25e7c4dba1f79"
+    },
+    {
+      "id": "pose-full-single-p050",
+      "image": "images/tryon-materials/pose-full-single-p050.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a mannequin lying comfortably on its side with the head supported by one hand. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P050",
+      "sha256": "eadf8b8f0eed7b4cd6be282b00636d6a67e5c485a17b84378b75007cd1da0db9"
+    },
+    {
+      "id": "pose-full-single-p058",
+      "image": "images/tryon-materials/pose-full-single-p058.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a mannequin lying prone in a neutral resting posture with its head resting on folded forearms. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P058",
+      "sha256": "b92f6c8472bee94dcb68e62b3ca7f69e1800344e656e05ddbe164da254beac3f"
+    },
+    {
+      "id": "pose-full-single-p067",
+      "image": "images/tryon-materials/pose-full-single-p067.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin leaning slightly forward with hands resting on its knees. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P067",
+      "sha256": "452f97b75d52a1b6ef53338b550ee3a542a8d95348610a0357ba11d46e166428"
+    },
+    {
+      "id": "pose-full-single-p071",
+      "image": "images/tryon-materials/pose-full-single-p071.png",
+      "role": "pose",
+      "prompt": "Create one original neutral pose-reference study of a standing mannequin gently bending forward at the hips with both arms hanging naturally. A faceless adult-proportioned gray mannequin fully covered in a plain opaque gray fitted bodysuit; non-sexual anatomy study. One complete figure only, full body including hands and feet, clear readable joints and silhouette, eye-level three-quarter camera, orthographic-style rendering, plain warm off-white studio background, even soft light, generous margins, square composition. No text, logos, watermark, other people or collage. This is a visual pose reference, not a measured depth map.",
+      "subjectSourceId": "full_single_P071",
+      "sha256": "e080a35f13287bc630e9873329dd96300889df81aecc17b4b9dacc7a73728cee"
+    },
+    {
+      "id": "ivory-camisole",
+      "image": "images/tryon-materials/ivory-camisole.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: an ivory cotton camisole with thin straps, a straight neckline and plain hem. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0002",
+      "sha256": "40755fbd53d62a42bf0dbead6ab41f7dc473a81b5884ba90b6953b456fc3fb8a"
+    },
+    {
+      "id": "black-draped-blouse",
+      "image": "images/tryon-materials/black-draped-blouse.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a black draped long-sleeve blouse with a modest V-neck and button cuffs. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "009c119f46aecb7605bc94939fd61f9d6e217cc2edce17e04b197b2b472356e7"
+    },
+    {
+      "id": "pink-poplin-blouse",
+      "image": "images/tryon-materials/pink-poplin-blouse.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a pale pink poplin blouse with a pointed collar, long sleeves and a relaxed straight fit. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "733ec5233a9483dbbbdef3881a27613394f52d5415960ea2008ac82c9cd9ca6c"
+    },
+    {
+      "id": "yellow-floral-blouse",
+      "image": "images/tryon-materials/yellow-floral-blouse.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a yellow small-floral-print blouse with short sleeves and a round neckline. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "2f8298705550bedf0024c7994d156a9708ee94c5321dc22bb17e73a8628d14a7"
+    },
+    {
+      "id": "navy-v-neck-knit",
+      "image": "images/tryon-materials/navy-v-neck-knit.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a navy V-neck knit pullover with long sleeves and ribbed cuffs. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "6ceaba3065afcd91be0a4628a9035d2490a022e75140d496c4a4a6f22a70286a"
+    },
+    {
+      "id": "gray-ribbed-turtleneck",
+      "image": "images/tryon-materials/gray-ribbed-turtleneck.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a gray ribbed turtleneck pullover with a fitted body and long sleeves. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0168",
+      "sha256": "d2cf92dd914fd8d5069f9020f71371c28e216452cc0dc4ddcd8c1eb8ba22c570"
+    },
+    {
+      "id": "white-cropped-shirt",
+      "image": "images/tryon-materials/white-cropped-shirt.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a white cropped cotton shirt with a pointed collar, button front and chest pocket. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0008",
+      "sha256": "ff4d405ef28b9fca1dc7253bf5863db524f2484ae861753ccf47461ac95a522f"
+    },
+    {
+      "id": "brown-cable-knit",
+      "image": "images/tryon-materials/brown-cable-knit.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a brown cable-knit crew-neck sweater with visible braided knit panels. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "90eab73d312ea59dc2ec4db256b6698cef99d655ceeafb07706bf02aebb4a87f"
+    },
+    {
+      "id": "green-boatneck-knit",
+      "image": "images/tryon-materials/green-boatneck-knit.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a muted green boat-neck long-sleeve knit top with a straight hem. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "9b9805ebe78bf84290df159b1c6843c7d46c98c8da250f727862e93583ef4d47"
+    },
+    {
+      "id": "blue-ruffle-blouse",
+      "image": "images/tryon-materials/blue-ruffle-blouse.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a light blue blouse with a small ruffled collar and long cuffed sleeves. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "bc230e3b1a8f0f9aa792b4533c01d0b136d49f67088d2ab65cda064c394cc9ad"
+    },
+    {
+      "id": "cream-knit-vest",
+      "image": "images/tryon-materials/cream-knit-vest.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a cream V-neck sleeveless knit vest with ribbed neckline and hem. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0177",
+      "sha256": "4a367a980fc844e5bb9046809ef258995366e2ca0090259205e6a4b999fad9c8"
+    },
+    {
+      "id": "burgundy-short-sleeve-knit",
+      "image": "images/tryon-materials/burgundy-short-sleeve-knit.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a burgundy fine-knit short-sleeve top with a round neckline. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "9e84dcd4396252d751fc90e893ba3aab7f2fb80a34912c1e1a3ec07fc612f013"
+    },
+    {
+      "id": "black-tailored-trousers",
+      "image": "images/tryon-materials/black-tailored-trousers.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: black tailored full-length trousers with a mid-rise waist, pressed creases and straight legs. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0009",
+      "sha256": "61aa8280aa1c5abef7ec8c6ecef794dba13ff9730109418e8c6c4867143cb468"
+    },
+    {
+      "id": "white-wide-leg-trousers",
+      "image": "images/tryon-materials/white-wide-leg-trousers.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: white high-waisted wide-leg trousers with front pleats and side pockets. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0009",
+      "sha256": "48a7ddf30bfff110e396758c3ce85253ed2559a2d27fe4f8f28827e82ea44479"
+    },
+    {
+      "id": "brown-corduroy-trousers",
+      "image": "images/tryon-materials/brown-corduroy-trousers.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: brown corduroy trousers with fine vertical wales and straight full-length legs. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0162",
+      "sha256": "6411c5f9ffc38ed0d664352d26b1afbea8807ef01f8706a03ff23187ee0eaef3"
+    },
+    {
+      "id": "blue-flared-jeans",
+      "image": "images/tryon-materials/blue-flared-jeans.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: blue denim jeans fitted through the hips with gently flared full-length legs. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0161",
+      "sha256": "33826ac07f9f054414773ae63b955ab40a2dc20a85d4ab59540c13036f72f44a"
+    },
+    {
+      "id": "beige-tailored-shorts",
+      "image": "images/tryon-materials/beige-tailored-shorts.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: beige tailored mid-thigh shorts with front pleats and a plain waistband. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "c17c90ce4f3bc2807cf4138856bf43de73066e1176d27209fe341b5c5b7844dd"
+    },
+    {
+      "id": "black-denim-shorts",
+      "image": "images/tryon-materials/black-denim-shorts.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: black mid-thigh five-pocket denim shorts with neat stitched hems. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "94d8402be46c7deff8265ba5ae291d7a4bac9f505efc0048a91cb8ad429f14c7"
+    },
+    {
+      "id": "navy-a-line-midi-skirt",
+      "image": "images/tryon-materials/navy-a-line-midi-skirt.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a navy A-line midi skirt with a structured waistband and smooth unpleated panels. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "3f8f50ed5a9fae8a676c81f064ff172e1a65fa0ad73948c7cccaf88e0b7c493f"
+    },
+    {
+      "id": "floral-maxi-skirt",
+      "image": "images/tryon-materials/floral-maxi-skirt.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a small-floral-print maxi skirt with a flowing A-line silhouette. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0002",
+      "sha256": "13254d7291ed18f0901d07c2cdc8a09be238c9d44c8eef9d4ed0c63d1ffb493e"
+    },
+    {
+      "id": "cream-button-cardigan",
+      "image": "images/tryon-materials/cream-button-cardigan.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a cream button-front knit cardigan with a round neckline and long sleeves. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0002",
+      "sha256": "a1d994278fe45bc7179cfd749a2741b19b6c0988b7e0e489e153b5c8407c3df4"
+    },
+    {
+      "id": "navy-long-cardigan",
+      "image": "images/tryon-materials/navy-long-cardigan.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a navy longline open-front knit cardigan with patch pockets. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0002",
+      "sha256": "c4ee468b26015f194aaec93662e9e3e792f2bfb4a071c4a9b383bbffd8cb5e67"
+    },
+    {
+      "id": "gray-wool-coat",
+      "image": "images/tryon-materials/gray-wool-coat.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a gray wool knee-length coat with notched lapels and a single-breasted button front. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "63d29761f5c44e382fc0fc81ee6273113cab261e7ab5081093f285227c24ab61"
+    },
+    {
+      "id": "black-leather-jacket",
+      "image": "images/tryon-materials/black-leather-jacket.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a black waist-length leather jacket with an asymmetric zip and notched collar. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0168",
+      "sha256": "24fe54078bd80fd41aa663459b2408892f220058e513324130b238914c7018d4"
+    },
+    {
+      "id": "gray-cropped-jacket",
+      "image": "images/tryon-materials/gray-cropped-jacket.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a gray cropped tailored jacket with notched lapels and one front button. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "5fee7b25b181d2316ab2362a4819efdb67417ef22556abe075562d48463ee723"
+    },
+    {
+      "id": "olive-quilted-coat",
+      "image": "images/tryon-materials/olive-quilted-coat.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: an olive quilted hip-length coat with a round collar and snap fasteners. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "63f4f869b5864c32a4ad0088accda1d0018cd5d042ef1cc643933b6301c9cabe"
+    },
+    {
+      "id": "white-cropped-jacket",
+      "image": "images/tryon-materials/white-cropped-jacket.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a white cropped cotton jacket with a pointed collar and button-front patch pockets. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0003",
+      "sha256": "de84abf7cfb4b3f339aa621bf2da8b61e04b67ced546da21805377fb29bac9ab"
+    },
+    {
+      "id": "navy-hooded-coat",
+      "image": "images/tryon-materials/navy-hooded-coat.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a navy mid-thigh hooded coat with a zip front, drawcord hood and flap pockets. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0001",
+      "sha256": "14108e90795fdeeaf0a1170aba722a683e6c2c2f4f0be63c28d47071e0df91ab"
+    },
+    {
+      "id": "black-slip-midi-dress",
+      "image": "images/tryon-materials/black-slip-midi-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a black satin slip midi dress with thin straps and a modest scoop neckline. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0004",
+      "sha256": "6b0b48c6e078ce6cac85f8dc6930917cc15bb7c4b72432962b4b439a7a27898f"
+    },
+    {
+      "id": "ivory-shirt-dress",
+      "image": "images/tryon-materials/ivory-shirt-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: an ivory cotton shirt dress with a pointed collar, button front and matching fabric belt. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0008",
+      "sha256": "c11b49b72eea45dfc02801cf04720574c12aba94eac071b139911a5e1bd5f7b6"
+    },
+    {
+      "id": "navy-wrap-dress",
+      "image": "images/tryon-materials/navy-wrap-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a navy wrap midi dress with a modest V-neck, three-quarter sleeves and waist tie. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0004",
+      "sha256": "59f45f0cb92e41ee666e34e45678e84584ad4442b6736a3d442aaf272398cc14"
+    },
+    {
+      "id": "beige-floral-maxi-dress",
+      "image": "images/tryon-materials/beige-floral-maxi-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a beige small-floral-print maxi dress with short sleeves and a defined waist. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0005",
+      "sha256": "47af3603866e604d657dfb2c559f91d2c1a2c09bc4062ce11257bc1df8736d9b"
+    },
+    {
+      "id": "burgundy-party-dress",
+      "image": "images/tryon-materials/burgundy-party-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a burgundy satin knee-length party dress with broad straps and a softly flared skirt. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0004",
+      "sha256": "d5be531a6a0c036c87e519fcc7b7ca80071ff1e45c43b4bd6562254522048d5c"
+    },
+    {
+      "id": "blue-summer-dress",
+      "image": "images/tryon-materials/blue-summer-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a blue cotton sundress with broad straps, a square neckline and a gathered midi skirt. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0004",
+      "sha256": "0ef937414f98ac15020adbe26be680bb9990a7858d5e7d5be1749410168089a5"
+    },
+    {
+      "id": "brown-knit-dress",
+      "image": "images/tryon-materials/brown-knit-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a brown rib-knit midi dress with long sleeves, a crew neckline and straight silhouette. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SPR-0006",
+      "sha256": "f86b79bfae15175b3aac4b10276695452b5d72bff7cd2877cdea79e4d658c3c5"
+    },
+    {
+      "id": "lavender-pleated-dress",
+      "image": "images/tryon-materials/lavender-pleated-dress.png",
+      "role": "clothing",
+      "prompt": "Create a clean studio flat lay product photograph of one garment: a lavender sleeveless midi dress with a round neckline and a softly pleated skirt. Front view, garment laid flat naturally, complete item visible with generous even margins, centered on a warm off-white seamless background. Realistic fabric texture and construction, soft even studio light, minimal shadows, square 1:1 composition. No person, mannequin, body parts, hanger, logos, characters, branding, text, watermark or collage. Original everyday fashion reference asset.",
+      "subjectSourceId": "SUM-0021",
+      "sha256": "0e70744497c890e90c6a54f76090b4ed5d90d2db2f0b342d7ad9e33b0e83afbc"
+    }
+  ]
+}

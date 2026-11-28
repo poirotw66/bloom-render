@@ -9,6 +9,7 @@
  * Validated bounded local strings and original catalog titles replace globals.
  */
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { matchesClothingCategory } from '../constants/clothingMetadata.mjs';
 export const MATERIAL_SEARCH_HISTORY_KEY = 'bloom_material_search_history';
 export function normalizeSearchQuery(value: string): string {
   return value
@@ -56,13 +57,16 @@ export function materialSearchSuggestions(
   query: string,
   role: string,
   language: 'en' | 'zh-TW',
+  clothingCategory = '',
 ): string[] {
   const normalized = normalizeSearchQuery(query).toLocaleLowerCase();
   return [
     ...new Set(
-      TRYON_MATERIALS.filter((item) => role === 'all' || item.role === role).map((item) =>
-        language === 'en' ? item.title : item.titleZh,
-      ),
+      TRYON_MATERIALS.filter(
+        (item) =>
+          (role === 'all' || item.role === role) &&
+          (role !== 'clothing' || matchesClothingCategory(item, clothingCategory)),
+      ).map((item) => (language === 'en' ? item.title : item.titleZh)),
     ),
   ]
     .filter(

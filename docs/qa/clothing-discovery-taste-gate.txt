@@ -1,0 +1,519 @@
+gate: checking http://127.0.0.1:4218/materials (software); this takes a few minutes on a CPU Chrome
+gate: 170 FAIL open
+  FAIL hero-fill        main#main-content > div.material-browser > div.material-browser-toolbar "只看收藏 最近使用 搜尋素材 素材  [1440, 390]
+       the next section shows on the first screen: it starts at 195px on a 900px screen (the hero ends at 177px)
+       fix: let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load
+  FAIL flush            div.material-browser > div.material-browser-toolbar > div.material-collection-controls > b  [1440, 390]
+       its button sits 0px above the lower edge of div.material-browser-toolbar, where the ground changes to div.material-batch
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            main#main-content > div.material-browser > div.material-batch > button.inline-flex.items-c  [1440, 390]
+       its button sits 0px above the rule on top of article.material-group-card:nth-of-type(1)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(1) > div.material-grou  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(2)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(2) > div.material-grou  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(3)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(4) > div.material-grou  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(5)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(5) > div.material-grou  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(6)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(7) > div.material-grou  [1440]
+       its button sits -615px above the rule on top of article.material-group-card:nth-of-type(8)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(8) > div.material-grou  [1440]
+       its button sits -615px above the rule on top of article.material-group-card:nth-of-type(9)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(10) > div.material-gro  [1440]
+       its button sits -615px above the rule on top of article.material-group-card:nth-of-type(11)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(11) > div.material-gro  [1440]
+       its button sits -615px above the rule on top of article.material-group-card:nth-of-type(12)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(13) > div.material-gro  [1440]
+       its button sits -615px above the rule on top of article.material-group-card:nth-of-type(14)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(14) > div.material-gro  [1440]
+       its button sits -615px above the rule on top of article.material-group-card:nth-of-type(15)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(16) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(17)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(17) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(18)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(19) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(20)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(20) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(21)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(22) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(23)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(23) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(24)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(25) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(26)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(26) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(27)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(28) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(29)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(29) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(30)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(31) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(32)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(32) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(33)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(34) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(35)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(35) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(36)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(37) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(38)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(38) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(39)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(40) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(41)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(41) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(42)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(43) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(44)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(44) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(45)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(46) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(47)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(47) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(48)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(49) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(50)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(50) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(51)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(52) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(53)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(53) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(54)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(55) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(56)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(56) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(57)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(58) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(59)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(59) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(60)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(61) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(62)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(62) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(63)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(64) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(65)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(65) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(66)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(67) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(68)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(68) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(69)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(70) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(71)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(71) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(72)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(73) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(74)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(74) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(75)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(76) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(77)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(77) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(78)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(79) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(80)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(80) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(81)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(82) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(83)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(83) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(84)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(85) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(86)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL flush            div.material-browser-grid > article.material-group-card:nth-of-type(86) > div.material-gro  [1440]
+       its button sits -451px above the rule on top of article.material-group-card:nth-of-type(87)
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL card-layout      main#main-content > div.material-browser > div.material-browser-grid "白色牛津襯衫 加入素材籃 收藏 素材詳情  [1440]
+       87 of 87 cards drawn one way (one panel, ground, placement and fragment): copies of one card
+       fix: a card layout at most twice on a page: build the other sections another way
+  FAIL copy-headline    main#main-content > div.material-browser > header.material-browser-header > h1.material-br  [1440]
+       "試穿參考素材" does not name what is sold (ai photo and try on reference library, photo, try, reference, from flags)
+       fix: put the category noun in the h1 (and who it is for, or where), in 2 to 8 words
+  FAIL copy-headings    div.material-browser-grid > article.material-group-card:nth-of-type(16) > div.material-gro  [1440]
+       "白色圓領短袖T恤" names no product, part, place or section (3 headings like it; at most one brand line per page) (and 2 more like it: "藏青 V 領針織上衣", "藏青 A 字中長裙")
+       fix: name the thing in every heading: the product, a part, the place or a section noun
+  FAIL section-gaps     main#main-content > div.material-browser > header.material-browser-header / main#main-cont  [1440]
+       21px between these sections, -65% against the median 60px
+       fix: use one gap between sections (all within 25% of each other)
+  FAIL section-gaps     main#main-content > div.material-browser > div.material-browser-toolbar / main#main-conten  [1440, 390]
+       16px between these sections, -73% against the median 60px
+       fix: use one gap between sections (all within 25% of each other)
+  FAIL action-repeat    div.material-browser-grid:nth-of-type(3) > article.material-group-card:nth-of-type(1) > di  [1440]
+       "加入素材籃" shows 3 times on the first screen at 1440px (hero, hero, hero): three copies of one action on a screen read as clutter
+       fix: show the action once a screen besides the nav's button: the hero's, the close's or the phone bar's, never all at once
+  FAIL moment-none      (the page)  [1440]
+       a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)
+       fix: deal one (moments.mjs pick --page software) and mount it in its own section
+  FAIL hero-screen      main#main-content > div.material-browser "試穿參考素材挑選服裝、姿勢與光線，再用自己的照片試穿。素材籃 (0)只看收藏最近"  [1440]
+       the hero ends at 15169px on a 900px screen, 14269px below the fold: it ends at the fold, 1px either way (SR-1)
+       fix: make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter
+  FAIL section-height   div#root > div.min-h-svh.text-gray-100 > footer.tool-footer "開源 · MIT在 GitHub 貢獻"  [1440]
+       the section is 89px tall (0.1 screens), 811px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)
+       fix: set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit
+  FAIL section-height   main#main-content > div.material-browser "試穿參考素材挑選服裝、姿勢與光線，再用自己的照片試穿。素材籃 (0)只看收藏最近"  [1440]
+       the section starts at 109px, 109px below the screen grid (0 x 900px): sections start on whole screens (SR-2)
+       fix: make every section above it exactly one or two screens tall, so this one starts on a whole screen
+  FAIL one-section      div#root > div.min-h-svh.text-gray-100 > footer.tool-footer "開源 · MIT在 GitHub 貢獻"  [1440]
+       the screen at scroll 14398px (the top of section 2) shows 89px of section 2 and the content of 2 sections, over 24px each beside section 1: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)
+       fix: make each section exactly one screen or two, so a screen shows one section and no neighbour peeks
+  FAIL one-section      main#main-content > div.material-browser "試穿參考素材挑選服裝、姿勢與光線，再用自己的照片試穿。素材籃 (0)只看收藏最近"  [1440]
+       a <div> sits directly in <main>: every part of <main> is a <section> (SR-4)
+       fix: put every block of <main> in a <section>, and give a band its own section instead of a ground inside one
+  FAIL one-heading      div.material-browser-grid > article.material-group-card:nth-of-type(1) > div.material-grou  [1440]
+       the hero holds an h2 (87): its heading is the h1, and an h2 opens the next section (SR-5)
+       fix: give each section one h2, first in its .wrap, and the hero only its h1
+  FAIL container-edges  main#main-content > div.material-browser "試穿參考素材挑選服裝、姿勢與光線，再用自己的照片試穿。素材籃 (0)只看收藏最近"  [1440]
+       the section needs exactly one in-flow child .wrap (it has 7 in-flow children, 0 .wrap) (SR-6)
+       fix: build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing
+  FAIL container-edges  div.material-browser-grid > article.material-group-card:nth-of-type(3) > div.material-grou  [1440]
+       the h2 starts 833px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)
+       fix: start the text on the container's left, or on the one split line every split shares
+  FAIL container-edges  div.material-browser-grid > article.material-group-card:nth-of-type(6) > div.material-grou  [1440]
+       the h2 starts 833px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)
+       fix: start the text on the container's left, or on the one split line every split shares
+  FAIL container-edges  div.material-browser-grid > article.material-group-card:nth-of-type(9) > div.material-grou  [1440]
+       the h2 starts 833px right of the container's left: every h1 and h2 starts on it, 2px either way (and 84 more like it: "自然跨步走姿", "交叉腳踝站姿", "淺藍牛仔長袖襯衫") (SR-6)
+       fix: start the text on the container's left, or on the one split line every split shares
+  FAIL container-edges  div.material-browser-toolbar > div.material-browser-search.material-search > label > input  [1440]
+       a box over half the container wide runs 324-1064px, not on the container's lines at 120-1320px (SR-6)
+       fix: run the picture or box from the container's left line to its right line, or put it in a row or a split
+  FAIL cta              main#main-content > div.material-browser > p.text-sm.theme-ink-muted "素材包含原創 CC0 示意圖與 AI 生  [390]
+       the last section before the footer ends with no button
+       fix: add the action: a button in the hero, one on every priced item, one in the closing section
+  FAIL section-gaps     main#main-content > div.material-browser > div.material-batch / main#main-content > div.ma  [390]
+       88px between these sections, +69% against the median 52px
+       fix: use one gap between sections (all within 25% of each other)
+  FAIL edge-left        div.material-browser h2 "白色牛津襯衫"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "海軍藍西裝外套"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "陶土色中長洋裝"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "正面自然站姿"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "單手叉腰"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "側身坐姿"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "窗邊柔光"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "暖色輪廓光"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿研究"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "叉腰姿勢研究"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "坐姿研究"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "自然跨步走姿"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "交叉抱臂站姿"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "雙手插袋站姿"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "交叉腳踝站姿"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "白色圓領短袖T恤"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黑色羅紋背心"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "淺藍牛仔長袖襯衫"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "燕麥色針織毛衣"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "麻灰色連帽上衣"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "海軍藍條紋長袖上衣"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "靛藍直筒牛仔褲"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "沙色寬版長褲"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "橄欖綠工裝長褲"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "炭灰色百褶中長裙"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "米色雙排釦風衣"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "短版牛仔外套"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "抱膝側坐"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "單膝立起托腮"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "坐姿握腳踝"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "側坐雙腿斜伸"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "側坐手貼臉頰"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "坐姿轉身"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿雙手整理頭髮"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿越肩回望"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿雙臂上伸"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿單手置後腦"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿雙手背後"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "站姿向後抬腳"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "蹲姿雙手放膝"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "蹲姿單手撐地"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "蹲姿托腮"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "蹲姿回頭"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "跪坐雙手放大腿"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "單膝跪手放膝"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "胸前雙手比心"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "將頭髮別到耳後"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "側躺托腮"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "俯臥枕臂"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "前傾雙手放膝"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "前傾雙臂下垂"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "象牙白細肩帶上衣"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黑色垂墜襯衫"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "粉色棉府綢襯衫"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黃色碎花襯衫"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藏青 V 領針織上衣"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "灰色羅紋高領上衣"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "白色短版襯衫"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "棕色麻花針織上衣"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "綠色船領針織上衣"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "淺藍荷葉領襯衫"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "奶油色針織背心"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "酒紅短袖針織上衣"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黑色西裝長褲"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "白色寬管長褲"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "棕色燈芯絨長褲"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藍色微喇叭牛仔褲"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "米色打褶短褲"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黑色牛仔短褲"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藏青 A 字中長裙"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "碎花長裙"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "奶油色排釦開衫"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藏青長版開衫"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "灰色羊毛大衣"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黑色皮革外套"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "灰色短版西裝外套"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "橄欖綠鋪棉外套"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "白色短版外套"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藏青連帽長外套"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "黑色細肩帶中長洋裝"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "象牙白襯衫洋裝"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藏青裹身洋裝"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "米色碎花長洋裝"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "酒紅緞面禮服"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "藍色夏日洋裝"  [1440, 390]
+       starts at x 137; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "棕色針織洋裝"  [1440, 390]
+       starts at x 545; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        div.material-browser h2 "淡紫百褶洋裝"  [1440, 390]
+       starts at x 953; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL edge-left        footer.tool-footer a.tool-footer-link "在 GitHub 貢獻"  [1440, 390]
+       starts at x 1197.1; the lines are 120 and the column starts
+       fix: start it on the .wrap left line
+  FAIL lines            page  [1440]
+       headings and leads start on 4 lines (x 120, 137, 545, 953); the page has 120 and one split line
+       fix: put the block on the .wrap lines or the grid columns
+  WAIVED focus-ring .focus\:outline-none:focus: Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads.
+  WAIVED container-edges div#root "跳至主要內容BloomRenderAI 試衣參考素材搜尋工具與素材⌘ K0中EN": This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout.
+  waiver ignored (matches no open finding): card-layout "section#styles > div.wrap.home-wrap > ul.home-style-grid "♡ 公仔盒玩 試試這個 ↗""
+  waiver ignored (matches no open finding): copy-headline "h1#home-title "人物照片的 AI 創作工作台""
+  248 WARN (not blocking), first: flush main#main-content > div.material-browser; flush div.material-browser-grid > article.mate; flush div.material-browser-grid > article.mate; flush div.material-browser-grid > article.mate; flush div.material-browser-grid > article.mate
+A FAIL you judge false: add {"check": "<id>", "target": "<its where, enough to name that one finding>", "reason": "<why, 12+ characters>"} to .taste-skill/waivers.json (one finding each, 5 at most, never for kit-edited or checker-gaming); it goes in your report. Never edit the kit's files or hide the page from the checker.
+GATE: FAIL 170 (round 1 of 3)

@@ -5,18 +5,24 @@
   min-width: 0;
   text-align: left;
 }
-.pose-material-filter {
+.pose-material-filter,
+.clothing-material-filter {
   display: grid;
   gap: 8px;
   min-width: 0;
   color: var(--tool-ink, var(--ink));
   font-size: 0.875rem;
 }
-.pose-material-filter select {
+.pose-material-filter select,
+.clothing-material-filter select {
   width: 100%;
   min-width: 0;
   min-height: 44px;
   padding: 10px 12px;
+}
+.clothing-material-filter {
+  max-width: 24rem;
+  text-align: left;
 }
 .pose-material-details {
   display: grid;
@@ -39,7 +45,8 @@
   color: var(--tool-ink, var(--ink));
   overflow-wrap: anywhere;
 }
-.pose-material-filter select:focus-visible {
+.pose-material-filter select:focus-visible,
+.clothing-material-filter select:focus-visible {
   outline: 2px solid var(--tool-focus, var(--brand-primary-soft));
   outline-offset: 3px;
 }

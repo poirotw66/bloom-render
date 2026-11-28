@@ -1,6 +1,12 @@
 import { readFileSync } from 'node:fs';
 import * as z from 'zod/v4';
-import { CLOTHING_CATEGORIES, isValidMaterialClothing } from '../constants/clothingMetadata.mjs';
+import {
+  CLOTHING_CATEGORIES,
+  isValidMaterialClothing,
+  getClothingSearchText,
+  matchesClothingCategory,
+} from '../constants/clothingMetadata.mjs';
+import { matchesMaterialSearch } from '../constants/materialSearch.mjs';
 import {
   POSE_METADATA_FIELDS,
   isValidMaterialPose,
@@ -38,7 +44,8 @@ const poseReferenceSchema = z
 function validatePoseRole(material, context) {
   if (
     material.license === 'LicenseRef-AI-Generated' &&
-    (material.role !== 'clothing' ||
+    (!['clothing', 'pose'].includes(material.role) ||
+      (material.role === 'pose' && material.poseReference !== undefined) ||
       (material.image !== undefined
         ? !material.image.endsWith('.png')
         : material.mimeType !== 'image/png' || material.requiresRasterization !== false))
@@ -46,7 +53,8 @@ function validatePoseRole(material, context) {
     context.addIssue({
       code: 'custom',
       path: ['license'],
-      message: 'AI-generated references must be clothing PNGs with generation provenance.',
+      message:
+        'AI-generated references must be clothing or single-view pose PNGs with generation provenance.',
     });
   if (!isValidMaterialClothing(material))
     context.addIssue({
@@ -104,6 +112,7 @@ export const inputSchemas = {
     .object({
       query: z.string().max(200).default(''),
       role: z.enum(roles).optional(),
+      clothingCategory: z.enum(CLOTHING_CATEGORIES).optional(),
       groupId: id.optional(),
       representation: z.enum(POSE_REPRESENTATIONS).optional(),
       ...Object.fromEntries(
@@ -230,7 +239,6 @@ const roleTitles = {
   scene: ['Scene', '場景'],
   lighting: ['Lighting', '光線'],
 };
-const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('en');
 
 export function normalizeSiteUrl(value) {
   try {
@@ -323,26 +331,32 @@ export function createMaterialCatalog({ siteUrl = DEFAULT_SITE_URL } = {}) {
       };
     },
     searchReferences(input = {}) {
-      const { query, role, offset, limit, language, representation, ...poseFilters } =
-        inputSchemas.searchReferences.parse(input);
-      const terms = normalize(query).trim().split(/\s+/).filter(Boolean);
+      const {
+        query,
+        role,
+        offset,
+        limit,
+        language,
+        representation,
+        clothingCategory,
+        ...poseFilters
+      } = inputSchemas.searchReferences.parse(input);
       const matching = materials.filter((material) => {
         if (role && material.role !== role) return false;
+        if (!matchesClothingCategory(material, clothingCategory)) return false;
         if (representation && material.poseReference?.representation !== representation)
           return false;
         if (!matchesPoseFilters(material, poseFilters)) return false;
-        const searchable = normalize(
-          [
-            material.id,
-            material.title,
-            material.titleZh,
-            material.description,
-            material.descriptionZh,
-            material.prompt,
-            getPoseSearchText(material),
-          ].join(' '),
-        );
-        return terms.every((term) => searchable.includes(term));
+        return matchesMaterialSearch(query, [
+          material.id,
+          material.title,
+          material.titleZh,
+          material.description,
+          material.descriptionZh,
+          material.prompt,
+          getPoseSearchText(material),
+          getClothingSearchText(material),
+        ]);
       });
       const items = matching
         .slice(offset, offset + limit)

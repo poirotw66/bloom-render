@@ -66,12 +66,21 @@ export function PoseMaterialDetails({ material }: { material: TryOnMaterial }) {
   ];
   return (
     <dl className="pose-material-details" data-testid="pose-metadata">
-      {fields.map(([field, label]) => (
-        <div key={field}>
-          <dt>{label}</dt>
-          <dd>{getPoseMetadataLabel(field, material.pose![field], language)}</dd>
-        </div>
-      ))}
+      {fields.map(([field, label]) => {
+        const value = getPoseMetadataLabel(field, material.pose![field], language);
+        return (
+          <div key={field}>
+            <dt>{label}</dt>
+            <dd>
+              {field === 'groupId' && value === material.pose!.groupId
+                ? zh
+                  ? material.titleZh
+                  : material.title
+                : value}
+            </dd>
+          </div>
+        );
+      })}
       {material.poseReference && (
         <div>
           <dt>{zh ? '參考圖形式' : 'Reference representation'}</dt>

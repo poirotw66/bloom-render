@@ -13,10 +13,12 @@ import '../styles/material-search.css';
 export default function MaterialSearch({
   value,
   role,
+  clothingCategory = '',
   onChange,
 }: {
   value: string;
   role: string;
+  clothingCategory?: string;
   onChange: (value: string) => void;
 }) {
   const { language } = useLanguage();
@@ -25,7 +27,11 @@ export default function MaterialSearch({
   const [open, setOpen] = useState(false);
   const [recent, setRecent] = useState(readMaterialSearchHistory);
   const [storageError, setStorageError] = useState(false);
-  const suggestions = materialSearchSuggestions(value, role, language);
+  const suggestions = materialSearchSuggestions(value, role, language, clothingCategory);
+  const matchingRecent = recent.filter(
+    (query) =>
+      !value.trim() || query.toLocaleLowerCase().includes(value.trim().toLocaleLowerCase()),
+  );
   const commit = (query: string) => {
     const normalized = normalizeSearchQuery(query);
     if (normalized) {
@@ -75,9 +81,9 @@ export default function MaterialSearch({
           }}
         />
       </label>
-      {open && (
+      {open && (matchingRecent.length > 0 || suggestions.length > 0) && (
         <div className="material-search-suggestions" data-testid="material-search-suggestions">
-          {recent.length > 0 && (
+          {matchingRecent.length > 0 && (
             <section aria-label={zh ? '最近搜尋' : 'Recent searches'}>
               <h2>{zh ? '最近搜尋' : 'Recent searches'}</h2>
               <button
@@ -91,22 +97,16 @@ export default function MaterialSearch({
                 {zh ? '清除搜尋紀錄' : 'Clear search history'}
               </button>
               <div>
-                {recent
-                  .filter(
-                    (query) =>
-                      !value.trim() ||
-                      query.toLocaleLowerCase().includes(value.trim().toLocaleLowerCase()),
-                  )
-                  .map((query) => (
-                    <button
-                      className={UI_BTN_SECONDARY}
-                      type="button"
-                      key={query}
-                      onClick={() => commit(query)}
-                    >
-                      {query}
-                    </button>
-                  ))}
+                {matchingRecent.map((query) => (
+                  <button
+                    className={UI_BTN_SECONDARY}
+                    type="button"
+                    key={query}
+                    onClick={() => commit(query)}
+                  >
+                    {query}
+                  </button>
+                ))}
               </div>
             </section>
           )}

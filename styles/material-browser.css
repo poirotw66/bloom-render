@@ -69,6 +69,18 @@
 .material-browser-role {
   flex: 0 1 240px;
 }
+.material-browser-toolbar--clothing .material-browser-role {
+  display: grid;
+  gap: 8px;
+  flex-basis: 160px;
+}
+.material-browser-toolbar--clothing > .clothing-material-filter {
+  flex: 0 1 160px;
+  max-width: none;
+}
+.material-browser > .material-batch {
+  margin-block: 0;
+}
 .material-browser-toolbar :is(input, select) {
   min-height: 44px;
   margin-top: 0;
@@ -239,6 +251,10 @@
   }
   .material-browser-role {
     flex-basis: 100%;
+  }
+  .material-browser-toolbar--clothing .material-browser-role,
+  .material-browser-toolbar--clothing > .clothing-material-filter {
+    flex: 1 1 120px;
   }
   .material-browser-grid,
   .material-browser-grid--picker {

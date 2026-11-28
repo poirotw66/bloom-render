@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { openWorkspace } from './helpers/workspace';
 import JSZip from 'jszip';
+import { MATERIAL_CLOTHING_COUNT } from './helpers/materials';
 
 const SAMPLE = readFileSync(new URL('./fixtures/sample.png', import.meta.url));
 const IDS = [
@@ -37,7 +38,7 @@ test('all twelve generated garments load in the catalog with public original PNG
   await seed(page);
   await page.goto('/materials');
   await page.getByRole('combobox', { name: 'Material type', exact: true }).selectOption('clothing');
-  await expect(page.locator('article[data-material-group]')).toHaveCount(15);
+  await expect(page.locator('article[data-material-group]')).toHaveCount(MATERIAL_CLOTHING_COUNT);
   for (const id of IDS) {
     const card = page.locator(`article[data-material-group="${id}"]`);
     const image = card.locator('img').first();

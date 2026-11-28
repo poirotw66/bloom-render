@@ -1,0 +1,131 @@
+{
+  "date": "2026-11-28",
+  "kind": "software application",
+  "scope": [
+    "Five clothing categories in material catalog and try-on picker",
+    "Shared bilingual category vocabulary and whitespace-term AND search",
+    "Category-scoped search suggestions",
+    "Selection-preserving filtering and empty-result recovery",
+    "Compact mobile filter row and stable anchored suggestion overlay"
+  ],
+  "catalog": {
+    "materialIds": 136,
+    "browsingCards": 87,
+    "clothing": 51,
+    "categoryCounts": {
+      "top": 19,
+      "trousers": 9,
+      "skirt": 3,
+      "outerwear": 11,
+      "dress": 9
+    }
+  },
+  "verification": {
+    "unit": {
+      "files": 143,
+      "passed": 924
+    },
+    "browser": {
+      "uniqueCases": 65,
+      "passed": 65,
+      "themes": ["bloom", "night", "newyear"],
+      "categoryWidths": [390, 1440],
+      "workspaceWidths": [320, 390, 768, 1024, 1440],
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "mobileFirstGarmentImageTopBelowPx": 660,
+      "paidProviderRequests": false
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "sourceAndBuiltCsp": {
+      "assetReferences": 712,
+      "htmlShells": 157
+    },
+    "bundle": {
+      "entryGzipBytes": 133412,
+      "homeZhTwGzipBytes": 175696,
+      "budgetBytes": 179200
+    }
+  },
+  "design": {
+    "paletteTypographyMotion": "Existing BloomRender system retained; no new palette, hero, effects or imagery.",
+    "copy": "Short bilingual control labels and recovery action; no new marketing claims.",
+    "visualReview": ["clothing-discovery-bloom-390.png", "clothing-discovery-bloom-1440.png"],
+    "waiversModified": false,
+    "checkerModified": false
+  },
+  "tasteMarketingPageGate": {
+    "result": "GATE: FAIL 170 (round 1 of 3)",
+    "openFindings": 170,
+    "findingCounts": {
+      "hero-fill": 1,
+      "flush": 60,
+      "card-layout": 1,
+      "copy-headline": 1,
+      "copy-headings": 1,
+      "section-gaps": 3,
+      "action-repeat": 1,
+      "moment-none": 1,
+      "hero-screen": 1,
+      "section-height": 2,
+      "one-section": 2,
+      "one-heading": 1,
+      "container-edges": 5,
+      "cta": 1,
+      "edge-left": 88,
+      "lines": 1
+    },
+    "existingWaiversUsed": [
+      {
+        "check": "focus-ring",
+        "where": ".focus\\:outline-none:focus",
+        "msg": "\".focus\\:outline-none:focus\" in index-DtnK2mdA.css removes the focus outline and sets nothing in its place",
+        "fix": "keep the kit's :focus-visible ring, or put a change of the same strength (a 2px line in --action) in the rule that removes it",
+        "widths": [1440],
+        "from": "consistency",
+        "ids": ["focus-ring"],
+        "wheres": [".focus\\:outline-none:focus"],
+        "reason": "Tailwind emits this shared focus utility. Home and tool styles provide explicit 2px focus-visible outlines for interactive controls; keyboard browser regressions verify the real menus, dialogs and uploads."
+      },
+      {
+        "check": "container-edges",
+        "where": "div#root \"跳至主要內容BloomRenderAI 試衣參考素材搜尋工具與素材⌘ K0中EN\"",
+        "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+        "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+        "widths": [1440],
+        "from": "consistency",
+        "ids": ["container-edges"],
+        "wheres": ["div#root \"跳至主要內容BloomRenderAI 試衣參考素材搜尋工具與素材⌘ K0中EN\""],
+        "reason": "This is the single React application mount. Its child routes provide their own shared wrap and section boundaries; the mount itself has no visual layout."
+      }
+    ],
+    "rawReport": "clothing-discovery-taste-gate.txt",
+    "applicability": "This route is a functional reference catalog. The marketing-page checker treats its toolbar and 87 item cards as landing-page sections. Its fixes require a full-screen hero/footer, unique layouts for catalog entries, and every card title on the global left edge. Those prescriptions conflict with the compact selection workflow and correctly aligned reusable card grid. Findings are retained without hiding content, altering the checker, or declaring a pass.",
+    "examples": [
+      "88 edge-left findings include card titles intentionally inset within three grid columns.",
+      "60 flush findings treat item actions and toolbar alignment as marketing section boundaries.",
+      "hero-screen asks a 15169px reference list to become a single 900px hero.",
+      "card-layout objects to87 catalog items using a consistent component."
+    ],
+    "sourceSkill": "/home/justin/.codex/skills/design-taste-frontend/SKILL.md:37",
+    "ruleQuote": "One section per screen: the hero alone on the first screen, every section exactly one or two screens tall at 1440x900",
+    "shippingInstruction": "commit push",
+    "shippingStatus": "GATE: DONE (user requested commit and push after the open findings were reported); the original 170 findings remain recorded and are not marked passed."
+  },
+  "implementationFiles": [
+    "constants/clothingMetadata.mjs",
+    "constants/materialSearch.mjs",
+    "components/ClothingMaterialFilter.tsx",
+    "components/MaterialSearch.tsx",
+    "features/materials/MaterialsPage.tsx",
+    "features/tryon/TryOnMaterialPicker.tsx",
+    "mcp/catalog.mjs"
+  ],
+  "assetsAndLicenses": {
+    "newGeneratedImages": 0,
+    "posewearMitNotice": "unchanged",
+    "newPaidApiRequests": 0
+  }
+}

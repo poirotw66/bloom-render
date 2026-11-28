@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { TRYON_MATERIALS } from './tryOnMaterials';
+import { GENERATED_MATERIAL_BATCHES } from './generatedMaterialBatches.mjs';
+import { GENERATED_REFERENCE_BATCH } from './generatedReferenceBatch.mjs';
 
 describe('try-on reference library', () => {
   it('ships original, attributed visual references for clothing, pose and lighting', () => {
@@ -21,10 +23,18 @@ describe('try-on reference library', () => {
         expect(png.readUInt32BE(16)).toBeGreaterThan(0);
         expect(png.readUInt32BE(20)).toBeGreaterThan(0);
         if (material.license === 'LicenseRef-AI-Generated') {
-          expect(material.role).toBe('clothing');
+          expect(['clothing', 'pose']).toContain(material.role);
           expect(png.readUInt32BE(16)).toBe(1024);
           expect(png.readUInt32BE(20)).toBe(1024);
-          expect(material.source).toContain('clothing-generation-manifest.json');
+          const batch = GENERATED_MATERIAL_BATCHES.find((entry) =>
+            Object.hasOwn(entry.entries, material.id),
+          );
+          expect(batch).toBeDefined();
+          expect(material.source).toBe(batch!.source);
+          if (material.role === 'pose') expect(material.poseReference).toBeUndefined();
+        } else {
+          expect(png.readUInt32BE(16)).toBe(512);
+          expect(png.readUInt32BE(20)).toBe(640);
         }
         continue;
       }
@@ -34,6 +44,22 @@ describe('try-on reference library', () => {
       expect(svg).toContain('<title');
       expect(svg).toContain('CC0-1.0');
       expect(svg).not.toMatch(/(?:href|src)="https?:/);
+    }
+  });
+  it('ships all approved generated garments and single-view poses under their own provenance', () => {
+    const generated = TRYON_MATERIALS.filter(
+      (material) => material.license === 'LicenseRef-AI-Generated',
+    );
+    expect(generated).toHaveLength(72);
+    const additions = TRYON_MATERIALS.filter((material) =>
+      Object.hasOwn(GENERATED_REFERENCE_BATCH, material.id),
+    );
+    expect(additions).toHaveLength(60);
+    expect(additions.filter((material) => material.role === 'clothing')).toHaveLength(36);
+    expect(additions.filter((material) => material.role === 'pose')).toHaveLength(24);
+    for (const material of additions) {
+      expect(material.poseReference).toBeUndefined();
+      expect(material.prompt).not.toMatch(/create.*(?:flat lay|pose-reference study)/i);
     }
   });
 });

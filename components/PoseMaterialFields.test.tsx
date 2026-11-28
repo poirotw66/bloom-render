@@ -167,7 +167,7 @@ describe('pose material controls', () => {
     expect(screen.getByTestId('basket-add-pose-hand-on-hip')).toBeTruthy();
     expect(
       screen.getAllByTestId(/^basket-add-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual(threeQuarterFaces.map((id) => `basket-add-${id}`));
+    ).toEqual([...threeQuarterFaces, 'navy-wrap-dress'].map((id) => `basket-add-${id}`));
     fireEvent.change(query, { target: { value: 'relaxed-standing' } });
     expect(screen.getAllByTestId(/^basket-add-/)).toHaveLength(1);
     expect(screen.getByTestId('basket-add-pose-relaxed-front')).toBeTruthy();
@@ -186,6 +186,18 @@ describe('pose material controls', () => {
     view.unmount();
     renderMaterials('/materials/white-oxford-shirt');
     expect(screen.queryByTestId('pose-metadata')).toBeNull();
+  });
+
+  it('labels a generated pose by its title without advertising nonexistent camera or depth variants', () => {
+    renderMaterials('/materials/pose-full-single-p061');
+    const details = screen.getByTestId('pose-metadata');
+    expect(details.textContent).toContain('Pose groupCrouch with hands on knees');
+    expect(details.textContent).toContain('PostureSquatting');
+    expect(details.textContent).toContain('Available viewsThree-quarter');
+    expect(details.textContent).not.toContain('pose-full-single-p061');
+    expect(screen.queryByTestId('pose-view-select')).toBeNull();
+    expect(screen.queryByTestId('pose-representation-select')).toBeNull();
+    expect(screen.getByText(/AI-generated pose reference/)).toBeTruthy();
   });
 
   it('preserves selected references while the try-on picker filters and resets categories', async () => {
@@ -222,7 +234,7 @@ describe('pose material controls', () => {
     });
     expect(
       screen.getAllByTestId(/^tryon-material-/).map((button) => button.getAttribute('data-testid')),
-    ).toEqual(threeQuarterFaces.map((id) => `tryon-material-${id}`));
+    ).toEqual([...threeQuarterFaces, 'navy-wrap-dress'].map((id) => `tryon-material-${id}`));
     expect(screen.getByTestId('tryon-material-pose-hand-on-hip')).toBeTruthy();
   });
 

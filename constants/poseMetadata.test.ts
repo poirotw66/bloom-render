@@ -20,9 +20,9 @@ const metadata = {
 describe('structured pose metadata', () => {
   it('preserves legacy pose identities alongside the additional paired study views', () => {
     expect(
-      TRYON_MATERIALS.filter((material) => material.pose && !material.poseReference).map(
-        (material) => material.id,
-      ),
+      TRYON_MATERIALS.filter(
+        (material) => material.pose && !material.poseReference && material.license === 'CC0-1.0',
+      ).map((material) => material.id),
     ).toEqual(['pose-relaxed-front', 'pose-hand-on-hip', 'pose-seated-profile']);
     for (const material of TRYON_MATERIALS) expect(isValidMaterialPose(material)).toBe(true);
     expect(isValidMaterialPose({ role: 'pose' })).toBe(false);
@@ -105,6 +105,45 @@ describe('structured pose metadata', () => {
     expect(getMaterialPrompt(matches[1])).toContain('posture=walking; view=back');
     expect(matchesPoseFilters(matches[0], { posture: 'standing' })).toBe(false);
   });
+
+  it.each([
+    [
+      'squatting',
+      '蹲姿',
+      [
+        'pose-full-single-p061',
+        'pose-full-single-p062',
+        'pose-full-single-p063',
+        'pose-full-single-p066',
+      ],
+    ],
+    ['kneeling', '跪姿', ['pose-full-single-p031', 'pose-full-single-p033']],
+    ['lying', '躺姿', ['pose-full-single-p050', 'pose-full-single-p058']],
+  ] as const)(
+    'discovers the approved %s references as unpaired single-camera mannequin poses',
+    (posture, label, ids) => {
+      const matches = TRYON_MATERIALS.filter((material) =>
+        matchesPoseFilters(material, { posture }),
+      );
+      expect(matches.map((material) => material.id)).toEqual(ids);
+      expect(getPoseMetadataLabel('posture', posture, 'zh-TW')).toBe(label);
+      for (const material of matches) {
+        expect(material.license).toBe('LicenseRef-AI-Generated');
+        expect(material.pose).toMatchObject({
+          posture,
+          view: 'three-quarter',
+          cameraHeight: 'eye-level',
+          framing: 'full-body',
+        });
+        expect(material.poseReference).toBeUndefined();
+        const prompt = getMaterialPrompt(material);
+        expect(prompt).toContain(`posture=${posture}; view=three-quarter`);
+        expect(prompt).not.toContain('Reference representation=');
+        expect(prompt).not.toMatch(/create one original|create.*flat lay/i);
+        expect(prompt).toMatch(/do not transfer.*mannequin/i);
+      }
+    },
+  );
 
   it('leaves non-pose material prompts unchanged', () => {
     for (const material of TRYON_MATERIALS.filter((item) => item.role !== 'pose'))

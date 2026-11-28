@@ -6,7 +6,7 @@
 
 這個本機 stdio MCP 服務讓 Codex 等 agent 搜尋 BloomRender 的內建素材，取得參考圖資訊，組裝提示詞及可開啟的試穿配方。它直接讀取專案的 `constants/tryOnMaterials.json`，不依賴執行時所在目錄，也不需要先啟動網站。
 
-目前目錄有 76 個素材，包含 64 個原創 CC0 素材與 12 款 AI 生成服裝平拍圖，分為服裝、姿勢與光線三類。AI 服裝以 `LicenseRef-AI-Generated` 區分，來源連結保留模型、提示詞與影像雜湊。工具不會讀取瀏覽器的照片、草稿、歷史或金鑰，不會寫入素材籃，也不會呼叫圖片供應商。個人照片請在 BloomRender 網頁中加入。
+目前目錄有 136 個素材，包含 64 個原創 CC0 素材、48 款 AI 生成服裝平拍圖與 24 個 AI 生成姿勢參考，分為服裝、姿勢與光線三類。AI 素材以 `LicenseRef-AI-Generated` 區分，來源連結保留模型、提示詞與影像雜湊。工具不會讀取瀏覽器的照片、草稿、歷史或金鑰，不會寫入素材籃，也不會呼叫圖片供應商。個人照片請在 BloomRender 網頁中加入。
 
 ### 安裝及接入
 
@@ -48,17 +48,23 @@ codex mcp add bloomrender -- node "$PWD/mcp/server.mjs"
 
 `language` 可選 `zh-TW`（預設）或 `en`。搜尋涵蓋中英文標題、描述、素材 ID 與提示詞，採關鍵字比對，不是語意搜尋。目錄原始 `prompt` 為英文，語言選項會切換分類、標題、描述及工具組裝的說明。
 
+服裝搜尋另接受 `clothingCategory`：`top`（上衣）、`trousers`（褲裝）、`skirt`（裙裝）、`outerwear`（外套）、`dress`（洋裝）。分類與其他條件以交集比對；搭配非服裝角色回傳空結果。網頁素材庫、試穿選材與 MCP 共用中英文分類詞，搜尋 `白色 上衣` 會同時要求兩個詞符合。分類篩選不會修改目前選取的參考素材。
+
+```json
+{ "role": "clothing", "clothingCategory": "outerwear", "query": "灰色" }
+```
+
 ### 姿勢與機位篩選
 
 姿勢素材會回傳 `pose` 物件；服裝、光線等其他素材不會帶有此欄位。欄位值為語言無關的代碼：
 
-| 欄位           | 意義與允許值                                                                                                                                                                                                          |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `groupId`      | 穩定姿勢群組 ID；目前為 `relaxed-standing`、`hand-on-hip`、`seated`、`standing-study`、`hand-on-hip-study`、`seated-study`、`walking-study`、`arms-crossed-study`、`hands-in-pockets-study`、`crossed-ankles-study`。 |
-| `posture`      | `standing`、`seated`、`walking`。                                                                                                                                                                                     |
-| `view`         | `front`、`three-quarter`、`profile`、`back`。                                                                                                                                                                         |
-| `cameraHeight` | `eye-level`、`high-angle`、`low-angle`、`unspecified`。                                                                                                                                                               |
-| `framing`      | `full-body`、`upper-body`、`close-up`。                                                                                                                                                                               |
+| 欄位           | 意義與允許值                                                                                                                                                                                                                                               |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `groupId`      | 穩定姿勢群組 ID；目前為 `relaxed-standing`、`hand-on-hip`、`seated`、`standing-study`、`hand-on-hip-study`、`seated-study`、`walking-study`、`arms-crossed-study`、`hands-in-pockets-study`、`crossed-ankles-study`，以及 24 個 AI 單一機位姿勢的素材 ID。 |
+| `posture`      | `standing`、`seated`、`walking`、`squatting`、`kneeling`、`lying`。                                                                                                                                                                                        |
+| `view`         | `front`、`three-quarter`、`profile`、`back`。                                                                                                                                                                                                              |
+| `cameraHeight` | `eye-level`、`high-angle`、`low-angle`、`unspecified`。                                                                                                                                                                                                    |
+| `framing`      | `full-body`、`upper-body`、`close-up`。                                                                                                                                                                                                                    |
 
 搜尋工具接受上述欄位作為可選篩選，並以交集比對。例如：
 
@@ -116,7 +122,9 @@ Use `npm run --silent mcp` for a quiet manual launch. Plain npm banners must not
 
 The four tools are `bloomrender_list_collections`, `bloomrender_search_references`, `bloomrender_get_reference`, and `bloomrender_compose_brief`. They expose structured input/output schemas. Labels and descriptions support `en` and `zh-TW` (default); source material prompts remain in their catalog language, English. Keyword search covers both languages, IDs and prompts, with offset/limit pagination.
 
-The current catalog contains seventy-six references across clothing, pose and lighting: sixty-four original CC0 assets and twelve AI-generated clothing flat lays. AI garments use `LicenseRef-AI-Generated`; their source links point to the exact prompts, requested model/settings and shipped image hashes. Pose references include `pose: {groupId, posture, view, cameraHeight, framing}`; other roles omit `pose`. Three legacy pose groups retain one view each with unspecified camera height. The seven original synthetic standing, hand-on-hip, seated, walking, arms-crossed, hands-in-pockets and crossed-ankles studies each add front, three-quarter, profile and back views with aligned line-art/depth PNG pairs. These depth maps encode normalized camera-relative depth, not measured human depth. SVG entries require rasterization; PNG entries can be used directly. BloomRender automatically rasterizes SVG references when using them through its web interface.
+The current catalog contains 136 references across clothing, pose and lighting: 64 original CC0 assets, 48 AI-generated clothing flat lays and 24 AI-generated single-view mannequin poses. AI references use `LicenseRef-AI-Generated`; their source links point to the exact prompts, requested model/settings and shipped image hashes. Pose references include `pose: {groupId, posture, view, cameraHeight, framing}`; other roles omit `pose`. Three legacy pose groups retain one view each with unspecified camera height. The seven original synthetic standing, hand-on-hip, seated, walking, arms-crossed, hands-in-pockets and crossed-ankles studies each add front, three-quarter, profile and back views with aligned line-art/depth PNG pairs. These depth maps encode normalized camera-relative depth, not measured human depth. SVG entries require rasterization; PNG entries can be used directly. BloomRender automatically rasterizes SVG references when using them through its web interface.
+
+Clothing search accepts `clothingCategory: "top" | "trousers" | "skirt" | "outerwear" | "dress"`. Category, role and text filters intersect, so a pose role with a clothing category returns no matches. Search includes the same English and Traditional Chinese category labels as the browser; whitespace-separated terms must all match. For example, `{"role":"clothing","clothingCategory":"outerwear","query":"灰色"}` selects gray outerwear.
 
 Search also accepts optional `posture`, `view`, `groupId`, `cameraHeight`, and `framing` filters. Supported values are listed in the table above and advertised in the tool schema. Filters intersect, so a non-pose role combined with a pose filter returns no matches. Keyword search includes the shared English/Traditional Chinese metadata labels. For example, `{"role":"pose","posture":"seated","view":"profile"}` finds both the legacy seated-profile reference and the seated-study profile pair; add `groupId` to choose a study. Pose metadata values are language-independent codes. The reference prompt and automatic brief use the same structured pose/camera instructions as browser generation; unspecified camera height adds no fabricated height instruction.
 
@@ -143,7 +151,9 @@ Only one pose material is allowed in a recipe. Pair comparison is an inspection
 feature, not a request to send two pose images. The study's depth maps are
 synthetic normalized camera depth, not measured human depth.
 
-See [generated clothing provenance](../docs/CLOTHING_ASSETS.md) and [pose views and provenance](../docs/POSE_VIEWS.md) for regeneration and
+AI pose references have one eye-level three-quarter view and no `poseReference` or depth partner. Postures include `squatting`, `kneeling` and `lying`. These are neutral mannequin references, not measured depth.
+
+See [generated reference provenance](../docs/GENERATED_REFERENCES.md), [generated clothing provenance](../docs/CLOTHING_ASSETS.md) and [pose views and provenance](../docs/POSE_VIEWS.md) for regeneration and
 validation details.
 
 服裝參考包含經驗證的 `clothing.category`（`top`、`trousers`、`skirt`、`outerwear`、`dress`），同類服裝優先出現在相似素材建議中；此欄位不適用於姿勢或光線素材。

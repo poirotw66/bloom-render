@@ -8,6 +8,7 @@ import {
   materialSchema,
 } from './catalog.mjs';
 import { TRYON_MATERIALS } from '../constants/tryOnMaterials';
+import { GENERATED_REFERENCE_BATCH } from '../constants/generatedReferenceBatch.mjs';
 import { getMaterialPrompt } from '../constants/poseMetadata.mjs';
 import { POSE_STUDIES } from '../constants/poseStudies.mjs';
 import { SITE_URL } from '../constants/site';
@@ -16,6 +17,33 @@ import { parseRemixHash } from '../utils/remixLink';
 
 const catalog = createMaterialCatalog();
 const ids = ['lighting-soft-window', 'white-oxford-shirt', 'pose-hand-on-hip'];
+
+describe('clothing discovery search', () => {
+  it('intersects category, role and multilingual keywords with browser-equivalent term matching', () => {
+    expect(
+      catalog.searchReferences({ clothingCategory: 'trousers', query: '褲子', limit: 50 }).total,
+    ).toBe(9);
+    expect(catalog.searchReferences({ role: 'pose', clothingCategory: 'trousers' }).items).toEqual(
+      [],
+    );
+    expect(
+      catalog
+        .searchReferences({
+          role: 'clothing',
+          clothingCategory: 'top',
+          query: '白色　上衣',
+          limit: 50,
+        })
+        .items.map((item) => item.id),
+    ).toEqual(['white-oxford-shirt', 'white-crew-neck-tee', 'white-cropped-shirt']);
+    expect(
+      catalog
+        .searchReferences({ clothingCategory: 'outerwear', query: '灰色' })
+        .items.map((item) => item.id),
+    ).toEqual(['gray-wool-coat', 'gray-cropped-jacket']);
+    expect(() => catalog.searchReferences({ clothingCategory: 'unknown' })).toThrow();
+  });
+});
 
 describe('read-only material catalog', () => {
   it('uses the current browser catalog and canonical site URL', () => {
@@ -55,7 +83,10 @@ describe('read-only material catalog', () => {
     });
     expect(seated.items.map((item) => item.id)).toEqual(['pose-seated-profile']);
     expect(
-      catalog.searchReferences({ posture: 'standing', limit: 50 }).items.map((item) => item.id),
+      [
+        ...catalog.searchReferences({ posture: 'standing', limit: 50 }).items,
+        ...catalog.searchReferences({ posture: 'standing', limit: 50, offset: 50 }).items,
+      ].map((item) => item.id),
     ).toEqual(
       TRYON_MATERIALS.filter((item) => item.pose?.posture === 'standing').map((item) => item.id),
     );
@@ -65,7 +96,9 @@ describe('read-only material catalog', () => {
     expect(catalog.searchReferences({ groupId: 'unknown-group' }).items).toEqual([]);
     expect(catalog.searchReferences({ role: 'clothing', view: 'front' }).items).toEqual([]);
     expect(catalog.searchReferences({ cameraHeight: 'high-angle' }).items).toEqual([]);
-    expect(catalog.searchReferences({ query: '四分之三' }).items.map((item) => item.id)).toEqual(
+    expect(
+      catalog.searchReferences({ query: '四分之三', limit: 50 }).items.map((item) => item.id),
+    ).toEqual(
       TRYON_MATERIALS.filter((item) => item.pose?.view === 'three-quarter').map((item) => item.id),
     );
     expect(catalog.searchReferences({ query: 'Not specified' }).items).toHaveLength(3);
@@ -197,7 +230,7 @@ describe('read-only material catalog', () => {
     { offset: 0.5 },
     { query: 'x'.repeat(201) },
     { role: 'portrait' },
-    { posture: 'lying' },
+    { posture: 'flying' },
     { view: 'rear' },
     { cameraHeight: '45-degrees' },
     { framing: 'mid-shot' },
@@ -251,6 +284,42 @@ describe('read-only material catalog', () => {
       materialSchema.safeParse({ ...garment, image: garment.image.replace('.png', '.svg') })
         .success,
     ).toBe(false);
+  });
+
+  it('exposes new generated pose postures without inventing depth partners or alternate views', () => {
+    const additions = TRYON_MATERIALS.filter((material) =>
+      Object.hasOwn(GENERATED_REFERENCE_BATCH, material.id),
+    );
+    expect(additions.filter((material) => material.role === 'pose')).toHaveLength(24);
+    for (const posture of ['squatting', 'kneeling', 'lying']) {
+      const results = catalog.searchReferences({ posture });
+      expect(results.items.length).toBeGreaterThan(0);
+      expect(outputSchemas.searchReferences.safeParse(results).success).toBe(true);
+      for (const item of results.items) {
+        const reference = catalog.getReference({ id: item.id, language: 'en' });
+        expect(reference).toMatchObject({
+          role: 'pose',
+          license: 'LicenseRef-AI-Generated',
+          mimeType: 'image/png',
+          requiresRasterization: false,
+          pose: { posture, view: 'three-quarter' },
+        });
+        expect(reference.source).toContain('reference-generation-2026-11-28-manifest.json');
+        expect(reference).not.toHaveProperty('poseReference');
+        expect(reference).not.toHaveProperty('pairedReference');
+        expect(reference.poseAlternatives?.map((alternative) => alternative.id)).toEqual([
+          reference.id,
+        ]);
+        const brief = catalog.composeBrief({
+          materialIds: ['white-oxford-shirt', reference.id],
+          language: 'en',
+        });
+        expect(brief.recipe.materialIds).toEqual(['white-oxford-shirt', reference.id]);
+        expect(brief.prompt).toContain(`posture=${posture}; view=three-quarter`);
+        expect(brief.prompt).not.toContain('Reference representation=depth');
+        expect(outputSchemas.getReference.safeParse(reference).success).toBe(true);
+      }
+    }
   });
 
   it.each(['unknown-material', 'constructor', '../../.env', 'https://example.com/photo.png'])(

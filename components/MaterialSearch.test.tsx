@@ -10,15 +10,35 @@ beforeEach(() => {
   localStorage.setItem('bloom_language', 'en');
 });
 afterEach(cleanup);
-function Search() {
-  const [value, setValue] = React.useState('');
+function Search({ initialValue = '', role = 'all', category = '' }) {
+  const [value, setValue] = React.useState(initialValue);
   return (
     <LanguageProvider>
-      <MaterialSearch value={value} role="all" onChange={setValue} />
+      <MaterialSearch value={value} role={role} clothingCategory={category} onChange={setValue} />
     </LanguageProvider>
   );
 }
 describe('catalog search history', () => {
+  it('does not render an empty panel or unmatched recent section', () => {
+    localStorage.setItem(MATERIAL_SEARCH_HISTORY_KEY, JSON.stringify(['navy']));
+    render(<Search initialValue="no-matching-garment-999" role="clothing" />);
+    fireEvent.focus(screen.getByRole('searchbox', { name: 'Search materials' }));
+    expect(screen.queryByTestId('material-search-suggestions')).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Recent searches' })).toBeNull();
+  });
+  it('selects a category-scoped suggestion, saves it and returns focus to the input', () => {
+    render(<Search initialValue="white" role="clothing" category="outerwear" />);
+    const input = screen.getByRole('searchbox', { name: 'Search materials' });
+    fireEvent.focus(input);
+    expect(screen.queryByRole('button', { name: 'White crew-neck tee' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'White Cropped Jacket' }));
+    expect(input).toHaveProperty('value', 'White Cropped Jacket');
+    expect(document.activeElement).toBe(input);
+    expect(screen.queryByTestId('material-search-suggestions')).toBeNull();
+    expect(JSON.parse(localStorage.getItem(MATERIAL_SEARCH_HISTORY_KEY)!)).toEqual([
+      'White Cropped Jacket',
+    ]);
+  });
   it('saves only committed queries, reuses them and clears local history', () => {
     render(<Search />);
     const input = screen.getByRole('searchbox', { name: 'Search materials' });

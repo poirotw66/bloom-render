@@ -18,4 +18,12 @@ describe('material search suggestions', () => {
     expect(suggestions.every((value) => value.toLowerCase().includes('navy'))).toBe(true);
     expect(materialSearchSuggestions('navy', 'pose', 'en')).toEqual([]);
   });
+  it('keeps suggestions inside the active clothing category', () => {
+    const suggestions = materialSearchSuggestions('white', 'clothing', 'en', 'outerwear');
+    expect(suggestions).toContain('White Cropped Jacket');
+    expect(suggestions).not.toContain('White crew-neck tee');
+    expect(materialSearchSuggestions('white', 'clothing', 'en', 'trousers')).toEqual([
+      'White Wide Leg Trousers',
+    ]);
+  });
 });

@@ -15,6 +15,12 @@ import {
 } from '../../components/MaterialPreferenceControls';
 import { getPoseSearchText, matchesPoseFilters } from '../../constants/poseMetadata.mjs';
 import { PoseMaterialFilters, type PoseFilterValues } from '../../components/PoseMaterialFields';
+import ClothingMaterialFilter from '../../components/ClothingMaterialFilter';
+import {
+  getClothingSearchText,
+  matchesClothingCategory,
+} from '../../constants/clothingMetadata.mjs';
+import { matchesMaterialSearch } from '../../constants/materialSearch.mjs';
 
 export const REFERENCE_ROLE_LABELS: Record<TryOnReferenceRole, [string, string]> = {
   clothing: ['Clothing', '服裝'],
@@ -45,6 +51,7 @@ export default function TryOnMaterialPicker({
   const zh = language === 'zh-TW';
   const [role, setRole] = useState<TryOnReferenceRole | 'all'>(initialRole);
   const [search, setSearch] = useState('');
+  const [clothingCategory, setClothingCategory] = useState('');
   const preferences = useMaterialPreferences();
   const previousSelected = useRef(selectedIds);
   useEffect(() => {
@@ -64,7 +71,6 @@ export default function TryOnMaterialPicker({
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const roles = [...new Set(TRYON_MATERIALS.map((material) => material.role))];
-  const query = search.normalize('NFKC').trim().toLocaleLowerCase();
   const pool =
     collection === 'recent'
       ? preferences.recentIds
@@ -76,17 +82,15 @@ export default function TryOnMaterialPicker({
       (collection !== 'favorites' || preferences.favoriteIds.includes(material.id)) &&
       (role === 'all' || material.role === role) &&
       (role !== 'pose' || matchesPoseFilters(material, poseFilters)) &&
-      [
+      (role !== 'clothing' || matchesClothingCategory(material, clothingCategory)) &&
+      matchesMaterialSearch(search, [
         material.title,
         material.titleZh,
         material.description,
         material.descriptionZh,
         getPoseSearchText(material),
-      ]
-        .join(' ')
-        .normalize('NFKC')
-        .toLocaleLowerCase()
-        .includes(query),
+        getClothingSearchText(material),
+      ]),
   );
 
   const select = async (material: TryOnMaterial) => {
@@ -165,6 +169,7 @@ export default function TryOnMaterialPicker({
             aria-pressed={role === value}
             onClick={() => {
               setRole(value);
+              setClothingCategory('');
               setPoseFilters({ posture: '', view: '' });
             }}
             className="tool-button tool-button-secondary"
@@ -175,6 +180,9 @@ export default function TryOnMaterialPicker({
       </div>
       <MaterialCollectionFilters value={collection} onChange={setCollection} />
       {role === 'pose' && <PoseMaterialFilters value={poseFilters} onChange={setPoseFilters} />}
+      {role === 'clothing' && (
+        <ClothingMaterialFilter value={clothingCategory} onChange={setClothingCategory} />
+      )}
       {selectedPose && (
         <div className="tryon-selected-pose" data-testid="selected-pose-variants">
           <p className="tryon-hint">{zh ? '目前選取的姿勢參考' : 'Selected pose reference'}</p>
@@ -256,7 +264,21 @@ export default function TryOnMaterialPicker({
         ))}
       </div>
       {materials.length === 0 && (
-        <p className="tryon-hint">{zh ? '沒有符合的素材。' : 'No matching references.'}</p>
+        <div className="space-y-3">
+          <p className="tryon-hint">{zh ? '沒有符合的素材。' : 'No matching references.'}</p>
+          <button
+            type="button"
+            className="tool-button tool-button-secondary"
+            onClick={() => {
+              setSearch('');
+              setCollection('all');
+              setClothingCategory('');
+              setPoseFilters({ posture: '', view: '' });
+            }}
+          >
+            {zh ? '清除篩選' : 'Clear filters'}
+          </button>
+        </div>
       )}
       {!canAddClothing && (
         <p className="tryon-hint">

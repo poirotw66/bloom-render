@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   copyFileSync,
-  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -14,6 +13,8 @@ import path from 'node:path';
 import { CONTENT_SECURITY_POLICY } from '../constants/csp.mjs';
 import { POSE_STUDIES } from '../constants/poseStudies.mjs';
 import { CLOTHING_GENERATION_MANIFEST } from '../constants/generatedClothing.mjs';
+import { REFERENCE_GENERATION_MANIFEST } from '../constants/generatedReferenceBatch.mjs';
+import { GENERATED_MATERIAL_BATCHES } from '../constants/generatedMaterialBatches.mjs';
 import { validateGeneratedClothing } from './clothing-generation-validation.mjs';
 import {
   ASSET_CATALOGS,
@@ -56,18 +57,19 @@ function copyPoseStudy(assetDir: string) {
   }
 }
 function copyGeneratedClothing(assetDir: string) {
-  const source = path.resolve('public', CLOTHING_GENERATION_MANIFEST);
-  if (!existsSync(source)) return;
-  const manifest = JSON.parse(readFileSync(source, 'utf8'));
-  for (const relative of [
-    CLOTHING_GENERATION_MANIFEST,
-    ...manifest.images.map((image: { image: string }) => image.image),
-  ]) {
-    const target = path.join(assetDir, relative);
-    mkdirSync(path.dirname(target), { recursive: true });
-    copyFileSync(path.resolve('public', relative), target);
+  for (const batch of GENERATED_MATERIAL_BATCHES) {
+    const manifest = JSON.parse(readFileSync(path.resolve('public', batch.manifest), 'utf8'));
+    for (const relative of [
+      batch.manifest,
+      ...manifest.images.map((image: { image: string }) => image.image),
+    ]) {
+      const target = path.join(assetDir, relative);
+      mkdirSync(path.dirname(target), { recursive: true });
+      copyFileSync(path.resolve('public', relative), target);
+    }
   }
 }
+
 const html = `<html><head><meta http-equiv="Content-Security-Policy" content="${CONTENT_SECURITY_POLICY}"></head><body></body></html>`;
 function fixture() {
   const root = temp();
@@ -180,8 +182,48 @@ describe('material source and CSP build guard', () => {
         )
           entries.splice(index, 1);
     });
-    expect(validateGeneratedClothing(root).join('\n')).toContain('same twelve unique IDs');
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'must retain their AI-generated provenance label',
+    );
   });
+  it('detects changed and missing generated pose bytes and a missing batch manifest', () => {
+    const root = fixture();
+    const image = path.join(root, 'public/images/tryon-materials/pose-full-single-p061.png');
+    writeFileSync(image, Buffer.concat([readFileSync(image), Buffer.from('changed')]));
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'pose-full-single-p061: image hash differs from manifest',
+    );
+    rmSync(image);
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'cannot verify generation provenance',
+    );
+    copyGeneratedClothing(path.join(root, 'public'));
+    rmSync(path.join(root, 'public', REFERENCE_GENERATION_MANIFEST));
+    expect(validateGeneratedClothing(root).join('\n')).toContain(REFERENCE_GENERATION_MANIFEST);
+    expect(validateGeneratedClothing(root).join('\n')).toContain(
+      'cannot verify generation provenance',
+    );
+  });
+  it.each(['license', 'posture', 'invented-depth-pair'] as const)(
+    'rejects a generated pose with altered %s provenance',
+    (field) => {
+      const root = fixture();
+      mutateMaterials(root, (entries) => {
+        const pose = entries.find((entry) => entry.id === 'pose-full-single-p061')!;
+        if (field === 'license') pose.license = 'CC0-1.0';
+        else if (field === 'posture')
+          pose.pose = { ...(pose.pose as Record<string, unknown>), posture: 'standing' };
+        else pose.poseReference = { pairId: 'made-up-depth', representation: 'depth' };
+      });
+      const errors = validateGeneratedClothing(root).join('\n');
+      expect(errors).toContain(
+        'pose-full-single-p061: catalog identity, metadata or provenance differs from the reviewed batch',
+      );
+      if (field === 'license')
+        expect(errors).toContain('must retain their AI-generated provenance label');
+    },
+  );
+
   it('rejects duplicate material IDs that would overwrite route output', () => {
     const root = fixture();
     mutateMaterials(root, (entries) => {
@@ -233,6 +275,11 @@ describe('material source and CSP build guard', () => {
       '<html><head></head><body>Vendored demo</body></html>',
     );
     expect(checkMaterialSources({ root, built: true }).errors).toEqual([]);
+    const generatedPose = path.join(distDir, 'images/tryon-materials/pose-full-single-p061.png');
+    writeFileSync(
+      generatedPose,
+      Buffer.concat([readFileSync(generatedPose), Buffer.from('changed')]),
+    );
     rmSync(path.join(distDir, 'images/tryon-materials/white-oxford-shirt.svg'));
     rmSync(path.join(distDir, 'images/tryon-materials/seated-study-manifest.json'));
     rmSync(path.join(distDir, 'materials/white-oxford-shirt/index.html'));
@@ -242,11 +289,12 @@ describe('material source and CSP build guard', () => {
       html.replace('https://api.openai.com', 'https://unexpected.example'),
     );
     const errors = checkMaterialSources({ root, built: true }).errors.join('\n');
+    expect(errors).toContain('pose-full-single-p061: image hash differs from manifest');
     expect(errors).toContain('dist asset');
     expect(errors).toContain('seated-study-manifest.json');
     expect(errors).toContain('missing route shell');
     expect(errors).toContain('dist/travel/index.html: CSP differs');
-  });
+  }, 15_000); // This fixture copies and hashes both source and dist for every generated PNG.
 });
 
 describe('asset reference boundaries', () => {
